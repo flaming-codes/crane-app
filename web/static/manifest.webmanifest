@@ -7,6 +7,8 @@
   "name": "The Comprehensive R Archive Network, Enhanced",
   "short_name": "CRAN/E",
   "description": "A modern variant of the cran-r package hosting solution",
+  "orientation": "natural",
+  "categories": ["utilities", "education", "productivity"],
   "icons": [
     {
       "src": "/manifest/android-chrome-192x192.webp",
@@ -40,6 +42,23 @@
       "type": "image/webp",
       "platform": "wide",
       "label": "Homescreen of CRAN/E"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Overview",
+      "description": "View all packages",
+      "url": "/"
+    },
+    {
+      "name": "How-to",
+      "description": "Collection of guides",
+      "url": "/how-to"
+    },
+    {
+      "name": "About",
+      "description": "Who's even making this?!",
+      "url": "/about"
     }
   ]
 }
