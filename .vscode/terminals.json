@@ -1,0 +1,15 @@
+{
+  "autorun": true,
+  "autokill": true,
+  "restore": false,
+  "terminals": [
+    {
+      "name": "web",
+      "icon": "code",
+      "color": "terminal.ansiCyan",
+      "commands": ["cd web", "nvm use"],
+      "open": true,
+      "focus": true
+    }
+  ]
+}

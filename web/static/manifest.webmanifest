@@ -1,0 +1,45 @@
+{
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "The Comprehensive R Archive Network, Enhanced",
+  "short_name": "CRAN/E",
+  "description": "A modern variant of the cran-r package hosting solution",
+  "icons": [
+    {
+      "src": "/manifest/android-chrome-192x192.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/manifest/android-chrome-256x256.webp",
+      "sizes": "256x256",
+      "type": "image/webp",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/manifest/android-chrome-512x512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/manifest/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/manifest/screenshot-wide-0.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "platform": "wide",
+      "label": "Homescreen of CRAN/E"
+    }
+  ]
+}
