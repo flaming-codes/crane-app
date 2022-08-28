@@ -35,7 +35,7 @@ function getArgv() {
  */
 function composeFakePackage(i: number): Pkg {
   const id = `${faker.word.adjective(50)}-${faker.word.conjunction(100)}-${i}`;
-  const date = faker.date.past().toISOString();
+  const date = faker.date.past().toISOString().slice(0, 10);
 
   return {
     id,
@@ -215,7 +215,7 @@ function composeAndPersistVariants(packages: Pkg[]) {
     filter: (pkg: Pkg, i: number, acc: Pkg[]) => boolean;
   }> = [
     {
-      name: 'db-sitemap.json',
+      name: 'db-sm.json',
       mapper: ({ slug, date }) => [slug, date],
       filter: ({ name }, i, acc) => acc.findIndex((item) => item.name === name) === i
     },

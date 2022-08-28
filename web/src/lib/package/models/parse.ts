@@ -10,7 +10,7 @@ import type { Pkg } from '../type';
 export function parseOverviewTuples(p: Pkg) {
   type Result = Array<[string, string, SubGridMeta | undefined]>;
 
-  const diffInDays = differenceInDays(Date.now(), p.createdAt);
+  const diffInDays = differenceInDays(Date.now(), new Date(p.date));
 
   let bugReportMeta: Partial<SubGridMeta> = {};
   if (p.bugreports) {
@@ -24,7 +24,7 @@ export function parseOverviewTuples(p: Pkg) {
   return [
     p.version && ['Version', p.version],
     p.depends?.find((d) => d.name === 'R') && ['R', p.depends.find((d) => d.name === 'R')?.version],
-    p.createdAt && ['Published', diffInDays > 0 ? `${diffInDays} days ago` : 'Today'],
+    p.date && ['Published', p.date, { text: diffInDays > 0 ? `${diffInDays} days ago` : 'Today' }],
     ...p.license.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]),
     p.needscompilation && [
       'Needs compilation?',

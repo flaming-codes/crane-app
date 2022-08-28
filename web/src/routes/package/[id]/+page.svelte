@@ -74,7 +74,7 @@
   const contacts = parseContacts(item);
 </script>
 
-<BaseMeta title={item.id} description={item.title} path="package/{item.id}" />
+<BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
@@ -131,7 +131,11 @@
             <SubGridItem {key}>
               <span>{value}</span>
               {#if meta}
-                <SubGridIcon {meta} />
+                {#if !('text' in meta)}
+                  <SubGridIcon {meta} />
+                {:else if 'text' in meta}
+                  <span class="block text-xs text-neutral-300">{meta.text}</span>
+                {/if}
               {/if}
             </SubGridItem>
           {/each}
