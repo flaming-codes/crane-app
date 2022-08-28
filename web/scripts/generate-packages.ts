@@ -261,12 +261,17 @@ function composeAndPersistVariants(packages: Pkg[]) {
 /**
  * Delete the existing fake packages in 'static/data'.
  */
-function wipeExisting() {
+function prepareDirectories() {
   // @ts-ignore Issue w/ node types.
   const cwd = process.cwd();
   const dir = path.join(cwd, 'static', 'data');
 
-  fs.rmdirSync(dir, { recursive: true });
+  if (fs.existsSync(dir)) {
+    fs.rmdirSync(dir, { recursive: true });
+  }
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
 }
 
 /**
@@ -275,7 +280,7 @@ function wipeExisting() {
 function run() {
   const packages = composeFakePackages();
 
-  wipeExisting();
+  prepareDirectories();
 
   persistFakePackages(packages);
   composeAndPersistVariants(packages);
