@@ -25,7 +25,8 @@ export function parseOverviewTuples(p: Pkg) {
     p.version && ['Version', p.version],
     p.depends?.find((d) => d.name === 'R') && ['R', p.depends.find((d) => d.name === 'R')?.version],
     p.date && ['Published', p.date, { text: diffInDays > 0 ? `${diffInDays} days ago` : 'Today' }],
-    ...p.license.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]),
+    ...(p.license?.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]) ||
+      []),
     p.needscompilation && [
       'Needs compilation?',
       p.needscompilation,
@@ -62,14 +63,34 @@ export function parseContacts(p: Pkg) {
  * @returns
  */
 export function parseMaterials(p: Pkg): Pkg['materials'] {
+  const getType = (m: NonNullable<Pkg['materials']>[number]) => {
+    switch (m.name.toLowerCase()) {
+      case 'license':
+        return 'license';
+      case 'changelog':
+      case 'news':
+        return 'changelog';
+      case 'citation':
+        return 'citation';
+      case 'download':
+        return 'download';
+
+      default:
+        return 'file';
+    }
+  };
+
   return [
-    ...(p.materials || []),
+    ...(p.materials?.map((m) => ({
+      ...m,
+      type: getType(m)
+    })) || []),
     p.reference_manual && {
       name: 'Reference manual',
       link: p.reference_manual.link,
       type: 'file'
     },
-    {
+    p.package_source && {
       name: 'Package source',
       link: p.package_source.link,
       type: 'download'
@@ -84,9 +105,20 @@ export function parseMaterials(p: Pkg): Pkg['materials'] {
 export function parseAboutItems(p: Pkg) {
   const next = [];
 
+  console.log(p.link);
+
   if (p.link) {
-    p.link?.forEach(({ text, link }) => {
-      next.push([text, '', { url: link, isExternal: true }]);
+    const texts = p.link.text.split(',').map((t) => t.trim());
+    p.link.links.forEach((url, i) => {
+      next.push([
+        texts[i] || p.link?.text,
+        '',
+        {
+          url,
+          isExternal: true,
+          icon: url.startsWith('https://github.com') ? 'carbon:logo-github' : undefined
+        }
+      ]);
     });
   }
   if (p.copyright) {
@@ -101,17 +133,9 @@ export function parseAboutItems(p: Pkg) {
   if (p.mailinglist) {
     next.push(['Mailing list', p.mailinglist, { url: p.mailinglist, isExternal: true }]);
   }
-  /*
-   * TODO: Check if string or object.
-   * sparklyr.nested.json
   if (p.systemreqs) {
-    p.systemreqs.forEach((s) => {
-      const item: [string, string, SubGridMeta | undefined] = ['System requirements', s, undefined];
-      next.push(item);
-    });
-    
+    next.push(['System requirements', p.systemreqs, undefined]);
   }
-  */
 
   return next as [string, string, SubGridMeta | undefined][];
 }
@@ -122,9 +146,12 @@ export function parseAboutItems(p: Pkg) {
  * @returns
  */
 export function parseMaintainer(p: Pkg) {
-  return ['Maintainer', p.maintainer.name, { mail: p.maintainer.email }] as [
-    string,
-    string,
-    SubGridMeta | undefined
-  ];
+  return (
+    p.maintainer &&
+    (['Maintainer', p.maintainer.name, { mail: p.maintainer.email }] as [
+      string,
+      string,
+      SubGridMeta | undefined
+    ])
+  );
 }

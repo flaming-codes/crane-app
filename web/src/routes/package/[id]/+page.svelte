@@ -148,7 +148,7 @@
         </p>
         <SubGrid>
           {#each aboutItems as [key, value, meta]}
-            <SubGridItem withKeyTruncate {key}>
+            <SubGridItem withKeyTruncate withSpaceY="xs" {key}>
               {#if value}
                 <span>{value}</span>
               {/if}
@@ -170,17 +170,19 @@
     </SectionHeader>
 
     <SectionsColumn>
-      <PackageDetailSection title="Maintainer" id="maintainer">
-        <SubGrid>
-          {@const [key, value, meta] = maintainer}
-          <SubGridItem {key}>
-            <p>{value}</p>
-            {#if meta}
-              <SubGridIcon {meta} />
-            {/if}
-          </SubGridItem>
-        </SubGrid>
-      </PackageDetailSection>
+      {#if maintainer}
+        <PackageDetailSection title="Maintainer" id="maintainer">
+          <SubGrid>
+            {@const [key, value, meta] = maintainer}
+            <SubGridItem {key}>
+              <p>{value}</p>
+              {#if meta}
+                <SubGridIcon {meta} />
+              {/if}
+            </SubGridItem>
+          </SubGrid>
+        </PackageDetailSection>
+      {/if}
 
       {#if item.author}
         <PackageDetailSection title="Authors" id="authors">
@@ -242,7 +244,7 @@
                   ariaLabel="Link to {name}"
                   class="block"
                 >
-                  <PackageDocumentIcon {type} />
+                  <PackageDocumentIcon type={type || 'file'} />
                 </Link>
               </SubGridItem>
             {/each}

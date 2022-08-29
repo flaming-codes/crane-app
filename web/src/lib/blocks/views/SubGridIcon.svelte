@@ -13,7 +13,7 @@
     target={meta.isExternal ? '_blank' : undefined}
     rel={meta.isExternal ? 'noopener noreferrer' : undefined}
   >
-    <Iconic name="carbon:arrow-up-right" />
+    <Iconic name={meta.icon || 'carbon:arrow-up-right'} />
   </Link>
 {:else if 'mail' in meta}
   <Link href="mailto:{meta.mail}" class=" text-2xl" ariaLabel="Compose mail to {meta.mail}">

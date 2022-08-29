@@ -33,11 +33,12 @@ export async function db(): Promise<Fuse<Pkg>> {
  * @param params
  * @returns
  */
-export async function select(params: { id: string }) {
+export async function select(params: { id: string }): Promise<Pkg | undefined> {
   const { id } = params;
   const url = selectUrl.replace('{{id}}', id);
 
-  return fetcher<Pkg>(url, '');
+  const res = await fetcher<Pkg>(url, '');
+  return Array.isArray(res) ? res[0] : res;
 }
 
 export async function overview() {

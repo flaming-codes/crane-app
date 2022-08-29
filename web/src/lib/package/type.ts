@@ -30,25 +30,28 @@ export type Pkg = {
   date: string;
   // JS-ISO Date in number from 'date'.
   createdAt: number;
-  maintainer: {
+  maintainer?: {
     name: string;
     email?: string;
   };
-  link?: TextLinkTuple[];
+  link?: {
+    text: string;
+    links: string[];
+  };
   bugreports?: string;
   needscompilation?: 'yes' | 'no';
   cran_checks: LabelLinkTuple;
   language?: string;
   inviews?: NameLinkTuple[];
-  systemreqs?: string[];
-  materials?: Array<NameLinkTuple & { type: string }>;
+  systemreqs?: string;
+  materials?: Array<NameLinkTuple & { type?: string }>;
   citation?: { label: string; link: string[] };
   contact?: { names: string[]; emails: string[] };
   copyright?: TextLinkTuple;
   priority?: string;
   additional_repositories?: NameLinkTuple[];
   author?: Array<{ name: string; roles?: string[]; link?: string }>;
-  license: Array<NameLinkTuple & { extra?: string }>;
+  license?: Array<NameLinkTuple & { extra?: string }>;
   os_type?: string;
   classification_acm?: Dependency[];
   classification_msc?: Dependency[];

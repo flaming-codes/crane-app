@@ -26,7 +26,8 @@
     | 'carbon:text-new-line'
     | 'carbon:help'
     | 'carbon:code'
-    | 'raphael:commandline';
+    | 'raphael:commandline'
+    | (string & {});
   export let size: '16' | '20' | '24' | '32' | '40' | '48' | '56' = '24';
   export let hFlip: boolean | undefined = undefined;
 

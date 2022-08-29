@@ -3,11 +3,11 @@
   import Link from '$lib/display/views/Link.svelte';
   import clsx from 'clsx';
 
-  export let item: Pick<Pkg, 'id' | 'title' | 'version'>;
+  export let item: Pick<Pkg, 'name' | 'slug' | 'title' | 'version'>;
   export let theme: 'light' | 'dark' = 'light';
 </script>
 
-<Link withForcedReload href="/package/{item.id}" ariaLabel="Link to package {item.id}">
+<Link withForcedReload href="/package/{item.slug}" ariaLabel="Link to package {item.name}">
   <div
     class={clsx(
       `
@@ -22,7 +22,7 @@
     )}
   >
     <div>
-      <h3 class="text-lg font-bold truncate">{item.id}</h3>
+      <h3 class="text-lg font-bold truncate">{item.name}</h3>
       <p
         class={clsx('text-sm line-clamp-2 text-neutral-500 lg:w-4/5', {
           'text-neutral-300': theme === 'dark'

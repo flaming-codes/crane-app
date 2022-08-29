@@ -16,7 +16,7 @@
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Icon from '@iconify/svelte';
 
-  const titles = ['Shortcuts'];
+  const titles = ['Usage', 'Shortcuts'];
 </script>
 
 <BaseMeta title="Guides" path="/how-to" />
@@ -39,6 +39,32 @@
 
 <main class="text-neutral-50 space-y-20 pb-60">
   <Hero title="How-To" subtitle="Shortcuts and general usage descriptions" height="70" />
+
+  <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="usage">
+    <SectionHeader>
+      <SectionTitleSelect selected="Usage" options={titles} />
+    </SectionHeader>
+
+    <SectionsColumn>
+      <PackageDetailSection title="Search" withProse="dark">
+        <div class="prose-lg">
+          <p>
+            The search bar at the bottom of the screen takes your input and runs a fuzzy-search
+            against our database of metadata for each package.
+          </p>
+          <p>
+            Fuzzy search means that it provides an experience similar to Google. You can type in a
+            few letters and the search will return results that match your input based on a weighted
+            algorithm.
+          </p>
+          <p>
+            All results in the grid of packages are sorted by last publication date. The top most
+            items are therefore also the most recently published packages.
+          </p>
+        </div>
+      </PackageDetailSection>
+    </SectionsColumn>
+  </Section>
 
   <Section withTwoFoldLayout withPaddingX={false} id="shortcuts">
     <SectionHeader>
