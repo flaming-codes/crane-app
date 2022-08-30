@@ -8,6 +8,7 @@
   import Kbd from '$lib/blocks/views/Kbd.svelte';
   import type { TAItem } from 'src/sw/types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import MediaQuery from 'svelte-media-queries';
 
   const { state, input, typeAheadState, isInputFocused } = store;
 
@@ -15,6 +16,9 @@
   let suggestion: TAItem | {} = {};
   let isFirstUse: boolean;
   let inputNode: HTMLInputElement | null;
+
+  let matches: boolean | undefined = undefined;
+  $: isMobile = Boolean(matches);
 
   const listenToServiceWorker = ({ data }: any) => {
     if (data.type === 'lifecycle' && data.payload === 'activated') {
@@ -59,6 +63,11 @@
       // goto(`/package/${suggestion.id}`);
       window.location.href = `/package/${suggestion.slug}`;
     }
+
+    // Hide keyboard on mobile on enter.
+    if (isMobile) {
+      inputNode?.blur();
+    }
   };
 
   const onDismiss = () => {
@@ -94,6 +103,8 @@
   $: placeholder = $state === 'ready' ? (isFirstUse ? '' : 'Enter search...') : 'Loading...';
 </script>
 
+<MediaQuery query="(max-width: 480px)" bind:matches />
+
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
   <div
     class={clsx({
@@ -123,6 +134,7 @@
       role="search"
       bind:value={$input}
       bind:this={inputNode}
+      style="font-size:100%;"
       class={clsx(
         `
         absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-3

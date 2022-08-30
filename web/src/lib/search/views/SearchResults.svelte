@@ -11,6 +11,7 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import MediaQuery from 'svelte-media-queries';
 
   const { input, state, isInputFocused } = store;
   const { items: hitItems, page, size, total, isEnd } = store.hits;
@@ -28,6 +29,9 @@
 
   export let withHashEffect: boolean | undefined = undefined;
   export let withScrollTopEffect: boolean | undefined = undefined;
+
+  let matches: boolean | undefined = undefined;
+  $: isMobile = Boolean(matches);
 
   async function fetchNext(params?: { isReset?: boolean }) {
     state.set('searching');
@@ -61,20 +65,23 @@
     clearTimeout(timer);
 
     if (browser && $input) {
-      timer = setTimeout(() => {
-        state.set('searching');
+      timer = setTimeout(
+        () => {
+          state.set('searching');
 
-        if (withHashEffect) {
-          goto('#packages', {
-            keepfocus: true
-          });
-        }
+          if (withHashEffect) {
+            goto('#packages', {
+              keepfocus: true
+            });
+          }
 
-        $page = -1;
-        $size = 50;
+          $page = -1;
+          $size = 50;
 
-        fetchNext({ isReset: true });
-      }, 300);
+          fetchNext({ isReset: true });
+        },
+        isMobile ? 2_000 : 300
+      );
     }
   }
 
@@ -116,6 +123,8 @@
     state.set('ready');
   });
 </script>
+
+<MediaQuery query="(max-width: 480px)" bind:matches />
 
 <div
   class={clsx(
