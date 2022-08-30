@@ -4,7 +4,7 @@
 
 <p align="center"><img src="./web/static/images/og/cover-01.jpg" /></p>
 <h2 align="center">
-<a href="https://cran-e.com">CRAN/E</a>
+<a href="https://www.cran-e.com">CRAN/E</a>
 </h2>
 <p align="center">CRAN/E is a modern PWA (Progressive Web App) that serves as a search engine and information display for packages hosted on CRAN. CRAN/E means 'The Comprehensive R Archive Network, Enhanced' and aims at finding R-packages as fast as possible.</p>
 
@@ -49,3 +49,7 @@ For new bug reports, please create an issue in this repository. The issue setup 
 # Application architecture
 
 Please visit the wiki-pages of this repo for an overview of the architecture.
+
+# Maintainer
+
+This code is mainly created and maintained by [flaming.codes](https://flaming.codes).
