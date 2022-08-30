@@ -21,7 +21,7 @@ export async function db(): Promise<Fuse<Pkg>> {
   if (!instance) {
     const items = await overview();
     const next = new Fuse(items, {
-      keys: ['id', 'name', 'title', 'version']
+      keys: ['id', 'name', 'title', 'version', 'author_names']
     });
     instance = next;
   }

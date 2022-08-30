@@ -105,8 +105,6 @@ export function parseMaterials(p: Pkg): Pkg['materials'] {
 export function parseAboutItems(p: Pkg) {
   const next = [];
 
-  console.log(p.link);
-
   if (p.link) {
     const texts = p.link.text.split(',').map((t) => t.trim());
     p.link.links.forEach((url, i) => {
