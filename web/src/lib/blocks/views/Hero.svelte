@@ -22,7 +22,7 @@
       'h-[clamp(10vh,20vw,30vh)]': height === '30',
       'h-screen': height === 'full',
       fixed: isFixed,
-      'dark bg-black text-white': theme === 'dark'
+      'dark:bg-black dark:text-white': theme === 'dark'
     }
   )}
 >

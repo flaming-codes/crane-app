@@ -8,7 +8,7 @@
 
   onMount(() => {
     if (browser) {
-      previousColorScheme = document.body.dataset.colorScheme;
+      previousColorScheme = document.documentElement.style.getPropertyValue('color-scheme');
       document.documentElement.style.setProperty('color-scheme', scheme);
     }
   });

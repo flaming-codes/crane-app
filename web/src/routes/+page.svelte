@@ -39,9 +39,3 @@
     </section>
   </div>
 </main>
-
-<style>
-  :root {
-    color-scheme: light;
-  }
-</style>

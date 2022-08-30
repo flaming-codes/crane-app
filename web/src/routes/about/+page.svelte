@@ -45,7 +45,7 @@
 </ControlsBase>
 
 <main class="text-neutral-50 space-y-20 pb-60">
-  <Hero title="About" subtitle="General information about CRAN/E" height="70" />
+  <Hero title="About" subtitle="General information about CRAN/E" height="50" theme="dark" />
 
   <!-- App -->
 
