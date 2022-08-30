@@ -8,7 +8,7 @@
   export let path: string | undefined = '';
   export let jsonLd: SvelteSeoProps['jsonLd'] | undefined = undefined;
 
-  const url = `https://cran-e.com${path}`;
+  const url = `https://www.cran-e.com${path}`;
 </script>
 
 <SvelteSeo
@@ -23,7 +23,7 @@
     url,
     images: [
       {
-        url: 'https://cran-e.com/images/og/cover-02.jpg',
+        url: 'https://www.cran-e.com/images/og/cover-02.jpg',
         width: 1200,
         height: 630,
         alt: 'CRAN/E logo in written form, white text on a black background'

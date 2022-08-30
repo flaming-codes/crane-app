@@ -5,3 +5,4 @@ Disallow: /api/*
 Disallow: /*/api/*
 Disallow: /.well-known/*
 
+Allow: /*
