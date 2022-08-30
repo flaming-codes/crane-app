@@ -12,8 +12,6 @@
 </script>
 
 <SvelteSeo
-  nofollow
-  noindex
   title="CRAN/E | {title}"
   {description}
   keywords="r, cran, packages, search, engine"
@@ -25,7 +23,7 @@
     url,
     images: [
       {
-        url: 'https://cran-e.com/images/og/cover-01.jpg',
+        url: 'https://cran-e.com/images/og/cover-02.jpg',
         width: 1200,
         height: 630,
         alt: 'CRAN/E logo in written form, white text on a black background'
