@@ -1,0 +1,7 @@
+Sitemap: https://www.cran-e.com/sitemap.xml
+
+User-agent: *
+Disallow: /api/*
+Disallow: /*/api/*
+Disallow: /.well-known/*
+
