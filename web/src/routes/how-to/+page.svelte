@@ -38,7 +38,12 @@
 </ControlsBase>
 
 <main class="text-neutral-50 space-y-20 pb-60">
-  <Hero title="How-To" subtitle="Shortcuts and general usage descriptions" height="70" />
+  <Hero
+    title="How-To"
+    subtitle="Shortcuts and general usage descriptions"
+    height="50"
+    theme="dark"
+  />
 
   <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="usage">
     <SectionHeader>

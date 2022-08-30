@@ -39,7 +39,7 @@
 </ControlsBase>
 
 <main class="text-neutral-50 space-y-20 pb-60">
-  <Hero title="R Binary" subtitle="Download the R binary" height="70" />
+  <Hero title="R Binary" subtitle="Download the R binary" height="50" theme="dark" />
 
   <Section withTwoFoldLayout withPaddingX={false} id="binaries">
     <SectionHeader>
