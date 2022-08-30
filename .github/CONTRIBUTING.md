@@ -2,13 +2,13 @@
 
 ## Request for changes/ Pull Requests
 
-You first need to create a fork of the [TODO](https://github.com/stevemao/github-issue-templates/) repository to commit your changes to it. Methods to fork a repository can be found in the [GitHub Documentation](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
+You first need to create a fork of the [repo](https://github.com/flaming-codes/crane-app/) repository to commit your changes to it. Methods to fork a repository can be found in the [GitHub Documentation](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
 
 Then add your fork as a local project:
 
 ```sh
 # Using HTTPS
-git clone https://github.com/stevemao/github-issue-templates.git
+git clone https://github.com/flaming-codes/crane-app.git
 
 # Using SSH
 git clone git@github.com:stevemao/github-issue-templates.git
@@ -27,7 +27,7 @@ Add git remote controls :
 ```sh
 # Using HTTPS
 git remote add fork https://github.com/YOUR-USERNAME/github-issue-templates.git
-git remote add upstream https://github.com/stevemao/github-issue-templates.git
+git remote add upstream https://github.com/flaming-codes/crane-app.git
 
 
 # Using SSH
@@ -62,7 +62,7 @@ Before starting development, you need to know which branch to base your modifica
 
 ```sh
 # Switch to the desired branch
-git switch master
+git switch main
 
 # Pull down any upstream changes
 git pull
@@ -71,4 +71,4 @@ git pull
 git switch --create (fix|feat|patch)/1234-name-issue
 ```
 
-Commit your changes, then push the branch to your fork with `git push -u fork` and open a pull request on [the Github-issue-templates repository](https://github.com/stevemao/github-issue-templates/) following the template provided.
+Commit your changes, then push the branch to your fork with `git push -u fork` and open a pull request on [the Github-issue-templates repository](https://github.com/flaming-codes/crane-app/) following the template provided.
