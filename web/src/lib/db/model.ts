@@ -32,7 +32,6 @@ export async function db(): Promise<Fuse<Pkg>> {
           name: 'title',
           weight: 1.5
         },
-        'version',
         'author_names'
       ]
     });
