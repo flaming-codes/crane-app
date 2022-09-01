@@ -51,16 +51,10 @@ function composeFakePackage(i: number): Pkg {
       name: faker.name.fullName(),
       email: faker.internet.email()
     },
-    link: [
-      {
-        text: 'Homepage',
-        link: 'https://cran.r-project.org/web/packages/' + id
-      },
-      {
-        text: 'CRAN',
-        link: 'https://cran.r-project.org/web/packages/' + id
-      }
-    ],
+    link: {
+      text: 'Homepage',
+      links: ['https://cran.r-project.org/web/packages/' + id]
+    },
     bugreports: 'https://cran.r-project.org/web/packages/' + id + '/bugs',
     needscompilation: 'yes',
     cran_checks: {
@@ -78,7 +72,7 @@ function composeFakePackage(i: number): Pkg {
         link: 'https://www.rstudio.com/products/rstudio/'
       }
     ],
-    systemreqs: ['R version >= 3.5.0', 'Rcpp version >= 1.0.0'],
+    systemreqs: 'R version >= 3.5.0',
     materials: [
       {
         name: 'RStudio',
@@ -267,7 +261,7 @@ function prepareDirectories() {
   const dir = path.join(cwd, 'static', 'data');
 
   if (fs.existsSync(dir)) {
-    fs.rmdirSync(dir, { recursive: true });
+    fs.rmSync(dir, { recursive: true });
   }
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
