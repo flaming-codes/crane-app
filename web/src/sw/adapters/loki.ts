@@ -4,7 +4,6 @@ import { openDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
 import Loki, { Collection } from '@lokidb/loki';
 import { fetchTypeAheadItems } from '../utils/net';
-import { set as setKv } from 'idb-keyval';
 
 let db: IDBPDatabase<unknown>;
 let loki: Loki | undefined;
