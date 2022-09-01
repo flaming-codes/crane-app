@@ -20,8 +20,20 @@ const sitemapUrl = import.meta.env.VITE_SITEMAP_PKGS_URL;
 export async function db(): Promise<Fuse<Pkg>> {
   if (!instance) {
     const items = await overview();
+    // Apply schema for the search index.
+    // Note that each key by default has '1'-weight.
     const next = new Fuse(items, {
-      keys: ['id', 'name', 'title', 'version', 'author_names']
+      keys: [
+        {
+          name: 'name',
+          weight: 2
+        },
+        {
+          name: 'title',
+          weight: 1.5
+        },
+        'author_names'
+      ]
     });
     instance = next;
   }

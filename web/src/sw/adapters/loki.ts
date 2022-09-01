@@ -70,6 +70,9 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
 
   // No assure that Loki has data.
   if (collection && collection.count() === 0) {
+    if (all.length === 0) {
+      all = await db.getAll('idbs');
+    }
     collection.insert(all);
   }
 };
@@ -80,10 +83,6 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
  * @returns
  */
 const query = async (q: string) => {
-  if (!collection) {
-    await initIfNeeded();
-  }
-
   // Loki adds a 'meta' and '$loki' to the result set,
   // therefore we need to filter them out.
   return collection!
