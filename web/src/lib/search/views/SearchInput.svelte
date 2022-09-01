@@ -134,7 +134,6 @@
       role="search"
       bind:value={$input}
       bind:this={inputNode}
-      style="font-size:100%;"
       class={clsx(
         `
         absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-3
