@@ -8,12 +8,6 @@
   --base-controls-h-sm: 3rem; /* was 5em */
 }
 
-@layer base {
-  body {
-    @apply bg-zinc-200 dark:bg-black;
-  }
-}
-
 html {
   /* Adds smooth scrolling instead of snapping to element. */
   scroll-behavior: smooth;

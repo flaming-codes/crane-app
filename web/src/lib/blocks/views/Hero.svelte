@@ -11,7 +11,7 @@
 <section
   class={clsx(
     `
-    px-2 top-0 w-full -z-10 flex flex-col justify-center space-y-4 items-center text-black dark:text-white
+    px-2 top-0 w-full -z-10 flex flex-col justify-center space-y-4 items-center
     sm:px-10
     md:flex-row md:space-x-6 md:space-y-0 md:justify-start
     lg:px-20
@@ -22,7 +22,7 @@
       'h-[clamp(10vh,20vw,30vh)]': height === '30',
       'h-screen': height === 'full',
       fixed: isFixed,
-      'dark:bg-black dark:text-white': theme === 'dark'
+      'bg-black text-white': theme === 'dark'
     }
   )}
 >

@@ -1,7 +1,5 @@
 <script lang="ts">
   import SearchInput from '$lib/search/views/SearchInput.svelte';
-
-  import { clsx } from 'clsx';
   import CommonLinks from './CommonLinks.svelte';
   import ControlsState from './ControlsState.svelte';
 
@@ -11,12 +9,7 @@
 
 <SearchInput {theme} />
 
-<div
-  class={clsx({
-    'flex flex-1 gap-x-6 justify-end': true,
-    'sm:flex-[0]': true
-  })}
->
+<div class="flex flex-1 gap-x-6 justify-end sm:flex-[0]">
   <ControlsState {withTotal} />
   <CommonLinks>
     <svelte:fragment slot="start">

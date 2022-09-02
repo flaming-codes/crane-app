@@ -6,7 +6,6 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import SearchResults from '$lib/search/views/SearchResults.svelte';
-  import clsx from 'clsx';
 
   export let data: PageData;
   const { initialAll } = data;
@@ -29,11 +28,7 @@
     <SearchControls theme="dark" />
   </ControlsBase>
 
-  <div
-    class={clsx({
-      'bg-neutral-100 mt-[clamp(40vh,40vw,50vh)] text-black pb-10': true
-    })}
-  >
+  <div class="bg-white mt-[clamp(40vh,40vw,50vh)] text-black pb-10">
     <section id="packages" class="min-h-[100vh]">
       <SearchResults withHashEffect withScrollTopEffect {initialAll} />
     </section>
