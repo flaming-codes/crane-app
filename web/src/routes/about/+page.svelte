@@ -201,7 +201,7 @@
           <SubGridItem key="Repo" withSpaceY="xs">
             <strong>CRAN/E</strong>
             <Link
-              href="https://github.com/flaming-codes/crane"
+              href="https://github.com/flaming-codes/crane-app"
               target="_blank"
               rel="noopener noreferrer"
             >

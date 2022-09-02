@@ -84,10 +84,11 @@
           </SubGridItem>
           <SubGridItem key="Select search inline suggestion">
             <span>
-              <Kbd withLowOpacity={false} text="Tab" theme="dark" />
-              <span class="mx-2 text-xs"> or </span>
               <Kbd withLowOpacity={false} text="Enter" theme="dark" />
             </span>
+          </SubGridItem>
+          <SubGridItem key="Select the next inline suggestion">
+            <Kbd withLowOpacity={false} text="Tab" theme="dark" />
           </SubGridItem>
         </SubGrid>
       </PackageDetailSection>

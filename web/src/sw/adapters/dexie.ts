@@ -1,5 +1,6 @@
 import Dexie, { type Table } from 'dexie';
-import type { DBAdapter, TAItem } from '../types';
+import type { DBAdapter } from './';
+import type { TAItem } from '../types';
 import { fetchTypeAheadItems } from '../utils/net';
 
 let shards: TypeAheadDb[] = [];

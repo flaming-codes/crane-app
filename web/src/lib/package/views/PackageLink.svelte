@@ -11,8 +11,7 @@
   <div
     class={clsx(
       `
-      flex flex-col justify-between h-32 lg:h-28 py-1 px-4
-    bg-slate-50 dark:bg-transparent
+      flex flex-col justify-between h-28 px-4 py-1
       border border-transparent transition-colors duration-150 ease-in-out
     `,
       {
@@ -24,13 +23,21 @@
     <div>
       <h3 class="text-lg font-bold truncate">{item.name}</h3>
       <p
-        class={clsx('text-sm line-clamp-2 text-neutral-500 lg:w-4/5', {
+        class={clsx('text-sm line-clamp-2 lg:w-4/5', {
+          'text-neutral-600': theme === 'light',
           'text-neutral-300': theme === 'dark'
         })}
       >
         {item.title}
       </p>
     </div>
-    <div class="font-mono text-xs text-gray-400">{item.version}</div>
+    <div
+      class={clsx('font-mono text-xs', {
+        'text-neutral-500': theme === 'light',
+        'text-gray-400': theme === 'dark'
+      })}
+    >
+      {item.version}
+    </div>
   </div>
 </Link>

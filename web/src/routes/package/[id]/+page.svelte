@@ -20,7 +20,6 @@
   import SubGridIcon from '$lib/blocks/views/SubGridIcon.svelte';
   import PackageDocumentIcon from '$lib/package/views/PackageDocumentIcon.svelte';
   import SystemIcon from '$lib/blocks/views/SystemIcon.svelte';
-  // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
   import clsx from 'clsx';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
@@ -29,6 +28,7 @@
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused } = store;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
@@ -180,10 +180,15 @@
         <PackageDetailSection title="Maintainer" id="maintainer">
           <SubGrid>
             {@const [key, value, meta] = maintainer}
-            <SubGridItem {key}>
+            <SubGridItem {key} withValueSpaceY="md">
               <p>{value}</p>
               {#if meta}
-                <SubGridIcon {meta} />
+                {#if 'mail' in meta}
+                  <div class="text-xs text-neutral-300 font-mono">{meta.mail}</div>
+                {/if}
+                <div>
+                  <SubGridIcon {meta} />
+                </div>
               {/if}
             </SubGridItem>
           </SubGrid>
@@ -194,9 +199,9 @@
         <PackageDetailSection title="Authors" id="authors">
           <SubGrid>
             {#each item.author as { name, roles, link, extra }}
-              <SubGridItem key={name} emphasis="key">
+              <SubGridItem key={name} emphasis="key" withValueSpaceY="xs">
                 {#if roles}
-                  <p>{roles.join(' / ')}</p>
+                  <p class="text-sm">{roles.join(' / ')}</p>
                 {/if}
                 {#if extra}
                   <p class="text-xs text-neutral-400 my-4">{extra}</p>
