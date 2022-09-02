@@ -187,10 +187,13 @@
       {#if item.author}
         <PackageDetailSection title="Authors" id="authors">
           <SubGrid>
-            {#each item.author as { name, roles, link }}
+            {#each item.author as { name, roles, link, extra }}
               <SubGridItem key={name} emphasis="key">
                 {#if roles}
                   <p>{roles.join(' / ')}</p>
+                {/if}
+                {#if extra}
+                  <p class="text-xs text-neutral-400 my-4">{extra}</p>
                 {/if}
                 {#if link}
                   <Link
@@ -198,6 +201,7 @@
                     ariaLabel="Link for {name}"
                     rel="noopener noreferrer"
                     target="_blank"
+                    class="text-white"
                   >
                     <Iconic name="carbon:arrow-up-right" />
                   </Link>
@@ -213,7 +217,7 @@
           <SubGrid>
             {#each contacts as item}
               <SubGridItem key={item.name} emphasis="key">
-                <Link href={'mailto:' + item.email}>
+                <Link href={'mailto:' + item.email} ariaLabel="Send email to {item.email}">
                   <Iconic name="carbon:email" />
                 </Link>
               </SubGridItem>
@@ -257,7 +261,13 @@
           <SubGrid>
             {#each item.inviews as { name, link }}
               <SubGridItem key={name} withSpaceY="md">
-                <Link href={link} rel="noopener noreferrer" target="_blank" class="block">
+                <Link
+                  href={link}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  class="block"
+                  ariaLabel="Open inview to {link}"
+                >
                   <Iconic name="carbon:data-view-alt" />
                 </Link>
               </SubGridItem>
@@ -271,7 +281,13 @@
           <SubGrid>
             {#each item.additional_repositories as { name, link }}
               <SubGridItem key={name} withSpaceY="md">
-                <Link href={link} rel="noopener noreferrer" target="_blank" class="block">
+                <Link
+                  href={link}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  class="block"
+                  ariaLabel="Open repo {name}"
+                >
                   <Iconic name="carbon:logo-github" />
                 </Link>
               </SubGridItem>

@@ -50,7 +50,7 @@ export type Pkg = {
   copyright?: TextLinkTuple;
   priority?: string;
   additional_repositories?: NameLinkTuple[];
-  author?: Array<{ name: string; roles?: string[]; link?: string }>;
+  author?: Array<{ name: string; roles?: string[]; link?: string; extra?: string }>;
   license?: Array<NameLinkTuple & { extra?: string }>;
   os_type?: string;
   classification_acm?: Dependency[];
