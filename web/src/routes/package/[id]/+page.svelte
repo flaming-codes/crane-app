@@ -26,13 +26,6 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Link from '$lib/display/views/Link.svelte';
-  import {
-    parseAboutItems,
-    parseContacts,
-    parseMaintainer,
-    parseMaterials,
-    parseOverviewTuples
-  } from '$lib/package/models/parse';
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
@@ -42,7 +35,7 @@
 
   export let data: PageData;
 
-  const { item } = data;
+  const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
 
   $: {
     // For now, we're only using type ahead suggestions,
@@ -67,11 +60,18 @@
     'Dependencies' /* 'Readme', */
   ];
 
-  const overviewTuples = parseOverviewTuples(item);
-  const maintainer = parseMaintainer(item);
-  const materials = parseMaterials(item);
-  const aboutItems = parseAboutItems(item);
-  const contacts = parseContacts(item);
+  const dependencyGroups = [
+    ['Depends', 'depends'],
+    ['Imports', 'imports'],
+    ['Suggests', 'suggests'],
+    ['Enhances', 'enhances'],
+    ['LinkingTo', 'linkingto'],
+    ['Reverse Depends', 'reverse_depends'],
+    ['Reverse Imports', 'reverse_imports'],
+    ['Reverse Suggests', 'reverse_suggests'],
+    ['Reverse Enhances', 'reverse_enhances'],
+    ['Reverse LinkingTo', 'reverse_linkingto']
+  ] as const;
 </script>
 
 <BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
@@ -148,7 +148,13 @@
         </p>
         <SubGrid>
           {#each aboutItems as [key, value, meta]}
-            <SubGridItem withKeyTruncate withSpaceY="xs" {key}>
+            <SubGridItem
+              withKeyTruncate
+              withSpaceY="xs"
+              key={key.replace('https://', '').replace('http://', '')}
+              title={key}
+              url={meta && 'url' in meta && meta.url}
+            >
               {#if value}
                 <span>{value}</span>
               {/if}
@@ -187,10 +193,13 @@
       {#if item.author}
         <PackageDetailSection title="Authors" id="authors">
           <SubGrid>
-            {#each item.author as { name, roles, link }}
+            {#each item.author as { name, roles, link, extra }}
               <SubGridItem key={name} emphasis="key">
                 {#if roles}
                   <p>{roles.join(' / ')}</p>
+                {/if}
+                {#if extra}
+                  <p class="text-xs text-neutral-400 my-4">{extra}</p>
                 {/if}
                 {#if link}
                   <Link
@@ -198,6 +207,7 @@
                     ariaLabel="Link for {name}"
                     rel="noopener noreferrer"
                     target="_blank"
+                    class="text-white"
                   >
                     <Iconic name="carbon:arrow-up-right" />
                   </Link>
@@ -213,7 +223,7 @@
           <SubGrid>
             {#each contacts as item}
               <SubGridItem key={item.name} emphasis="key">
-                <Link href={'mailto:' + item.email}>
+                <Link href={'mailto:' + item.email} ariaLabel="Send email to {item.email}">
                   <Iconic name="carbon:email" />
                 </Link>
               </SubGridItem>
@@ -257,7 +267,13 @@
           <SubGrid>
             {#each item.inviews as { name, link }}
               <SubGridItem key={name} withSpaceY="md">
-                <Link href={link} rel="noopener noreferrer" target="_blank" class="block">
+                <Link
+                  href={link}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  class="block"
+                  ariaLabel="Open inview to {link}"
+                >
                   <Iconic name="carbon:data-view-alt" />
                 </Link>
               </SubGridItem>
@@ -271,7 +287,13 @@
           <SubGrid>
             {#each item.additional_repositories as { name, link }}
               <SubGridItem key={name} withSpaceY="md">
-                <Link href={link} rel="noopener noreferrer" target="_blank" class="block">
+                <Link
+                  href={link}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  class="block"
+                  ariaLabel="Open repo {name}"
+                >
                   <Iconic name="carbon:logo-github" />
                 </Link>
               </SubGridItem>
@@ -395,57 +417,13 @@
     </SectionHeader>
 
     <SectionsColumn>
-      {#if item.depends}
-        <PackageDetailSection title="Depends">
-          <PackageDependencySubGrid items={item.depends} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.imports}
-        <PackageDetailSection title="Imports">
-          <PackageDependencySubGrid items={item.imports} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.suggests}
-        <PackageDetailSection title="Suggests">
-          <PackageDependencySubGrid items={item.suggests} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.enhances}
-        <PackageDetailSection title="Enhances">
-          <PackageDependencySubGrid items={item.enhances} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.linkingto}
-        <PackageDetailSection title="Linking To">
-          <PackageDependencySubGrid items={item.linkingto} />
-        </PackageDetailSection>
-      {/if}
-
-      {#if item.reverse_depends}
-        <PackageDetailSection title="Reverse Depends">
-          <PackageDependencySubGrid items={item.reverse_depends} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_imports}
-        <PackageDetailSection title="Reverse Imports">
-          <PackageDependencySubGrid items={item.reverse_imports} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_suggests}
-        <PackageDetailSection title="Reverse Suggests">
-          <PackageDependencySubGrid items={item.reverse_suggests} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_enhances}
-        <PackageDetailSection title="Reverse Enhances">
-          <PackageDependencySubGrid items={item.reverse_enhances} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_linkingto}
-        <PackageDetailSection title="Reverse Linking To">
-          <PackageDependencySubGrid items={item.reverse_linkingto} />
-        </PackageDetailSection>
-      {/if}
+      {#each dependencyGroups as [title, key]}
+        {#if item[key]}
+          <PackageDetailSection {title}>
+            <PackageDependencySubGrid items={item[key] || []} />
+          </PackageDetailSection>
+        {/if}
+      {/each}
     </SectionsColumn>
   </Section>
 

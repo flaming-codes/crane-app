@@ -12,7 +12,7 @@
   <Iconic name="carbon:chevron-sort" size="16" class="hidden lg:inline" />
   <select
     value={selected}
-    class="appearance-none bg-transparent overflow-hidden border-none cursor-pointer"
+    class="appearance-none bg-zinc-900 overflow-hidden border-none cursor-pointer"
     bind:this={ref}
     on:change|preventDefault|stopPropagation={(ev) => {
       goto(`#${ev.currentTarget.value.toLowerCase()}`);
@@ -24,7 +24,7 @@
         value={option}
         selected={selected === option}
         disabled={option === selected}
-        class="overflow-hidden">{option}</option
+        class="overflow-hidden bg-black">{option}</option
       >
     {/each}
   </select>

@@ -20,12 +20,7 @@
   {rel}
   {title}
   aria-label={ariaLabel}
-  class={clsx(
-    `
-    hover:animate-pulse
-    `,
-    cn
-  )}
+  class={clsx('hover:animate-pulse', cn)}
   sveltekit:reload={withForcedReload}
 >
   <slot />
