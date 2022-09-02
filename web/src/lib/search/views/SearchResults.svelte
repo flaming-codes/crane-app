@@ -139,6 +139,9 @@
     }
   )}
 >
+  {#if !$input}
+    <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>
+  {/if}
   {#each $hitItems as item}
     <PackageLink {item} {theme} />
   {/each}

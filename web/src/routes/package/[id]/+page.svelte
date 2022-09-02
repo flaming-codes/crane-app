@@ -180,10 +180,15 @@
         <PackageDetailSection title="Maintainer" id="maintainer">
           <SubGrid>
             {@const [key, value, meta] = maintainer}
-            <SubGridItem {key}>
+            <SubGridItem {key} withValueSpaceY="md">
               <p>{value}</p>
               {#if meta}
-                <SubGridIcon {meta} />
+                {#if 'mail' in meta}
+                  <div class="text-xs text-neutral-300 font-mono">{meta.mail}</div>
+                {/if}
+                <div>
+                  <SubGridIcon {meta} />
+                </div>
               {/if}
             </SubGridItem>
           </SubGrid>
@@ -194,9 +199,9 @@
         <PackageDetailSection title="Authors" id="authors">
           <SubGrid>
             {#each item.author as { name, roles, link, extra }}
-              <SubGridItem key={name} emphasis="key">
+              <SubGridItem key={name} emphasis="key" withValueSpaceY="xs">
                 {#if roles}
-                  <p>{roles.join(' / ')}</p>
+                  <p class="text-sm">{roles.join(' / ')}</p>
                 {/if}
                 {#if extra}
                   <p class="text-xs text-neutral-400 my-4">{extra}</p>

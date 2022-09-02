@@ -12,7 +12,6 @@
     class={clsx(
       `
       flex flex-col justify-between h-28 px-4 py-1
-      dark:bg-transparent
       border border-transparent transition-colors duration-150 ease-in-out
     `,
       {
@@ -35,7 +34,7 @@
     <div
       class={clsx('font-mono text-xs', {
         'text-neutral-500': theme === 'light',
-        'dark:text-gray-400': theme === 'dark'
+        'text-gray-400': theme === 'dark'
       })}
     >
       {item.version}

@@ -23,6 +23,7 @@ export async function db(): Promise<Fuse<Pkg>> {
     // Apply schema for the search index.
     // Note that each key by default has '1'-weight.
     const next = new Fuse(items, {
+      threshold: 0.35,
       keys: [
         {
           name: 'name',

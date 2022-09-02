@@ -87,8 +87,8 @@
               <Kbd withLowOpacity={false} text="Enter" theme="dark" />
             </span>
           </SubGridItem>
-          <SubGridItem key="Paginate through suggestions">
-            Use <Kbd withLowOpacity={false} text="Tab" theme="dark" /> to select the next suggestion
+          <SubGridItem key="Select the next inline suggestion">
+            <Kbd withLowOpacity={false} text="Tab" theme="dark" />
           </SubGridItem>
         </SubGrid>
       </PackageDetailSection>
