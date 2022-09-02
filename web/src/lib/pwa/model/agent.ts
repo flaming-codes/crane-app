@@ -13,8 +13,8 @@ export function isWebKit() {
   // is safari
   const ua = window.navigator.userAgent;
   return ua.match(/safari/i) && ua.match(/version\/([\d.]+)/i);
-  const webkit = !!ua.match(/WebKit/i);
-  return webkit && !ua.match(/CriOS/i);
+  //const webkit = !!ua.match(/WebKit/i);
+  //return webkit && !ua.match(/CriOS/i);
 }
 
 /**

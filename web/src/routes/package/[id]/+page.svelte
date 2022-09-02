@@ -20,7 +20,6 @@
   import SubGridIcon from '$lib/blocks/views/SubGridIcon.svelte';
   import PackageDocumentIcon from '$lib/package/views/PackageDocumentIcon.svelte';
   import SystemIcon from '$lib/blocks/views/SystemIcon.svelte';
-  // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
   import clsx from 'clsx';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
@@ -29,6 +28,7 @@
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused } = store;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;

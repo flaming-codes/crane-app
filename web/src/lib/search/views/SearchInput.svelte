@@ -106,12 +106,7 @@
 <MediaQuery query="(max-width: 480px)" bind:matches />
 
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
-  <div
-    class={clsx({
-      'relative flex-1 flex items-center h-full': true,
-      'font-mono text-[14px]': true
-    })}
-  >
+  <div class="relative flex-1 flex items-center h-full font-mono text-[14px]">
     <span aria-hidden="true" class="absolute flex items-center opacity-40 -z-0 pl-3">
       {#if 'id' in suggestion}
         <span class="lowercase">
@@ -134,7 +129,6 @@
       role="search"
       bind:value={$input}
       bind:this={inputNode}
-      style="font-size:100%;"
       class={clsx(
         `
         absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-3
@@ -161,10 +155,7 @@
         }
       }}
       use:shortcut={{ control: true, code: 'KeyF', callback: ({ node }) => node.focus() }}
-      use:shortcut={{
-        code: 'Escape',
-        callback: () => onDismiss()
-      }}
+      use:shortcut={{ code: 'Escape', callback: () => onDismiss() }}
       {placeholder}
     />
   </div>

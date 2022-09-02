@@ -129,10 +129,10 @@
 <div
   class={clsx(
     `
-    grid grid-cols-2 p-2
+    grid grid-cols-2 p-2 gap-x-2 gap-y-4
     sm:grid-cols-3 sm:p-3
-    lg:grid-cols-4 lg:p-4
-    xl:grid-cols-5 xl:gap-4
+    lg:grid-cols-4 lg:p-4 lg:gap-y-8
+    xl:grid-cols-5 xl:gap-4 xl:gap-y-8
     2xl:grid-cols-6 2xl:gap-8`,
     {
       'cursor-none pointer-events-none': !$isInteractionEnabled
