@@ -101,6 +101,9 @@ export function parseMaterials(p: Pkg): Pkg['materials'] {
 export function parseAboutItems(p: Pkg) {
   const next = [];
 
+  if (p.citation) {
+    next.push(['Citation', p.citation.label, { url: p.citation.link, isExternal: true }]);
+  }
   if (p.link) {
     const texts = p.link.text.split(',').map((t) => t.trim());
     p.link.links.forEach((url, i) => {
@@ -120,9 +123,6 @@ export function parseAboutItems(p: Pkg) {
   }
   if (p.priority) {
     next.push(['Priority', p.priority]);
-  }
-  if (p.citation) {
-    next.push(['Citation', p.citation.label, { url: p.citation.link, isExternal: true }]);
   }
   if (p.mailinglist) {
     next.push(['Mailing list', p.mailinglist, { url: p.mailinglist, isExternal: true }]);
