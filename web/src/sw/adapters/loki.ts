@@ -1,9 +1,10 @@
-import type { DBAdapter, TAItem } from '../types';
+import type { TAItem } from '../types';
 import type { IDBPDatabase } from 'idb';
 import { openDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
 import Loki, { Collection } from '@lokidb/loki';
 import { fetchTypeAheadItems } from '../utils/net';
+import type { DBAdapter } from './';
 
 let db: IDBPDatabase<unknown>;
 let loki: Loki | undefined;

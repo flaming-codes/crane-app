@@ -12,6 +12,7 @@ const to_cache = build.concat(files);
 const staticAssets = new Set(to_cache);
 
 const uncachableEndpoints = ['https://microanalytics.io/'];
+const uncachablePathnames = ['/api/package/ta/items'];
 
 worker.addEventListener('install', (event) => {
   event.waitUntil(
@@ -48,7 +49,10 @@ worker.addEventListener('activate', (event) => {
 });
 
 function verifyUrlOrigin(url: URL) {
-  return uncachableEndpoints.every((e) => !e.startsWith(url.origin));
+  return (
+    uncachableEndpoints.every((e) => !e.startsWith(url.origin)) &&
+    uncachablePathnames.every((p) => !url.pathname.startsWith(p))
+  );
 }
 
 /**
@@ -70,14 +74,14 @@ async function fetchAndCache(request: Request) {
   }
 }
 
-async function getTypeAheadSuggestion(params: { q: string }) {
-  const { q } = params;
+async function getTypeAheadSuggestion(params: { q: string; offset: number }) {
+  const { q, offset } = params;
 
   await adapter.initIfNeeded();
 
-  // const hit = await taDb.items.where('name').startsWith(q).first();
   const hits = await adapter.query(q);
-  const hit = hits[0];
+  const i = offset % hits.length;
+  const hit = hits[i];
 
   const blob: BodyInit = new Blob([JSON.stringify(hit || {})], {
     type: 'application/json'
@@ -101,8 +105,9 @@ worker.addEventListener('fetch', (event) => {
   // Intercept requests for typeahead suggestions.
   if (url.pathname === '/api/package/ta') {
     const q = url.searchParams.get('q') as string;
+    const offset = parseInt(url.searchParams.get('offset') as string, 10);
     if (q) {
-      event.respondWith(getTypeAheadSuggestion({ q }));
+      event.respondWith(getTypeAheadSuggestion({ q, offset }));
     }
 
     return;

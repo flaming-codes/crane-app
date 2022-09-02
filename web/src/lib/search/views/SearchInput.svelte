@@ -17,6 +17,12 @@
   let isFirstUse: boolean;
   let inputNode: HTMLInputElement | null;
 
+  let offset = 0;
+  $: {
+    void $input;
+    offset = 0;
+  }
+
   let matches: boolean | undefined = undefined;
   $: isMobile = Boolean(matches);
 
@@ -81,6 +87,7 @@
       if ($input) {
         const url = new URL('/api/package/ta', window.location.origin);
         url.searchParams.set('q', $input.toLowerCase());
+        url.searchParams.set('offset', offset.toString());
 
         fetch(url)
           .then((res) => res.json())
@@ -149,7 +156,7 @@
         if ((e.key === 'Tab' || e.code === 'Tab') && $input) {
           e.preventDefault();
           if ($isInputFocused && 'id' in suggestion) {
-            $input = suggestion.id;
+            offset += 1;
           }
           return;
         }
