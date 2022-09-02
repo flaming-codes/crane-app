@@ -65,13 +65,13 @@ export function parseContacts(p: Pkg) {
 export function parseMaterials(p: Pkg): Pkg['materials'] {
   const getType = (m: NonNullable<Pkg['materials']>[number]) => {
     switch (m.name.toLowerCase()) {
+      case 'citation':
+        return 'citation';
       case 'license':
         return 'license';
       case 'changelog':
       case 'news':
         return 'changelog';
-      case 'citation':
-        return 'citation';
       case 'download':
         return 'download';
 
