@@ -1,6 +1,6 @@
 import type { SubGridMeta } from '$lib/blocks/types';
 import { differenceInDays } from 'date-fns';
-import type { Pkg } from '../type';
+import type { Dependency, Pkg } from '../type';
 
 /**
  *
@@ -27,11 +27,7 @@ export function parseOverviewTuples(p: Pkg) {
     p.date && ['Published', p.date, { text: diffInDays > 0 ? `${diffInDays} days ago` : 'Today' }],
     ...(p.license?.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]) ||
       []),
-    p.needscompilation && [
-      'Needs compilation?',
-      p.needscompilation,
-      { boolean: p.needscompilation === 'yes' }
-    ],
+    p.needscompilation && ['Needs compilation?', p.needscompilation],
     p.cran_checks && [
       'CRAN checks',
       p.cran_checks.label,
@@ -65,13 +61,13 @@ export function parseContacts(p: Pkg) {
 export function parseMaterials(p: Pkg): Pkg['materials'] {
   const getType = (m: NonNullable<Pkg['materials']>[number]) => {
     switch (m.name.toLowerCase()) {
+      case 'citation':
+        return 'citation';
       case 'license':
         return 'license';
       case 'changelog':
       case 'news':
         return 'changelog';
-      case 'citation':
-        return 'citation';
       case 'download':
         return 'download';
 
@@ -152,4 +148,21 @@ export function parseMaintainer(p: Pkg) {
       SubGridMeta | undefined
     ])
   );
+}
+
+/**
+ *
+ * @param items
+ * @returns
+ */
+export function parseDependencies(items: Dependency[]) {
+  return items.map((item) => {
+    const next = { ...item };
+    if (item.link) {
+      next.link = item.link
+        ?.replace('https://cran.r-project.org/web/packages/', '/package/')
+        .replace('/index.html', '');
+    }
+    return next;
+  });
 }
