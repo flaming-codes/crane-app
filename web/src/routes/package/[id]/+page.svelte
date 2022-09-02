@@ -26,13 +26,6 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Link from '$lib/display/views/Link.svelte';
-  import {
-    parseAboutItems,
-    parseContacts,
-    parseMaintainer,
-    parseMaterials,
-    parseOverviewTuples
-  } from '$lib/package/models/parse';
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
@@ -42,7 +35,7 @@
 
   export let data: PageData;
 
-  const { item } = data;
+  const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
 
   $: {
     // For now, we're only using type ahead suggestions,
@@ -67,11 +60,18 @@
     'Dependencies' /* 'Readme', */
   ];
 
-  const overviewTuples = parseOverviewTuples(item);
-  const maintainer = parseMaintainer(item);
-  const materials = parseMaterials(item);
-  const aboutItems = parseAboutItems(item);
-  const contacts = parseContacts(item);
+  const dependencyGroups = [
+    ['Depends', 'depends'],
+    ['Imports', 'imports'],
+    ['Suggests', 'suggests'],
+    ['Enhances', 'enhances'],
+    ['LinkingTo', 'linkingto'],
+    ['Reverse Depends', 'reverse_depends'],
+    ['Reverse Imports', 'reverse_imports'],
+    ['Reverse Suggests', 'reverse_suggests'],
+    ['Reverse Enhances', 'reverse_enhances'],
+    ['Reverse LinkingTo', 'reverse_linkingto']
+  ] as const;
 </script>
 
 <BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
@@ -411,57 +411,13 @@
     </SectionHeader>
 
     <SectionsColumn>
-      {#if item.depends}
-        <PackageDetailSection title="Depends">
-          <PackageDependencySubGrid items={item.depends} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.imports}
-        <PackageDetailSection title="Imports">
-          <PackageDependencySubGrid items={item.imports} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.suggests}
-        <PackageDetailSection title="Suggests">
-          <PackageDependencySubGrid items={item.suggests} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.enhances}
-        <PackageDetailSection title="Enhances">
-          <PackageDependencySubGrid items={item.enhances} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.linkingto}
-        <PackageDetailSection title="Linking To">
-          <PackageDependencySubGrid items={item.linkingto} />
-        </PackageDetailSection>
-      {/if}
-
-      {#if item.reverse_depends}
-        <PackageDetailSection title="Reverse Depends">
-          <PackageDependencySubGrid items={item.reverse_depends} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_imports}
-        <PackageDetailSection title="Reverse Imports">
-          <PackageDependencySubGrid items={item.reverse_imports} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_suggests}
-        <PackageDetailSection title="Reverse Suggests">
-          <PackageDependencySubGrid items={item.reverse_suggests} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_enhances}
-        <PackageDetailSection title="Reverse Enhances">
-          <PackageDependencySubGrid items={item.reverse_enhances} />
-        </PackageDetailSection>
-      {/if}
-      {#if item.reverse_linkingto}
-        <PackageDetailSection title="Reverse Linking To">
-          <PackageDependencySubGrid items={item.reverse_linkingto} />
-        </PackageDetailSection>
-      {/if}
+      {#each dependencyGroups as [title, key]}
+        {#if item[key]}
+          <PackageDetailSection {title}>
+            <PackageDependencySubGrid items={item[key] || []} />
+          </PackageDetailSection>
+        {/if}
+      {/each}
     </SectionsColumn>
   </Section>
 

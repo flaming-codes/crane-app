@@ -1,6 +1,6 @@
 import type { SubGridMeta } from '$lib/blocks/types';
 import { differenceInDays } from 'date-fns';
-import type { Pkg } from '../type';
+import type { Dependency, Pkg } from '../type';
 
 /**
  *
@@ -152,4 +152,21 @@ export function parseMaintainer(p: Pkg) {
       SubGridMeta | undefined
     ])
   );
+}
+
+/**
+ *
+ * @param items
+ * @returns
+ */
+export function parseDependencies(items: Dependency[]) {
+  return items.map((item) => {
+    const next = { ...item };
+    if (item.link) {
+      next.link = item.link
+        ?.replace('https://cran.r-project.org/web/packages/', '/package/')
+        .replace('/index.html', '');
+    }
+    return next;
+  });
 }
