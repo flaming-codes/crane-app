@@ -148,7 +148,13 @@
         </p>
         <SubGrid>
           {#each aboutItems as [key, value, meta]}
-            <SubGridItem withKeyTruncate withSpaceY="xs" {key}>
+            <SubGridItem
+              withKeyTruncate
+              withSpaceY="xs"
+              key={key.replace('https://', '').replace('http://', '')}
+              title={key}
+              url={meta && 'url' in meta && meta.url}
+            >
               {#if value}
                 <span>{value}</span>
               {/if}

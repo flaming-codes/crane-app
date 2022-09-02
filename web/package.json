@@ -12,6 +12,7 @@
     "build": "npm run gen:dep && vite build",
     "package": "svelte-kit package",
     "preview": "vite preview",
+    "api": "vite dev",
     "test": "playwright test",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",

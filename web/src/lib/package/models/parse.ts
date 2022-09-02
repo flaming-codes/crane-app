@@ -27,11 +27,7 @@ export function parseOverviewTuples(p: Pkg) {
     p.date && ['Published', p.date, { text: diffInDays > 0 ? `${diffInDays} days ago` : 'Today' }],
     ...(p.license?.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]) ||
       []),
-    p.needscompilation && [
-      'Needs compilation?',
-      p.needscompilation,
-      { boolean: p.needscompilation === 'yes' }
-    ],
+    p.needscompilation && ['Needs compilation?', p.needscompilation],
     p.cran_checks && [
       'CRAN checks',
       p.cran_checks.label,

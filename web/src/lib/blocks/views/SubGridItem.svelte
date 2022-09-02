@@ -5,16 +5,25 @@
 
   export let withBorder = true;
   export let emphasis: 'key' | 'value' = 'value';
+  export let title: string | undefined = undefined;
   export let withSpaceY: 'xs' | 'md' | undefined = undefined;
   export let withValueSpaceY: 'xs' | 'md' | undefined = undefined;
   export let withKeyTruncate: boolean = false;
+  export let url: string | false | undefined = undefined;
 </script>
 
 <tr
+  {title}
+  on:click={() => {
+    if (url) {
+      window.open(url, '_blank');
+    }
+  }}
   class={clsx('flex flex-col items-start h-max', {
     'border-l border-neutral-500 pl-2': withBorder,
     'space-y-1': withSpaceY === 'xs',
-    'space-y-2': withSpaceY === 'md'
+    'space-y-2': withSpaceY === 'md',
+    'cursor-pointer': url
   })}
 >
   <td
