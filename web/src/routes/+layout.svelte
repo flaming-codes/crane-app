@@ -11,19 +11,12 @@
     console.info = noop;
   }
 
-  const microIoId = import.meta.env.VITE_MICRO_IO_KEY;
   const releaseChannel = import.meta.env.VITE_RELEASE_CHANNEL;
 </script>
 
 <svelte:head>
   {#if releaseChannel === 'production'}
-    <script
-      async
-      defer
-      data-host="https://microanalytics.io"
-      data-dnt="false"
-      src="https://microanalytics.io/js/script.js"
-      id={microIoId}></script>
+    <script defer data-domain="cran-e.com" src="https://plausible.io/js/plausible.js"></script>
   {/if}
 </svelte:head>
 

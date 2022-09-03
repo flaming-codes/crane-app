@@ -28,6 +28,7 @@
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused } = store;
@@ -78,9 +79,7 @@
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
-{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
-  <Module.default isEnabled />
-{/await}
+<SearchInlinePanelResults isEnabled />
 
 <ControlsBase variant="dark">
   <SearchControls withTotal={false}>
