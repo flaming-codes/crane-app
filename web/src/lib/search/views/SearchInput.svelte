@@ -107,7 +107,7 @@
     }
   }
 
-  $: placeholder = $state === 'ready' ? (isFirstUse ? '' : 'Enter search...') : 'Loading...';
+  $: placeholder = $state === 'ready' ? (isFirstUse ? '' : 'enter search...') : 'loading...';
 </script>
 
 <MediaQuery query="(max-width: 480px)" bind:matches />
@@ -127,7 +127,8 @@
         {/if}
       {/if}
       {#if !placeholder && !('id' in suggestion)}
-        <span class="flex items-center ">
+        <span class="sm:hidden"> enter search </span>
+        <span class="hidden sm:flex items-center">
           Hit<Kbd inline text=":meta: F" {theme} />to focus search
         </span>
       {/if}
