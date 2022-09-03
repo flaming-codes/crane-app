@@ -11,7 +11,7 @@ const FILES = `cache${version}`;
 const to_cache = build.concat(files);
 const staticAssets = new Set(to_cache);
 
-const uncachableEndpoints = ['https://microanalytics.io/'];
+const uncachableEndpoints = ['https://plausible.io/'];
 const uncachablePathnames = ['/api/package/ta/items'];
 
 worker.addEventListener('install', (event) => {

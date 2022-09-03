@@ -19,9 +19,8 @@ const config = {
           'self',
           'https',
           'api.iconify.design',
-          'vitals.vercel-insights.com',
-          'microanalytics.io',
-          '*.microanalytics.io'
+          'plausible.io',
+          'vitals.vercel-insights.com'
         ],
         'script-src': [
           'self',
