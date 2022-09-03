@@ -9,14 +9,12 @@
 <aside
   class={clsx(
     `
-    fixed bottom-0 w-full h-[var(--base-controls-h)] px-3 z-10 pb-safe
-    flex flex-col gap-x-6
-    sm:flex-row sm:h-[var(--base-controls-h-sm)]
+    fixed top-0 left-0 right-0 h-nav flex px-6 z-10
     md:px-12
     lg:px-20
   `,
     {
-      'bg-zinc-300/60 backdrop-blur-lg': !variant || variant === 'light',
+      'bg-zinc-300/60 backdrop-blur-lg text-zinc-800': !variant || variant === 'light',
       'bg-zinc-400/[0.1] backdrop-blur-lg text-gray-200': variant === 'dark',
       'bg-black/80 backdrop-blur-sm text-white': variant === 'black',
       'bg-teal-600/60 backdrop-blur-sm text-black': variant === 'blue'

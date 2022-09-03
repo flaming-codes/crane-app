@@ -19,7 +19,7 @@
     </div>
   {/if}
   {#if withTotal}
-    <div class="text-xs whitespace-nowrap">
+    <div class="hidden smx:block text-xs whitespace-nowrap">
       {formatDelimiter($total)}
       {`${$total === 1 ? 'package' : 'packages'}`}
     </div>

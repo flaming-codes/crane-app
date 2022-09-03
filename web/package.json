@@ -18,7 +18,7 @@
     "lint": "prettier --check --plugin-search-dir=. . && eslint .",
     "format": "prettier --write --plugin-search-dir=. .",
     "gen:dep": "license-report --output=json > ./static/licenses.json",
-    "gen:fakes": "npx ts-node --esm scripts/generate-packages.ts --count=10"
+    "gen:fakes": "npx ts-node --esm scripts/generate-packages.ts --count=100"
   },
   "devDependencies": {
     "@faker-js/faker": "7.4.0",

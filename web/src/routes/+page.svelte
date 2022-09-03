@@ -29,7 +29,7 @@
   </ControlsBase>
 
   <div class="bg-white mt-[clamp(40vh,40vw,50vh)] text-black pb-10">
-    <section id="packages" class="min-h-[100vh]">
+    <section id="packages" class="min-h-screen scroll-mt-nav">
       <SearchResults withHashEffect withScrollTopEffect {initialAll} />
     </section>
   </div>
