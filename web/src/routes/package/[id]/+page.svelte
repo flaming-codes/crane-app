@@ -32,7 +32,8 @@
   import { browser } from '$app/environment';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { state, typeAheadState, isInputFocused } = store;
+  const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
+  const { items: searchItems } = hits;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
   export let data: PageData;
@@ -48,7 +49,7 @@
     return halfWindowHeight - parseInt(baseControlsHeight, 10);
   };
 
-  $: isHeroHidden = y > getHeroScrollDelta();
+  $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
 
   $: {
     // For now, we're only using type ahead suggestions,
@@ -95,8 +96,8 @@
 
 <svelte:window bind:scrollY={y} />
 
-<ControlsBase variant={isHeroHidden ? 'black' : 'light'}>
-  <SearchControls withTotal={false} theme={isHeroHidden ? 'dark' : 'light'}>
+<ControlsBase variant={isNavDark ? 'black' : 'light'}>
+  <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
