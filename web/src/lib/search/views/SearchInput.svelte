@@ -128,7 +128,7 @@
         >
           {suggestion.id.replace($input, [...$input].join(''))}
         </span>
-        {#if true}
+        {#if $isInputFocused}
           <span class="ml-5 space-x-1 flex items-center flex-shrink-0">
             <Kbd inline class="hidden smx:inline" text="Enter" {theme} withLowOpacity={false} />
             <Iconic hFlip name="carbon:text-new-line" size="16" />
