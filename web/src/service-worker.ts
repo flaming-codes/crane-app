@@ -105,7 +105,7 @@ worker.addEventListener('fetch', (event) => {
   // Intercept requests for typeahead suggestions.
   if (url.pathname === '/api/package/ta') {
     const q = url.searchParams.get('q') as string;
-    const offset = parseInt(url.searchParams.get('offset') as string, 10);
+    const offset = Math.abs(parseInt(url.searchParams.get('offset') as string, 10));
     if (q) {
       event.respondWith(getTypeAheadSuggestion({ q, offset }));
     }

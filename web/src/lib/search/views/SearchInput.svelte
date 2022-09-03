@@ -130,7 +130,7 @@
       {#if !placeholder && !('id' in suggestion)}
         <span class="sm:hidden"> enter search </span>
         <span class="hidden sm:flex items-center">
-          Hit<Kbd inline text=":meta: F" {theme} />to focus search
+          Hit<Kbd inline text=":meta: K" {theme} />to focus search
         </span>
       {/if}
     </span>
@@ -157,15 +157,22 @@
           onEnter();
           return;
         }
-        if ((e.key === 'Tab' || e.code === 'Tab') && $input) {
+        if ((e.key === 'ArrowDown' || e.code === 'ArrowDown') && $input) {
           e.preventDefault();
           if ($isInputFocused && 'id' in suggestion) {
             offset += 1;
           }
           return;
         }
+        if ((e.key === 'ArrowUp' || e.code === 'ArrowUp') && $input) {
+          e.preventDefault();
+          if ($isInputFocused && 'id' in suggestion) {
+            offset -= 1;
+          }
+          return;
+        }
       }}
-      use:shortcut={{ control: true, code: 'KeyF', callback: ({ node }) => node.focus() }}
+      use:shortcut={{ control: true, code: 'KeyK', callback: ({ node }) => node.focus() }}
       use:shortcut={{ code: 'Escape', callback: () => onDismiss() }}
       {placeholder}
     />
