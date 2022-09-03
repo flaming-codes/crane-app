@@ -11,7 +11,7 @@
 <section
   class={clsx(
     `
-    px-2 top-0 w-full -z-10 flex flex-col justify-center space-y-4 items-center
+    top-0 w-full -z-10 flex flex-col justify-center space-y-4 items-center px-2 pt-nav
     sm:px-10
     md:flex-row md:space-x-6 md:space-y-0 md:justify-start
     lg:px-20

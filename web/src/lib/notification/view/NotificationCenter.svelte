@@ -33,8 +33,7 @@
 <Transition
   show={$queue.length > 0}
   class={clsx(
-    'absolute h-full left-0 right-0 bottom-0 px-3 md:px-20 font-mono text-sm flex items-center bg-opacity-30 backdrop-blur-md text-white',
-    'transition -translate-y-full',
+    'absolute inset-0 px-3 md:px-20 font-mono text-sm flex items-center bg-opacity-30 backdrop-blur-md text-white',
     {
       'bg-emerald-300': current?.type === 'success',
       'bg-sky-300': current?.type === 'info',
@@ -43,11 +42,11 @@
     }
   )}
   enter="duration-700"
-  enterFrom="translate-y-full opacity-0 md:opacity-100"
-  enterTo="-translate-y-full opacity-100"
+  enterFrom="translate-y-full opacity-100 "
+  enterTo="-translate-y-0 opacity-100"
   leave="duration-700"
   leaveFrom="-translate-y-full opacity-100"
-  leaveTo="translate-y-full opacity-0 md:opacity-100"
+  leaveTo="translate-y-full opacity-100 "
 >
   {#if current.value}
     {#if current.value.includes('{{') && current.value.includes('}}')}

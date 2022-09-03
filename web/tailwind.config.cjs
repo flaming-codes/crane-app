@@ -7,6 +7,13 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Syne', ...defaultTheme.fontFamily.sans]
+      },
+      screens: {
+        xs: '375px',
+        smx: '480px'
+      },
+      spacing: {
+        nav: 'var(--base-controls-h-sm)'
       }
     }
   },

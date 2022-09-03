@@ -6,9 +6,6 @@
 <menu class="flex items-center">
   <slot name="start" />
 
-  <ControlsLink withGap href="/binary" title="Download the R binary">
-    <Iconic name="raphael:commandline" size="20" />
-  </ControlsLink>
   <ControlsLink withGap href="/how-to" title="Guide for power users">
     <Iconic name="carbon:help" size="20" />
   </ControlsLink>

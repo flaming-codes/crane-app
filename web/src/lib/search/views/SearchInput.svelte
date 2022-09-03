@@ -66,7 +66,6 @@
   const onEnter = () => {
     if ('id' in suggestion) {
       input.set(suggestion.id);
-      // goto(`/package/${suggestion.id}`);
       window.location.href = `/package/${suggestion.slug}`;
     }
 
@@ -92,11 +91,19 @@
         fetch(url)
           .then((res) => res.json())
           .then((res) => {
-            suggestion = res as any;
+            suggestion = res as TAItem;
           });
       } else {
         suggestion = {};
       }
+    }
+  }
+
+  $: {
+    if ($isInputFocused) {
+      // TODO: App freezes when a fragment is part of the URL and input is provided.
+      // This is a workaround which removes fragment from the URL.
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }
 
@@ -107,26 +114,31 @@
     }
   }
 
-  $: placeholder = $state === 'ready' ? (isFirstUse ? '' : 'Enter search...') : 'Loading...';
+  $: placeholder = $state === 'ready' ? (isFirstUse ? '' : 'enter search...') : 'loading...';
 </script>
 
 <MediaQuery query="(max-width: 480px)" bind:matches />
 
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
   <div class="relative flex-1 flex items-center h-full font-mono text-[14px]">
-    <span aria-hidden="true" class="absolute flex items-center opacity-40 -z-0 pl-3">
+    <span aria-hidden="true" class="absolute flex items-center opacity-40 -z-0">
       {#if 'id' in suggestion}
-        <span class="lowercase">
+        <span
+          class="w-[clamp(50px,35vw,400px)] sm:w-auto pl-2 lowercase truncate overflow-x-hidden flex-shrink"
+        >
           {suggestion.id.replace($input, [...$input].join(''))}
         </span>
-        <span class="ml-10 space-x-1 flex items-center">
-          <Kbd inline text="Enter" {theme} withLowOpacity={false} />
-          <Iconic hFlip name="carbon:text-new-line" size="16" />
-        </span>
+        {#if $isInputFocused}
+          <span class="ml-5 space-x-1 flex items-center flex-shrink-0">
+            <Kbd inline class="hidden smx:inline" text="Enter" {theme} withLowOpacity={false} />
+            <Iconic hFlip name="carbon:text-new-line" size="16" />
+          </span>
+        {/if}
       {/if}
       {#if !placeholder && !('id' in suggestion)}
-        <span class="flex items-center ">
-          Hit<Kbd inline text=":meta: F" {theme} />to focus search
+        <span class="sm:hidden"> enter search </span>
+        <span class="hidden sm:flex items-center">
+          Hit<Kbd inline text=":meta: K" {theme} />to focus search
         </span>
       {/if}
     </span>
@@ -138,7 +150,7 @@
       bind:this={inputNode}
       class={clsx(
         `
-        absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-3
+        absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-2
         border-none focus:ring-0 focus:border-transparent focus:outline-none
       `,
         {
@@ -153,21 +165,28 @@
           onEnter();
           return;
         }
-        if ((e.key === 'Tab' || e.code === 'Tab') && $input) {
+        if ((e.key === 'ArrowDown' || e.code === 'ArrowDown') && $input) {
           e.preventDefault();
           if ($isInputFocused && 'id' in suggestion) {
             offset += 1;
           }
           return;
         }
+        if ((e.key === 'ArrowUp' || e.code === 'ArrowUp') && $input) {
+          e.preventDefault();
+          if ($isInputFocused && 'id' in suggestion) {
+            offset -= 1;
+          }
+          return;
+        }
       }}
-      use:shortcut={{ control: true, code: 'KeyF', callback: ({ node }) => node.focus() }}
+      use:shortcut={{ control: true, code: 'KeyK', callback: ({ node }) => node.focus() }}
       use:shortcut={{ code: 'Escape', callback: () => onDismiss() }}
       {placeholder}
     />
   </div>
 
-  {#if !$isInputFocused}
+  {#if !$isInputFocused && !$input}
     <button
       aria-label="Focus search input"
       title="Focus search input"

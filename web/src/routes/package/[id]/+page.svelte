@@ -28,14 +28,28 @@
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
+  import { browser } from '$app/environment';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { state, typeAheadState, isInputFocused } = store;
+  const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
+  const { items: searchItems } = hits;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
   export let data: PageData;
-
   const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
+
+  let y = 0;
+
+  const getHeroScrollDelta = () => {
+    const halfWindowHeight = browser ? window.innerHeight / 2 : 0;
+    const baseControlsHeight = browser
+      ? getComputedStyle(document.documentElement).getPropertyValue('--base-controls-h-sm')
+      : '0';
+    return halfWindowHeight - parseInt(baseControlsHeight, 10);
+  };
+
+  $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
 
   $: {
     // For now, we're only using type ahead suggestions,
@@ -57,7 +71,8 @@
     'Team',
     'Documentation',
     'Downloads',
-    'Dependencies' /* 'Readme', */
+    'Dependencies',
+    'Feedback' /* 'Readme', */
   ];
 
   const dependencyGroups = [
@@ -78,14 +93,14 @@
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
-{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
-  <Module.default isEnabled />
-{/await}
+<SearchInlinePanelResults isEnabled />
 
-<ControlsBase variant="dark">
-  <SearchControls withTotal={false}>
+<svelte:window bind:scrollY={y} />
+
+<ControlsBase variant={isNavDark ? 'black' : 'light'}>
+  <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
     <svelte:fragment slot="links-start">
-      <ControlsLink withGap href="/" title="Start">
+      <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>
@@ -429,6 +444,50 @@
           </PackageDetailSection>
         {/if}
       {/each}
+    </SectionsColumn>
+  </Section>
+
+  <!-- Feedback -->
+
+  <Section withTwoFoldLayout withPaddingX={false} id="feedback">
+    <SectionHeader>
+      <SectionTitleSelect selected="Feedback" options={titles} />
+    </SectionHeader>
+
+    <SectionsColumn>
+      <PackageDetailSection title="Contact us">
+        <p class="prose prose-lg prose-invert max-w-none">
+          If you found an issue, no matter what, please don't hesitate to contact us! We're eager
+          for any feedback and appreciate your commitement a lot!
+        </p>
+
+        <SubGridItem
+          key="Open a ticket"
+          url="https://github.com/flaming-codes/crane-app/issues/new/choose"
+          withSpaceY="xs"
+          withValueSpaceY="xs"
+        >
+          <Link
+            href="https://github.com/flaming-codes/crane-app/issues/new/choose"
+            ariaLabel="Open a ticket at Github"
+          >
+            <Iconic name="carbon:logo-github" />
+          </Link>
+        </SubGridItem>
+        <SubGrid>
+          <SubGridItem
+            key="Email"
+            url="mailto:tom@flaming.codes"
+            withSpaceY="xs"
+            withValueSpaceY="xs"
+          >
+            <div class="text-xs text-neutral-300 font-mono">tom@flaming.codes</div>
+            <Link href="mailto:tom@flaming.codes" ariaLabel="Send us an email">
+              <Iconic name="carbon:email" />
+            </Link>
+          </SubGridItem>
+        </SubGrid>
+      </PackageDetailSection>
     </SectionsColumn>
   </Section>
 

@@ -13,6 +13,7 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
+  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Icon from '@iconify/svelte';
 
@@ -23,14 +24,12 @@
 <ColorScheme scheme="dark" />
 <SearchInit />
 
-{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
-  <Module.default isEnabled />
-{/await}
+<SearchInlinePanelResults isEnabled />
 
-<ControlsBase variant="dark">
+<ControlsBase variant="black">
   <SearchControls withTotal={false}>
     <svelte:fragment slot="links-start">
-      <ControlsLink withGap href="/" title="Start">
+      <ControlsLink withGap href="/" title="Latest packages">
         <Icon icon="carbon:switcher" />
       </ControlsLink>
     </svelte:fragment>
@@ -80,7 +79,7 @@
       <PackageDetailSection title="Everywhere">
         <SubGrid>
           <SubGridItem key="Focus search">
-            <Kbd withLowOpacity={false} text=":meta: F" theme="dark" />
+            <Kbd withLowOpacity={false} text=":meta: K" theme="dark" />
           </SubGridItem>
           <SubGridItem key="Select search inline suggestion">
             <span>
@@ -88,7 +87,10 @@
             </span>
           </SubGridItem>
           <SubGridItem key="Select the next inline suggestion">
-            <Kbd withLowOpacity={false} text="Tab" theme="dark" />
+            <div class="space-y-2">
+              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" />
+              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" />
+            </div>
           </SubGridItem>
         </SubGrid>
       </PackageDetailSection>

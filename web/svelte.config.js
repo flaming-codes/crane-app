@@ -28,8 +28,7 @@ const config = {
           'https',
           'api.iconify.design',
           'vitals.vercel-insights.com',
-          'microanalytics.io',
-          '*.microanalytics.io'
+          'plausible.io'
         ],
         'style-src': ['self', 'fonts.googleapis.com'],
         'font-src': ['self', 'fonts.gstatic.com']

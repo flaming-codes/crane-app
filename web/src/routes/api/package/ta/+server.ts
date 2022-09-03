@@ -10,7 +10,9 @@ import type { RequestHandler } from './$types';
  */
 export const GET: RequestHandler = async (ctx) => {
   const q = ctx.url.searchParams.get('q') as string;
-  const offset = parseInt(ctx.url.searchParams.get('offset') as string, 10);
+  // We use the absolute value, so that
+  // negative values get mapped to positive ones.
+  const offset = Math.abs(parseInt(ctx.url.searchParams.get('offset') as string, 10));
 
   const items = await typeAheadTuples();
   const hits = items.filter(({ id }) => id.startsWith(q));

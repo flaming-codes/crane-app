@@ -2,6 +2,8 @@ import { sitemapTuples } from '$lib/db/model';
 import { composeUrlElement } from '$lib/sitemap/model';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
+export const prerender = true;
+
 export const GET: RequestHandler = async ({ setHeaders }) => {
   const tuples = await sitemapTuples();
 
@@ -27,7 +29,6 @@ export const GET: RequestHandler = async ({ setHeaders }) => {
           ${composeUrlElement({ path: '/', lastmod: '2022-08-20' })}
           ${composeUrlElement({ path: '/about', lastmod: '2022-08-20' })}
           ${composeUrlElement({ path: '/how-to', lastmod: '2022-08-20' })}
-          ${composeUrlElement({ path: '/binary', lastmod: '2022-08-20' })}
           ${tuples
             .map(([slug, lastmod]) =>
               composeUrlElement({ path: `/package/${slug}`, lastmod, priority: 1 })
