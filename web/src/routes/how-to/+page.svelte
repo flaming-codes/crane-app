@@ -13,6 +13,7 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
+  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Icon from '@iconify/svelte';
 
@@ -23,9 +24,7 @@
 <ColorScheme scheme="dark" />
 <SearchInit />
 
-{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
-  <Module.default isEnabled />
-{/await}
+<SearchInlinePanelResults isEnabled />
 
 <ControlsBase variant="dark">
   <SearchControls withTotal={false}>

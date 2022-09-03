@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "vite dev --open",
     "dev:prod": "npm run build && npm run preview -- --open",
-    "prebuild": "echo TODO prepare db",
     "build": "npm run gen:dep && vite build",
     "package": "svelte-kit package",
     "preview": "vite preview",

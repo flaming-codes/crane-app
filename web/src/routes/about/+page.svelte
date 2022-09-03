@@ -16,23 +16,22 @@
   import LicensesList from '$lib/license/views/LicensesList.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
+  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
-  $: ({ licenses } = data);
+  const { licenses = [] } = data;
 
-  const titles = ['App', 'Team', 'Privacy', 'Source code', 'Legal'];
+  const titles = ['App', 'Team', 'Privacy', 'Source code', 'R Binaries', 'IDE', 'Legal'];
 </script>
 
 <BaseMeta title="About" path="/about" />
 <ColorScheme scheme="dark" />
 <SearchInit />
 
-{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
-  <Module.default isEnabled />
-{/await}
+<SearchInlinePanelResults isEnabled />
 
 <ControlsBase variant="dark">
   <SearchControls withTotal={false}>
@@ -147,20 +146,20 @@
       <PackageDetailSection title="Analytics" withProse="dark">
         <p>
           <strong>CRAN/E</strong> uses <Link
-            href="https://microanalytics.io"
+            href="https://plausible.io/"
             target="_blank"
-            rel="noopener noreferrer">microanalytics.io</Link
+            rel="noopener noreferrer">plausible.io</Link
           > for a privacy-friendly, non-invasive way to collect some basic usage data of this PWA. This
-          analytics service is hosted in the EU and doesn't collect and personal identifiable data. This
+          analytics service is hosted in the EU and doesn't collect any personal identifiable data. This
           is also the reason why you don't see a cookie-banner - we simply don't need consent for data
           we never collect in the first place.
         </p>
 
         <SubGrid class="not-prose">
-          <SubGridItem key="Link">
-            <span>microanalytics.io</span>
-            <Link href="https://microanalytics.io" target="_blank" rel="noopener noreferrer">
-              <Iconic name="carbon:arrow-up-right" />
+          <SubGridItem key="Link" url="https://plausible.io">
+            <div>plausible.io</div>
+            <Link href="https://plausible.io" target="_blank" rel="noopener noreferrer">
+              <Iconic name="simple-icons:plausibleanalytics" />
             </Link>
           </SubGridItem>
         </SubGrid>
@@ -216,6 +215,101 @@
               rel="noopener noreferrer"
             >
               <Iconic name="carbon:piggy-bank-slot" />
+            </Link>
+          </SubGridItem>
+        </SubGrid>
+      </PackageDetailSection>
+    </SectionsColumn>
+  </Section>
+
+  <!-- Binary -->
+
+  <Section withTwoFoldLayout withPaddingX={false} id="r binaries">
+    <SectionHeader>
+      <SectionTitleSelect selected="R Binaries" options={titles} />
+    </SectionHeader>
+
+    <SectionsColumn>
+      <PackageDetailSection title="Description">
+        <div class="prose prose-invert max-w-none">
+          <p>
+            The R binary is a self-contained executable file that can be run on any computer with a
+            supported operating system. It is the easiest way to get started with R.
+          </p>
+          <p>
+            The R binary is available for Windows, macOS, and Linux. It is also available for
+            Raspberry Pi.
+          </p>
+        </div>
+        <SubGrid>
+          <SubGridItem key="Current version">
+            <span>4.2.1</span>
+          </SubGridItem>
+        </SubGrid>
+      </PackageDetailSection>
+      <PackageDetailSection title="Downloads">
+        <SubGrid>
+          <SubGridItem key="macOS (Apple Silicon)" withSpaceY="xs">
+            <Link
+              href="https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.2.1-arm64.pkg"
+              ariaLabel="Download R for macOS (Apple Silicon)"
+            >
+              <Iconic name="carbon:download" />
+            </Link>
+          </SubGridItem>
+          <SubGridItem key="macOS (Intel)" withSpaceY="xs">
+            <Link
+              href="https://cran.r-project.org/bin/macosx/base/R-4.2.1.pkg"
+              ariaLabel="Download R for macOS (Intel)"
+            >
+              <Iconic name="carbon:download" />
+            </Link>
+          </SubGridItem>
+          <SubGridItem key="Windows" withSpaceY="xs">
+            <Link
+              href="https://cran.r-project.org/bin/windows/base/R-4.2.1-win.exe"
+              ariaLabel="Download R for Windows"
+            >
+              <Iconic name="carbon:download" />
+            </Link>
+          </SubGridItem>
+          <SubGridItem key="Linux" withSpaceY="xs">
+            <Link
+              href="https://cran.r-project.org/bin/linux/"
+              ariaLabel="Downloads for Linux"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Iconic name="carbon:arrow-up-right" />
+            </Link>
+          </SubGridItem>
+        </SubGrid>
+      </PackageDetailSection>
+    </SectionsColumn>
+  </Section>
+
+  <Section withTwoFoldLayout withPaddingX={false} id="ide">
+    <SectionHeader>
+      <SectionTitleSelect selected="IDE" options={titles} />
+    </SectionHeader>
+    <SectionsColumn>
+      <PackageDetailSection title="RStudio">
+        <div class="prose prose-invert max-w-none">
+          <p>
+            RStudio is an integrated development environment (IDE) for R. It includes a console,
+            syntax-highlighting editor that supports direct code execution, as well as tools for
+            plotting, history, debugging and workspace management.
+          </p>
+        </div>
+        <SubGrid>
+          <SubGridItem key="Current version" withSpaceY="xs">
+            <Link
+              href="https://www.rstudio.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              ariaLabel="RStudio link"
+            >
+              <Iconic name="carbon:arrow-up-right" />
             </Link>
           </SubGridItem>
         </SubGrid>
