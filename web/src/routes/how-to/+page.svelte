@@ -79,7 +79,7 @@
       <PackageDetailSection title="Everywhere">
         <SubGrid>
           <SubGridItem key="Focus search">
-            <Kbd withLowOpacity={false} text=":meta: F" theme="dark" />
+            <Kbd withLowOpacity={false} text=":meta: K" theme="dark" />
           </SubGridItem>
           <SubGridItem key="Select search inline suggestion">
             <span>
@@ -87,7 +87,10 @@
             </span>
           </SubGridItem>
           <SubGridItem key="Select the next inline suggestion">
-            <Kbd withLowOpacity={false} text="Tab" theme="dark" />
+            <div class="space-y-2">
+              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" />
+              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" />
+            </div>
           </SubGridItem>
         </SubGrid>
       </PackageDetailSection>

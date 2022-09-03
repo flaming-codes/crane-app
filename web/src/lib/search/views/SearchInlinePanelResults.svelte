@@ -58,6 +58,8 @@
   <!-- This prevents the resutls from initially being hidden under the nav.-->
   <div class="h-nav" />
   <SearchResults
+    withHashEffect={false}
+    withScrollTopEffect={false}
     theme="dark"
     initialAll={{
       hits: $items,
