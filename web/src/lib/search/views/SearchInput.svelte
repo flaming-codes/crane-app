@@ -120,7 +120,7 @@
           {suggestion.id.replace($input, [...$input].join(''))}
         </span>
         <span class="ml-10 space-x-1 flex items-center">
-          <Kbd inline text="Enter" {theme} withLowOpacity={false} />
+          <Kbd inline class="hidden smx:inline" text="Enter" {theme} withLowOpacity={false} />
           <Iconic hFlip name="carbon:text-new-line" size="16" />
         </span>
       {/if}
