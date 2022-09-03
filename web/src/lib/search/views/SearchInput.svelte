@@ -119,10 +119,12 @@
         <span class="lowercase">
           {suggestion.id.replace($input, [...$input].join(''))}
         </span>
-        <span class="ml-10 space-x-1 flex items-center">
-          <Kbd inline text="Enter" {theme} withLowOpacity={false} />
-          <Iconic hFlip name="carbon:text-new-line" size="16" />
-        </span>
+        {#if $isInputFocused}
+          <span class="ml-10 space-x-1 flex items-center">
+            <Kbd inline class="hidden smx:inline" text="Enter" {theme} withLowOpacity={false} />
+            <Iconic hFlip name="carbon:text-new-line" size="16" />
+          </span>
+        {/if}
       {/if}
       {#if !placeholder && !('id' in suggestion)}
         <span class="flex items-center ">
@@ -167,7 +169,7 @@
     />
   </div>
 
-  {#if !$isInputFocused}
+  {#if !$isInputFocused && !$input}
     <button
       aria-label="Focus search input"
       title="Focus search input"

@@ -43,15 +43,20 @@
 
 <div
   class={clsx(
-    'fixed left-0 right-0 bottom-0 h-screen z-[1] pb-10 overflow-y-auto',
-    'backdrop-blur-xl bg-zinc-900/80 border-t border-neutral-700',
-    'transition duration-500 ease-in-out',
-    'motion-reduce:transition-none',
+    `
+    fixed left-0 right-0 bottom-0 h-screen z-[1] pb-10 overflow-y-auto
+    backdrop-blur-xl bg-zinc-900/80 border-t border-neutral-700
+    transition duration-500 ease-in-out
+    motion-reduce:transition-none
+   `,
     {
       'translate-y-full': !isVisible
     }
   )}
 >
+  <!-- We can' use 'scroll-mt-nav' here, so let's add an empty div for now. -->
+  <!-- This prevents the resutls from initially being hidden under the nav.-->
+  <div class="h-nav" />
   <SearchResults
     theme="dark"
     initialAll={{

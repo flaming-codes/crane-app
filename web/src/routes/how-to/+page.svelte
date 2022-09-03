@@ -26,10 +26,10 @@
 
 <SearchInlinePanelResults isEnabled />
 
-<ControlsBase variant="dark">
+<ControlsBase variant="black">
   <SearchControls withTotal={false}>
     <svelte:fragment slot="links-start">
-      <ControlsLink withGap href="/" title="Start">
+      <ControlsLink withGap href="/" title="Latest packages">
         <Icon icon="carbon:switcher" />
       </ControlsLink>
     </svelte:fragment>

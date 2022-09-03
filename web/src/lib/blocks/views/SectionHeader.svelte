@@ -4,7 +4,7 @@
 
 <header
   class={`
-    w-full sticky top-0 bg-opacity-20 backdrop-blur-md z-10
+    w-full sticky top-nav bg-opacity-20 backdrop-blur-md z-10
     lg:w-[clamp(380px,35vw,600px)] lg:h-full
   `}
 >

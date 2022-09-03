@@ -9,8 +9,8 @@
 
 <header
   class={`
-      sticky flex-1 flex items-center top-12 bg-opacity-20 backdrop-blur-md
-      lg:top-0
+      sticky flex-1 flex items-center top-[calc(var(--base-controls-h-sm)*2)] bg-opacity-20 backdrop-blur-md
+      lg:top-nav
     `}
 >
   <SectionContent withPaddingX="xs">

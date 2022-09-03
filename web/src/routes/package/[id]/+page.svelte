@@ -29,14 +29,27 @@
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
+  import { browser } from '$app/environment';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { state, typeAheadState, isInputFocused } = store;
+  const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
+  const { items: searchItems } = hits;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
   export let data: PageData;
-
   const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
+
+  let y = 0;
+
+  const getHeroScrollDelta = () => {
+    const halfWindowHeight = browser ? window.innerHeight / 2 : 0;
+    const baseControlsHeight = browser
+      ? getComputedStyle(document.documentElement).getPropertyValue('--base-controls-h-sm')
+      : '0';
+    return halfWindowHeight - parseInt(baseControlsHeight, 10);
+  };
+
+  $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
 
   $: {
     // For now, we're only using type ahead suggestions,
@@ -81,10 +94,12 @@
 
 <SearchInlinePanelResults isEnabled />
 
-<ControlsBase variant="dark">
-  <SearchControls withTotal={false}>
+<svelte:window bind:scrollY={y} />
+
+<ControlsBase variant={isNavDark ? 'black' : 'light'}>
+  <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
     <svelte:fragment slot="links-start">
-      <ControlsLink withGap href="/" title="Start">
+      <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>

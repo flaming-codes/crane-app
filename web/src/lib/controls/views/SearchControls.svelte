@@ -9,7 +9,7 @@
 
 <SearchInput {theme} />
 
-<div class="flex flex-1 gap-x-6 justify-end sm:flex-[0]">
+<div class="flex gap-x-6 justify-end">
   <ControlsState {withTotal} />
   <CommonLinks>
     <svelte:fragment slot="start">
