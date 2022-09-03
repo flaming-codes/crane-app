@@ -101,7 +101,7 @@
 
   $: {
     if ($isInputFocused) {
-      // TODO: App freezes when a fragment is part of the URL an input is provided.
+      // TODO: App freezes when a fragment is part of the URL and input is provided.
       // This is a workaround which removes fragment from the URL.
       window.history.replaceState({}, document.title, window.location.pathname);
     }
