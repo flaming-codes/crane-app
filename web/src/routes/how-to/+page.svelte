@@ -62,7 +62,7 @@
             algorithm.
           </p>
           <p>
-            All results in the grid of packages are sorted by last publication date. The top most
+            All results in the grid of packages are sorted by last publication date. The topmost
             items are therefore also the most recently published packages.
           </p>
         </div>
@@ -87,9 +87,9 @@
             </span>
           </SubGridItem>
           <SubGridItem key="Select the next inline suggestion">
-            <div class="space-y-2">
-              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" />
-              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" />
+            <div class="space-y-2 mt-1">
+              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" class="block" />
+              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" class="block" />
             </div>
           </SubGridItem>
         </SubGrid>

@@ -13,7 +13,9 @@
 
   $: {
     if (browser) {
-      sendEvent({ name: 'pageview/unexpected-error', value: $page.error?.message || 'unknown' });
+      sendEvent('pageview/unexpected-error', {
+        props: { reason: $page.error?.message || 'unknown' }
+      });
     }
   }
 </script>
