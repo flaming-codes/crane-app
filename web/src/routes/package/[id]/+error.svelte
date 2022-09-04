@@ -14,7 +14,7 @@
   $: {
     if (browser) {
       sendEvent('pageview/package-not-found', {
-        props: { value: $page.error?.message }
+        props: { reason: $page.error?.message }
       });
     }
   }
