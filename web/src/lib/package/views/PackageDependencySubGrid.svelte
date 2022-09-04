@@ -38,13 +38,14 @@
       key="Load all {items.length} items"
       emphasis="key"
       withValueSpaceY="xs"
+      withValueOverflow="hidden"
       class="col-span-full group hover:animate-pulse"
       {onClick}
     >
       <div class="text-neutral-300">
-        (warning: might lead to performance issues and take some seconds)
+        (warning: might lead to performance issues and take some time)
       </div>
-      <Iconic name="carbon:expand-categories" />
+      <Iconic name="carbon:chevron-down" />
     </SubGridItem>
   {/if}
 </SubGrid>

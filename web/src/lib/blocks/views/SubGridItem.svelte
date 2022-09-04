@@ -8,6 +8,7 @@
   export let title: string | undefined = undefined;
   export let withSpaceY: 'xs' | 'md' | undefined = undefined;
   export let withValueSpaceY: 'xs' | 'md' | undefined = undefined;
+  export let withValueOverflow: 'hidden' | undefined = undefined;
   export let withKeyTruncate: boolean = false;
   export let url: string | false | undefined = undefined;
   export let onClick: ((event: MouseEvent) => void) | undefined = undefined;
@@ -46,10 +47,11 @@
     <slot name="key" />
   </td>
   <td
-    class={clsx('text-lg', {
+    class={clsx('w-full text-lg', {
       'text-xs text-neutral-400': emphasis === 'key',
       'space-y-1': withValueSpaceY === 'xs',
-      'space-y-2': withValueSpaceY === 'md'
+      'space-y-2': withValueSpaceY === 'md',
+      'overflow-x-hidden overflow-y-auto': withValueOverflow === 'hidden'
     })}
     ><slot />
   </td>
