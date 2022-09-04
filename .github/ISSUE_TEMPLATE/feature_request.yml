@@ -6,8 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        "> **Note**"
-        "> Please be sure to discuss new ideas in **Discussions**. Only resolved conversations from there we be allowed for new feature requests."
+        > **Note**
+        > Please be sure to discuss new ideas in **Discussions**. Only resolved conversations from there will be allowed for new feature requests.
   - type: textarea
     id: implementation_pr
     attributes:
