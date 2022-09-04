@@ -13,7 +13,9 @@
 
   $: {
     if (browser) {
-      sendEvent({ name: 'pageview/package-not-found', value: $page.error?.message });
+      sendEvent('pageview/package-not-found', {
+        props: { value: $page.error?.message }
+      });
     }
   }
 </script>
