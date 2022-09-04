@@ -1,7 +1,7 @@
 <script lang="ts">
   import '../app.css';
   import '../fonts.css';
-  import { browser, dev } from '$app/environment';
+  import { dev } from '$app/environment';
 
   if (!dev) {
     const noop = () => {};
@@ -15,14 +15,16 @@
 </script>
 
 <svelte:head>
-  {#if browser && releaseChannel === 'production'}
+  {#if releaseChannel === 'production'}
     <script defer data-domain="cran-e.com" src="https://plausible.io/js/plausible.js"></script>
-    <script>
-      window.plausible =
-        window.plausible ||
-        function () {
-          (window.plausible.q = window.plausible.q || []).push(arguments);
-        };
+    <script nonce="plausible-events">
+      if (window !== 'undefined') {
+        window.plausible =
+          window.plausible ||
+          function () {
+            (window.plausible.q = window.plausible.q || []).push(arguments);
+          };
+      }
     </script>
   {/if}
 </svelte:head>

@@ -13,7 +13,7 @@
 
   $: {
     if (browser) {
-      sendEvent('pageview/package-not-found', {
+      sendEvent('package-not-found', {
         props: { reason: $page.error?.message }
       });
     }
