@@ -7,10 +7,15 @@
 
   export let items: Dependency[];
   export let emphasis: 'key' | undefined = undefined;
+
+  let visibleThreshold = 50;
+  $: visibleItems = visibleThreshold !== Infinity ? items.slice(0, visibleThreshold) : items;
+
+  const onClick = () => (visibleThreshold = Infinity);
 </script>
 
 <SubGrid>
-  {#each items as { name, link, version }}
+  {#each visibleItems as { name, link, version }}
     <SubGridItem
       withKeyTruncate
       key={name}
@@ -27,4 +32,19 @@
       {/if}
     </SubGridItem>
   {/each}
+
+  {#if visibleThreshold !== Infinity && items.length > visibleThreshold}
+    <SubGridItem
+      key="Load all {items.length} items"
+      emphasis="key"
+      withValueSpaceY="xs"
+      class="col-span-full group hover:animate-pulse"
+      {onClick}
+    >
+      <div class="text-neutral-300">
+        (warning: might lead to performance issues and take some seconds)
+      </div>
+      <Iconic name="carbon:expand-categories" />
+    </SubGridItem>
+  {/if}
 </SubGrid>
