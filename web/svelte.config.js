@@ -27,7 +27,8 @@ const config = {
           'https',
           'api.iconify.design',
           'vitals.vercel-insights.com',
-          'plausible.io'
+          'plausible.io',
+          'nonce-plausible-events'
         ],
         'style-src': ['self', 'fonts.googleapis.com'],
         'font-src': ['self', 'fonts.gstatic.com']

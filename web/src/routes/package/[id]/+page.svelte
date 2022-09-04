@@ -166,6 +166,7 @@
             <SubGridItem
               withKeyTruncate
               withSpaceY="xs"
+              withValueOverflow="hidden"
               key={key.replace('https://', '').replace('http://', '')}
               title={key}
               url={meta && 'url' in meta && meta.url}
