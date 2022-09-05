@@ -30,6 +30,7 @@
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import { browser } from '$app/environment';
+  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
@@ -90,6 +91,12 @@
 </script>
 
 <BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
+<BreadcrumbMeta
+  items={[
+    { name: 'Packages', href: '/package' },
+    { name: item.name, href: `/package/${item.slug}` }
+  ]}
+/>
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
