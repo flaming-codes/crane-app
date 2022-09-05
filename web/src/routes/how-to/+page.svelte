@@ -15,12 +15,14 @@
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
+  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import Icon from '@iconify/svelte';
 
   const titles = ['Usage', 'Shortcuts'];
 </script>
 
 <BaseMeta title="Guides" path="/how-to" />
+<BreadcrumbMeta items={[{ name: 'Guides and Shortcuts', href: '/how-to' }]} />
 <ColorScheme scheme="dark" />
 <SearchInit />
 

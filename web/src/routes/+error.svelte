@@ -33,4 +33,9 @@
   </SearchControls>
 </ControlsBase>
 
-<Hero title="Error" subtitle="An unexpected error happend" height="70" isFixed={true} />
+<Hero
+  title="Error"
+  subtitle={$page.error?.message || 'An unexpected error happend'}
+  height="full"
+  isFixed={true}
+/>

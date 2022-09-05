@@ -166,3 +166,23 @@ export function parseDependencies(items: Dependency[]) {
     return next;
   });
 }
+
+export function parseMacOsBinaries(pkg: Pkg): Pkg['macos_binaries'] {
+  return pkg.macos_binaries?.map((m) => {
+    const [name, cpu] = m.label.trim().split(' ');
+    return {
+      ...m,
+      label: name.trim(),
+      meta: cpu.replace(':', '').replace('(', '').replace(')', '')
+    };
+  });
+}
+
+export function parseWindowsBinaries(pkg: Pkg): Pkg['windows_binaries'] {
+  return pkg.windows_binaries?.map((m) => {
+    return {
+      ...m,
+      label: m.label.trim().replace(':', '')
+    };
+  });
+}

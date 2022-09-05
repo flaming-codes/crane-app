@@ -26,7 +26,7 @@
         <span>{version}</span>
       {/if}
       {#if link}
-        <Link href={link} rel="noopener noreferrer" target="_blank" class="block">
+        <Link withForcedReload href={link} ariaLabel="Open package detail for {name}">
           <Iconic name="carbon:arrow-up-right" />
         </Link>
       {/if}
