@@ -5,7 +5,9 @@ import {
   parseMaterials,
   parseAboutItems,
   parseContacts,
-  parseDependencies
+  parseDependencies,
+  parseMacOsBinaries,
+  parseWindowsBinaries
 } from '$lib/package/models/parse';
 import type { Pkg } from '$lib/package/type';
 import { error } from '@sveltejs/kit';
@@ -31,6 +33,9 @@ export const load: PageServerLoad = async ({ params }) => {
   const materials = parseMaterials(item);
   const aboutItems = parseAboutItems(item);
   const contacts = parseContacts(item);
+
+  item.macos_binaries = parseMacOsBinaries(item);
+  item.windows_binaries = parseWindowsBinaries(item);
 
   const dependencyGroups = [
     'depends',

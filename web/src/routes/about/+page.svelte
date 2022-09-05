@@ -18,7 +18,9 @@
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
+  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import Icon from '@iconify/svelte';
+  import SvelteSeo from 'svelte-seo';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -28,6 +30,7 @@
 </script>
 
 <BaseMeta title="About" path="/about" />
+<BreadcrumbMeta items={[{ name: 'About', href: '/about' }]} />
 <ColorScheme scheme="dark" />
 <SearchInit />
 

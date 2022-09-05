@@ -6,12 +6,15 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import SearchResults from '$lib/search/views/SearchResults.svelte';
+  import SvelteSeo from 'svelte-seo';
+  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
 
   export let data: PageData;
   const { initialAll } = data;
 </script>
 
 <BaseMeta title="The modern R-packages search engine" />
+<BreadcrumbMeta />
 <ColorScheme scheme="light" />
 
 <main>

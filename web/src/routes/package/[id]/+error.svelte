@@ -36,6 +36,6 @@
 <Hero
   title="Not found"
   subtitle="Package '{$page.error?.message}' doesn't exist"
-  height="70"
+  height="full"
   isFixed={true}
 />
