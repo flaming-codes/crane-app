@@ -173,7 +173,7 @@ export function parseMacOsBinaries(pkg: Pkg): Pkg['macos_binaries'] {
     return {
       ...m,
       label: name.trim(),
-      meta: cpu.replace(':', '').replace('(', '').replace(')', '')
+      meta: cpu?.replace(':', '').replace('(', '').replace(')', '')
     };
   });
 }
