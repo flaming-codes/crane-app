@@ -466,23 +466,23 @@
       <PackageDetailSection title="Contact us">
         <p class="prose prose-lg prose-invert max-w-none">
           If you found an issue, no matter what, please don't hesitate to contact us! We're eager
-          for any feedback and appreciate your commitement a lot!
+          for any feedback and appreciate your commitment a lot!
         </p>
 
-        <SubGridItem
-          key="Open a ticket"
-          url="https://github.com/flaming-codes/crane-app/issues/new/choose"
-          withSpaceY="xs"
-          withValueSpaceY="xs"
-        >
-          <Link
-            href="https://github.com/flaming-codes/crane-app/issues/new/choose"
-            ariaLabel="Open a ticket at Github"
-          >
-            <Iconic name="carbon:logo-github" />
-          </Link>
-        </SubGridItem>
         <SubGrid>
+          <SubGridItem
+            key="Open a ticket"
+            url="https://github.com/flaming-codes/crane-app/issues/new/choose"
+            withSpaceY="xs"
+            withValueSpaceY="xs"
+          >
+            <Link
+              href="https://github.com/flaming-codes/crane-app/issues/new/choose"
+              ariaLabel="Open a ticket at Github"
+            >
+              <Iconic name="carbon:logo-github" />
+            </Link>
+          </SubGridItem>
           <SubGridItem
             key="Email"
             url="mailto:tom@flaming.codes"
@@ -493,8 +493,8 @@
             <Link href="mailto:tom@flaming.codes" ariaLabel="Send us an email">
               <Iconic name="carbon:email" />
             </Link>
-          </SubGridItem>
-        </SubGrid>
+          </SubGridItem></SubGrid
+        >
       </PackageDetailSection>
     </SectionsColumn>
   </Section>
