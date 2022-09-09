@@ -13,7 +13,6 @@
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
-  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import Icon from '@iconify/svelte';
@@ -25,8 +24,9 @@
 <BreadcrumbMeta items={[{ name: 'Guides and Shortcuts', href: '/how-to' }]} />
 <ColorScheme scheme="dark" />
 <SearchInit />
-
-<SearchInlinePanelResults isEnabled />
+{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
+  <Module.default isEnabled />
+{/await}
 
 <ControlsBase variant="black">
   <SearchControls withTotal={false}>

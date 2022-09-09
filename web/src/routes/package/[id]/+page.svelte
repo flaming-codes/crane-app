@@ -28,13 +28,13 @@
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
-  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
+
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
+  const { isInputFocused, hits, input: searchInput } = store;
   const { items: searchItems } = hits;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
@@ -94,7 +94,9 @@
 <NotificationCenterAnchor />
 
 <SearchInit />
-<SearchInlinePanelResults isEnabled />
+{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
+  <Module.default isEnabled />
+{/await}
 
 <svelte:window bind:scrollY={y} />
 
