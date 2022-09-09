@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ setHeaders }) => {
   const items = await typeAheadTuples();
 
   setHeaders({
-    'Cache-Control': `max-age=${60 * 60 * 24}`
+    'Cache-Control': `max-age=${60 * 60 * 12}`
   });
 
   return json({
