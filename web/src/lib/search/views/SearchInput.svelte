@@ -111,6 +111,9 @@
     <input
       title="Search"
       role="search"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
       bind:value={$input}
       bind:this={inputNode}
       class={clsx(
