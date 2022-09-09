@@ -1,5 +1,5 @@
 import type { Pkg } from '$lib/package/type';
-import type { TAItem } from 'src/sw/types';
+import type { TAItem } from './adapters/types';
 import Fuse from 'fuse.js';
 
 let overviewData: Pkg[] | undefined;

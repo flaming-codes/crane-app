@@ -24,7 +24,11 @@ export function parseOverviewTuples(p: Pkg) {
   return [
     p.version && ['Version', p.version],
     p.depends?.find((d) => d.name === 'R') && ['R', p.depends.find((d) => d.name === 'R')?.version],
-    p.date && ['Published', p.date, { text: diffInDays > 0 ? `${diffInDays} days ago` : 'Today' }],
+    p.date && [
+      'Published',
+      p.date,
+      { text: diffInDays === 0 ? 'Today' : `${diffInDays} ${diffInDays > 1 ? 'days' : 'day'} ago` }
+    ],
     ...(p.license?.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]) ||
       []),
     p.needscompilation && ['Needs compilation?', p.needscompilation],

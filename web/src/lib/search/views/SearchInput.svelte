@@ -1,18 +1,19 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
+  import { store as taStore } from '$lib/db/worker/ta.store';
 
-  import { wrap } from 'comlink';
   import clsx from 'clsx';
   import { shortcut } from '$lib/input/models/shortcut';
   import { browser } from '$app/environment';
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import Kbd from '$lib/blocks/views/Kbd.svelte';
-  import type { TAItem } from 'src/sw/types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import MediaQuery from 'svelte-media-queries';
   import InitTypeaheadWorker from '$lib/db/worker/InitTypeaheadWorker.svelte';
+  import type { TAItem } from '$lib/db/adapters/types';
 
   const { state, input, typeAheadState, isInputFocused } = store;
+  const { proxy: taProxy } = taStore;
 
   export let theme: 'light' | 'dark' = 'dark';
   let suggestion: TAItem | {} = {};
@@ -28,14 +29,6 @@
   let matches: boolean | undefined = undefined;
   $: isMobile = Boolean(matches);
 
-  const listenToServiceWorker = ({ data }: any) => {
-    if (data.type === 'lifecycle' && data.payload === 'activated') {
-      console.timeEnd('sw');
-      localStorage.setItem('sw-activated', 'true');
-      $typeAheadState = 'ready';
-    }
-  };
-
   onMount(() => {
     isFirstUse = browser && localStorage.getItem('hint-search-shortcut') === null;
 
@@ -49,19 +42,6 @@
     if (localStorage.getItem('sw-activated') !== null) {
       $typeAheadState = 'ready';
       return;
-    }
-
-    if (browser && 'navigator' in window && 'serviceWorker' in navigator) {
-      console.time('sw');
-      navigator.serviceWorker.addEventListener('message', listenToServiceWorker);
-    } else {
-      $typeAheadState = 'unavailable';
-    }
-  });
-
-  onDestroy(() => {
-    if (browser) {
-      navigator.serviceWorker.removeEventListener('message', listenToServiceWorker);
     }
   });
 
@@ -85,16 +65,10 @@
 
   $: {
     if (browser && $typeAheadState === 'ready') {
-      if ($input) {
-        const url = new URL('/api/package/ta', window.location.origin);
-        url.searchParams.set('q', $input.toLowerCase());
-        url.searchParams.set('offset', offset.toString());
-
-        fetch(url)
-          .then((res) => res.json())
-          .then((res) => {
-            suggestion = res as TAItem;
-          });
+      if ($input && $taProxy) {
+        $taProxy.query($input).then((hits: TAItem[]) => {
+          suggestion = hits[offset % hits.length];
+        });
       } else {
         suggestion = {};
       }
