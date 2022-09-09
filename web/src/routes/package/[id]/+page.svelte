@@ -101,12 +101,9 @@
         'Content-Type': 'application/json'
       }
     });
-    const data = await response.json();
-    console.log(data);
-    //convert data to text
-    const text = JSON.stringify(data);
-    console.log(text);
-    return text;
+    let string = await response.text();
+    console.log(string);
+    return string;
   }
 </script>
 
@@ -164,11 +161,11 @@
 
     <p>
       {#await weeklyDownloadsPromise}
-        loading...
+        <p>loading...</p>
       {:then weeklyDownloads}
-        Json: {weeklyDownloads}
+        <p>Downloads: {weeklyDownloads}</p>
       {:catch error}
-        {error.message}
+        <p>{error.message}</p>
       {/await}
     </p>
 
