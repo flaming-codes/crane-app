@@ -1,16 +1,19 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
+  import { store as taStore } from '$lib/db/worker/ta.store';
 
   import clsx from 'clsx';
   import { shortcut } from '$lib/input/models/shortcut';
   import { browser } from '$app/environment';
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import Kbd from '$lib/blocks/views/Kbd.svelte';
-  import type { TAItem } from 'src/sw/types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import MediaQuery from 'svelte-media-queries';
+  import InitTypeaheadWorker from '$lib/db/worker/InitTypeaheadWorker.svelte';
+  import type { TAItem } from '$lib/db/adapters/types';
 
   const { state, input, typeAheadState, isInputFocused } = store;
+  const { proxy: taProxy } = taStore;
 
   export let theme: 'light' | 'dark' = 'dark';
   let suggestion: TAItem | {} = {};
@@ -26,45 +29,12 @@
   let matches: boolean | undefined = undefined;
   $: isMobile = Boolean(matches);
 
-  const listenToServiceWorker = ({ data }: any) => {
-    if (data.type === 'lifecycle' && data.payload === 'activated') {
-      console.timeEnd('sw');
-      localStorage.setItem('sw-activated', 'true');
-      $typeAheadState = 'ready';
-    }
-  };
-
   onMount(() => {
     isFirstUse = browser && localStorage.getItem('hint-search-shortcut') === null;
-
-    if ($typeAheadState === 'ready') {
-      return;
-    }
-
-    // TODO: This shadows every subsequent update to the SW.
-    // We're fine with it for now (no spinner when SW updates DB),
-    // only IndexDB can be used to reliably communicate the state.
-    if (localStorage.getItem('sw-activated') !== null) {
-      $typeAheadState = 'ready';
-      return;
-    }
-
-    if (browser && 'navigator' in window && 'serviceWorker' in navigator) {
-      console.time('sw');
-      navigator.serviceWorker.addEventListener('message', listenToServiceWorker);
-    } else {
-      $typeAheadState = 'unavailable';
-    }
-  });
-
-  onDestroy(() => {
-    if (browser) {
-      navigator.serviceWorker.removeEventListener('message', listenToServiceWorker);
-    }
   });
 
   const onEnter = () => {
-    if ('id' in suggestion) {
+    if (suggestion && 'id' in suggestion) {
       input.set(suggestion.id);
       window.location.href = `/package/${suggestion.slug}`;
     }
@@ -83,16 +53,10 @@
 
   $: {
     if (browser && $typeAheadState === 'ready') {
-      if ($input) {
-        const url = new URL('/api/package/ta', window.location.origin);
-        url.searchParams.set('q', $input.toLowerCase());
-        url.searchParams.set('offset', offset.toString());
-
-        fetch(url)
-          .then((res) => res.json())
-          .then((res) => {
-            suggestion = res as TAItem;
-          });
+      if ($input && $taProxy) {
+        $taProxy.query($input).then((hits: TAItem[]) => {
+          suggestion = hits[offset % hits.length];
+        });
       } else {
         suggestion = {};
       }
@@ -118,11 +82,12 @@
 </script>
 
 <MediaQuery query="(max-width: 480px)" bind:matches />
+<InitTypeaheadWorker />
 
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
   <div class="relative flex-1 flex items-center h-full font-mono text-[14px]">
     <span aria-hidden="true" class="absolute flex items-center opacity-40 -z-0">
-      {#if 'id' in suggestion}
+      {#if suggestion && 'id' in suggestion}
         <span
           class="w-[clamp(50px,35vw,400px)] sm:w-auto pl-2 lowercase truncate overflow-x-hidden flex-shrink"
         >
@@ -146,6 +111,9 @@
     <input
       title="Search"
       role="search"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
       bind:value={$input}
       bind:this={inputNode}
       class={clsx(

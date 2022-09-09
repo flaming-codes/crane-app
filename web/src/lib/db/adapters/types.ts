@@ -3,6 +3,8 @@
  * Unifies the access interface for the different database implementations.
  */
 export type DBAdapter<T> = {
-  initIfNeeded(options?: { deleteExisting?: boolean }): Promise<void>;
+  initIfNeeded(options?: { deleteExisting?: boolean }): Promise<number>;
   query(q: string): Promise<T[]>;
 };
+
+export type TAItem = { id: string; slug: string };

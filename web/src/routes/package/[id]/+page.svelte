@@ -28,12 +28,13 @@
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
-  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
+
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import SearchInit from '$lib/search/views/SearchInit.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
+  const { isInputFocused, hits, input: searchInput } = store;
   const { items: searchItems } = hits;
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
@@ -51,14 +52,6 @@
   };
 
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
-
-  $: {
-    // For now, we're only using type ahead suggestions,
-    // for the input on the package details page.
-    if ($typeAheadState === 'ready') {
-      $state = 'ready';
-    }
-  }
 
   $: {
     void $isInteractionEnabled;
@@ -100,7 +93,10 @@
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
-<SearchInlinePanelResults isEnabled />
+<SearchInit />
+{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
+  <Module.default isEnabled />
+{/await}
 
 <svelte:window bind:scrollY={y} />
 
@@ -114,7 +110,7 @@
   </SearchControls>
 </ControlsBase>
 
-<section class="fixed top-0 w-full h-[50vh] bg-zinc-100 text-black">
+<section class="fixed top-0 w-full h-[50vh] bg-zinc-100 text-black pt-nav">
   <div class="grid place-content-center h-full text-center px-[5vw]">
     <h1 class="text-[clamp(2.8rem,9vw,9rem)] font-bold break-all leading-none">{item.name}</h1>
     <h2 class="text-sm lg:text-lg opacity-60 text-center">
@@ -311,21 +307,37 @@
       {/if}
 
       {#if item.additional_repositories}
-        <PackageDetailSection title="In Views" id="in views">
+        <PackageDetailSection title="Additional repos" id="additional repos">
           <SubGrid>
-            {#each item.additional_repositories as { name, link }}
-              <SubGridItem key={name} withSpaceY="md">
-                <Link
-                  href={link}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  class="block"
-                  ariaLabel="Open repo {name}"
-                >
-                  <Iconic name="carbon:logo-github" />
-                </Link>
-              </SubGridItem>
-            {/each}
+            {#if 'links' in item.additional_repositories}
+              {#each item.additional_repositories.links as link}
+                <SubGridItem withKeyTruncate key={link.replace('https://', '')} withSpaceY="md">
+                  <Link
+                    href={link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="block"
+                    ariaLabel="Open repo repo"
+                  >
+                    <Iconic name="carbon:logo-github" />
+                  </Link>
+                </SubGridItem>
+              {/each}
+            {:else}
+              {#each item.additional_repositories as { name, link }}
+                <SubGridItem key={name} withSpaceY="md">
+                  <Link
+                    href={link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="block"
+                    ariaLabel="Open repo {name}"
+                  >
+                    <Iconic name="carbon:logo-github" />
+                  </Link>
+                </SubGridItem>
+              {/each}
+            {/if}
           </SubGrid>
         </PackageDetailSection>
       {/if}

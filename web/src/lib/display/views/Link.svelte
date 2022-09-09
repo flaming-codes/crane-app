@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-
   import clsx from 'clsx';
 
   export let href: string;

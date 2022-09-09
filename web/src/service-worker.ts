@@ -1,7 +1,6 @@
 /// <reference lib="webworker" />
 
 import { build, files, version } from '$service-worker';
-import { adapter } from './sw/adapters/loki';
 
 const worker = self as unknown as ServiceWorkerGlobalScope;
 const FILES = `cache${version}`;
@@ -32,8 +31,6 @@ worker.addEventListener('activate', (event) => {
       for (const key of keys) {
         if (key !== FILES) await caches.delete(key);
       }
-
-      await adapter.initIfNeeded({ deleteExisting: true });
 
       await worker.clients.claim();
 
@@ -74,22 +71,6 @@ async function fetchAndCache(request: Request) {
   }
 }
 
-async function getTypeAheadSuggestion(params: { q: string; offset: number }) {
-  const { q, offset } = params;
-
-  await adapter.initIfNeeded();
-
-  const hits = await adapter.query(q);
-  const i = offset % hits.length;
-  const hit = hits[i];
-
-  const blob: BodyInit = new Blob([JSON.stringify(hit || {})], {
-    type: 'application/json'
-  });
-  const init: ResponseInit = { status: 200 };
-  return new Response(blob, init);
-}
-
 worker.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || event.request.headers.has('range')) return;
 
@@ -102,14 +83,10 @@ worker.addEventListener('fetch', (event) => {
   const isStaticAsset = url.host === self.location.host && staticAssets.has(url.pathname);
   const skipBecauseUncached = event.request.cache === 'only-if-cached' && !isStaticAsset;
 
-  // Intercept requests for typeahead suggestions.
+  // Don't cache requests for typeahead suggestions.
+  // They come from a local WebWorker, so caching
+  // would even slow down things in this case.
   if (url.pathname === '/api/package/ta') {
-    const q = url.searchParams.get('q') as string;
-    const offset = Math.abs(parseInt(url.searchParams.get('offset') as string, 10));
-    if (q) {
-      event.respondWith(getTypeAheadSuggestion({ q, offset }));
-    }
-
     return;
   }
 
