@@ -31,18 +31,6 @@
 
   onMount(() => {
     isFirstUse = browser && localStorage.getItem('hint-search-shortcut') === null;
-
-    if ($typeAheadState === 'ready') {
-      return;
-    }
-
-    // TODO: This shadows every subsequent update to the SW.
-    // We're fine with it for now (no spinner when SW updates DB),
-    // only IndexDB can be used to reliably communicate the state.
-    if (localStorage.getItem('sw-activated') !== null) {
-      $typeAheadState = 'ready';
-      return;
-    }
   });
 
   const onEnter = () => {

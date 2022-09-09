@@ -344,8 +344,6 @@
             {/if}
           </SubGrid>
         </PackageDetailSection>
-      {:else}
-        <div>nope</div>
       {/if}
 
       {#if item.vignettes}
