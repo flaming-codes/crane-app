@@ -31,6 +31,7 @@
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import SearchInit from '$lib/search/views/SearchInit.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
@@ -51,14 +52,6 @@
   };
 
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
-
-  $: {
-    // For now, we're only using type ahead suggestions,
-    // for the input on the package details page.
-    if ($typeAheadState === 'ready') {
-      $state = 'ready';
-    }
-  }
 
   $: {
     void $isInteractionEnabled;
@@ -100,6 +93,7 @@
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
+<SearchInit />
 <SearchInlinePanelResults isEnabled />
 
 <svelte:window bind:scrollY={y} />

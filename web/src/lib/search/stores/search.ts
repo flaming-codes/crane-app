@@ -1,11 +1,10 @@
-import { dev } from '$app/environment';
 import { writable } from 'svelte/store';
 
 export const store = {
   state: writable<'init' | 'ready' | 'searching'>('init'),
   input: writable(''),
   hits: getPaginationStore<any>({ items: [] }),
-  typeAheadState: writable<'init' | 'ready' | 'unavailable'>(dev ? 'ready' : 'init'),
+  typeAheadState: writable<'init' | 'ready' | 'unavailable'>('init'),
   isInputFocused: writable(false)
 };
 

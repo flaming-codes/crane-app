@@ -20,7 +20,7 @@
       const Proxy = wrap($worker!);
       // @ts-expect-error
       $proxy = await new Proxy();
-      console.log('worker', await $proxy.initIfNeeded());
+      await $proxy.initIfNeeded();
     }
   };
 

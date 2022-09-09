@@ -34,7 +34,7 @@
   });
 
   const onEnter = () => {
-    if ('id' in suggestion) {
+    if (suggestion && 'id' in suggestion) {
       input.set(suggestion.id);
       window.location.href = `/package/${suggestion.slug}`;
     }
@@ -87,7 +87,7 @@
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
   <div class="relative flex-1 flex items-center h-full font-mono text-[14px]">
     <span aria-hidden="true" class="absolute flex items-center opacity-40 -z-0">
-      {#if 'id' in suggestion}
+      {#if suggestion && 'id' in suggestion}
         <span
           class="w-[clamp(50px,35vw,400px)] sm:w-auto pl-2 lowercase truncate overflow-x-hidden flex-shrink"
         >
