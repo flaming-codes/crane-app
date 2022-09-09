@@ -31,7 +31,6 @@
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
-  import Button from '$lib/display/views/Button.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
@@ -39,7 +38,8 @@
   const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
   export let data: PageData;
-  const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
+  const { item, overviewTuples, maintainer, materials, aboutItems, contacts, weeklyDownloads } =
+    data;
 
   let y = 0;
 
@@ -89,25 +89,6 @@
     ['Reverse Enhances', 'reverse_enhances'],
     ['Reverse LinkingTo', 'reverse_linkingto']
   ] as const;
-
-  let weeklyDownloadsPromise = getWeeklyDownloads();
-
-  async function getWeeklyDownloads() {
-    // DOES NOT WORK due to CORS restrictions...
-    // apparently there is no way to get around this
-    let url = `https://cranlogs.r-pkg.org/downloads/total/last-week/ggplot2`;
-    const response = await fetch(url, {
-      method: 'GET',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    let data = await response.json();
-    console.log(JSON.stringify(data));
-    console.log(data[0].downloads);
-    return data[0].downloads;
-  }
 </script>
 
 <BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
@@ -188,14 +169,12 @@
             key="Weekly Downloads"
           >
             <span>
-              {#await weeklyDownloadsPromise}
-                <p>loading...</p>
-              {:then weeklyDownloads}
-                <p>Downloads: {weeklyDownloads}</p>
-              {:catch error}
-                <p>{error.message}</p>
-              {/await}</span
-            >
+              {#if weeklyDownloads}
+                <p>Downloads: {JSON.stringify(weeklyDownloads)}</p>
+              {:else}
+                <p>{'no weekly'}</p>
+              {/if}
+            </span>
           </SubGridItem>
         </SubGrid>
       </PackageDetailSection>
