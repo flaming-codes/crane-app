@@ -93,6 +93,8 @@
   let weeklyDownloadsPromise = getWeeklyDownloads();
 
   async function getWeeklyDownloads() {
+    // DOES NOT WORK due to CORS restrictions...
+    // apparently there is no way to get around this
     let url = `https://cranlogs.r-pkg.org/downloads/total/last-week/ggplot2`;
     const response = await fetch(url, {
       method: 'GET',
@@ -101,9 +103,10 @@
         'Content-Type': 'application/json'
       }
     });
-    let string = await response.text();
-    console.log(string);
-    return string;
+    let data = await response.json();
+    console.log(JSON.stringify(data));
+    console.log(data[0].downloads);
+    return data[0].downloads;
   }
 </script>
 
