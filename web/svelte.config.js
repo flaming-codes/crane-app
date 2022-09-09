@@ -20,7 +20,8 @@ const config = {
           'https',
           'api.iconify.design',
           'plausible.io',
-          'vitals.vercel-insights.com'
+          'vitals.vercel-insights.com', 
+          'https://cranlogs.r-pkg.org/downloads/total/last-week/ggplot2'
         ],
         'script-src': [
           'self',

@@ -31,6 +31,7 @@
   import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import Button from '$lib/display/views/Button.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
@@ -88,6 +89,25 @@
     ['Reverse Enhances', 'reverse_enhances'],
     ['Reverse LinkingTo', 'reverse_linkingto']
   ] as const;
+
+  let weeklyDownloadsPromise = getWeeklyDownloads();
+
+  async function getWeeklyDownloads() {
+    let url = `https://cranlogs.r-pkg.org/downloads/total/last-week/ggplot2`;
+    const response = await fetch(url, {
+      method: 'GET',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await response.json();
+    console.log(data);
+    //convert data to text
+    const text = JSON.stringify(data);
+    console.log(text);
+    return text;
+  }
 </script>
 
 <BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
@@ -142,6 +162,16 @@
       <SectionTitleSelect selected="At a glance" options={titles} />
     </SectionHeader>
 
+    <p>
+      {#await weeklyDownloadsPromise}
+        loading...
+      {:then weeklyDownloads}
+        Json: {weeklyDownloads}
+      {:catch error}
+        {error.message}
+      {/await}
+    </p>
+
     <SectionsColumn>
       <PackageDetailSection title="Installation" id="installation">
         <CopyToClipboardButton value="install.packages('{item.name}')" />
@@ -161,6 +191,17 @@
               {/if}
             </SubGridItem>
           {/each}
+
+          <SubGridItem
+            withKeyTruncate
+            withSpaceY="xs"
+            withValueOverflow="hidden"
+            key="Test"
+            title="Test"
+            url={'Test'}
+          >
+            <span>{'Test'}</span>
+          </SubGridItem>
         </SubGrid>
       </PackageDetailSection>
 
