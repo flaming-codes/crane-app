@@ -114,7 +114,7 @@
   </SearchControls>
 </ControlsBase>
 
-<section class="fixed top-0 w-full h-[50vh] bg-zinc-100 text-black">
+<section class="fixed top-0 w-full h-[50vh] bg-zinc-100 text-black pt-nav">
   <div class="grid place-content-center h-full text-center px-[5vw]">
     <h1 class="text-[clamp(2.8rem,9vw,9rem)] font-bold break-all leading-none">{item.name}</h1>
     <h2 class="text-sm lg:text-lg opacity-60 text-center">

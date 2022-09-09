@@ -2,7 +2,7 @@
   import '../app.css';
   import '../fonts.css';
   import { browser, dev } from '$app/environment';
-  import { proxy, wrap } from 'comlink';
+  import { wrap } from 'comlink';
   import { onMount } from 'svelte';
 
   if (!dev) {
