@@ -311,23 +311,41 @@
       {/if}
 
       {#if item.additional_repositories}
-        <PackageDetailSection title="In Views" id="in views">
+        <PackageDetailSection title="Additional repos" id="additional repos">
           <SubGrid>
-            {#each item.additional_repositories as { name, link }}
-              <SubGridItem key={name} withSpaceY="md">
-                <Link
-                  href={link}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  class="block"
-                  ariaLabel="Open repo {name}"
-                >
-                  <Iconic name="carbon:logo-github" />
-                </Link>
-              </SubGridItem>
-            {/each}
+            {#if 'links' in item.additional_repositories}
+              {#each item.additional_repositories.links as link}
+                <SubGridItem withKeyTruncate key={link.replace('https://', '')} withSpaceY="md">
+                  <Link
+                    href={link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="block"
+                    ariaLabel="Open repo repo"
+                  >
+                    <Iconic name="carbon:logo-github" />
+                  </Link>
+                </SubGridItem>
+              {/each}
+            {:else}
+              {#each item.additional_repositories as { name, link }}
+                <SubGridItem key={name} withSpaceY="md">
+                  <Link
+                    href={link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="block"
+                    ariaLabel="Open repo {name}"
+                  >
+                    <Iconic name="carbon:logo-github" />
+                  </Link>
+                </SubGridItem>
+              {/each}
+            {/if}
           </SubGrid>
         </PackageDetailSection>
+      {:else}
+        <div>nope</div>
       {/if}
 
       {#if item.vignettes}

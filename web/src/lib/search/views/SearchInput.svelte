@@ -1,6 +1,7 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
 
+  import { wrap } from 'comlink';
   import clsx from 'clsx';
   import { shortcut } from '$lib/input/models/shortcut';
   import { browser } from '$app/environment';
@@ -9,6 +10,7 @@
   import type { TAItem } from 'src/sw/types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import MediaQuery from 'svelte-media-queries';
+  import InitTypeaheadWorker from '$lib/db/worker/InitTypeaheadWorker.svelte';
 
   const { state, input, typeAheadState, isInputFocused } = store;
 
@@ -118,6 +120,7 @@
 </script>
 
 <MediaQuery query="(max-width: 480px)" bind:matches />
+<InitTypeaheadWorker />
 
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
   <div class="relative flex-1 flex items-center h-full font-mono text-[14px]">

@@ -90,8 +90,8 @@
           </SubGridItem>
           <SubGridItem key="Select the next inline suggestion">
             <div class="space-y-2 mt-1">
-              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" class="block" />
-              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" class="block" />
+              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" class="inline-block" />
+              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" class="inline-block" />
             </div>
           </SubGridItem>
         </SubGrid>
