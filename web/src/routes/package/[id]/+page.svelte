@@ -159,16 +159,6 @@
       <SectionTitleSelect selected="At a glance" options={titles} />
     </SectionHeader>
 
-    <p>
-      {#await weeklyDownloadsPromise}
-        <p>loading...</p>
-      {:then weeklyDownloads}
-        <p>Downloads: {weeklyDownloads}</p>
-      {:catch error}
-        <p>{error.message}</p>
-      {/await}
-    </p>
-
     <SectionsColumn>
       <PackageDetailSection title="Installation" id="installation">
         <CopyToClipboardButton value="install.packages('{item.name}')" />
@@ -188,16 +178,21 @@
               {/if}
             </SubGridItem>
           {/each}
-
           <SubGridItem
             withKeyTruncate
             withSpaceY="xs"
             withValueOverflow="hidden"
-            key="Test"
-            title="Test"
-            url={'Test'}
+            key="Weekly Downloads"
           >
-            <span>{'Test'}</span>
+            <span>
+              {#await weeklyDownloadsPromise}
+                <p>loading...</p>
+              {:then weeklyDownloads}
+                <p>Downloads: {weeklyDownloads}</p>
+              {:catch error}
+                <p>{error.message}</p>
+              {/await}</span
+            >
           </SubGridItem>
         </SubGrid>
       </PackageDetailSection>
