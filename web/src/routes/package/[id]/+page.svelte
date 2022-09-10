@@ -70,7 +70,7 @@
   ] as const;
 </script>
 
-<BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
+<BaseMeta title={item.name} description="R package for {item.title}" path="/package/{item.slug}" />
 <BreadcrumbMeta
   items={[
     { name: 'Packages', href: '/package' },
