@@ -1,3 +1,12 @@
+<!--
+  Headless component that manages the queue of notifications to display.
+  It is responsible for displaying the notifications in the correct order,
+  and for removing them from the queue when they are dismissed.
+
+  The component is headless because it does not render anything. It is
+  responsible for rendering the notifications themselves, and for
+  managing the queue of notifications to display.
+-->
 <script lang="ts">
   import { store } from '../store/store';
 
