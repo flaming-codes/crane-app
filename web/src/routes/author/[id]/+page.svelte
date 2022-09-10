@@ -140,7 +140,7 @@
               withValueSpaceY="xs"
             >
               <p class="text-neutral-300 text-lg">{title}</p>
-              <p class="text-sm">
+              <p class="text-sml leading-6">
                 {author_names.length === 1 ? 'Author:' : 'Authors:'}
                 {#each author_names as author, i}
                   <Link withForcedReload href="/author/{author}">{author}</Link>

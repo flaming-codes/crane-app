@@ -205,7 +205,15 @@
                 {#if 'mail' in meta}
                   <div class="text-xs text-neutral-300 font-mono">{meta.mail}</div>
                 {/if}
-                <div>
+                <div class="flex gap-x-3 pt-1">
+                  <Link
+                    href="/author/{value}"
+                    ariaLabel="All packages for {value}"
+                    title="All packages for {value}"
+                    class="text-white"
+                  >
+                    <Iconic name="carbon:user-profile" />
+                  </Link>
                   <SubGridIcon {meta} />
                 </div>
               {/if}
@@ -223,7 +231,7 @@
                   <p class="text-sm pt-1">{roles.join(' / ')}</p>
                 {/if}
                 {#if extra}
-                  <p class="text-xs text-neutral-400 my-4 pt-1">{extra}</p>
+                  <p class="text-xs text-neutral-400 my-4 pt-1 w-full break-words">{extra}</p>
                 {/if}
                 <div class="flex gap-x-3 pt-1">
                   <Link

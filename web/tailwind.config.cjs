@@ -8,6 +8,9 @@ module.exports = {
       fontFamily: {
         sans: ['Syne', ...defaultTheme.fontFamily.sans]
       },
+      fontSize: {
+        sml: '0.975rem'
+      },
       screens: {
         xs: '375px',
         smx: '480px'
