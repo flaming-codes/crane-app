@@ -6,7 +6,8 @@
   export let subtitle: string | undefined = undefined;
   export let height: '30' | '50' | '50!' | '70' | 'full';
   export let isFixed: boolean | undefined = undefined;
-  export let theme: 'light' | 'muted' | 'dark' | 'gradient-slate' | undefined = undefined;
+  export let theme: 'light' | 'muted' | 'dark' | 'gradient-slate' | 'gradient-dark' | undefined =
+    undefined;
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
 
@@ -32,7 +33,8 @@
       'bg-zinc-100 text-black': theme === 'light',
       'bg-gray-300 text-black': theme === 'muted',
       'bg-black text-white': theme === 'dark',
-      'from-zinc-200 to-slate-500 bg-gradient-to-b text-black': theme === 'gradient-slate'
+      'from-zinc-200 to-slate-500 bg-gradient-to-b text-black': theme === 'gradient-slate',
+      'from-zinc-900 to-slate-500 bg-gradient-to-b text-neutral-200': theme === 'gradient-dark'
     }
   )}
 >

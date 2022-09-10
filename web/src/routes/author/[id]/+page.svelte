@@ -77,8 +77,8 @@
 
 <svelte:window bind:scrollY={y} />
 
-<ControlsBase variant={isNavDark ? 'black' : 'transparent'}>
-  <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
+<ControlsBase variant={isNavDark ? 'black' : 'translucent'} class="text-white">
+  <SearchControls withTotal={false} theme="dark">
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
@@ -94,7 +94,7 @@
   subtitle={`Author of ${packages.length} ${packages.length === 1 ? 'package' : 'packages'}`}
   height="50!"
   variant="prominent"
-  theme="gradient-slate"
+  theme="gradient-dark"
   textVariant="fit"
 />
 
