@@ -1,9 +1,5 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
-  import {
-    store as focusTrapStore,
-    disableInteractionOnFocusEffect
-  } from '$lib/search/stores/disable-interaction';
 
   import PackageLink from '$lib/package/views/PackageLink.svelte';
   import clsx from 'clsx';
@@ -12,7 +8,7 @@
   import { goto } from '$app/navigation';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
 
-  const { input, state, isInputFocused } = store;
+  const { input, state } = store;
   const { items: hitItems, page, size, total, isEnd } = store.hits;
 
   type InitialAll = {
@@ -94,15 +90,6 @@
     }
   }
 
-  const { isInteractionEnabled, isTrapped } = focusTrapStore;
-
-  $: {
-    void $isInteractionEnabled;
-    void $isTrapped;
-    void $isInputFocused;
-    disableInteractionOnFocusEffect();
-  }
-
   onMount(async () => {
     if (browser && withScrollTopEffect) {
       window.scrollTo(0, 0);
@@ -118,17 +105,13 @@
 </script>
 
 <div
-  class={clsx(
-    `
+  class={`
     grid grid-cols-2 p-2 gap-x-2 gap-y-4
     sm:grid-cols-3 sm:p-3
     lg:grid-cols-4 lg:p-4 lg:gap-y-8
     xl:grid-cols-5 xl:gap-4 xl:gap-y-8
-    2xl:grid-cols-6 2xl:gap-8`,
-    {
-      'cursor-none pointer-events-none': !$isInteractionEnabled
-    }
-  )}
+    2xl:grid-cols-6 2xl:gap-8
+  `}
 >
   {#if !$input}
     <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>

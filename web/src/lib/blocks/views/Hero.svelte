@@ -3,30 +3,43 @@
 
   export let title: string;
   export let subtitle: string | undefined = undefined;
-  export let height: '30' | '50' | '70' | 'full';
+  export let height: '30' | '50' | '50!' | '70' | 'full';
   export let isFixed: boolean | undefined = undefined;
-  export let theme: 'dark' | undefined = undefined;
+  export let theme: 'light' | 'dark' | undefined = undefined;
+  export let textVariant: 'dense' | undefined = undefined;
+  export let variant: 'prominent' | undefined = undefined;
+
+  const defaultVariant = `
+  sm:px-10
+    md:flex-row md:space-x-6 md:space-y-0 md:justify-start
+    lg:px-20
+  `;
 </script>
 
 <section
   class={clsx(
-    `
-    top-0 w-full -z-10 flex flex-col justify-center space-y-4 items-center px-2 pt-nav
-    sm:px-10
-    md:flex-row md:space-x-6 md:space-y-0 md:justify-start
-    lg:px-20
-    `,
+    ' top-0 w-full -z-10 flex flex-col justify-center space-y-4 items-center px-2 pt-nav',
     {
+      [defaultVariant]: !variant,
+      'text-center px-[5vw]': variant === 'prominent',
       'h-[clamp(40vh,50vw,70vh)]': height === '70',
       'h-[clamp(40vh,40vw,50vh)]': height === '50',
+      'h-[50vh]': height === '50!',
       'h-[clamp(10vh,20vw,30vh)]': height === '30',
       'h-screen': height === 'full',
       fixed: isFixed,
+      'bg-zinc-100 text-black': theme === 'light',
       'bg-black text-white': theme === 'dark'
     }
   )}
 >
-  <h1 class="text-[clamp(2.8rem,9vw,9rem)] font-bold">{title}</h1>
+  <h1
+    class={clsx('text-[clamp(2.8rem,9vw,9rem)] font-bold', {
+      'break-all leading-none': textVariant === 'dense'
+    })}
+  >
+    {title}
+  </h1>
   <h2 class="text-sm lg:text-lg opacity-60 text-center">
     {subtitle}
   </h2>

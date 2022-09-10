@@ -1,9 +1,5 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
-  import {
-    store as focusTrapStore,
-    disableInteractionOnFocusEffect
-  } from '$lib/search/stores/disable-interaction';
 
   import Section from '$lib/blocks/views/Section.svelte';
   import SectionTitleSelect from '$lib/blocks/views/SectionTitleSelect.svelte';
@@ -21,22 +17,20 @@
   import PackageDocumentIcon from '$lib/package/views/PackageDocumentIcon.svelte';
   import SystemIcon from '$lib/blocks/views/SystemIcon.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
-  import clsx from 'clsx';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Link from '$lib/display/views/Link.svelte';
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
-
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
+  import Hero from '$lib/blocks/views/Hero.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { isInputFocused, hits, input: searchInput } = store;
+  const { hits, input: searchInput } = store;
   const { items: searchItems } = hits;
-  const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
   export let data: PageData;
   const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
@@ -52,13 +46,6 @@
   };
 
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
-
-  $: {
-    void $isInteractionEnabled;
-    void $isTrapped;
-    void $isInputFocused;
-    disableInteractionOnFocusEffect();
-  }
 
   const titles = [
     'At a glance',
@@ -110,26 +97,22 @@
   </SearchControls>
 </ControlsBase>
 
-<section class="fixed top-0 w-full h-[50vh] bg-zinc-100 text-black pt-nav">
-  <div class="grid place-content-center h-full text-center px-[5vw]">
-    <h1 class="text-[clamp(2.8rem,9vw,9rem)] font-bold break-all leading-none">{item.name}</h1>
-    <h2 class="text-sm lg:text-lg opacity-60 text-center">
-      {item.title}
-    </h2>
-  </div>
-</section>
+<Hero
+  isFixed
+  title={item.name}
+  subtitle={item.title}
+  height="50!"
+  variant="prominent"
+  theme="light"
+  textVariant="dense"
+/>
 
 <main
-  class={clsx(
-    `
+  class={`
     absolute top-0 left-0 right-0 mt-[50vh] min-h-[200vh] pb-20 space-y-8 bg-zinc-900 text-gray-100
     md:space-y-12 
     lg:space-y-16
-  `,
-    {
-      'pointer-events-none cursor-none': !$isInteractionEnabled
-    }
-  )}
+  `}
 >
   <Section withTwoFoldLayout withPaddingX={false} id="at a glance">
     <!-- At a glance -->
