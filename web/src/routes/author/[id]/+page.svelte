@@ -95,7 +95,7 @@
   subtitle={`Author of ${packages.length} ${packages.length === 1 ? 'package' : 'packages'}`}
   height="50!"
   variant="prominent"
-  theme="gradient-dark"
+  theme="gradient-black-slate"
   textVariant="fit"
 />
 
