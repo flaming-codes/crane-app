@@ -6,8 +6,6 @@ export const load: PageServerLoad = async ({ params }) => {
   const { id } = params as { id: string };
   const data = await authors();
 
-  console.log({ length: Object.keys(data).length });
-
   const packageNames = data[id];
 
   if (!packageNames) {
