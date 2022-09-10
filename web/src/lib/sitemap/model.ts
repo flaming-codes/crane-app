@@ -19,3 +19,7 @@ export function composeUrlElement(params: {
       </url>
     `.trim();
 }
+
+export function getTodayLastmod() {
+  return new Date().toISOString().slice(0, 10);
+}
