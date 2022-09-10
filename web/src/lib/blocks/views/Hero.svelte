@@ -2,11 +2,12 @@
   import clsx from 'clsx';
 
   export let title: string;
+  export let titleSize: 'lg' | 'xl' = 'xl';
   export let subtitle: string | undefined = undefined;
   export let height: '30' | '50' | '50!' | '70' | 'full';
   export let isFixed: boolean | undefined = undefined;
-  export let theme: 'light' | 'dark' | undefined = undefined;
-  export let textVariant: 'dense' | undefined = undefined;
+  export let theme: 'light' | 'muted' | 'dark' | 'gradient-slate' | undefined = undefined;
+  export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
 
   const defaultVariant = `
@@ -29,13 +30,18 @@
       'h-screen': height === 'full',
       fixed: isFixed,
       'bg-zinc-100 text-black': theme === 'light',
-      'bg-black text-white': theme === 'dark'
+      'bg-gray-300 text-black': theme === 'muted',
+      'bg-black text-white': theme === 'dark',
+      'from-zinc-200 to-slate-500 bg-gradient-to-b text-black': theme === 'gradient-slate'
     }
   )}
 >
   <h1
-    class={clsx('text-[clamp(2.8rem,9vw,9rem)] font-bold', {
-      'break-all leading-none': textVariant === 'dense'
+    class={clsx('font-bold', {
+      'text-[clamp(2.8rem,9vw,9rem)]': titleSize === 'xl',
+      'text-[clamp(2.8rem,8vw,7rem)]': titleSize === 'lg',
+      'break-all leading-none': textVariant === 'dense',
+      'break-words leading-none': textVariant === 'fit'
     })}
   >
     {title}

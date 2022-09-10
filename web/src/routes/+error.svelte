@@ -22,6 +22,9 @@
 
 <ColorScheme scheme="dark" />
 <SearchInit />
+{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
+  <Module.default isEnabled />
+{/await}
 
 <ControlsBase variant="dark">
   <SearchControls withTotal={false}>

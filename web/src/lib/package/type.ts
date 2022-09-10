@@ -78,3 +78,10 @@ export type Pkg = {
   reverse_enhances?: Dependency[];
   reverse_linkingto?: Dependency[];
 };
+
+export type OverviewPkg = {
+  name: string;
+  title: string;
+  slug: string;
+  author_names: string[];
+};

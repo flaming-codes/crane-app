@@ -203,22 +203,31 @@
             {#each item.author as { name, roles, link, extra }}
               <SubGridItem key={name} emphasis="key" withValueSpaceY="xs">
                 {#if roles}
-                  <p class="text-sm">{roles.join(' / ')}</p>
+                  <p class="text-sm pt-1">{roles.join(' / ')}</p>
                 {/if}
                 {#if extra}
-                  <p class="text-xs text-neutral-400 my-4">{extra}</p>
+                  <p class="text-xs text-neutral-400 my-4 pt-1">{extra}</p>
                 {/if}
-                {#if link}
+                <div class="flex gap-x-3 pt-1">
                   <Link
-                    href={link}
-                    ariaLabel="Link for {name}"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    href="/author/{name}"
+                    ariaLabel="All packages for {name}"
                     class="text-white"
                   >
-                    <Iconic name="carbon:arrow-up-right" />
+                    <Iconic name="carbon:user-profile" />
                   </Link>
-                {/if}
+                  {#if link}
+                    <Link
+                      href={link}
+                      ariaLabel="Link for {name}"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      class="text-white"
+                    >
+                      <Iconic name="la:orcid" />
+                    </Link>
+                  {/if}
+                </div>
               </SubGridItem>
             {/each}
           </SubGrid>
@@ -468,6 +477,7 @@
           <SubGridItem
             key="Open a ticket"
             url="https://github.com/flaming-codes/crane-app/issues/new/choose"
+            urlTarget="_blank"
             withSpaceY="xs"
             withValueSpaceY="xs"
           >

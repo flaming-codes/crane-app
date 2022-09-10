@@ -11,6 +11,7 @@
   export let withValueOverflow: 'hidden' | undefined = undefined;
   export let withKeyTruncate: boolean = false;
   export let url: string | false | undefined = undefined;
+  export let urlTarget: '_blank' | '_self' | '_parent' | '_top' | undefined = undefined;
   export let onClick: ((event: MouseEvent) => void) | undefined = undefined;
 
   let cn: string | undefined = undefined;
@@ -24,7 +25,7 @@
       onClick(event);
     }
     if (url) {
-      window.open(url, '_blank');
+      window.open(url, urlTarget);
     }
   }}
   class={clsx(
