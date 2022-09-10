@@ -17,5 +17,12 @@ export const load: PageServerLoad = async ({ params }) => {
     .map((name) => overviewData.find((p) => p.name === name)!)
     .filter(Boolean);
 
-  return { id, packages };
+  const otherAuthors = packages
+    .map((p) => p.author_names)
+    .flat()
+    .filter((name, i, arr) => name !== id && arr.indexOf(name) === i);
+
+  const totalOtherAuthors = otherAuthors.length;
+
+  return { id, packages, otherAuthors, totalOtherAuthors };
 };

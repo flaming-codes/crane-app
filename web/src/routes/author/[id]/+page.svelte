@@ -28,12 +28,13 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  const { id, packages } = data;
+  export let errors: unknown;
+  const { id, packages, otherAuthors, totalOtherAuthors } = data;
   const slug = encodeURIComponent(id);
 
   let y = 0;
 
-  const titles = ['Packages'];
+  const titles = ['About', 'Packages', 'Team'];
 
   const getHeroScrollDelta = () => {
     const halfWindowHeight = browser ? window.innerHeight / 2 : 0;
@@ -77,8 +78,8 @@
 
 <svelte:window bind:scrollY={y} />
 
-<ControlsBase variant={isNavDark ? 'black' : 'transparent'}>
-  <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
+<ControlsBase variant={isNavDark ? 'black' : 'translucent'} class="text-white">
+  <SearchControls withTotal={false} theme="dark">
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
@@ -94,24 +95,49 @@
   subtitle={`Author of ${packages.length} ${packages.length === 1 ? 'package' : 'packages'}`}
   height="50!"
   variant="prominent"
-  theme="gradient-slate"
+  theme="gradient-black-slate"
   textVariant="fit"
 />
 
 <main
   class={`
-    absolute top-0 left-0 right-0 mt-[50vh] min-h-[100vh] pb-20 space-y-8 bg-zinc-900 text-gray-100
-    md:space-y-12 
-    lg:space-y-16
+    absolute top-0 left-0 right-0 mt-[50vh] min-h-[100vh] pt-10 pb-20 space-y-8 bg-zinc-900 text-neutral-100
+    md:space-y-16
   `}
 >
+  <Section withTwoFoldLayout withPaddingX={false} id="about">
+    <SectionHeader>
+      <SectionTitleSelect selected="About" options={titles} />
+    </SectionHeader>
+    <SectionsColumn>
+      <PackageDetailSection title="Quick info" id="quick info">
+        <p class="prose  prose-lg prose-invert max-w-none">
+          {id} has worked on {packages.length}
+          {packages.length === 1 ? 'package' : 'packages'} so far. In total, {id} has worked with {totalOtherAuthors}
+          other {totalOtherAuthors === 1 ? 'author' : 'authors'} on those packages.
+          {#if totalOtherAuthors === 0}
+            A true lone wolf!
+          {:else if totalOtherAuthors < 5}
+            Nice teamwork!
+          {:else if totalOtherAuthors < 10}
+            A true team player!
+          {:else if totalOtherAuthors < 100}
+            Impressive teamwork!
+          {:else}
+            This amount of teamwork is mind-blowing! A true legend.
+          {/if}
+        </p>
+      </PackageDetailSection>
+    </SectionsColumn>
+  </Section>
+
   <!-- Packages -->
   <Section withTwoFoldLayout withPaddingX={false} id="packages">
     <SectionHeader>
       <SectionTitleSelect selected="Packages" options={titles} />
     </SectionHeader>
 
-    <SectionsColumn>
+    <SectionsColumn spaceY="lg">
       <PackageDetailSection title="Quick links" id="quick links">
         <SubGrid>
           {#each packages as { name, slug }}
@@ -129,19 +155,19 @@
           {/each}
         </SubGrid>
       </PackageDetailSection>
+
       <PackageDetailSection title="Package details" id="package details">
         <SubGrid>
           {#each packages as { name, title, slug, author_names }}
             <SubGridItem
               key={name}
               emphasis="key"
-              class="col-span-full"
+              class="col-span-full xl:col-span-2"
               withSpaceY="xs"
               withValueSpaceY="xs"
             >
               <p class="text-neutral-300 text-lg">{title}</p>
               <p class="text-sml leading-6">
-                {author_names.length === 1 ? 'Author:' : 'Authors:'}
                 {#each author_names as author, i}
                   <Link withForcedReload href="/author/{author}">{author}</Link>
                   {#if i < author_names.length - 1}
@@ -150,6 +176,25 @@
                 {/each}
               </p>
               <Link href="/package/{slug}" class="inline-block pt-2">
+                <Iconic name="carbon:arrow-right" />
+              </Link>
+            </SubGridItem>
+          {/each}
+        </SubGrid>
+      </PackageDetailSection>
+    </SectionsColumn>
+  </Section>
+
+  <Section withTwoFoldLayout withPaddingX={false} id="team">
+    <SectionHeader>
+      <SectionTitleSelect selected="Team" options={titles} />
+    </SectionHeader>
+    <SectionsColumn>
+      <PackageDetailSection title="Colleagues" id="colleagues">
+        <SubGrid>
+          {#each otherAuthors as name}
+            <SubGridItem key={name} withSpaceY="xs" withValueSpaceY="xs">
+              <Link withForcedReload href="/author/{name}">
                 <Iconic name="carbon:arrow-right" />
               </Link>
             </SubGridItem>

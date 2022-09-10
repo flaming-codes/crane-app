@@ -1,32 +1,21 @@
-import { sitemapTuples } from '$lib/db/model';
-import { composeUrlElement } from '$lib/sitemap/model';
-import { error, type RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
 export const prerender = true;
 
 export const GET: RequestHandler = async () => {
-  const tuples = await sitemapTuples();
-
-  if (!tuples) {
-    throw error(500, 'Failed to fetch sitemap tuples');
-  }
-
   return new Response(
-    `
-    <?xml version="1.0" encoding="UTF-8" ?>
-    <urlset
-      xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
-    >
-      ${composeUrlElement({ path: '/', lastmod: '2022-08-20' })}
-      ${composeUrlElement({ path: '/about', lastmod: '2022-08-20' })}
-      ${composeUrlElement({ path: '/how-to', lastmod: '2022-08-20' })}
-      ${tuples
-        .map(([slug, lastmod]) =>
-          composeUrlElement({ path: `/package/${slug}`, lastmod, priority: 1 })
-        )
-        .join('\n')}
-    </urlset>
-  `.trim(),
+    `<?xml version="1.0" encoding="UTF-8" ?>
+    <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-common.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-packages.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors.xml</loc>
+      </sitemap>
+    </sitemapindex>`.trim(),
     {
       headers: {
         'Content-Type': 'application/xml',

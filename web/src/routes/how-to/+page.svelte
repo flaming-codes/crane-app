@@ -5,6 +5,7 @@
   import SectionHeader from '$lib/blocks/views/SectionHeader.svelte';
   import SectionsColumn from '$lib/blocks/views/SectionsColumn.svelte';
   import SectionTitleSelect from '$lib/blocks/views/SectionTitleSelect.svelte';
+  import SheetContent from '$lib/blocks/views/SheetContent.svelte';
   import SubGrid from '$lib/blocks/views/SubGrid.svelte';
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
   import ControlsBase from '$lib/controls/views/ControlsBase.svelte';
@@ -38,71 +39,74 @@
   </SearchControls>
 </ControlsBase>
 
-<main class="text-neutral-50 space-y-20 pb-60">
+<main>
   <Hero
+    isFixed
     title="How-To"
     subtitle="Shortcuts and general usage descriptions"
     height="50"
     theme="dark"
   />
 
-  <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="usage">
-    <SectionHeader>
-      <SectionTitleSelect selected="Usage" options={titles} />
-    </SectionHeader>
+  <SheetContent offset="50" class=" text-neutral-50 space-y-20 pb-60 bg-zinc-900">
+    <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="usage">
+      <SectionHeader>
+        <SectionTitleSelect selected="Usage" options={titles} />
+      </SectionHeader>
 
-    <SectionsColumn>
-      <PackageDetailSection title="Search" withProse="dark">
-        <div class="prose-lg">
-          <p>
-            The search bar at the bottom of the screen takes your input and runs a fuzzy-search
-            against our database of metadata for each package.
-          </p>
-          <p>
-            Fuzzy search means that it provides an experience similar to Google. You can type in a
-            few letters and the search will return results that match your input based on a weighted
-            algorithm.
-          </p>
-          <p>
-            All results in the grid of packages are sorted by last publication date. The topmost
-            items are therefore also the most recently published packages.
-          </p>
-        </div>
-      </PackageDetailSection>
-    </SectionsColumn>
-  </Section>
+      <SectionsColumn>
+        <PackageDetailSection title="Search" withProse="dark">
+          <div class="prose-lg">
+            <p>
+              The search bar at the bottom of the screen takes your input and runs a fuzzy-search
+              against our database of metadata for each package.
+            </p>
+            <p>
+              Fuzzy search means that it provides an experience similar to Google. You can type in a
+              few letters and the search will return results that match your input based on a
+              weighted algorithm.
+            </p>
+            <p>
+              All results in the grid of packages are sorted by last publication date. The topmost
+              items are therefore also the most recently published packages.
+            </p>
+          </div>
+        </PackageDetailSection>
+      </SectionsColumn>
+    </Section>
 
-  <Section withTwoFoldLayout withPaddingX={false} id="shortcuts">
-    <SectionHeader>
-      <SectionTitleSelect selected="Shortcuts" options={titles} />
-    </SectionHeader>
+    <Section withTwoFoldLayout withPaddingX={false} id="shortcuts">
+      <SectionHeader>
+        <SectionTitleSelect selected="Shortcuts" options={titles} />
+      </SectionHeader>
 
-    <SectionsColumn>
-      <PackageDetailSection title="Everywhere">
-        <SubGrid>
-          <SubGridItem key="Focus search">
-            <Kbd withLowOpacity={false} text=":meta: K" theme="dark" />
-          </SubGridItem>
-          <SubGridItem key="Select search inline suggestion">
-            <span>
-              <Kbd withLowOpacity={false} text="Enter" theme="dark" />
-            </span>
-          </SubGridItem>
-          <SubGridItem key="Select the next inline suggestion">
-            <div class="space-y-2 mt-1">
-              <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" class="inline-block" />
-              <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" class="inline-block" />
-            </div>
-          </SubGridItem>
-        </SubGrid>
-      </PackageDetailSection>
-      <PackageDetailSection title="Package detail page">
-        <SubGrid>
-          <SubGridItem key="Copy install command">
-            <Kbd withLowOpacity={false} text=":meta: Shift C" theme="dark" />
-          </SubGridItem>
-        </SubGrid>
-      </PackageDetailSection>
-    </SectionsColumn>
-  </Section>
+      <SectionsColumn>
+        <PackageDetailSection title="Everywhere">
+          <SubGrid>
+            <SubGridItem key="Focus search">
+              <Kbd withLowOpacity={false} text=":meta: K" theme="dark" />
+            </SubGridItem>
+            <SubGridItem key="Select search inline suggestion">
+              <span>
+                <Kbd withLowOpacity={false} text="Enter" theme="dark" />
+              </span>
+            </SubGridItem>
+            <SubGridItem key="Select the next inline suggestion">
+              <div class="space-y-2 mt-1">
+                <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" class="inline-block" />
+                <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" class="inline-block" />
+              </div>
+            </SubGridItem>
+          </SubGrid>
+        </PackageDetailSection>
+        <PackageDetailSection title="Package detail page">
+          <SubGrid>
+            <SubGridItem key="Copy install command">
+              <Kbd withLowOpacity={false} text=":meta: Shift C" theme="dark" />
+            </SubGridItem>
+          </SubGrid>
+        </PackageDetailSection>
+      </SectionsColumn>
+    </Section>
+  </SheetContent>
 </main>
