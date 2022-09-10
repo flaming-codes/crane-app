@@ -1,5 +1,5 @@
 import { authors } from '$lib/db/model';
-import { composeUrlElement } from '$lib/sitemap/model';
+import { composeUrlElement, getTodayLastmod } from '$lib/sitemap/model';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 export const prerender = true;
@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
     throw error(500, 'Failed to fetch sitemap tuples');
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayLastmod();
 
   return new Response(
     `<?xml version="1.0" encoding="UTF-8" ?>
