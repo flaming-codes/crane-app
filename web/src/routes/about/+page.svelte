@@ -19,7 +19,6 @@
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import Icon from '@iconify/svelte';
-  import SvelteSeo from 'svelte-seo';
   import type { PageData } from './$types';
 
   export let data: PageData;
