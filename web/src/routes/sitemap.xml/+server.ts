@@ -30,7 +30,7 @@ export const GET: RequestHandler = async () => {
     {
       headers: {
         'Content-Type': 'application/xml',
-        'Cache-Control': 'max-age=0, s-maxage=3600', 
+        'Cache-Control': 'max-age=0, s-maxage=3600',
         'X-Robots-Tag': 'noindex'
       }
     }
