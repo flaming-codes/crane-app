@@ -13,7 +13,7 @@
 
   $: {
     if (browser) {
-      sendEvent('package-not-found', {
+      sendEvent('author-not-found', {
         props: { reason: $page.error?.message }
       });
     }
@@ -38,7 +38,7 @@
 
 <Hero
   title="Not found"
-  subtitle="Package '{$page.error?.message}' doesn't exist"
+  subtitle="Author '{$page.error?.message}' doesn't exist"
   height="full"
   isFixed={true}
 />
