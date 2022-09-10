@@ -49,7 +49,7 @@ export type Pkg = {
   contact?: { names: string[]; emails: string[] };
   copyright?: TextLinkTuple;
   priority?: string;
-  additional_repositories?: NameLinkTuple[];
+  additional_repositories?: { links: string[] } | NameLinkTuple[];
   author?: Array<{ name: string; roles?: string[]; link?: string; extra?: string }>;
   license?: Array<NameLinkTuple & { extra?: string }>;
   os_type?: string;
@@ -77,4 +77,11 @@ export type Pkg = {
   reverse_suggests?: Dependency[];
   reverse_enhances?: Dependency[];
   reverse_linkingto?: Dependency[];
+};
+
+export type OverviewPkg = {
+  name: string;
+  title: string;
+  slug: string;
+  author_names: string[];
 };

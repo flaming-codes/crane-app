@@ -1,9 +1,5 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
-  import {
-    store as focusTrapStore,
-    disableInteractionOnFocusEffect
-  } from '$lib/search/stores/disable-interaction';
 
   import Section from '$lib/blocks/views/Section.svelte';
   import SectionTitleSelect from '$lib/blocks/views/SectionTitleSelect.svelte';
@@ -21,21 +17,21 @@
   import PackageDocumentIcon from '$lib/package/views/PackageDocumentIcon.svelte';
   import SystemIcon from '$lib/blocks/views/SystemIcon.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
-  import clsx from 'clsx';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import Link from '$lib/display/views/Link.svelte';
   import PackageDependencySubGrid from '$lib/package/views/PackageDependencySubGrid.svelte';
   import type { PageData } from './$types';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
-  import SearchInlinePanelResults from '$lib/search/views/SearchInlinePanelResults.svelte';
   import { browser } from '$app/environment';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import SearchInit from '$lib/search/views/SearchInit.svelte';
+  import Hero from '$lib/blocks/views/Hero.svelte';
+  import FaqMeta from '$lib/seo/views/FaqMeta.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
-  const { state, typeAheadState, isInputFocused, hits, input: searchInput } = store;
+  const { hits, input: searchInput } = store;
   const { items: searchItems } = hits;
-  const { isInteractionEnabled, isTrapped } = focusTrapStore;
 
   export let data: PageData;
   const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
@@ -51,21 +47,6 @@
   };
 
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
-
-  $: {
-    // For now, we're only using type ahead suggestions,
-    // for the input on the package details page.
-    if ($typeAheadState === 'ready') {
-      $state = 'ready';
-    }
-  }
-
-  $: {
-    void $isInteractionEnabled;
-    void $isTrapped;
-    void $isInputFocused;
-    disableInteractionOnFocusEffect();
-  }
 
   const titles = [
     'At a glance',
@@ -90,17 +71,36 @@
   ] as const;
 </script>
 
-<BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
+<BaseMeta title={item.name} description="R package for {item.title}" path="/package/{item.slug}" />
 <BreadcrumbMeta
   items={[
     { name: 'Packages', href: '/package' },
     { name: item.name, href: `/package/${item.slug}` }
   ]}
 />
+<FaqMeta
+  items={[
+    {
+      q: `What does the R-package '${item.name}' do?`,
+      a: item.title
+    },
+    {
+      q: `Who maintains ${item.name}?`,
+      a: maintainer?.[1] || 'Unknown'
+    },
+    {
+      q: `Who authored ${item.name}?`,
+      a: item.author?.map((a) => a.name).join(', ') || 'Unknown'
+    }
+  ]}
+/>
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 
-<SearchInlinePanelResults isEnabled />
+<SearchInit />
+{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
+  <Module.default isEnabled />
+{/await}
 
 <svelte:window bind:scrollY={y} />
 
@@ -114,26 +114,22 @@
   </SearchControls>
 </ControlsBase>
 
-<section class="fixed top-0 w-full h-[50vh] bg-zinc-100 text-black">
-  <div class="grid place-content-center h-full text-center px-[5vw]">
-    <h1 class="text-[clamp(2.8rem,9vw,9rem)] font-bold break-all leading-none">{item.name}</h1>
-    <h2 class="text-sm lg:text-lg opacity-60 text-center">
-      {item.title}
-    </h2>
-  </div>
-</section>
+<Hero
+  isFixed
+  title={item.name}
+  subtitle={item.title}
+  height="50!"
+  variant="prominent"
+  theme="light"
+  textVariant="dense"
+/>
 
 <main
-  class={clsx(
-    `
+  class={`
     absolute top-0 left-0 right-0 mt-[50vh] min-h-[200vh] pb-20 space-y-8 bg-zinc-900 text-gray-100
     md:space-y-12 
     lg:space-y-16
-  `,
-    {
-      'pointer-events-none cursor-none': !$isInteractionEnabled
-    }
-  )}
+  `}
 >
   <Section withTwoFoldLayout withPaddingX={false} id="at a glance">
     <!-- At a glance -->
@@ -209,7 +205,15 @@
                 {#if 'mail' in meta}
                   <div class="text-xs text-neutral-300 font-mono">{meta.mail}</div>
                 {/if}
-                <div>
+                <div class="flex gap-x-3 pt-1">
+                  <Link
+                    href="/author/{value}"
+                    ariaLabel="All packages for {value}"
+                    title="All packages for {value}"
+                    class="text-white"
+                  >
+                    <Iconic name="carbon:user-profile" />
+                  </Link>
                   <SubGridIcon {meta} />
                 </div>
               {/if}
@@ -224,22 +228,33 @@
             {#each item.author as { name, roles, link, extra }}
               <SubGridItem key={name} emphasis="key" withValueSpaceY="xs">
                 {#if roles}
-                  <p class="text-sm">{roles.join(' / ')}</p>
+                  <p class="text-sm pt-1">{roles.join(' / ')}</p>
                 {/if}
                 {#if extra}
-                  <p class="text-xs text-neutral-400 my-4">{extra}</p>
+                  <p class="text-xs text-neutral-400 my-4 pt-1 w-full break-words">{extra}</p>
                 {/if}
-                {#if link}
+                <div class="flex gap-x-3 pt-1">
                   <Link
-                    href={link}
-                    ariaLabel="Link for {name}"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    href="/author/{name}"
+                    ariaLabel="All packages for {name}"
+                    title="All packages for {name}"
                     class="text-white"
                   >
-                    <Iconic name="carbon:arrow-up-right" />
+                    <Iconic name="carbon:user-profile" />
                   </Link>
-                {/if}
+                  {#if link}
+                    <Link
+                      href={link}
+                      ariaLabel="Link for {name}"
+                      title="Link for {name}"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      class="text-white"
+                    >
+                      <Iconic name="la:orcid" />
+                    </Link>
+                  {/if}
+                </div>
               </SubGridItem>
             {/each}
           </SubGrid>
@@ -311,21 +326,37 @@
       {/if}
 
       {#if item.additional_repositories}
-        <PackageDetailSection title="In Views" id="in views">
+        <PackageDetailSection title="Additional repos" id="additional repos">
           <SubGrid>
-            {#each item.additional_repositories as { name, link }}
-              <SubGridItem key={name} withSpaceY="md">
-                <Link
-                  href={link}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  class="block"
-                  ariaLabel="Open repo {name}"
-                >
-                  <Iconic name="carbon:logo-github" />
-                </Link>
-              </SubGridItem>
-            {/each}
+            {#if 'links' in item.additional_repositories}
+              {#each item.additional_repositories.links as link}
+                <SubGridItem withKeyTruncate key={link.replace('https://', '')} withSpaceY="md">
+                  <Link
+                    href={link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="block"
+                    ariaLabel="Open repo repo"
+                  >
+                    <Iconic name="carbon:logo-github" />
+                  </Link>
+                </SubGridItem>
+              {/each}
+            {:else}
+              {#each item.additional_repositories as { name, link }}
+                <SubGridItem key={name} withSpaceY="md">
+                  <Link
+                    href={link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="block"
+                    ariaLabel="Open repo {name}"
+                  >
+                    <Iconic name="carbon:logo-github" />
+                  </Link>
+                </SubGridItem>
+              {/each}
+            {/if}
           </SubGrid>
         </PackageDetailSection>
       {/if}
@@ -466,23 +497,24 @@
       <PackageDetailSection title="Contact us">
         <p class="prose prose-lg prose-invert max-w-none">
           If you found an issue, no matter what, please don't hesitate to contact us! We're eager
-          for any feedback and appreciate your commitement a lot!
+          for any feedback and appreciate your commitment a lot!
         </p>
 
-        <SubGridItem
-          key="Open a ticket"
-          url="https://github.com/flaming-codes/crane-app/issues/new/choose"
-          withSpaceY="xs"
-          withValueSpaceY="xs"
-        >
-          <Link
-            href="https://github.com/flaming-codes/crane-app/issues/new/choose"
-            ariaLabel="Open a ticket at Github"
-          >
-            <Iconic name="carbon:logo-github" />
-          </Link>
-        </SubGridItem>
         <SubGrid>
+          <SubGridItem
+            key="Open a ticket"
+            url="https://github.com/flaming-codes/crane-app/issues/new/choose"
+            urlTarget="_blank"
+            withSpaceY="xs"
+            withValueSpaceY="xs"
+          >
+            <Link
+              href="https://github.com/flaming-codes/crane-app/issues/new/choose"
+              ariaLabel="Open a ticket at Github"
+            >
+              <Iconic name="carbon:logo-github" />
+            </Link>
+          </SubGridItem>
           <SubGridItem
             key="Email"
             url="mailto:tom@flaming.codes"
@@ -493,8 +525,8 @@
             <Link href="mailto:tom@flaming.codes" ariaLabel="Send us an email">
               <Iconic name="carbon:email" />
             </Link>
-          </SubGridItem>
-        </SubGrid>
+          </SubGridItem></SubGrid
+        >
       </PackageDetailSection>
     </SectionsColumn>
   </Section>

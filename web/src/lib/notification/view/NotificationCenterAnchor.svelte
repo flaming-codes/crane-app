@@ -1,3 +1,7 @@
+<!--
+  Simple wrapper for the NotificationCenter to place
+  it at the bottom of the screen.
+-->
 <script>
   import NotificationCenter from './NotificationCenter.svelte';
 </script>

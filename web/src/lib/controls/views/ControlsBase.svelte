@@ -1,7 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
 
-  export let variant: 'light' | 'dark' | 'void' | 'black' | undefined = undefined;
+  export let variant: 'light' | 'dark' | 'void' | 'black' | 'transparent' | undefined = undefined;
   let cn: string | undefined = undefined;
   export { cn as class };
 </script>
@@ -17,7 +17,8 @@
       'bg-zinc-300/60 backdrop-blur-lg text-zinc-800': !variant || variant === 'light',
       'bg-zinc-400/[0.1] backdrop-blur-lg text-gray-200': variant === 'dark',
       'bg-zinc-600/[0.1] backdrop-blur-lg text-gray-200': variant === 'void',
-      'bg-black/80 backdrop-blur-sm text-white': variant === 'black'
+      'bg-black/80 backdrop-blur-lg text-white': variant === 'black',
+      'bg-transparent backdrop-blur-lg text-zinc-800': variant === 'transparent'
     },
     cn
   )}

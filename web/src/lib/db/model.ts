@@ -1,23 +1,25 @@
-import type { Pkg } from '$lib/package/type';
-import type { TAItem } from 'src/sw/types';
+import type { OverviewPkg, Pkg } from '$lib/package/type';
+import type { TAItem } from './adapters/types';
 import Fuse from 'fuse.js';
 
-let overviewData: Pkg[] | undefined;
+let overviewData: OverviewPkg[] | undefined;
 let typeAheadData: TAItem[] | undefined;
 let sitemapData: [string, string] | undefined;
+let authorData: Record<string, string[]> | undefined;
 
-let instance: Fuse<Pkg> | undefined;
+let instance: Fuse<OverviewPkg> | undefined;
 
 const overviewUrl = import.meta.env.VITE_OVERVIEW_PKGS_URL;
 const taUrl = import.meta.env.VITE_TA_PKGS_URL;
 const selectUrl = import.meta.env.VITE_SELECT_PKG_URL;
 const sitemapUrl = import.meta.env.VITE_SITEMAP_PKGS_URL;
+const authorUrl = import.meta.env.VITE_AP_PKGS_URL;
 
 /**
  *
  * @returns
  */
-export async function db(): Promise<Fuse<Pkg>> {
+export async function db(): Promise<Fuse<OverviewPkg>> {
   if (!instance) {
     const items = await overview();
     // Apply schema for the search index.
@@ -56,7 +58,7 @@ export async function select(params: { id: string }): Promise<Pkg | undefined> {
 
 export async function overview() {
   if (!overviewData) {
-    overviewData = await fetcher<Pkg[]>(overviewUrl, '');
+    overviewData = await fetcher<OverviewPkg[]>(overviewUrl, '');
   }
   return overviewData;
 }
@@ -71,6 +73,17 @@ export async function typeAheadTuples() {
     typeAheadData = raw.map(([id, slug]) => ({ id, slug }));
   }
   return typeAheadData;
+}
+
+/**
+ *
+ * @returns
+ */
+export async function authors() {
+  if (!authorData) {
+    authorData = await fetcher<Record<string, string[]>>(authorUrl, '');
+  }
+  return authorData;
 }
 
 /**

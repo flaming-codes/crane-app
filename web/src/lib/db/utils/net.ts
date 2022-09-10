@@ -1,4 +1,4 @@
-import type { TAItem } from '../types';
+import type { TAItem } from '../adapters/types';
 
 /**
  *

@@ -1,10 +1,10 @@
-import type { TAItem } from '../types';
 import type { IDBPDatabase } from 'idb';
 import { openDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
 import Loki, { Collection } from '@lokidb/loki';
+
+import type { DBAdapter, TAItem } from './types';
 import { fetchTypeAheadItems } from '../utils/net';
-import type { DBAdapter } from './';
 
 let db: IDBPDatabase<unknown>;
 let loki: Loki | undefined;
@@ -28,6 +28,8 @@ async function open() {
  * @param options
  */
 const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
+  let status = 200;
+
   if (!db) {
     await open();
   }
@@ -52,6 +54,8 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
 
     all = next;
     count = all.length;
+
+    status = 201;
   }
 
   // IDB is available at this point, check for Loki.
@@ -69,13 +73,15 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     await loki.saveDatabase();
   }
 
-  // No assure that Loki has data.
+  // Now assure that Loki has data.
   if (collection && collection.count() === 0) {
     if (all.length === 0) {
       all = await db.getAll('idbs');
     }
     collection.insert(all);
   }
+
+  return status;
 };
 
 /**

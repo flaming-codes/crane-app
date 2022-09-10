@@ -16,6 +16,7 @@
 <section
   id={id ? encodeURIComponent(id) : ''}
   class={clsx(
+    'scroll-mt-10',
     {
       'px-3 md:px-20': withPaddingX,
       'pb-10 md:pb-18': withPaddingBottom,

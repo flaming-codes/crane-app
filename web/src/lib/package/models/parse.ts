@@ -12,19 +12,14 @@ export function parseOverviewTuples(p: Pkg) {
 
   const diffInDays = differenceInDays(Date.now(), new Date(p.date));
 
-  let bugReportMeta: Partial<SubGridMeta> = {};
-  if (p.bugreports) {
-    if (p.bugreports.startsWith('mailto:')) {
-      bugReportMeta = { mail: p.bugreports };
-    } else {
-      bugReportMeta = { url: p.bugreports, isExternal: true };
-    }
-  }
-
   return [
     p.version && ['Version', p.version],
     p.depends?.find((d) => d.name === 'R') && ['R', p.depends.find((d) => d.name === 'R')?.version],
-    p.date && ['Published', p.date, { text: diffInDays > 0 ? `${diffInDays} days ago` : 'Today' }],
+    p.date && [
+      'Published',
+      p.date,
+      { text: diffInDays === 0 ? 'Today' : `${diffInDays} ${diffInDays > 1 ? 'days' : 'day'} ago` }
+    ],
     ...(p.license?.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]) ||
       []),
     p.needscompilation && ['Needs compilation?', p.needscompilation],
@@ -34,8 +29,7 @@ export function parseOverviewTuples(p: Pkg) {
       { url: p.cran_checks.link, isExternal: true }
     ],
     p.language && ['Language', p.language],
-    p.os_type && ['OS', p.os_type],
-    p.bugreports && ['Bug report', 'File report', bugReportMeta]
+    p.os_type && ['OS', p.os_type]
   ].filter(Boolean) as Result;
 }
 
@@ -130,6 +124,17 @@ export function parseAboutItems(p: Pkg) {
   if (p.systemreqs) {
     next.push(['System requirements', p.systemreqs, undefined]);
   }
+  if (p.bugreports) {
+    let bugReportMeta: Partial<SubGridMeta> = {};
+    if (p.bugreports) {
+      if (p.bugreports.startsWith('mailto:')) {
+        bugReportMeta = { mail: p.bugreports };
+      } else {
+        bugReportMeta = { url: p.bugreports, isExternal: true };
+      }
+    }
+    next.push(['Bug report', 'File report', bugReportMeta]);
+  }
 
   return next as [string, string, SubGridMeta | undefined][];
 }
@@ -182,7 +187,9 @@ export function parseWindowsBinaries(pkg: Pkg): Pkg['windows_binaries'] {
   return pkg.windows_binaries?.map((m) => {
     return {
       ...m,
-      label: m.label.trim().replace(':', '')
+      label: m.label.trim().replace(':', ''),
+      // Windows-packages only support 'x86_64' on CRAN.
+      meta: 'x86_64'
     };
   });
 }
