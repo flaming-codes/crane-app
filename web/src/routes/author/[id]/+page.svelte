@@ -22,6 +22,7 @@
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
   import Link from '$lib/display/views/Link.svelte';
   import PersonMeta from '$lib/seo/views/PersonMeta.svelte';
+  import FaqMeta from '$lib/seo/views/FaqMeta.svelte';
 
   const { hits, input: searchInput } = store;
   const { items: searchItems } = hits;
@@ -53,6 +54,19 @@
     { name: id, href: `/author/${slug}` }
   ]}
 />
+<FaqMeta
+  items={[
+    {
+      q: `How many R-packges are linked to ${id}?`,
+      a: `${packages.length} R-packages are linked to ${id}.`
+    },
+    {
+      q: `What R-packges does ${id} work on?`,
+      a: packages.map((p) => p.name).join(', ')
+    }
+  ]}
+/>
+
 <ColorScheme scheme="dark" />
 <NotificationCenterAnchor />
 

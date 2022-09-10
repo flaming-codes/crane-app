@@ -27,6 +27,7 @@
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import Hero from '$lib/blocks/views/Hero.svelte';
+  import FaqMeta from '$lib/seo/views/FaqMeta.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { hits, input: searchInput } = store;
@@ -75,6 +76,22 @@
   items={[
     { name: 'Packages', href: '/package' },
     { name: item.name, href: `/package/${item.slug}` }
+  ]}
+/>
+<FaqMeta
+  items={[
+    {
+      q: `What does the R-package '${item.name}' do?`,
+      a: item.title
+    },
+    {
+      q: `Who maintains ${item.name}?`,
+      a: maintainer?.[1] || 'Unknown'
+    },
+    {
+      q: `Who authored ${item.name}?`,
+      a: item.author?.map((a) => a.name).join(', ') || 'Unknown'
+    }
   ]}
 />
 <ColorScheme scheme="dark" />
@@ -212,6 +229,7 @@
                   <Link
                     href="/author/{name}"
                     ariaLabel="All packages for {name}"
+                    title="All packages for {name}"
                     class="text-white"
                   >
                     <Iconic name="carbon:user-profile" />
@@ -220,6 +238,7 @@
                     <Link
                       href={link}
                       ariaLabel="Link for {name}"
+                      title="Link for {name}"
                       rel="noopener noreferrer"
                       target="_blank"
                       class="text-white"
