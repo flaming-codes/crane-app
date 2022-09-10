@@ -1,20 +1,17 @@
 <script lang="ts">
-  import SvelteSeo from 'svelte-seo';
-  import type { SvelteSeoProps } from 'svelte-seo/types/SvelteSeo';
+  import { MetaTags } from 'svelte-meta-tags';
 
   export let title: string;
   export let description: string =
     'CRAN/E provides a modern search expierence among all available R-packages';
   export let path: string | undefined = '';
-  export let jsonLd: SvelteSeoProps['jsonLd'] | undefined = undefined;
 
   const url = `https://www.cran-e.com${path}`;
 </script>
 
-<SvelteSeo
+<MetaTags
   title="CRAN/E | {title}"
   {description}
-  keywords="r, cran, packages, search, engine"
   canonical={url}
   openGraph={{
     title: `CRAN/E | ${title}`,
@@ -30,5 +27,4 @@
       }
     ]
   }}
-  {jsonLd}
 />
