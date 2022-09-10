@@ -5,6 +5,7 @@
   export let items: Array<{ name: string; href: string }> = [];
 </script>
 
+<!-- Only run on server (https://github.com/oekazuma/svelte-meta-tags/issues/372) -->
 {#if !browser}
   <JsonLd
     schema={{
