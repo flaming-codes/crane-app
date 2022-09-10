@@ -27,6 +27,7 @@
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import Hero from '$lib/blocks/views/Hero.svelte';
+  import FaqMeta from '$lib/seo/views/FaqMeta.svelte';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { hits, input: searchInput } = store;
@@ -70,11 +71,27 @@
   ] as const;
 </script>
 
-<BaseMeta title={item.name} description={item.title} path="/package/{item.slug}" />
+<BaseMeta title={item.name} description="R package for {item.title}" path="/package/{item.slug}" />
 <BreadcrumbMeta
   items={[
     { name: 'Packages', href: '/package' },
     { name: item.name, href: `/package/${item.slug}` }
+  ]}
+/>
+<FaqMeta
+  items={[
+    {
+      q: `What does the R-package '${item.name}' do?`,
+      a: item.title
+    },
+    {
+      q: `Who maintains ${item.name}?`,
+      a: maintainer?.[1] || 'Unknown'
+    },
+    {
+      q: `Who authored ${item.name}?`,
+      a: item.author?.map((a) => a.name).join(', ') || 'Unknown'
+    }
   ]}
 />
 <ColorScheme scheme="dark" />
@@ -188,7 +205,15 @@
                 {#if 'mail' in meta}
                   <div class="text-xs text-neutral-300 font-mono">{meta.mail}</div>
                 {/if}
-                <div>
+                <div class="flex gap-x-3 pt-1">
+                  <Link
+                    href="/author/{value}"
+                    ariaLabel="All packages for {value}"
+                    title="All packages for {value}"
+                    class="text-white"
+                  >
+                    <Iconic name="carbon:user-profile" />
+                  </Link>
                   <SubGridIcon {meta} />
                 </div>
               {/if}
@@ -203,22 +228,33 @@
             {#each item.author as { name, roles, link, extra }}
               <SubGridItem key={name} emphasis="key" withValueSpaceY="xs">
                 {#if roles}
-                  <p class="text-sm">{roles.join(' / ')}</p>
+                  <p class="text-sm pt-1">{roles.join(' / ')}</p>
                 {/if}
                 {#if extra}
-                  <p class="text-xs text-neutral-400 my-4">{extra}</p>
+                  <p class="text-xs text-neutral-400 my-4 pt-1 w-full break-words">{extra}</p>
                 {/if}
-                {#if link}
+                <div class="flex gap-x-3 pt-1">
                   <Link
-                    href={link}
-                    ariaLabel="Link for {name}"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    href="/author/{name}"
+                    ariaLabel="All packages for {name}"
+                    title="All packages for {name}"
                     class="text-white"
                   >
-                    <Iconic name="carbon:arrow-up-right" />
+                    <Iconic name="carbon:user-profile" />
                   </Link>
-                {/if}
+                  {#if link}
+                    <Link
+                      href={link}
+                      ariaLabel="Link for {name}"
+                      title="Link for {name}"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      class="text-white"
+                    >
+                      <Iconic name="la:orcid" />
+                    </Link>
+                  {/if}
+                </div>
               </SubGridItem>
             {/each}
           </SubGrid>
@@ -468,6 +504,7 @@
           <SubGridItem
             key="Open a ticket"
             url="https://github.com/flaming-codes/crane-app/issues/new/choose"
+            urlTarget="_blank"
             withSpaceY="xs"
             withValueSpaceY="xs"
           >
