@@ -10,14 +10,7 @@ export function composeUrlElement(params: {
   priority?: number;
 }) {
   const { path, lastmod, changefreq = 'monthly', priority = 0.8 } = params;
-  return `
-      <url>
-        <loc>https://www.cran-e.com${path}</loc>
-        <lastmod>${lastmod}</lastmod>
-        <changefreq>${changefreq}</changefreq>
-        <priority>${priority}</priority>
-      </url>
-    `.trim();
+  return `<url><loc>https://www.cran-e.com${path}</loc><lastmod>${lastmod}</lastmod><changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`.trim();
 }
 
 export function getTodayLastmod() {
