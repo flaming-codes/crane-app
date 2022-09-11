@@ -23,13 +23,14 @@
   import Link from '$lib/display/views/Link.svelte';
   import PersonMeta from '$lib/seo/views/PersonMeta.svelte';
   import FaqMeta from '$lib/seo/views/FaqMeta.svelte';
+  import { getCssVarRemToPixels } from '$lib/display/models/parse';
 
   const { hits, input: searchInput } = store;
   const { items: searchItems } = hits;
 
   export let data: PageData;
   export let errors: unknown;
-  const { id, packages, otherAuthors, totalOtherAuthors } = data;
+  const { id, packages, otherAuthors, totalOtherAuthors, links } = data;
   const slug = encodeURIComponent(id);
 
   let y = 0;
@@ -38,10 +39,8 @@
 
   const getHeroScrollDelta = () => {
     const halfWindowHeight = browser ? window.innerHeight / 2 : 0;
-    const baseControlsHeight = browser
-      ? getComputedStyle(document.documentElement).getPropertyValue('--base-controls-h-sm')
-      : '0';
-    return halfWindowHeight - parseInt(baseControlsHeight, 10);
+    const baseControlsHeight = browser ? getCssVarRemToPixels('--base-controls-h-sm') : 0;
+    return halfWindowHeight - baseControlsHeight;
   };
 
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
@@ -78,7 +77,7 @@
 
 <svelte:window bind:scrollY={y} />
 
-<ControlsBase variant={isNavDark ? 'black' : 'translucent'} class="text-white">
+<ControlsBase variant={isNavDark ? 'black' : 'transparent'} class="text-white">
   <SearchControls withTotal={false} theme="dark">
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
@@ -127,6 +126,34 @@
             This amount of teamwork is mind-blowing! A true legend.
           {/if}
         </p>
+
+        {#if links?.length}
+          <SubGrid>
+            {#each links as link}
+              <SubGridItem
+                withKeyTruncate
+                key={link.startsWith('https://orcid.org/') ? 'ORCiD' : 'Link'}
+                emphasis="key"
+                withSpaceY="xs"
+              >
+                <Link
+                  href={link}
+                  ariaLabel="More information about {id}"
+                  class="space-y-1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div>{link.replace('https://orcid.org/', '')}</div>
+                  <Iconic
+                    name={link.startsWith('https://orcid.org/')
+                      ? 'la:orcid'
+                      : 'carbon:arrow-up-right'}
+                  />
+                </Link>
+              </SubGridItem>
+            {/each}
+          </SubGrid>
+        {/if}
       </PackageDetailSection>
     </SectionsColumn>
   </Section>
@@ -138,7 +165,7 @@
     </SectionHeader>
 
     <SectionsColumn spaceY="lg">
-      <PackageDetailSection title="Quick links" id="quick links">
+      <PackageDetailSection title="Packages overview" id="packages overview">
         <SubGrid>
           {#each packages as { name, slug }}
             <SubGridItem

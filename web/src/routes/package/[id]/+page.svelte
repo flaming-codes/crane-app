@@ -28,6 +28,7 @@
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import Hero from '$lib/blocks/views/Hero.svelte';
   import FaqMeta from '$lib/seo/views/FaqMeta.svelte';
+  import { getCssVarRemToPixels } from '$lib/display/models/parse';
   // import { Disclosure, DisclosureButton, DisclosurePanel } from '@rgossiaux/svelte-headlessui';
 
   const { hits, input: searchInput } = store;
@@ -40,10 +41,8 @@
 
   const getHeroScrollDelta = () => {
     const halfWindowHeight = browser ? window.innerHeight / 2 : 0;
-    const baseControlsHeight = browser
-      ? getComputedStyle(document.documentElement).getPropertyValue('--base-controls-h-sm')
-      : '0';
-    return halfWindowHeight - parseInt(baseControlsHeight, 10);
+    const baseControlsHeight = browser ? getCssVarRemToPixels('--base-controls-h-sm') : 0;
+    return halfWindowHeight - baseControlsHeight;
   };
 
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
