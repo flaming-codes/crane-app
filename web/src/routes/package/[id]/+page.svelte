@@ -140,7 +140,9 @@
 
     <SectionsColumn>
       <PackageDetailSection title="Installation" id="installation">
-        <CopyToClipboardButton value="install.packages('{item.name}')" />
+        <div>
+          <CopyToClipboardButton value="install.packages('{item.name}')" />
+        </div>
       </PackageDetailSection>
 
       <PackageDetailSection title="Key Metrics" id="key metrics">
@@ -251,7 +253,11 @@
                       target="_blank"
                       class="text-white"
                     >
-                      <Iconic name="la:orcid" />
+                      <Iconic
+                        name={link.startsWith('https://orcid.org/')
+                          ? 'la:orcid'
+                          : 'carbon:arrow-up-right'}
+                      />
                     </Link>
                   {/if}
                 </div>
