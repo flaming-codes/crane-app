@@ -253,7 +253,11 @@
                       target="_blank"
                       class="text-white"
                     >
-                      <Iconic name="la:orcid" />
+                      <Iconic
+                        name={link.startsWith('https://orcid.org/')
+                          ? 'la:orcid'
+                          : 'carbon:arrow-up-right'}
+                      />
                     </Link>
                   {/if}
                 </div>
