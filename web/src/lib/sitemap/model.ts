@@ -13,7 +13,7 @@ export function composeUrlElement(params: {
   path: string;
   lastmod: string;
   changefreq?: string;
-  priority?: number;
+  priority?: string;
 }) {
   const { path, lastmod, changefreq = 'monthly', priority = 0.8 } = params;
   return `<url><loc>https://www.cran-e.com${path}</loc><lastmod>${lastmod}</lastmod><changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`.trim();
@@ -23,7 +23,7 @@ export function composeAuthorUrl(name: string) {
   return composeUrlElement({
     path: `/author/${encodeSitemapSymbols(encodeURIComponent(name))}`,
     lastmod: getTodayLastmod(),
-    priority: 0.8
+    priority: '0.8'
   });
 }
 
@@ -31,6 +31,6 @@ export function composePackageUrl([slug, lastmod]: [string, string]) {
   return composeUrlElement({
     path: `/package/${encodeSitemapSymbols(slug)}`,
     lastmod,
-    priority: 1
+    priority: '1.0'
   });
 }
