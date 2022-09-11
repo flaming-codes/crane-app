@@ -4,7 +4,7 @@ import Fuse from 'fuse.js';
 
 let overviewData: OverviewPkg[] | undefined;
 let typeAheadData: TAItem[] | undefined;
-let sitemapData: [string, string] | undefined;
+let sitemapData: Array<[string, string]> | undefined;
 let authorData: Record<string, string[]> | undefined;
 
 let instance: Fuse<OverviewPkg> | undefined;
@@ -92,7 +92,7 @@ export async function authors() {
  */
 export async function sitemapTuples() {
   if (!sitemapData) {
-    sitemapData = await fetcher<[string, string]>(sitemapUrl, '');
+    sitemapData = await fetcher<Array<[string, string]>>(sitemapUrl, '');
   }
   return sitemapData;
 }
