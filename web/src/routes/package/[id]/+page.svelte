@@ -126,7 +126,7 @@
 
 <main
   class={`
-    absolute top-0 left-0 right-0 mt-[50vh] min-h-[200vh] pb-20 space-y-8 bg-zinc-900 text-gray-100
+    absolute top-0 left-0 right-0 mt-[50vh] min-h-[200vh] pt-10 pb-20 space-y-8 bg-zinc-900 text-gray-100
     md:space-y-12 
     lg:space-y-16
   `}

@@ -10,11 +10,12 @@ import {
   parseWindowsBinaries
 } from '$lib/package/models/parse';
 import type { Pkg } from '$lib/package/type';
+import { decodeSitemapSymbols } from '$lib/sitemap/parse';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const { id } = params;
+  const id = decodeSitemapSymbols(params.id);
 
   let item: Pkg | undefined;
 
