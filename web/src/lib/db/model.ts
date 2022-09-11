@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 let overviewData: OverviewPkg[] | undefined;
 let typeAheadData: TAItem[] | undefined;
 let sitemapData: Array<[string, string]> | undefined;
-let authorData: Record<string, string[]> | undefined;
+let authorData: Record<string, string[] | { packages: string[]; links?: string[] }> | undefined;
 
 let instance: Fuse<OverviewPkg> | undefined;
 

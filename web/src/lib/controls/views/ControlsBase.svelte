@@ -25,7 +25,7 @@
       'bg-zinc-400/[0.1] backdrop-blur-lg text-gray-200': variant === 'dark',
       'bg-zinc-600/[0.1] backdrop-blur-lg text-gray-200': variant === 'void',
       'bg-black/80 backdrop-blur-lg text-white': variant === 'black',
-      'bg-transparent backdrop-blur-sm': variant === 'translucent',
+      'bg-transparent backdrop-blur-lg': variant === 'translucent',
       'bg-transparent': variant === 'transparent'
     },
     cn
