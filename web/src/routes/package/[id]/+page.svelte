@@ -140,7 +140,9 @@
 
     <SectionsColumn>
       <PackageDetailSection title="Installation" id="installation">
-        <CopyToClipboardButton value="install.packages('{item.name}')" />
+        <div>
+          <CopyToClipboardButton value="install.packages('{item.name}')" />
+        </div>
       </PackageDetailSection>
 
       <PackageDetailSection title="Key Metrics" id="key metrics">
