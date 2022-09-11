@@ -19,10 +19,9 @@ export const handler =
     const tuples = allTuples.slice(threshold, threshold + size);
 
     return new Response(
-      `<?xml version="1.0" encoding="UTF-8" ?>
-        <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-        ${tuples.map(mapper).join('\n')}
-        </urlset>`.trim(),
+      `<?xml version="1.0" encoding="UTF-8" ?><urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">${tuples
+        .map(mapper)
+        .join('')}</urlset>`.trim(),
       {
         headers: {
           'Content-Type': 'application/xml',

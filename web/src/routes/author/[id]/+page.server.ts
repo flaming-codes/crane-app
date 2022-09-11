@@ -1,9 +1,10 @@
 import { authors, overview } from '$lib/db/model';
-import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types';
+import { decodeSitemapSymbols } from '$lib/sitemap/parse';
 import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const { id } = params as { id: string };
+  const id = decodeSitemapSymbols(params.id);
   const data = await authors();
 
   const packageNames = data[id];
