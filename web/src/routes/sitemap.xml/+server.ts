@@ -10,10 +10,19 @@ export const GET: RequestHandler = async () => {
         <loc>https://www.cran-e.com/sitemap-common.xml</loc>
       </sitemap>
       <sitemap>
-        <loc>https://www.cran-e.com/sitemap-packages.xml</loc>
+        <loc>https://www.cran-e.com/sitemap-packages-0.xml</loc>
       </sitemap>
       <sitemap>
-        <loc>https://www.cran-e.com/sitemap-authors.xml</loc>
+      <loc>https://www.cran-e.com/sitemap-packages-1.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors-0.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors-1.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors-2.xml</loc>
       </sitemap>
     </sitemapindex>`.trim(),
     {
