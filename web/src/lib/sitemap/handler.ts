@@ -18,8 +18,6 @@ export const handler =
     const threshold = page * size;
     const tuples = allTuples.slice(threshold, threshold + size);
 
-    console.log(`Sitemap page ${page} has ${tuples.length} tuples`);
-
     return new Response(
       `<?xml version="1.0" encoding="UTF-8" ?>
         <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
