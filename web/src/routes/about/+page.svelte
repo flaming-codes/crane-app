@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PlausibleStateButton from '$lib/analytics/views/PlausibleStateButton.svelte';
   import ContactCard from '$lib/blocks/views/ContactCard.svelte';
   import Hero from '$lib/blocks/views/Hero.svelte';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
@@ -167,12 +168,19 @@
             data. This is also the reason why you don't see a cookie-banner - we simply don't need consent
             for data we never collect in the first place.
           </p>
+          <p>
+            You can opt-out of those basic analytics by clicking the button below. Please note that
+            we only collect anonymous core web vitals data and no personal identifiable data. This
+            means that we can't identify you in any way. Your opt-out will be stored in your
+            browser's local storage.
+            <PlausibleStateButton class="mt-4" />
+          </p>
 
           <SubGrid class="not-prose">
             <SubGridItem key="Link" url="https://plausible.io">
               <div>plausible.io</div>
               <Link href="https://plausible.io" target="_blank" rel="noopener noreferrer">
-                <Iconic name="simple-icons:plausibleanalytics" />
+                <Iconic name="simple-icons:plausibleanalytics" size="20" />
               </Link>
             </SubGridItem>
           </SubGrid>
