@@ -29,7 +29,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  export let errors: unknown;
+  export let errors: unknown = undefined;
   const { id, packages, otherAuthors, totalOtherAuthors, links } = data;
   const slug = encodeURIComponent(id);
 
