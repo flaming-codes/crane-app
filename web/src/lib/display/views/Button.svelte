@@ -2,12 +2,13 @@
   import clsx from 'clsx';
 
   export let readonly: boolean | undefined = undefined;
-  export let type: string = 'text';
+  export let type: 'reset' | 'submit' | 'button' | undefined = undefined;
   export let size: 'sm' | 'md' = 'md';
   export let font: 'mono' | 'sans' = 'mono';
   export let withSpaceX: 'sm' | 'md' | undefined = 'sm';
   export let withFlex = true;
   export let title: string | undefined = undefined;
+  export let ariaLabel: string | undefined = undefined;
 
   let cn: string | undefined = undefined;
   export { cn as class };
@@ -17,6 +18,7 @@
   {readonly}
   {type}
   {title}
+  aria-label={ariaLabel}
   class={clsx(
     'bg-neutral-800 text-neutral-200 text-sm border border-neutral-600 rounded transition-colors duration-150 ease-in-out',
     'hover:border-neutral-700 hover:bg-neutral-700',

@@ -16,6 +16,12 @@ export const GET: RequestHandler = async () => {
       <loc>https://www.cran-e.com/sitemap-packages-1.xml</loc>
       </sitemap>
       <sitemap>
+        <loc>https://www.cran-e.com/sitemap-packages-2.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-packages-3.xml</loc>
+      </sitemap>
+      <sitemap>
         <loc>https://www.cran-e.com/sitemap-authors-0.xml</loc>
       </sitemap>
       <sitemap>
@@ -23,6 +29,15 @@ export const GET: RequestHandler = async () => {
       </sitemap>
       <sitemap>
         <loc>https://www.cran-e.com/sitemap-authors-2.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors-3.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors-4.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-authors-5.xml</loc>
       </sitemap>
     </sitemapindex>`.trim(),
     {

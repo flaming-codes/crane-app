@@ -16,12 +16,13 @@
 <Button
   size="sm"
   title={`${isOptOut ? 'Enable' : 'Disable'} Plausible.io`}
-  aria-label="Disable or enable any privacy-first analytics"
+  ariaLabel="Disable or enable any privacy-first analytics"
   class={cn}
   on:click={() => {
     if (isOptOut) localStorage.removeItem('plausible_ignore');
     else localStorage.setItem('plausible_ignore', 'true');
     isOptOut = !isOptOut;
+    window.location.reload();
   }}
 >
   {`${isOptOut ? 'Enable' : 'Disable'} Plausible.io`}
