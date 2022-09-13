@@ -19,7 +19,7 @@
   {title}
   aria-label={ariaLabel}
   class={clsx('hover:animate-pulse', cn)}
-  sveltekit:reload={withForcedReload}
+  data-sveltekit-reload={withForcedReload ? '' : 'off'}
 >
   <slot />
 </a>
