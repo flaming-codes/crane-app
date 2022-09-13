@@ -8,7 +8,7 @@ export const handler =
     mapper: (item: T) => string;
   }): RequestHandler =>
   async () => {
-    const { page, promisedItems, size = 10_000, mapper } = params;
+    const { page, promisedItems, size = 5_000, mapper } = params;
     const allTuples = await promisedItems;
 
     if (!allTuples) {
