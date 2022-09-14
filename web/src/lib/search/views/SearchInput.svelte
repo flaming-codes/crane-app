@@ -110,7 +110,6 @@
 
     <input
       title="Search"
-      role="search"
       autocomplete="off"
       autocorrect="off"
       spellcheck="false"

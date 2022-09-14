@@ -2,24 +2,14 @@
   import type { Pkg } from '../type';
   import Link from '$lib/display/views/Link.svelte';
   import clsx from 'clsx';
+  import SearchHitItem from '$lib/search/views/SearchHitItem.svelte';
 
   export let item: Pick<Pkg, 'name' | 'slug' | 'title' | 'version'>;
   export let theme: 'light' | 'dark' = 'light';
 </script>
 
 <Link withForcedReload href="/package/{item.slug}" ariaLabel="Link to package {item.name}">
-  <div
-    class={clsx(
-      `
-      flex flex-col justify-between h-28 px-4 py-1
-      border border-transparent transition-colors duration-150 ease-in-out
-    `,
-      {
-        'hover:border-l-neutral-700': theme === 'light',
-        'hover:border-l-neutral-200': theme === 'dark'
-      }
-    )}
-  >
+  <SearchHitItem {theme}>
     <div>
       <h3 class="text-lg font-bold truncate">{item.name}</h3>
       <p
@@ -39,5 +29,5 @@
     >
       {item.version}
     </div>
-  </div>
+  </SearchHitItem>
 </Link>

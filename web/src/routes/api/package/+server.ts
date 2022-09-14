@@ -1,5 +1,10 @@
 import { json } from '@sveltejs/kit';
-import { db, overview } from '$lib/db/model';
+import {
+  packagesOverviewDb,
+  packagesOverview,
+  authorsOverview,
+  authorsOverviewDb
+} from '$lib/db/model';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async (ctx) => {
@@ -11,27 +16,36 @@ export const GET: RequestHandler = async (ctx) => {
   const startIndex = page * size;
   const endIndex = (page + 1) * size;
   if (isAll) {
-    const items = await overview();
-    const hits = items.slice(startIndex, endIndex);
+    const packages = await packagesOverview();
+    const hits = packages.slice(startIndex, endIndex);
+
+    // Max 6 authors to display.
+    const authors = (await authorsOverview()).slice(0, 6);
 
     return json({
       hits,
-      total: items.length,
+      total: packages.length,
       page,
       size,
-      isEnd: hits.length < size
+      isEnd: hits.length < size,
+      authors
     });
   }
 
-  const fuse = await db();
-  const hits = fuse.search(query);
-  const partialHits = hits.slice(startIndex, endIndex).map(({ item }) => item);
+  const packageHits = (await packagesOverviewDb()).search(query);
+  const packagePartialHits = packageHits.slice(startIndex, endIndex).map(({ item }) => item);
+
+  const authors = (await authorsOverviewDb())
+    .search(query)
+    .map(({ item }) => item)
+    .slice(0, 6);
 
   return json({
-    hits: partialHits,
-    total: hits.length,
+    hits: packagePartialHits,
+    total: packageHits.length,
     page,
     size,
-    isEnd: partialHits.length < size
+    isEnd: packagePartialHits.length < size,
+    authors
   });
 };

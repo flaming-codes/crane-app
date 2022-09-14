@@ -1,3 +1,4 @@
+import type { OverviewAuthor } from '$lib/author/types';
 import { writable } from 'svelte/store';
 
 export const store = {
@@ -5,7 +6,8 @@ export const store = {
   input: writable(''),
   hits: getPaginationStore<any>({ items: [] }),
   typeAheadState: writable<'init' | 'ready' | 'unavailable'>('init'),
-  isInputFocused: writable(false)
+  isInputFocused: writable(false),
+  authors: writable<OverviewAuthor[]>([])
 };
 
 function getPaginationStore<T>(params?: { items?: T[] }) {

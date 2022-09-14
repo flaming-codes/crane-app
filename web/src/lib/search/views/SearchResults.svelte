@@ -7,8 +7,10 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import Link from '$lib/display/views/Link.svelte';
+  import SearchHitItem from './SearchHitItem.svelte';
 
-  const { input, state } = store;
+  const { input, state, authors } = store;
   const { items: hitItems, page, size, total, isEnd } = store.hits;
 
   type InitialAll = {
@@ -46,6 +48,7 @@
         $size = res.size;
         $total = res.total;
         $isEnd = res.isEnd;
+        $authors = res.authors;
       })
       .finally(() => {
         state.set('ready');
@@ -115,6 +118,28 @@
 >
   {#if !$input}
     <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>
+  {/if}
+  {#if $authors.length}
+    <section class="col-span-full flex gap-x-4 h-14 overflow-x-auto">
+      {#each $authors as { name, slug, totalPackages }}
+        <Link withForcedReload href="/author/{slug}" class="flex flex-col flex-shrink-0">
+          <SearchHitItem {theme}>
+            <span class="text-base flex items-center gap-x-1"
+              ><Iconic name="carbon:user-avatar" size="16" /> {name}</span
+            >
+            <span class="opacity-50 text-sm"
+              >{totalPackages} {totalPackages === 1 ? 'package' : 'packages'}</span
+            >
+          </SearchHitItem>
+        </Link>
+      {/each}
+    </section>
+    <hr
+      class={clsx('col-span-full', {
+        'opacity-80': !theme || theme === 'light',
+        'opacity-20': theme === 'dark'
+      })}
+    />
   {/if}
   {#each $hitItems as item}
     <PackageLink {item} {theme} />
