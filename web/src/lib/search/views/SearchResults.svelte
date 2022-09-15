@@ -30,25 +30,34 @@
   async function fetchNext(params?: { isReset?: boolean }) {
     state.set('searching');
 
-    const url = new URL('/api/package', window.location.href);
-    url.searchParams.set('page', `${$page + 1}`);
-    url.searchParams.set('size', `${$size}`);
+    const generateUrl = (href: string) => {
+      const url = new URL(href, window.location.href);
+      url.searchParams.set('page', `${$page + 1}`);
+      url.searchParams.set('size', `${$size}`);
 
-    if ($input) {
-      url.searchParams.set('q', $input);
-    } else {
-      url.searchParams.set('all', 'true');
-    }
+      if ($input) {
+        url.searchParams.set('q', $input);
+      } else {
+        url.searchParams.set('all', 'true');
+      }
 
-    await fetch(url.toString())
-      .then((res) => res.json())
-      .then((res) => {
-        $hitItems = params?.isReset ? res.hits : [...$hitItems, ...res.hits];
-        $page = res.page;
-        $size = res.size;
-        $total = res.total;
-        $isEnd = res.isEnd;
-        $authors = res.authors;
+      return url;
+    };
+
+    const urls = [
+      generateUrl('/api/package/overview').toString(),
+      generateUrl('/api/author/overview').toString()
+    ];
+
+    await Promise.all(urls.map((url) => fetch(url)))
+      .then((res) => Promise.all(res.map((r) => r.json())))
+      .then(([pkgs, author]) => {
+        $hitItems = params?.isReset ? pkgs.hits : [...$hitItems, ...pkgs.hits];
+        $page = pkgs.page;
+        $size = pkgs.size;
+        $total = pkgs.total;
+        $isEnd = pkgs.isEnd;
+        $authors = author.hits;
       })
       .finally(() => {
         state.set('ready');
@@ -90,6 +99,7 @@
       $size = initialAll.size;
       $total = initialAll.total;
       $isEnd = initialAll.isEnd;
+      $authors = [];
     }
   }
 
@@ -103,6 +113,7 @@
     $size = initialAll.size;
     $total = initialAll.total;
     $isEnd = initialAll.isEnd;
+    $authors = [];
     state.set('ready');
   });
 </script>
@@ -120,7 +131,7 @@
     <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>
   {/if}
   {#if $authors.length}
-    <section class="col-span-full flex gap-x-4 h-14 overflow-x-auto">
+    <section class="col-span-full flex gap-x-4 h-14 overflow-x-auto overflow-y-hidden">
       {#each $authors as { name, slug, totalPackages }}
         <Link withForcedReload href="/author/{slug}" class="flex flex-col flex-shrink-0">
           <SearchHitItem {theme}>
