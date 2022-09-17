@@ -1,7 +1,7 @@
 import type { TAItem } from '../adapters/types';
 
 /**
- *
+ * Fetch for the Typeahead items used in the search bar.
  * @returns
  */
 export async function fetchTypeAheadItems(): Promise<TAItem[]> {

@@ -11,7 +11,7 @@ const to_cache = build.concat(files);
 const staticAssets = new Set(to_cache);
 
 const uncachableEndpoints = ['https://plausible.io/'];
-const uncachablePathnames = ['/api/package/ta/items'];
+const uncachablePathnames = ['/api/'];
 
 worker.addEventListener('install', (event) => {
   event.waitUntil(
@@ -82,13 +82,6 @@ worker.addEventListener('fetch', (event) => {
     url.hostname === self.location.hostname && url.port !== self.location.port;
   const isStaticAsset = url.host === self.location.host && staticAssets.has(url.pathname);
   const skipBecauseUncached = event.request.cache === 'only-if-cached' && !isStaticAsset;
-
-  // Don't cache requests for typeahead suggestions.
-  // They come from a local WebWorker, so caching
-  // would even slow down things in this case.
-  if (url.pathname === '/api/package/ta') {
-    return;
-  }
 
   if (isHttp && !isDevServerRequest && !skipBecauseUncached && verifyUrlOrigin(url)) {
     event.respondWith(

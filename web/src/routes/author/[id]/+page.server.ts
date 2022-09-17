@@ -1,4 +1,4 @@
-import { authors, overview } from '$lib/db/model';
+import { authors, packagesOverview } from '$lib/db/model';
 import { decodeSitemapSymbols } from '$lib/sitemap/parse';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ params }) => {
     throw error(404, id);
   }
 
-  const overviewData = await overview();
+  const overviewData = await packagesOverview();
   // TODO: simplify once the migration is done.
   const packageNames = 'packages' in authorData ? authorData.packages : authorData;
   const packages = packageNames

@@ -14,8 +14,8 @@ class Worker {
 
     try {
       const timestamp = await get(cacheKey);
-      // 12 hours cache time.
-      const isStale = timestamp && Date.now() - timestamp > 1_000 * 60 * 60 * 12;
+      // 6 hours cache time.
+      const isStale = timestamp && Date.now() - timestamp > 1_000 * 60 * 60 * 6;
 
       const res = await Worker.adapter.initIfNeeded({
         ...options,
