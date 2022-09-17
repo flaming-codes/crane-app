@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",
-    "@iconify/svelte": "^3.0.0",
+    "@iconify/svelte": "^2.2.1",
     "@playwright/test": "^1.25.2",
     "@sveltejs/adapter-vercel": "^1.0.0-next.75",
     "@sveltejs/kit": "^1.0.0-next.483",
