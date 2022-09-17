@@ -1,6 +1,6 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
-  import { store as taStore } from '$lib/db/worker/ta.store';
+  import { store as taStore } from '$lib/db/workers/ta.store';
 
   import clsx from 'clsx';
   import { shortcut } from '$lib/input/models/shortcut';
@@ -9,7 +9,7 @@
   import Kbd from '$lib/blocks/views/Kbd.svelte';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import MediaQuery from 'svelte-media-queries';
-  import InitTypeaheadWorker from '$lib/db/worker/InitTypeaheadWorker.svelte';
+  import InitTypeaheadWorker from '$lib/db/workers/InitTypeaheadWorker.svelte';
   import type { TAItem } from '$lib/db/adapters/types';
 
   const { state, input, typeAheadState, isInputFocused } = store;
@@ -110,7 +110,6 @@
 
     <input
       title="Search"
-      role="search"
       autocomplete="off"
       autocorrect="off"
       spellcheck="false"
@@ -120,6 +119,7 @@
         `
         absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-2
         border-none focus:ring-0 focus:border-transparent focus:outline-none
+
       `,
         {
           'placeholder:text-neutral-700': theme === 'light',

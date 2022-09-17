@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { db, overview } from '$lib/db/model';
+import { packagesOverviewDb, packagesOverview } from '$lib/db/model';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async (ctx) => {
@@ -11,27 +11,26 @@ export const GET: RequestHandler = async (ctx) => {
   const startIndex = page * size;
   const endIndex = (page + 1) * size;
   if (isAll) {
-    const items = await overview();
-    const hits = items.slice(startIndex, endIndex);
+    const all = await packagesOverview();
+    const hits = all.slice(startIndex, endIndex);
 
     return json({
       hits,
-      total: items.length,
+      total: all.length,
       page,
       size,
       isEnd: hits.length < size
     });
   }
 
-  const fuse = await db();
-  const hits = fuse.search(query);
-  const partialHits = hits.slice(startIndex, endIndex).map(({ item }) => item);
+  const all = (await packagesOverviewDb()).search(query);
+  const hits = all.slice(startIndex, endIndex).map(({ item }) => item);
 
   return json({
-    hits: partialHits,
-    total: hits.length,
+    hits,
+    total: all.length,
     page,
     size,
-    isEnd: partialHits.length < size
+    isEnd: hits.length < size
   });
 };

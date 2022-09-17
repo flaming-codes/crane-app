@@ -20,6 +20,7 @@
     | 'carbon:chevron-sort'
     | 'carbon:switcher'
     | 'carbon:data-view-alt'
+    | 'carbon:repeat'
     | 'carbon:repeat-one'
     | 'carbon:search-locate'
     | 'carbon:search'
@@ -33,6 +34,7 @@
     | 'carbon:arrow-right'
     | 'carbon:user-profile'
     | 'la:orcid'
+    | 'carbon:user-avatar'
     | (string & {});
   export let size: '16' | '20' | '24' | '32' | '40' | '48' | '56' = '24';
   export let hFlip: boolean | undefined = undefined;

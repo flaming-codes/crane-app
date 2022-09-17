@@ -12,7 +12,7 @@
 
   const loadWorker = async () => {
     if (!$worker) {
-      const TaDbWorker = await import('$lib/db/worker/ta.worker?worker');
+      const TaDbWorker = await import('$lib/db/workers/ta.worker?worker');
       $worker = new TaDbWorker.default();
     }
 
