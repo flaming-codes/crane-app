@@ -119,6 +119,7 @@
         `
         absolute peer bg-transparent w-full h-full lowercase opacity-100 pl-2
         border-none focus:ring-0 focus:border-transparent focus:outline-none
+
       `,
         {
           'placeholder:text-neutral-700': theme === 'light',

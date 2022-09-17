@@ -103,7 +103,7 @@
 
 <svelte:window bind:scrollY={y} />
 
-<ControlsBase variant={isNavDark ? 'black' : 'light'}>
+<ControlsBase variant={isNavDark ? 'black' : 'transparent'} class="text-black">
   <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
@@ -119,7 +119,7 @@
   subtitle={item.title}
   height="50!"
   variant="prominent"
-  theme="light"
+  theme="gradient-stone"
   textVariant="dense"
 />
 

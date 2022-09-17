@@ -20,6 +20,7 @@
     | 'carbon:chevron-sort'
     | 'carbon:switcher'
     | 'carbon:data-view-alt'
+    | 'carbon:repeat'
     | 'carbon:repeat-one'
     | 'carbon:search-locate'
     | 'carbon:search'

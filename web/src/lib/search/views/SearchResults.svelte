@@ -131,14 +131,14 @@
     <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>
   {/if}
   {#if $authors.length}
-    <section class="col-span-full flex gap-x-4 h-14 overflow-x-auto overflow-y-hidden">
+    <section class="col-span-full flex gap-x-4 h-12 overflow-x-auto overflow-y-hidden">
       {#each $authors as { name, slug, totalPackages }}
         <Link withForcedReload href="/author/{slug}" class="flex flex-col flex-shrink-0">
           <SearchHitItem {theme}>
             <span class="text-base flex items-center gap-x-1"
               ><Iconic name="carbon:user-avatar" size="16" /> {name}</span
             >
-            <span class="opacity-50 text-sm"
+            <span class=" opacity-50 text-sm"
               >{totalPackages} {totalPackages === 1 ? 'package' : 'packages'}</span
             >
           </SearchHitItem>
@@ -165,7 +165,7 @@
       })}
     >
       {#if !$isEnd}
-        <Iconic name="carbon:repeat-one" size="20" />
+        <Iconic name="carbon:repeat" size="20" />
       {/if}
       <span
         class={clsx({
