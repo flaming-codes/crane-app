@@ -25,6 +25,8 @@ export const GET: RequestHandler = async (ctx) => {
 
   const hits = (await authorsOverviewDb()).search(query).map(({ item }) => item);
 
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   return json({
     hits: hits.slice(0, 6),
     total: hits.length,

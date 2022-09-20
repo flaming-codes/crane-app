@@ -58,8 +58,8 @@
         <PackageDetailSection title="Search" withProse="dark">
           <div class="prose-lg">
             <p>
-              The search bar at the bottom of the screen takes your input and runs a fuzzy-search
-              against our database of metadata for each package.
+              The search bar at the top of the screen takes your input and runs a fuzzy-search
+              against our database of metadata for each package and author.
             </p>
             <p>
               Fuzzy search means that it provides an experience similar to Google. You can type in a
@@ -67,8 +67,11 @@
               weighted algorithm.
             </p>
             <p>
-              All results in the grid of packages are sorted by last publication date. The topmost
-              items are therefore also the most recently published packages.
+              All results in the grid of packages are sorted by last publication date if no search
+              input is provided. The topmost items are therefore also the most recently published
+              packages. Once you start typing, the results are sorted by relevance. The topmost
+              items are therefore the most relevant to your search input. This is true for both
+              packages and authors.
             </p>
           </div>
         </PackageDetailSection>
@@ -91,7 +94,7 @@
                 <Kbd withLowOpacity={false} text="Enter" theme="dark" />
               </span>
             </SubGridItem>
-            <SubGridItem key="Select the next inline suggestion">
+            <SubGridItem key="Show the adjacent inline suggestion">
               <div class="space-y-2 mt-1">
                 <Kbd withLowOpacity={false} text="Arrow Down" theme="dark" class="inline-block" />
                 <Kbd withLowOpacity={false} text="Arrow Up" theme="dark" class="inline-block" />

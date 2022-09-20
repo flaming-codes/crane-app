@@ -144,23 +144,6 @@
         </div>
       </PackageDetailSection>
 
-      <PackageDetailSection title="Key Metrics" id="key metrics">
-        <SubGrid>
-          {#each overviewTuples as [key, value, meta]}
-            <SubGridItem {key}>
-              <span>{value}</span>
-              {#if meta}
-                {#if !('text' in meta)}
-                  <SubGridIcon {meta} />
-                {:else if 'text' in meta}
-                  <span class="block text-xs text-neutral-300">{meta.text}</span>
-                {/if}
-              {/if}
-            </SubGridItem>
-          {/each}
-        </SubGrid>
-      </PackageDetailSection>
-
       <PackageDetailSection title="About" id="about">
         <p class="prose prose-lg prose-invert max-w-none">
           {item.description}
@@ -180,6 +163,23 @@
               {/if}
               {#if meta}
                 <SubGridIcon {meta} />
+              {/if}
+            </SubGridItem>
+          {/each}
+        </SubGrid>
+      </PackageDetailSection>
+
+      <PackageDetailSection title="Key Metrics" id="key metrics">
+        <SubGrid>
+          {#each overviewTuples as [key, value, meta]}
+            <SubGridItem {key}>
+              <span>{value}</span>
+              {#if meta}
+                {#if !('text' in meta)}
+                  <SubGridIcon {meta} />
+                {:else if 'text' in meta}
+                  <span class="block text-xs text-neutral-300">{meta.text}</span>
+                {/if}
               {/if}
             </SubGridItem>
           {/each}
@@ -208,6 +208,7 @@
                 {/if}
                 <div class="flex gap-x-3 pt-1">
                   <Link
+                    withForcedReload
                     href="/author/{value}"
                     ariaLabel="All packages for {value}"
                     title="All packages for {value}"

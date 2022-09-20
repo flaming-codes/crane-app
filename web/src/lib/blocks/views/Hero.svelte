@@ -57,7 +57,7 @@
   >
     {title}
   </h1>
-  <h2 class="text-sm lg:text-lg opacity-60 text-center">
+  <h2 class="text-base lg:text-lg xl:text-xl opacity-70 text-center">
     {subtitle}
   </h2>
 
