@@ -20,9 +20,15 @@ export function parseOverviewTuples(p: Pkg) {
       p.date,
       { text: diffInDays === 0 ? 'Today' : `${diffInDays} ${diffInDays > 1 ? 'days' : 'day'} ago` }
     ],
-    ...(p.license?.map((l) => l.name && ['License', l.name, { url: l.link, isExternal: true }]) ||
-      []),
     p.needscompilation && ['Needs compilation?', p.needscompilation],
+    ...(p.license?.map(
+      (l) =>
+        l.name && [
+          'License',
+          l.name.replace('file LICENSE', 'File'),
+          { url: l.link, isExternal: true }
+        ]
+    ) || []),
     p.cran_checks && [
       'CRAN checks',
       p.cran_checks.label,

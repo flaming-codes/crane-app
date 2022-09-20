@@ -10,7 +10,7 @@
   import Link from '$lib/display/views/Link.svelte';
   import SearchHitItem from './SearchHitItem.svelte';
 
-  const { input, state, authors } = store;
+  const { input, state, authors, isInputFocused } = store;
   const { items: hitItems, page, size, total, isEnd } = store.hits;
 
   type InitialAll = {
@@ -127,18 +127,22 @@
     2xl:grid-cols-6 2xl:gap-8
   `}
 >
-  {#if !$input}
-    <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>
-  {/if}
-  {#if $authors.length}
-    <section class="col-span-full flex gap-x-4 h-12 overflow-x-auto overflow-y-hidden">
+  <!--
+    TODO: Workaround instead of '$authors.length' as scroll-margin-top won't apply after initial movement. 
+
+    I.e. once the 'goto(#packages') is called, this section is hidden in case the authors' result comes
+    in later - which is almost alwayys the case. As a quickfix, we show an empty space that's filled w/
+    the authors' result once it comes in.
+    -->
+  {#if Boolean($input)}
+    <section class={clsx('h-12 col-span-full flex gap-x-4 overflow-x-auto overflow-y-hidden')}>
       {#each $authors as { name, slug, totalPackages }}
         <Link withForcedReload href="/author/{slug}" class="flex flex-col flex-shrink-0">
-          <SearchHitItem {theme}>
-            <span class="text-base flex items-center gap-x-1"
+          <SearchHitItem {theme} class="h-auto">
+            <span class="flex text-base items-center gap-x-1"
               ><Iconic name="carbon:user-avatar" size="16" /> {name}</span
             >
-            <span class=" opacity-50 text-sm"
+            <span class="opacity-50 text-sm"
               >{totalPackages} {totalPackages === 1 ? 'package' : 'packages'}</span
             >
           </SearchHitItem>
@@ -151,6 +155,9 @@
         'opacity-20': theme === 'dark'
       })}
     />
+  {/if}
+  {#if !$input}
+    <p class="col-span-full px-4 py-1 text-zinc-700">Packages by date of publication</p>
   {/if}
   {#each $hitItems as item}
     <PackageLink {item} {theme} />
