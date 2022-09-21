@@ -191,23 +191,25 @@
 
   <!-- Usage -->
 
-  <Section withTwoFoldLayout withPaddingX={false} id="usage">
-    <SectionHeader>
-      <SectionTitleSelect selected="Usage" options={titles} />
-    </SectionHeader>
+  {#if downloads.length}
+    <Section withTwoFoldLayout withPaddingX={false} id="usage">
+      <SectionHeader>
+        <SectionTitleSelect selected="Usage" options={titles} />
+      </SectionHeader>
 
-    <SectionsColumn>
-      <PackageDetailSection title="Downloads" id="downloads">
-        <SubGrid>
-          {#each downloads as { value, label }}
-            <SubGridItem key={label}>
-              <span>{value}</span>
-            </SubGridItem>
-          {/each}
-        </SubGrid>
-      </PackageDetailSection>
-    </SectionsColumn>
-  </Section>
+      <SectionsColumn>
+        <PackageDetailSection title="Downloads" id="downloads">
+          <SubGrid>
+            {#each downloads as { value, label }}
+              <SubGridItem key={label}>
+                <span>{value}</span>
+              </SubGridItem>
+            {/each}
+          </SubGrid>
+        </PackageDetailSection>
+      </SectionsColumn>
+    </Section>
+  {/if}
 
   <!-- Team -->
 
