@@ -35,7 +35,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
+  const { item, overviewTuples, maintainer, materials, aboutItems, contacts, downloads } = data;
 
   let y = 0;
 
