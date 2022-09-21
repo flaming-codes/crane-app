@@ -10,6 +10,7 @@ import {
   parseWindowsBinaries
 } from '$lib/package/models/parse';
 import type { Pkg } from '$lib/package/type';
+import { getPackageDownloadsLastNDays } from '$lib/statistics/models/cran';
 import { decodeSitemapSymbols } from '$lib/sitemap/parse';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -38,6 +39,29 @@ export const load: PageServerLoad = async ({ params }) => {
   item.macos_binaries = parseMacOsBinaries(item);
   item.windows_binaries = parseWindowsBinaries(item);
 
+  const getDownloads = async (days: number) => {
+    const res = await getPackageDownloadsLastNDays({ name: item!.name, days });
+    return res?.[0]?.downloads;
+  };
+
+  // Fetch all statistics in parallel.
+  const statistics = await Promise.all([
+    getDownloads(1),
+    getDownloads(7),
+    getDownloads(30),
+    getDownloads(90),
+    getDownloads(365)
+  ]);
+
+  // Aggregate the statistics into a single object.
+  const downloads = [
+    { value: statistics[0], label: 'Last 24 hours' },
+    { value: statistics[1], label: 'Last 7 days' },
+    { value: statistics[2], label: 'Last 30 days' },
+    { value: statistics[3], label: 'Last 90 days' },
+    { value: statistics[4], label: 'Last 365 days' }
+  ].filter(({ value }) => value !== undefined);
+
   const dependencyGroups = [
     'depends',
     'imports',
@@ -63,6 +87,7 @@ export const load: PageServerLoad = async ({ params }) => {
     maintainer,
     materials,
     aboutItems,
-    contacts
+    contacts,
+    downloads
   };
 };
