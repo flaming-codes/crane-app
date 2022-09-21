@@ -61,6 +61,6 @@ export async function getPackageDownloadsLastNDays(params: { name: string; days:
   const { name, days } = params;
   const now = new Date();
   const past = sub(now, { days });
-
+  
   return load<CranDownloadsResponse>`/downloads/total/${past}:${now}/${name}`;
 }
