@@ -54,13 +54,13 @@ export const load: PageServerLoad = async ({ params }) => {
   ]);
 
   // Aggregate the statistics into a single object.
-  const downloads = {
-    last24Hours: statistics[0],
-    last7Days: statistics[1],
-    last30Days: statistics[2],
-    last90Days: statistics[3],
-    last365Days: statistics[4]
-  } as const;
+  const downloads = [
+    { value: statistics[0], label: 'Last 24 hours' },
+    { value: statistics[1], label: 'Last 7 days' },
+    { value: statistics[2], label: 'Last 30 days' },
+    { value: statistics[3], label: 'Last 90 days' },
+    { value: statistics[4], label: 'Last 365 days' }
+  ];
 
   const dependencyGroups = [
     'depends',

@@ -49,6 +49,7 @@
 
   const titles = [
     'At a glance',
+    'Usage',
     'Team',
     'Documentation',
     'Downloads',
@@ -181,6 +182,28 @@
                   <span class="block text-xs text-neutral-300">{meta.text}</span>
                 {/if}
               {/if}
+            </SubGridItem>
+          {/each}
+        </SubGrid>
+      </PackageDetailSection>
+    </SectionsColumn>
+  </Section>
+
+  <!-- Usage -->
+
+  <Section withTwoFoldLayout withPaddingX={false} id="usage">
+    <!-- At a glance -->
+
+    <SectionHeader>
+      <SectionTitleSelect selected="Usage" options={titles} />
+    </SectionHeader>
+
+    <SectionsColumn>
+      <PackageDetailSection title="Downloads" id="downloads">
+        <SubGrid>
+          {#each downloads as { value, label }}
+            <SubGridItem key={label}>
+              <span>{value}</span>
             </SubGridItem>
           {/each}
         </SubGrid>
