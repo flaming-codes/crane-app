@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ params }) => {
     { value: statistics[2], label: 'Last 30 days' },
     { value: statistics[3], label: 'Last 90 days' },
     { value: statistics[4], label: 'Last 365 days' }
-  ];
+  ].filter(({ value }) => value !== undefined);
 
   const dependencyGroups = [
     'depends',
