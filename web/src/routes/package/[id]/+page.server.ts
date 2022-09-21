@@ -14,6 +14,7 @@ import { getPackageDownloadsLastNDays } from '$lib/statistics/models/cran';
 import { decodeSitemapSymbols } from '$lib/sitemap/parse';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { format1kDelimiter } from '$lib/display/models/format';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = decodeSitemapSymbols(params.id);
@@ -60,7 +61,9 @@ export const load: PageServerLoad = async ({ params }) => {
     { value: statistics[2], label: 'Last 30 days' },
     { value: statistics[3], label: 'Last 90 days' },
     { value: statistics[4], label: 'Last 365 days' }
-  ].filter(({ value }) => value !== undefined);
+  ]
+    .filter(({ value }) => value !== undefined)
+    .map(({ value, label }) => ({ value: format1kDelimiter(value), label }));
 
   const dependencyGroups = [
     'depends',
