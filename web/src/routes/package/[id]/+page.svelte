@@ -49,7 +49,7 @@
 
   const titles = [
     'At a glance',
-    'Usage',
+    'Statistics',
     'Team',
     'Documentation',
     'Downloads',
@@ -192,9 +192,9 @@
   <!-- Usage -->
 
   {#if downloads.length}
-    <Section withTwoFoldLayout withPaddingX={false} id="usage">
+    <Section withTwoFoldLayout withPaddingX={false} id="statistics">
       <SectionHeader>
-        <SectionTitleSelect selected="Usage" options={titles} />
+        <SectionTitleSelect selected="Statistics" options={titles} />
       </SectionHeader>
 
       <SectionsColumn>

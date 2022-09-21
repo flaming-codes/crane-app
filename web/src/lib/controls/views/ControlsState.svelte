@@ -2,7 +2,7 @@
   import { store } from '$lib/search/stores/search';
 
   import Icon from '@iconify/svelte';
-  import { formatDelimiter } from '$lib/display/models/format';
+  import { format1kDelimiter } from '$lib/display/models/format';
 
   const { state, typeAheadState } = store;
   const { total } = store.hits;
@@ -20,7 +20,7 @@
   {/if}
   {#if withTotal}
     <div class="hidden smx:block text-xs whitespace-nowrap">
-      {formatDelimiter($total)}
+      {format1kDelimiter($total)}
       {`${$total === 1 ? 'package' : 'packages'}`}
     </div>
   {/if}

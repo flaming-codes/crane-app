@@ -60,7 +60,7 @@ async function load<R extends CranResponse>(
 export async function getPackageDownloadsLastNDays(params: { name: string; days: number }) {
   const { name, days } = params;
   const now = new Date();
-  const lastWeek = sub(now, { days });
+  const past = sub(now, { days });
 
-  return load<CranDownloadsResponse>`/downloads/total/${lastWeek}:${now}/${name}`;
+  return load<CranDownloadsResponse>`/downloads/total/${past}:${now}/${name}`;
 }
