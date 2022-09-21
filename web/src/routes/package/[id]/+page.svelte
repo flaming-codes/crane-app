@@ -192,8 +192,6 @@
   <!-- Usage -->
 
   <Section withTwoFoldLayout withPaddingX={false} id="usage">
-    <!-- At a glance -->
-
     <SectionHeader>
       <SectionTitleSelect selected="Usage" options={titles} />
     </SectionHeader>
