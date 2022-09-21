@@ -35,7 +35,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  const { item, overviewTuples, maintainer, materials, aboutItems, contacts } = data;
+  const { item, overviewTuples, maintainer, materials, aboutItems, contacts, downloads } = data;
 
   let y = 0;
 
@@ -49,6 +49,7 @@
 
   const titles = [
     'At a glance',
+    'Usage',
     'Team',
     'Documentation',
     'Downloads',
@@ -187,6 +188,28 @@
       </PackageDetailSection>
     </SectionsColumn>
   </Section>
+
+  <!-- Usage -->
+
+  {#if downloads.length}
+    <Section withTwoFoldLayout withPaddingX={false} id="usage">
+      <SectionHeader>
+        <SectionTitleSelect selected="Usage" options={titles} />
+      </SectionHeader>
+
+      <SectionsColumn>
+        <PackageDetailSection title="Downloads" id="downloads">
+          <SubGrid>
+            {#each downloads as { value, label }}
+              <SubGridItem key={label}>
+                <span>{value}</span>
+              </SubGridItem>
+            {/each}
+          </SubGrid>
+        </PackageDetailSection>
+      </SectionsColumn>
+    </Section>
+  {/if}
 
   <!-- Team -->
 
