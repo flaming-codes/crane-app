@@ -6,6 +6,7 @@
   import { shortcut } from '$lib/input/models/shortcut';
   import { platformString } from '$lib/pwa/model/text';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import { sendEvent } from '$lib/analytics/model';
 
   export let value: string;
 
@@ -21,6 +22,7 @@
         }
       });
     });
+    sendEvent('copy-to-clipboard', { props: { value } });
   };
 </script>
 
