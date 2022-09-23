@@ -20,7 +20,6 @@
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
-  import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -42,7 +41,7 @@
   <SearchControls withTotal={false}>
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
-        <Icon icon="carbon:switcher" />
+        <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>
   </SearchControls>
@@ -118,13 +117,13 @@
                 linkedin: 'https://www.linkedin.com/in/lukas-schönmann-70781a215/'
               }}
             >
-              I enjoy <Icon icon="carbon:cyclist" class="inline" height="20" /><span class="sr-only"
+              I enjoy <Iconic name="carbon:cyclist" class="inline" size="20" /><span class="sr-only"
                 >cycling</span
               >
-              as often as I can, but also caring for my <Icon
-                icon="carbon:agriculture-analytics"
+              as often as I can, but also caring for my <Iconic
+                name="carbon:agriculture-analytics"
                 class="inline"
-                height="20"
+                size="20"
               /><span class="sr-only">plants</span> a lot. Also I'm the brother of Tom (the other guy).
             </ContactCard>
             <ContactCard
@@ -135,12 +134,12 @@
                 linkedin: 'https://www.linkedin.com/in/tom-schönmann-487b97164/'
               }}
             >
-              There's nothing better than <Icon
-                icon="carbon:swim"
+              There's nothing better than <Iconic
+                name="carbon:swim"
                 class="inline"
-                height="20"
+                size="20"
               /><span class="sr-only">swimming</span>
-              , well, apart from <Icon icon="carbon:code" class="inline" height="20" /><span
+              , well, apart from <Iconic name="carbon:code" class="inline" size="20" /><span
                 class="sr-only">coding</span
               > all day and night. Oh yes, and I'm the brother of Lukas.
             </ContactCard>

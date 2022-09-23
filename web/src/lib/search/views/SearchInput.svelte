@@ -11,6 +11,7 @@
   import MediaQuery from 'svelte-media-queries';
   import InitTypeaheadWorker from '$lib/db/workers/InitTypeaheadWorker.svelte';
   import type { TAItem } from '$lib/db/adapters/types';
+  import { sendEvent } from '$lib/analytics/model';
 
   const { state, input, typeAheadState, isInputFocused } = store;
   const { proxy: taProxy } = taStore;
@@ -35,6 +36,7 @@
 
   const onEnter = () => {
     if (suggestion && 'id' in suggestion) {
+      sendEvent('inline-suggestion-selected', { props: { value: suggestion.id } });
       input.set(suggestion.id);
       window.location.href = `/package/${suggestion.slug}`;
     }

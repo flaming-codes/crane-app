@@ -2,7 +2,7 @@ import type { IDBPDatabase } from 'idb';
 import { openDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
 import Loki, { Collection } from '@lokidb/loki';
-
+import { get, set, del } from 'idb-keyval';
 import type { DBAdapter, TAItem } from './types';
 import { fetchTypeAheadItems } from '../utils/net';
 
@@ -36,8 +36,22 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
 
   let count = await db.count('idbs');
   let all: TAItem[] = [];
+  let deleteExisting = options?.deleteExisting ?? false;
 
-  if (count > 0 && options?.deleteExisting) {
+  // Check for a failed past init. This marker gets only
+  // deleted after a successful init, so if it exists,
+  // we need to init again.
+  const resumeFromFailed = await get('ta-db-active-init');
+  if (resumeFromFailed) {
+    count = 0;
+    deleteExisting = true;
+  }
+
+  // Set the marker to indicate that we are currently
+  // initializing the db.
+  await set('ta-db-active-init', true);
+
+  if (count > 0 && deleteExisting) {
     await db.clear('idbs');
     await loki?.deleteDatabase();
 
@@ -80,6 +94,9 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     }
     collection.insert(all);
   }
+
+  // Clear marker for failed init.
+  await del('ta-db-active-init');
 
   return status;
 };

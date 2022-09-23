@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
+  import Iconic from '$lib/blocks/views/Iconic.svelte';
   import clsx from 'clsx';
 
   export let type: string;
@@ -8,8 +8,8 @@
   export { cn as class };
 </script>
 
-<Icon
-  icon={clsx({
+<Iconic
+  name={clsx({
     'carbon:document': type === 'file',
     'carbon:change-catalog': type === 'changelog',
     'carbon:license': type === 'license',

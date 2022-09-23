@@ -1,19 +1,17 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
   import clsx from 'clsx';
+  import Iconic from './Iconic.svelte';
 
   export let icon: 'windows' | 'macos' | 'old';
-  export let width: string | undefined = undefined;
-  export let height: string | undefined = undefined;
+  export let size: '16' | '20' | '24' | '32' | '40' | '48' | '56';
 
   let cn: string | undefined = undefined;
   export { cn as class };
 </script>
 
-<Icon
-  {width}
-  {height}
-  icon={clsx({
+<Iconic
+  {size}
+  name={clsx({
     'cib:windows': icon === 'windows',
     'file-icons:finder': icon === 'macos',
     'carbon:server-time': icon === 'old'
