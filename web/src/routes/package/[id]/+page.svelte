@@ -251,7 +251,7 @@
         <PackageDetailSection title="Authors" id="authors">
           <SubGrid>
             {#each item.author as { name, roles, link, extra }}
-              <SubGridItem key={name} emphasis="key" withValueSpaceY="xs">
+              <SubGridItem key={name} emphasis="value" withValueSpaceY="xs">
                 {#if roles}
                   <p class="text-sm pt-1">{roles.join(' / ')}</p>
                 {/if}
@@ -260,6 +260,7 @@
                 {/if}
                 <div class="flex gap-x-3 pt-1">
                   <Link
+                    withForcedReload
                     href="/author/{name}"
                     ariaLabel="All packages for {name}"
                     title="All packages for {name}"
@@ -435,7 +436,7 @@
       {#if item.macos_binaries && item.macos_binaries.length}
         <PackageDetailSection id="macos">
           <SectionSubHeader slot="title" class="space-x-4">
-            <SystemIcon icon="macos" width="26" />
+            <SystemIcon icon="macos" size="24" />
             <span>macOS</span>
           </SectionSubHeader>
 
@@ -457,7 +458,7 @@
       {#if item.windows_binaries && item.windows_binaries.length}
         <PackageDetailSection id="windows">
           <SectionSubHeader slot="title" class="space-x-4">
-            <SystemIcon icon="windows" class="text-xs" width="26" />
+            <SystemIcon icon="windows" class="text-xs" size="24" />
             <span>Windows</span>
           </SectionSubHeader>
           <SubGrid>
@@ -478,7 +479,7 @@
       {#if item.old_sources}
         <PackageDetailSection id="old sources">
           <SectionSubHeader slot="title" class="space-x-4">
-            <SystemIcon icon="old" width="26" />
+            <SystemIcon icon="old" size="24" />
             <span>Old Sources</span>
           </SectionSubHeader>
           <SubGrid>
