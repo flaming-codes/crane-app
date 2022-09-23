@@ -1,6 +1,6 @@
 <script lang="ts">
   import Link from '$lib/display/views/Link.svelte';
-  import Icon from '@iconify/svelte';
+  import Iconic from './Iconic.svelte';
 
   export let name: string;
   export let img: { src: string; alt: string };
@@ -27,7 +27,7 @@
         rel="noopener noreferrer"
         ariaLabel="LinkedIn account URL"
       >
-        <Icon icon="carbon:logo-linkedin" width="30" />
+        <Iconic name="carbon:logo-linkedin" size="32" />
       </Link>
     {/if}
     {#if socials.github}
@@ -37,7 +37,7 @@
         rel="noopener noreferrer"
         ariaLabel="Email address"
       >
-        <Icon icon="carbon:logo-github" width="30" />
+        <Iconic name="carbon:logo-github" size="32" />
       </Link>
     {/if}
     {#if socials.email}
@@ -47,7 +47,7 @@
         rel="noopener noreferrer"
         ariaLabel="Email address"
       >
-        <Icon icon="carbon:email" width="30" />
+        <Iconic name="carbon:email" size="32" />
       </Link>
     {/if}
   </div>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
 
-  import Icon from '@iconify/svelte';
   import { format1kDelimiter } from '$lib/display/models/format';
+  import Iconic from '$lib/blocks/views/Iconic.svelte';
 
   const { state, typeAheadState } = store;
   const { total } = store.hits;
@@ -15,7 +15,7 @@
 <div class="font-mono flex items-center gap-x-4">
   {#if isLoading}
     <div class="animate-spin">
-      <Icon icon="carbon:renew" hFlip={true} />
+      <Iconic hFlip name="carbon:renew" />
     </div>
   {/if}
   {#if withTotal}

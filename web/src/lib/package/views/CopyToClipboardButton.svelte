@@ -3,9 +3,10 @@
 
   import Button from '$lib/display/views/Button.svelte';
   import { copyToClipboard } from '$lib/pwa/model/clipboard';
-  import Icon from '@iconify/svelte';
   import { shortcut } from '$lib/input/models/shortcut';
   import { platformString } from '$lib/pwa/model/text';
+  import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import { sendEvent } from '$lib/analytics/model';
 
   export let value: string;
 
@@ -21,6 +22,7 @@
         }
       });
     });
+    sendEvent('copy-to-clipboard', { props: { value } });
   };
 </script>
 
@@ -35,7 +37,7 @@
   }}
 />
 
-<Button readonly type="text" withSpaceX="md" on:click={copy}>
+<Button readonly withSpaceX="md" on:click={copy}>
   <span>{value}</span>
-  <Icon icon="carbon:copy" slot="icon" />
+  <Iconic name="carbon:copy" slot="icon" />
 </Button>

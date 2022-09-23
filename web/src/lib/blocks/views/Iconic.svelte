@@ -35,6 +35,17 @@
     | 'carbon:user-profile'
     | 'la:orcid'
     | 'carbon:user-avatar'
+    | 'carbon:logo-linkedin'
+    | 'cib:windows'
+    | 'file-icons:finder'
+    | 'carbon:server-time'
+    | 'carbon:document'
+    | 'carbon:change-catalog'
+    | 'carbon:license'
+    | 'carbon:text-indent'
+    | 'carbon:document-unknown'
+    | 'carbon:cyclist'
+    | 'carbon:swim'
     | (string & {});
   export let size: '16' | '20' | '24' | '32' | '40' | '48' | '56' = '24';
   export let hFlip: boolean | undefined = undefined;

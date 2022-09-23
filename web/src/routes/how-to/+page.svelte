@@ -19,7 +19,6 @@
   import SearchInit from '$lib/search/views/SearchInit.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
-  import Icon from '@iconify/svelte';
 
   const titles = ['Usage', 'Shortcuts', 'Authors'];
 </script>
@@ -36,7 +35,7 @@
   <SearchControls withTotal={false}>
     <svelte:fragment slot="links-start">
       <ControlsLink withGap href="/" title="Latest packages">
-        <Icon icon="carbon:switcher" />
+        <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>
   </SearchControls>
