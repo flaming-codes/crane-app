@@ -4,7 +4,7 @@
   export let title: string;
   export let titleSize: 'lg' | 'xl' = 'xl';
   export let subtitle: string | undefined = undefined;
-  export let height: '30' | '50' | '50!' | '70' | 'full';
+  export let height: '30' | '40!' | '50' | '50!' | '70' | 'full';
   export let isFixed: boolean | undefined = undefined;
   export let theme:
     | 'light'
@@ -34,6 +34,7 @@
       'h-[clamp(40vh,50vw,70vh)]': height === '70',
       'h-[clamp(40vh,40vw,50vh)]': height === '50',
       'h-[50vh]': height === '50!',
+      'h-[40vh]': height === '40!',
       'h-[clamp(10vh,20vw,30vh)]': height === '30',
       'h-screen': height === 'full',
       fixed: isFixed,

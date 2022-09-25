@@ -25,7 +25,7 @@
     {
       'bg-neutral-800 text-neutral-200 border-neutral-600 hover:border-neutral-700 hover:bg-neutral-700':
         variant === 'neutral',
-      'bg-neutral-600 text-neutral-100 border-neutral-500 hover:border-neutral-700 hover:bg-neutral-700':
+      'bg-neutral-700 text-neutral-100 border-neutral-500 hover:border-neutral-700 hover:bg-neutral-600':
         variant === 'highlight',
       'p-2 px-4 ': size === 'md',
       'p-1 px-3 text-xs': size === 'sm',
