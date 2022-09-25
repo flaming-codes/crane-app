@@ -150,7 +150,14 @@
           return;
         }
       }}
-      use:shortcut={{ control: true, code: 'KeyK', callback: ({ node }) => node.focus() }}
+      use:shortcut={{
+        control: true,
+        code: 'KeyK',
+        callback: ({ node }) => {
+          node.focus();
+          sendEvent('focus-search-shortcut-used');
+        }
+      }}
       use:shortcut={{ code: 'Escape', callback: () => onDismiss() }}
       {placeholder}
     />

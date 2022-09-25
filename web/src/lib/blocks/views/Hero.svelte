@@ -4,7 +4,7 @@
   export let title: string;
   export let titleSize: 'lg' | 'xl' = 'xl';
   export let subtitle: string | undefined = undefined;
-  export let height: '30' | '50' | '50!' | '70' | 'full';
+  export let height: '30' | '40!' | '50' | '50!' | '70' | 'full';
   export let isFixed: boolean | undefined = undefined;
   export let theme:
     | 'light'
@@ -17,6 +17,12 @@
     | undefined = undefined;
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
+
+  // Edge case: a single long title w/o breaks,
+  // which would otherwise overflow the container.
+  // Note that on mobile, this won't fix the issue.
+  // as we don't have enough space to fit the title.
+  const isSingleLongTitle = title.length > 16 && title.split(' ').length === 1;
 
   const defaultVariant = `
   sm:px-10
@@ -34,6 +40,7 @@
       'h-[clamp(40vh,50vw,70vh)]': height === '70',
       'h-[clamp(40vh,40vw,50vh)]': height === '50',
       'h-[50vh]': height === '50!',
+      'h-[40vh]': height === '40!',
       'h-[clamp(10vh,20vw,30vh)]': height === '30',
       'h-screen': height === 'full',
       fixed: isFixed,
@@ -49,8 +56,10 @@
 >
   <h1
     class={clsx('font-bold', {
-      'text-[clamp(2.8rem,9vw,9rem)]': titleSize === 'xl',
-      'text-[clamp(2.8rem,8vw,7rem)]': titleSize === 'lg',
+      'text-[clamp(2.8rem,9vw,9rem)]': titleSize === 'xl' && !isSingleLongTitle,
+      'text-[clamp(2.8rem,7vw,6rem)]': titleSize === 'xl' && isSingleLongTitle,
+      'text-[clamp(2.8rem,8vw,7rem)]': titleSize === 'lg' && !isSingleLongTitle,
+      'text-[clamp(2.8rem,8vw,5rem)]': titleSize === 'lg' && isSingleLongTitle,
       'break-all leading-none': textVariant === 'dense',
       'break-words leading-none': textVariant === 'fit'
     })}
