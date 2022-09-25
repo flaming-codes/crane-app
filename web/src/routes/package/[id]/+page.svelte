@@ -53,8 +53,7 @@
     'Team',
     'Documentation',
     'Downloads',
-    'Dependencies',
-    'Feedback' /* 'Readme', */
+    'Dependencies' /* 'Readme', */
   ];
 
   const dependencyGroups = [
@@ -513,51 +512,6 @@
           </PackageDetailSection>
         {/if}
       {/each}
-    </SectionsColumn>
-  </Section>
-
-  <!-- Feedback -->
-
-  <Section withTwoFoldLayout withPaddingX={false} id="feedback">
-    <SectionHeader>
-      <SectionTitleSelect selected="Feedback" options={titles} />
-    </SectionHeader>
-
-    <SectionsColumn>
-      <PackageDetailSection title="Contact us">
-        <p class="prose prose-lg prose-invert max-w-none">
-          If you found an issue, no matter what, please don't hesitate to contact us! We're eager
-          for any feedback and appreciate your commitment a lot!
-        </p>
-
-        <SubGrid>
-          <SubGridItem
-            key="Open a ticket"
-            url="https://github.com/flaming-codes/crane-app/issues/new/choose"
-            urlTarget="_blank"
-            withSpaceY="xs"
-            withValueSpaceY="xs"
-          >
-            <Link
-              href="https://github.com/flaming-codes/crane-app/issues/new/choose"
-              ariaLabel="Open a ticket at Github"
-            >
-              <Iconic name="carbon:logo-github" />
-            </Link>
-          </SubGridItem>
-          <SubGridItem
-            key="Email"
-            url="mailto:tom@flaming.codes"
-            withSpaceY="xs"
-            withValueSpaceY="xs"
-          >
-            <div class="text-xs text-neutral-300 font-mono">tom@flaming.codes</div>
-            <Link href="mailto:tom@flaming.codes" ariaLabel="Send us an email">
-              <Iconic name="carbon:email" />
-            </Link>
-          </SubGridItem></SubGrid
-        >
-      </PackageDetailSection>
     </SectionsColumn>
   </Section>
 
