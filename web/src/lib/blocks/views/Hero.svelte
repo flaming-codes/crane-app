@@ -18,6 +18,12 @@
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
 
+  // Edge case: a single long title w/o breaks,
+  // which would otherwise overflow the container.
+  // Note that on mobile, this won't fix the issue.
+  // as we don't have enough space to fit the title.
+  const isSingleLongTitle = title.length > 16 && title.split(' ').length === 1;
+
   const defaultVariant = `
   sm:px-10
     md:flex-row md:space-x-6 md:space-y-0 md:justify-start
@@ -50,8 +56,10 @@
 >
   <h1
     class={clsx('font-bold', {
-      'text-[clamp(2.8rem,9vw,9rem)]': titleSize === 'xl',
-      'text-[clamp(2.8rem,8vw,7rem)]': titleSize === 'lg',
+      'text-[clamp(2.8rem,9vw,9rem)]': titleSize === 'xl' && !isSingleLongTitle,
+      'text-[clamp(2.8rem,7vw,6rem)]': titleSize === 'xl' && isSingleLongTitle,
+      'text-[clamp(2.8rem,8vw,7rem)]': titleSize === 'lg' && !isSingleLongTitle,
+      'text-[clamp(2.8rem,8vw,5rem)]': titleSize === 'lg' && isSingleLongTitle,
       'break-all leading-none': textVariant === 'dense',
       'break-words leading-none': textVariant === 'fit'
     })}
