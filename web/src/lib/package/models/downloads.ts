@@ -19,20 +19,22 @@ export async function getDownloadsWithTrends(item: Pkg) {
   };
 
   // Fetch all statistics in parallel.
-  const stats = await Promise.all([
-    getDownloads(1),
-    getDownloads(7),
-    getDownloads(30),
-    getDownloads(90),
-    getDownloads(365)
-  ]);
-
-  const trendReferences = await Promise.all([
-    getDownloads(1, sub(new Date(), { days: 1 })),
-    getDownloads(7, sub(new Date(), { days: 7 })),
-    getDownloads(30, sub(new Date(), { days: 30 })),
-    getDownloads(90, sub(new Date(), { days: 90 })),
-    getDownloads(365, sub(new Date(), { days: 365 }))
+  const now = new Date();
+  const [stats, trendReferences] = await Promise.all([
+    Promise.all([
+      getDownloads(1),
+      getDownloads(7),
+      getDownloads(30),
+      getDownloads(90),
+      getDownloads(365)
+    ]),
+    Promise.all([
+      getDownloads(1, sub(now, { days: 1 })),
+      getDownloads(7, sub(now, { days: 7 })),
+      getDownloads(30, sub(now, { days: 30 })),
+      getDownloads(90, sub(now, { days: 90 })),
+      getDownloads(365, sub(now, { days: 365 }))
+    ])
   ]);
 
   // Get rend in percentage.
