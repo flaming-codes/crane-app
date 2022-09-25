@@ -197,9 +197,20 @@
       <SectionsColumn>
         <PackageDetailSection title="Downloads" id="downloads">
           <SubGrid>
-            {#each downloads as { value, label }}
+            {#each downloads as { value, label, trend }}
               <SubGridItem key={label}>
-                <span>{value}</span>
+                <span>{value || '-'}</span>
+                {#if trend}
+                  <span class="flex items-center gap-x-1 text-xs text-neutral-300 mt-1">
+                    {trend}
+                    {#if trend.startsWith('-')}
+                      <Iconic name="carbon:arrow-down" size="16" />
+                    {/if}
+                    {#if trend.startsWith('+')}
+                      <Iconic name="carbon:arrow-up" size="16" />
+                    {/if}
+                  </span>
+                {/if}
               </SubGridItem>
             {/each}
           </SubGrid>

@@ -57,10 +57,13 @@ async function load<R extends CranResponse>(
  * @param params
  * @returns
  */
-export async function getPackageDownloadsLastNDays(params: { name: string; days: number }) {
-  const { name, days } = params;
-  const now = new Date();
-  const past = sub(now, { days });
-  
-  return load<CranDownloadsResponse>`/downloads/total/${past}:${now}/${name}`;
+export async function getPackageDownloadsLastNDays(params: {
+  name: string;
+  days: number;
+  from?: Date;
+}) {
+  const { name, days, from = new Date() } = params;
+  const past = sub(from, { days });
+
+  return load<CranDownloadsResponse>`/downloads/total/${past}:${from}/${name}`;
 }
