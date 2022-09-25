@@ -53,8 +53,7 @@
     'Team',
     'Documentation',
     'Downloads',
-    'Dependencies',
-    'Feedback' /* 'Readme', */
+    'Dependencies' /* 'Readme', */
   ];
 
   const dependencyGroups = [
@@ -118,7 +117,7 @@
   isFixed
   title={item.name}
   subtitle={item.title}
-  height="50!"
+  height="40!"
   variant="prominent"
   theme="gradient-stone"
   textVariant="dense"
@@ -126,9 +125,7 @@
 
 <main
   class={`
-    absolute top-0 left-0 right-0 mt-[50vh] min-h-[200vh] pt-10 pb-20 space-y-8 bg-zinc-900 text-gray-100
-    md:space-y-12 
-    lg:space-y-16
+    absolute top-0 left-0 right-0 mt-[40vh] min-h-[200vh] pb-20 space-y-8 bg-zinc-900 text-gray-100
   `}
 >
   <Section withTwoFoldLayout withPaddingX={false} id="at a glance">
@@ -200,9 +197,20 @@
       <SectionsColumn>
         <PackageDetailSection title="Downloads" id="downloads">
           <SubGrid>
-            {#each downloads as { value, label }}
+            {#each downloads as { value, label, trend }}
               <SubGridItem key={label}>
-                <span>{value}</span>
+                <span>{value || '-'}</span>
+                {#if trend}
+                  <span class="flex items-center gap-x-1 text-xs text-neutral-300 mt-1">
+                    {trend}
+                    {#if trend.startsWith('-')}
+                      <Iconic name="carbon:arrow-down" size="16" />
+                    {/if}
+                    {#if trend.startsWith('+')}
+                      <Iconic name="carbon:arrow-up" size="16" />
+                    {/if}
+                  </span>
+                {/if}
               </SubGridItem>
             {/each}
           </SubGrid>
@@ -513,51 +521,6 @@
           </PackageDetailSection>
         {/if}
       {/each}
-    </SectionsColumn>
-  </Section>
-
-  <!-- Feedback -->
-
-  <Section withTwoFoldLayout withPaddingX={false} id="feedback">
-    <SectionHeader>
-      <SectionTitleSelect selected="Feedback" options={titles} />
-    </SectionHeader>
-
-    <SectionsColumn>
-      <PackageDetailSection title="Contact us">
-        <p class="prose prose-lg prose-invert max-w-none">
-          If you found an issue, no matter what, please don't hesitate to contact us! We're eager
-          for any feedback and appreciate your commitment a lot!
-        </p>
-
-        <SubGrid>
-          <SubGridItem
-            key="Open a ticket"
-            url="https://github.com/flaming-codes/crane-app/issues/new/choose"
-            urlTarget="_blank"
-            withSpaceY="xs"
-            withValueSpaceY="xs"
-          >
-            <Link
-              href="https://github.com/flaming-codes/crane-app/issues/new/choose"
-              ariaLabel="Open a ticket at Github"
-            >
-              <Iconic name="carbon:logo-github" />
-            </Link>
-          </SubGridItem>
-          <SubGridItem
-            key="Email"
-            url="mailto:tom@flaming.codes"
-            withSpaceY="xs"
-            withValueSpaceY="xs"
-          >
-            <div class="text-xs text-neutral-300 font-mono">tom@flaming.codes</div>
-            <Link href="mailto:tom@flaming.codes" ariaLabel="Send us an email">
-              <Iconic name="carbon:email" />
-            </Link>
-          </SubGridItem></SubGrid
-        >
-      </PackageDetailSection>
     </SectionsColumn>
   </Section>
 
