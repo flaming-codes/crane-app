@@ -1,6 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
 
+  export let variant: 'neutral' | 'highlight' = 'neutral';
   export let readonly: boolean | undefined = undefined;
   export let type: 'reset' | 'submit' | 'button' | undefined = undefined;
   export let size: 'sm' | 'md' = 'md';
@@ -20,9 +21,12 @@
   {title}
   aria-label={ariaLabel}
   class={clsx(
-    'bg-neutral-800 text-neutral-200 text-sm border border-neutral-600 rounded transition-colors duration-150 ease-in-out',
-    'hover:border-neutral-700 hover:bg-neutral-700',
+    'text-sm border rounded transition-colors duration-150 ease-in-out',
     {
+      'bg-neutral-800 text-neutral-200 border-neutral-600 hover:border-neutral-700 hover:bg-neutral-700':
+        variant === 'neutral',
+      'bg-neutral-600 text-neutral-100 border-neutral-500 hover:border-neutral-700 hover:bg-neutral-700':
+        variant === 'highlight',
       'p-2 px-4 ': size === 'md',
       'p-1 px-3 text-xs': size === 'sm',
       'font-mono': font === 'mono',
