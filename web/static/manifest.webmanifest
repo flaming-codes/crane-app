@@ -42,6 +42,27 @@
       "type": "image/webp",
       "platform": "wide",
       "label": "Homescreen of CRAN/E"
+    },
+    {
+      "src": "/manifest/screenshot-wide-1.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "platform": "wide",
+      "label": "Package detail page of CRAN/E"
+    },
+    {
+      "src": "/manifest/screenshot-wide-2.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "platform": "wide",
+      "label": "How-to page of CRAN/E"
+    },
+    {
+      "src": "/manifest/screenshot-wide-3.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "platform": "wide",
+      "label": "About-page of CRAN/E"
     }
   ],
   "shortcuts": [
