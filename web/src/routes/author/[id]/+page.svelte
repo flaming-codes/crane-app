@@ -100,7 +100,7 @@
 
 <main
   class={`
-    absolute top-0 left-0 right-0 mt-[50vh] min-h-[100vh] pt-10 pb-20 space-y-8 bg-zinc-900 text-neutral-100
+    absolute top-0 left-0 right-0 mt-[50vh] min-h-[100vh] pt-8 pb-20 space-y-8 bg-zinc-900 text-neutral-100
     md:space-y-16
   `}
 >

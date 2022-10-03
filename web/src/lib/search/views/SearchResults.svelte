@@ -10,7 +10,7 @@
   import Link from '$lib/display/views/Link.svelte';
   import SearchHitItem from './SearchHitItem.svelte';
 
-  const { input, state, authors, isInputFocused } = store;
+  const { input, state, authors } = store;
   const { items: hitItems, page, size, total, isEnd } = store.hits;
 
   type InitialAll = {

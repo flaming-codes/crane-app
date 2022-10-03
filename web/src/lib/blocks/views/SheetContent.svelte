@@ -8,6 +8,7 @@
   import clsx from 'clsx';
 
   export let offset: '50';
+  export let padding: 'md' | undefined = 'md';
 
   let cn: string | undefined = undefined;
   export { cn as class };
@@ -16,7 +17,8 @@
 <div
   class={clsx(
     {
-      'mt-[clamp(40vh,40vw,50vh)]': offset === '50'
+      'mt-[clamp(40vh,40vw,50vh)]': offset === '50',
+      'pt-8': padding === 'md'
     },
     cn
   )}
