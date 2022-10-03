@@ -117,7 +117,7 @@
   isFixed
   title={item.name}
   subtitle={item.title}
-  height="40!"
+  height="50!"
   variant="prominent"
   theme="gradient-stone"
   textVariant="dense"
@@ -125,7 +125,7 @@
 
 <main
   class={`
-    absolute top-0 left-0 right-0 mt-[40vh] min-h-[200vh] pb-20 space-y-8 bg-zinc-900 text-gray-100
+    absolute top-0 left-0 right-0 mt-[50vh] min-h-[200vh] pt-8 pb-20 space-y-8 bg-zinc-900 text-gray-100
   `}
 >
   <Section withTwoFoldLayout withPaddingX={false} id="at a glance">
