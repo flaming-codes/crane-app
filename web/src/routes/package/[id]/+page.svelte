@@ -117,7 +117,7 @@
   isFixed
   title={item.name}
   subtitle={item.title}
-  height="40!"
+  height="50!"
   variant="prominent"
   theme="gradient-stone"
   textVariant="dense"
