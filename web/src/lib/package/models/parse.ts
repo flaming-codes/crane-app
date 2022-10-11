@@ -88,7 +88,10 @@ export function parseMaterials(p: Pkg): Pkg['materials'] {
     },
     p.package_source && {
       name: 'Package source',
-      link: p.package_source.link,
+      link: p.package_source.link.replace(
+        'https://cran.r-project.org//',
+        'https://cran.r-project.org/'
+      ),
       type: 'download'
     }
   ].filter(Boolean) as Pkg['materials'];
