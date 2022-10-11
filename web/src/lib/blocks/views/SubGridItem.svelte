@@ -20,12 +20,15 @@
 
 <tr
   {title}
-  on:click|preventDefault={(event) => {
-    if (onClick) {
-      onClick(event);
-    }
-    if (url) {
-      window.open(url, urlTarget);
+  on:click={(event) => {
+    if (onClick || url) {
+      event.stopPropagation();
+      if (onClick) {
+        onClick(event);
+      }
+      if (url) {
+        window.open(url, urlTarget);
+      }
     }
   }}
   class={clsx(
