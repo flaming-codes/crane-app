@@ -1,7 +1,7 @@
 import type { IDBPDatabase } from 'idb';
 import { openDB, deleteDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
-import Loki, { Collection } from '@lokidb/loki';
+import Loki, { type Collection } from '@lokidb/loki';
 import { get, set, del } from 'idb-keyval';
 import type { DBAdapter, TAItem } from './types';
 import { fetchTypeAheadItems } from '../utils/net';
