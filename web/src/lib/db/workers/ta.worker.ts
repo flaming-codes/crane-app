@@ -17,15 +17,22 @@ class Worker {
       // 6 hours cache time.
       const isStale = timestamp && Date.now() - timestamp > 1_000 * 60 * 60 * 6;
 
-      const res = await Worker.adapter.initIfNeeded({
-        ...options,
-        deleteExisting: isStale || options?.deleteExisting
-      });
+      let res = 500;
+      try {
+        res = await Worker.adapter.initIfNeeded({
+          ...options,
+          deleteExisting: isStale || options?.deleteExisting
+        });
+      } catch (error) {
+        console.error(error);
+      }
 
       set(cacheKey, Date.now());
 
       return res;
     } catch (error) {
+      await adapter.reset();
+
       console.error(error);
 
       await adapter.reset();

@@ -31,8 +31,7 @@
         return;
       }
 
-      const cacheKey = 'ta-db-timestamp';
-      const cache = await get(cacheKey);
+      const cache = await get('ta-db-timestamp');
 
       if (cache) {
         $typeAheadState = 'ready';
