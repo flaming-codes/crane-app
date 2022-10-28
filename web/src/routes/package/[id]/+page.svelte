@@ -106,7 +106,7 @@
 <ControlsBase variant={isNavDark ? 'black' : 'transparent'} class="text-black">
   <SearchControls withTotal={false} theme={isNavDark ? 'dark' : 'light'}>
     <svelte:fragment slot="links-start">
-      <ControlsLink withGap href="/" title="Latest packages">
+      <ControlsLink withForcedReload withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>

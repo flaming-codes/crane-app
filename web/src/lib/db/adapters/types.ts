@@ -5,6 +5,7 @@
 export type DBAdapter<T> = {
   initIfNeeded(options?: { deleteExisting?: boolean }): Promise<number>;
   query(q: string): Promise<T[]>;
+  reset(): Promise<void>;
 };
 
 export type TAItem = { id: string; slug: string };
