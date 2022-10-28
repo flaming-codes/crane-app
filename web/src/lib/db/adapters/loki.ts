@@ -1,5 +1,5 @@
 import type { IDBPDatabase } from 'idb';
-import { openDB } from 'idb';
+import { openDB, deleteDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
 import Loki, { Collection } from '@lokidb/loki';
 import { get, set, del } from 'idb-keyval';
@@ -103,6 +103,19 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
 
 /**
  *
+ */
+async function reset() {
+  await db.clear('idbs').catch();
+  await loki?.deleteDatabase().catch();
+  await del('ta-db-active-init').catch();
+  await deleteDB('idb-store').catch();
+
+  loki = undefined;
+  collection = undefined;
+}
+
+/**
+ *
  * @param q
  * @returns
  */
@@ -119,5 +132,6 @@ const query = async (q: string) => {
  */
 export const adapter: DBAdapter<TAItem> = {
   initIfNeeded,
-  query
+  query,
+  reset
 };

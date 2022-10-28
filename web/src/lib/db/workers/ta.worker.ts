@@ -27,6 +27,9 @@ class Worker {
       return res;
     } catch (error) {
       console.error(error);
+
+      await adapter.reset();
+
       return 500;
     }
   }
