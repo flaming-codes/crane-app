@@ -14,11 +14,15 @@ let collection: Collection<TAItem> | undefined;
  *
  */
 async function open() {
-  db = await openDB('idb-store', 1, {
+  db = await openDB('loki-idb-store', 1, {
     upgrade(db) {
-      db.createObjectStore('idbs', {
-        keyPath: 'id'
-      });
+      try {
+        db.createObjectStore('loki-idbs', {
+          keyPath: 'id'
+        });
+      } catch (error) {
+        console.error('loki adapter idb upgrade:', error);
+      }
     }
   });
 }
@@ -34,7 +38,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     await open();
   }
 
-  let count = await db.count('idbs');
+  let count = await db.count('loki-idbs');
   let all: TAItem[] = [];
   let deleteExisting = options?.deleteExisting ?? false;
 
@@ -52,7 +56,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   await set('ta-db-active-init', true);
 
   if (count > 0 && deleteExisting) {
-    await db.clear('idbs');
+    await db.clear('loki-idbs');
     await loki?.deleteDatabase();
 
     count = 0;
@@ -63,7 +67,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   // No IDB data, fetch from the network and store.
   if (count === 0) {
     const next = await fetchTypeAheadItems();
-    const tx = db.transaction('idbs', 'readwrite');
+    const tx = db.transaction('loki-idbs', 'readwrite');
     await Promise.all([...next.map((item) => tx.store.add(item)), tx.done]);
 
     all = next;
@@ -90,7 +94,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   // Now assure that Loki has data.
   if (collection && collection.count() === 0) {
     if (all.length === 0) {
-      all = await db.getAll('idbs');
+      all = await db.getAll('loki-idbs');
     }
     collection.insert(all);
   }
@@ -105,10 +109,10 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
  *
  */
 async function reset() {
-  await db.clear('idbs').catch();
+  await db.clear('loki-idbs').catch();
   await loki?.deleteDatabase().catch();
   await del('ta-db-active-init').catch();
-  await deleteDB('idb-store').catch();
+  await deleteDB('loki-idb-store').catch();
 
   loki = undefined;
   collection = undefined;
