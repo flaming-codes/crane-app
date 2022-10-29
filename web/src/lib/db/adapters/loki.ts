@@ -96,7 +96,12 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   if (count === 0) {
     const next = await fetchTypeAheadItems();
     const tx = db.transaction('loki-idbs', 'readwrite');
-    await Promise.all([...next.map((item) => tx.store.add(item)), tx.done]);
+    await Promise.all([
+      ...next
+        .filter((n, i, source) => source.findIndex((s) => s.id === n.id) === i)
+        .map((item) => tx.store.add(item)),
+      tx.done
+    ]);
 
     all = next;
     count = all.length;
