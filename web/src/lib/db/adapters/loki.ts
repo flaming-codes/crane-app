@@ -92,7 +92,6 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     collection = undefined;
   }
 
-  /*
   // No IDB data, fetch from the network and store.
   if (count === 0) {
     const next = await fetchTypeAheadItems();
@@ -105,6 +104,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     status = 201;
   }
 
+  /*
   // IDB is available at this point, check for Loki.
   if (!loki) {
     try {
