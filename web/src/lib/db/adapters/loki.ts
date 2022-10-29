@@ -1,7 +1,8 @@
 import type { IDBPDatabase } from 'idb';
 import { openDB, deleteDB } from 'idb';
 import IndexedStorage from '@lokidb/indexed-storage';
-import Loki, { type Collection } from '@lokidb/loki';
+import type Loki from '@lokidb/loki';
+import type { Collection } from '@lokidb/loki';
 import { get, set, del } from 'idb-keyval';
 import type { DBAdapter, TAItem } from './types';
 import { fetchTypeAheadItems } from '../utils/net';
@@ -32,7 +33,8 @@ async function open() {
  * @param options
  */
 const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
-  const status = 200;
+  let status = 200;
+  status = 200;
 
   try {
     if (!db) {
@@ -47,11 +49,11 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     return 500;
   }
 
-  const count = await db.count('loki-idbs');
-  const all: TAItem[] = [];
-  const deleteExisting = options?.deleteExisting ?? false;
+  let count = await db.count('loki-idbs');
+  let all: TAItem[] = [];
+  all = [];
+  let deleteExisting = options?.deleteExisting ?? false;
 
-  /*
   // Check for a failed past init. This marker gets only
   // deleted after a successful init, so if it exists,
   // we need to init again.
@@ -90,6 +92,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     collection = undefined;
   }
 
+  /*
   // No IDB data, fetch from the network and store.
   if (count === 0) {
     const next = await fetchTypeAheadItems();
