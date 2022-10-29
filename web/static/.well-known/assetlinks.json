@@ -1,6 +1,13 @@
-[{
-        "relation": ["delegate_permission/common.handle_all_urls"],
-        "target" : { "namespace": "android_app", "package_name": "com.cran_e.twa",
-                     "sha256_cert_fingerprints": ["6B:71:A0:33:A0:69:BC:14:C5:5D:DA:3F:C1:00:E9:47:1E:7A:FF:4F:41:DE:F6:90:E8:89:29:B3:3F:E1:CC:8E"] }
-      }
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.cran_e.twa",
+      "sha256_cert_fingerprints": [
+        "6B:71:A0:33:A0:69:BC:14:C5:5D:DA:3F:C1:00:E9:47:1E:7A:FF:4F:41:DE:F6:90:E8:89:29:B3:3F:E1:CC:8E",
+        "8E:93:99:77:5F:FF:B2:88:EF:C8:0B:A2:4B:31:0C:28:C4:42:F5:07:B1:B1:0A:C1:AE:09:29:77:C6:2D:7A:A0"
+      ]
+    }
+  }
 ]
