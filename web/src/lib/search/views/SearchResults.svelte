@@ -183,7 +183,7 @@
         {#if $isEnd}
           No more results
         {:else if $state === 'searching'}
-          Loading {$size * ($page + 1)} of {$total}
+          Loading {$size} more
         {:else}
           Load more
         {/if}

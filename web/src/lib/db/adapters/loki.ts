@@ -6,7 +6,7 @@ import { get, set, del } from 'idb-keyval';
 import type { DBAdapter, TAItem } from './types';
 import { fetchTypeAheadItems } from '../utils/net';
 
-let db: IDBPDatabase<unknown>;
+let db: IDBPDatabase<unknown> | undefined;
 let loki: Loki | undefined;
 let collection: Collection<TAItem> | undefined;
 
@@ -14,9 +14,9 @@ let collection: Collection<TAItem> | undefined;
  *
  */
 async function open() {
-  db = await openDB('idb-store', 1, {
+  db = await openDB('loki-idb-store', 1, {
     upgrade(db) {
-      db.createObjectStore('idbs', {
+      db.createObjectStore('loki-idbs', {
         keyPath: 'id'
       });
     }
@@ -34,13 +34,19 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
     await open();
   }
 
-  let count = await db.count('idbs');
+  if (!db) {
+    console.error('loki adapter, no db found');
+    return 500;
+  }
+
+  let count = await db.count('loki-idbs');
   let all: TAItem[] = [];
   let deleteExisting = options?.deleteExisting ?? false;
 
   // Check for a failed past init. This marker gets only
   // deleted after a successful init, so if it exists,
   // we need to init again.
+
   const resumeFromFailed = await get('ta-db-active-init');
   if (resumeFromFailed) {
     count = 0;
@@ -52,7 +58,7 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   await set('ta-db-active-init', true);
 
   if (count > 0 && deleteExisting) {
-    await db.clear('idbs');
+    await db.clear('loki-idbs');
     await loki?.deleteDatabase();
 
     count = 0;
@@ -63,8 +69,13 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   // No IDB data, fetch from the network and store.
   if (count === 0) {
     const next = await fetchTypeAheadItems();
-    const tx = db.transaction('idbs', 'readwrite');
-    await Promise.all([...next.map((item) => tx.store.add(item)), tx.done]);
+    const tx = db.transaction('loki-idbs', 'readwrite', { durability: 'relaxed' });
+    await Promise.all([
+      ...next
+        .filter((n, i, source) => source.findIndex((s) => s.id === n.id) === i)
+        .map((item) => tx.store.add(item)),
+      tx.done
+    ]);
 
     all = next;
     count = all.length;
@@ -75,22 +86,23 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   // IDB is available at this point, check for Loki.
   if (!loki) {
     loki = new Loki('loki.db', { env: 'BROWSER' });
-    await loki.initializePersistence({ adapter: new IndexedStorage() });
 
-    collection = loki.addCollection<TAItem>('items', {
+    await loki?.initializePersistence({ adapter: new IndexedStorage() });
+
+    collection = loki?.addCollection<TAItem>('items', {
       defaultLokiOperatorPackage: 'js',
       rangedIndexes: {
         id: { indexTypeName: 'avl', comparatorName: 'js' }
       }
     });
 
-    await loki.saveDatabase();
+    await loki?.saveDatabase();
   }
 
   // Now assure that Loki has data.
   if (collection && collection.count() === 0) {
     if (all.length === 0) {
-      all = await db.getAll('idbs');
+      all = await db.getAll('loki-idbs');
     }
     collection.insert(all);
   }
@@ -105,11 +117,12 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
  *
  */
 async function reset() {
-  await db.clear('idbs').catch();
+  await db?.clear('loki-idbs').catch();
   await loki?.deleteDatabase().catch();
   await del('ta-db-active-init').catch();
-  await deleteDB('idb-store').catch();
+  await deleteDB('loki-idb-store').catch();
 
+  db = undefined;
   loki = undefined;
   collection = undefined;
 }
