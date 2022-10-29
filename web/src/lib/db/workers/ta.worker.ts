@@ -34,6 +34,9 @@ class Worker {
       await adapter.reset();
 
       console.error(error);
+
+      await adapter.reset();
+
       return 500;
     }
   }
