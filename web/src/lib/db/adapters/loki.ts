@@ -79,7 +79,12 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
   // IDB is available at this point, check for Loki.
   if (!loki) {
     loki = new Loki('loki.db', { env: 'BROWSER' });
-    await loki.initializePersistence({ adapter: new IndexedStorage() });
+
+    try {
+      await loki.initializePersistence({ adapter: new IndexedStorage() });
+    } catch (error) {
+      console.error('loki adapter initializePersistence:', error);
+    }
 
     collection = loki.addCollection<TAItem>('items', {
       defaultLokiOperatorPackage: 'js',
@@ -88,7 +93,11 @@ const initIfNeeded = async (options?: { deleteExisting?: boolean }) => {
       }
     });
 
-    await loki.saveDatabase();
+    try {
+      await loki.saveDatabase();
+    } catch (error) {
+      console.error('loki adapter saveDatabase:', error);
+    }
   }
 
   // Now assure that Loki has data.
