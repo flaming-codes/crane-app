@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "com.cran_e.twa",
+                     "sha256_cert_fingerprints": ["6B:71:A0:33:A0:69:BC:14:C5:5D:DA:3F:C1:00:E9:47:1E:7A:FF:4F:41:DE:F6:90:E8:89:29:B3:3F:E1:CC:8E"] }
+      }
+]
