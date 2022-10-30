@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment';
+  import { sendEvent } from '$lib/analytics/model';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
   import { onMount, onDestroy } from 'svelte';
 
@@ -17,6 +18,7 @@
   const onInstall = () => {
     defferedEvent.prompt();
     isInstallPossible = false;
+    sendEvent('install-pwa');
   };
 
   onMount(() => {
