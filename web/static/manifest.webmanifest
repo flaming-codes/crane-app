@@ -18,21 +18,21 @@
   "iarc_rating_id": "dfdd11f6-a4c0-455c-bb07-cc6b30bb3e28",
   "icons": [
     {
-      "src": "/manifest/android-chrome-192x192.webp",
+      "src": "/manifest/android-chrome-192x192.jpg",
       "sizes": "192x192",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "/manifest/android-chrome-256x256.webp",
+      "src": "/manifest/android-chrome-256x256.jpg",
       "sizes": "256x256",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "purpose": "maskable"
     },
     {
-      "src": "/manifest/android-chrome-512x512.webp",
+      "src": "/manifest/android-chrome-512x512.jpg",
       "sizes": "512x512",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "purpose": "maskable"
     },
     {
@@ -44,32 +44,53 @@
   ],
   "screenshots": [
     {
-      "src": "/manifest/screenshot-wide-0.webp",
+      "src": "/manifest/screenshot-wide-0.jpg",
       "sizes": "1280x720",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "platform": "wide",
       "label": "Homescreen of CRAN/E"
     },
     {
-      "src": "/manifest/screenshot-wide-1.webp",
+      "src": "/manifest/screenshot-wide-1.jpg",
       "sizes": "1280x720",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "platform": "wide",
       "label": "Package detail page of CRAN/E"
     },
     {
-      "src": "/manifest/screenshot-wide-2.webp",
+      "src": "/manifest/screenshot-wide-2.jpg",
       "sizes": "1280x720",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "platform": "wide",
       "label": "How-to page of CRAN/E"
     },
     {
-      "src": "/manifest/screenshot-wide-3.webp",
+      "src": "/manifest/screenshot-wide-3.jpg",
       "sizes": "1280x720",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "platform": "wide",
       "label": "About-page of CRAN/E"
+    },
+    {
+      "src": "/manifest/screenshot-portrait-0.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "platform": "narrow",
+      "label": "Packages overview of CRAN/E"
+    },
+    {
+      "src": "/manifest/screenshot-portrait-1.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "platform": "narrow",
+      "label": "Package detail page of CRAN/E"
+    },
+    {
+      "src": "/manifest/screenshot-portrait-2.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "platform": "narrow",
+      "label": "How-to page of CRAN/E"
     }
   ],
   "shortcuts": [
