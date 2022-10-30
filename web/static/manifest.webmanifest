@@ -15,6 +15,7 @@
   "dir": "auto",
   "related_applications": [],
   "prefer_related_applications": false,
+  "iarc_rating_id": "dfdd11f6-a4c0-455c-bb07-cc6b30bb3e28",
   "icons": [
     {
       "src": "/manifest/android-chrome-192x192.webp",
