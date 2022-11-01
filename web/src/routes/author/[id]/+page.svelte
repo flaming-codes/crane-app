@@ -29,8 +29,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  export let errors: unknown = undefined;
-  const { id, packages, otherAuthors, totalOtherAuthors, links } = data;
+  const { id, packages, otherAuthors, totalOtherAuthors, links, activeEventType } = data;
   const slug = encodeURIComponent(id);
 
   let y = 0;
@@ -231,3 +230,11 @@
     </SectionsColumn>
   </Section>
 </main>
+
+<!-- Event visuals. -->
+
+{#if activeEventType === 'birthday'}
+  {#await import('$lib/blocks/views/ViewportConfetti.svelte') then Module}
+    <Module.default />
+  {/await}
+{/if}

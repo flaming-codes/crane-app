@@ -7,3 +7,5 @@ declare interface Window {
     }
   ) => void;
 }
+
+declare module 'svelte-confetti';
