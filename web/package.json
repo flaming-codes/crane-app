@@ -23,9 +23,9 @@
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",
     "@iconify/svelte": "^2.2.1",
-    "@playwright/test": "^1.26.0",
-    "@sveltejs/adapter-vercel": "^1.0.0-next.80",
-    "@sveltejs/kit": "^1.0.0-next.528",
+    "@playwright/test": "^1.27.1",
+    "@sveltejs/adapter-vercel": "^1.0.0-next.81",
+    "@sveltejs/kit": "^1.0.0-next.531",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.7",
@@ -53,7 +53,7 @@
     "ts-node": "^10.9.1",
     "tslib": "^2.4.0",
     "typescript": "^4.8.4",
-    "vite": "^3.2.1",
+    "vite": "^3.2.2",
     "yargs": "^17.6.0"
   },
   "dependencies": {
@@ -65,6 +65,7 @@
     "fuse.js": "^6.6.2",
     "idb": "^7.1.0",
     "idb-keyval": "^6.2.0",
+    "svelte-confetti": "^1.2.0",
     "svelte-markdown": "^0.2.3"
   }
 }
