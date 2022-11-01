@@ -40,7 +40,7 @@
 <ControlsBase variant="black">
   <SearchControls withTotal={false}>
     <svelte:fragment slot="links-start">
-      <ControlsLink withForcedReload withGap href="/" title="Latest packages">
+      <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>
