@@ -29,8 +29,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  export let errors: unknown = undefined;
-  const { id, packages, otherAuthors, totalOtherAuthors, links } = data;
+  const { id, packages, otherAuthors, totalOtherAuthors, links, activeEventType } = data;
   const slug = encodeURIComponent(id);
 
   let y = 0;
@@ -80,7 +79,7 @@
 <ControlsBase variant={isNavDark ? 'black' : 'transparent'} class="text-white">
   <SearchControls withTotal={false} theme="dark">
     <svelte:fragment slot="links-start">
-      <ControlsLink withForcedReload withGap href="/" title="Latest packages">
+      <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
     </svelte:fragment>
@@ -231,3 +230,11 @@
     </SectionsColumn>
   </Section>
 </main>
+
+<!-- Event visuals. -->
+
+{#if activeEventType === 'birthday'}
+  {#await import('$lib/blocks/views/ViewportConfetti.svelte') then Module}
+    <Module.default />
+  {/await}
+{/if}

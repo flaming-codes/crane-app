@@ -14,9 +14,18 @@
 <br />
 <br />
 
-<p align="center">
-  <a align="center" href="https://www.producthunt.com/posts/cran-e?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-cran&#0045;e" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=359999&theme=dark" alt="CRAN&#0047;E - The&#0032;Comprehensive&#0032;R&#0032;Archive&#0032;Network&#0044;&#0032;Enhanced | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-</p>
+# Applications
+
+## PWA (Progressive Web App)
+
+You can use [CRAN/E](https://www.cran-e.com) directly in any modern browser. If supported, CRAN/E can provide its best performance by using local databases and effective caching. CRAN/E can also be installed locally in Chromium-based browsers. For more information regarding PWAs, please visit [this great guide](https://web.dev/progressive-web-apps/).
+
+## Microsoft Store
+
+If you prefer, you can also install CRAN/E via the [Microsoft Store](https://apps.microsoft.com/store/detail/crane/9PL1GMMSC8L3). Please note that this store app is equivalant to the PWA and only repackaged for the Microsoft Store.
+
+<br />
+<br />
 
 # About
 
@@ -34,9 +43,15 @@ The official [CRAN](https://cran.r-project.org/) is in a desperate visual state.
 
 Therefore we decided to develop a new user interface with search capabilities, that's working on all screen classes using state-of-the-art APIs.
 
+<br />
+<br />
+
 # Structure
 
 This repo currently only uses the `web`-directory for the PWA codebase. Subsequent releases will introduce more apps (e.g. for Android or Windows) w/ their respective directories.
+
+<br />
+<br />
 
 # Contribution
 
@@ -50,9 +65,15 @@ For new features you want to add, please use the **Github Discussions** feature 
 
 For new bug reports, please create an issue in this repository. The issue setup will guide through the necessary data required for submission.
 
+<br />
+<br />
+
 # Application architecture
 
-Please visit the wiki-pages of this repo for an overview of the architecture.
+Please visit the [wiki-pages](https://github.com/flaming-codes/crane-app/wiki) of this repo for an overview of the architecture.
+
+<br />
+<br />
 
 # Maintainer
 

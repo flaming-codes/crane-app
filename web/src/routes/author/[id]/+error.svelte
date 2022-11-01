@@ -14,7 +14,7 @@
   $: {
     if (browser) {
       sendEvent('author-not-found', {
-        props: { reason: $page.error?.message }
+        props: { reason: $page.error?.message || 'unknown' }
       });
     }
   }
