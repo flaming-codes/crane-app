@@ -1,5 +1,12 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { Confetti } from 'svelte-confetti';
+
+  export let mountEffect: (() => void) | undefined = undefined;
+
+  onMount(() => {
+    mountEffect?.();
+  });
 </script>
 
 <div

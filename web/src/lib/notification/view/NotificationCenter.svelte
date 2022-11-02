@@ -30,7 +30,7 @@
         const [_, ...next] = $queue;
         timer = undefined;
         $queue = next;
-      }, 3_000);
+      }, current?.duration || 3_000);
     }
   }
 
@@ -47,7 +47,9 @@
       'bg-emerald-300': current?.type === 'success',
       'bg-sky-300': current?.type === 'info',
       'bg-red-400': current?.type === 'error',
-      'border-t border-neutral-700': current?.type === 'neutral'
+      'bg-amber-300': current?.type === 'warning',
+      'border-t border-neutral-700': current?.type === 'neutral',
+      'justify-center text-center': current?.meta?.align === 'center'
     }
   )}
   enter="duration-700"

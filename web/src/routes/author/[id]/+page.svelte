@@ -1,5 +1,6 @@
 <script lang="ts">
   import { store } from '$lib/search/stores/search';
+  import { store as notificationStore } from '$lib/notification/store/store';
 
   import { browser } from '$app/environment';
   import ControlsBase from '$lib/controls/views/ControlsBase.svelte';
@@ -27,6 +28,7 @@
 
   const { hits, input: searchInput } = store;
   const { items: searchItems } = hits;
+  const { queue } = notificationStore;
 
   export let data: PageData;
   const { id, packages, otherAuthors, totalOtherAuthors, links, activeEventType } = data;
@@ -235,6 +237,17 @@
 
 {#if activeEventType === 'birthday'}
   {#await import('$lib/blocks/views/ViewportConfetti.svelte') then Module}
-    <Module.default />
+    <Module.default
+      mountEffect={() => {
+        notificationStore.push($queue, {
+          type: 'neutral',
+          value: '🎉 🎈 🎊 Happy birthday! 🥳 🎂 🎁',
+          duration: 8_000,
+          meta: {
+            align: 'center'
+          }
+        });
+      }}
+    />
   {/await}
 {/if}
