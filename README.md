@@ -20,6 +20,10 @@
 
 You can use [CRAN/E](https://www.cran-e.com) directly in any modern browser. If supported, CRAN/E can provide its best performance by using local databases and effective caching. CRAN/E can also be installed locally in Chromium-based browsers. For more information regarding PWAs, please visit [this great guide](https://web.dev/progressive-web-apps/).
 
+## Google Play Store
+
+CRAN/E is also available via the [Play Store](https://play.google.com/store/apps/details?id=com.cran_e.twa) on Android and Chrome OS devices. Please note that this store app is equivalant to the PWA and only repackaged for the Play Store.
+
 ## Microsoft Store
 
 If you prefer, you can also install CRAN/E via the [Microsoft Store](https://apps.microsoft.com/store/detail/crane/9PL1GMMSC8L3). Please note that this store app is equivalant to the PWA and only repackaged for the Microsoft Store.
