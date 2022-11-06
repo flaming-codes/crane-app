@@ -2,6 +2,7 @@
   import clsx from 'clsx';
 
   export let href: string;
+  export let id: string | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let title: string | undefined = undefined;
   export let target: string | undefined = undefined;
@@ -14,6 +15,7 @@
 
 <a
   {href}
+  {id}
   {target}
   {rel}
   {title}
