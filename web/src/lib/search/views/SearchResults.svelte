@@ -74,7 +74,7 @@
 
         if (withHashEffect) {
           goto('#packages', {
-            keepfocus: true
+            keepFocus: true
           });
         }
 
@@ -90,7 +90,7 @@
     if (browser && !$input && window.location.hash !== '') {
       if (withHashEffect) {
         goto('/', {
-          keepfocus: true
+          keepFocus: true
         });
       }
 
