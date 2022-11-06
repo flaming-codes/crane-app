@@ -263,7 +263,7 @@
           </div>
           <SubGrid>
             <SubGridItem key="Current version">
-              <span>4.2.1</span>
+              <span>4.2.2</span>
             </SubGridItem>
           </SubGrid>
         </PackageDetailSection>
@@ -271,7 +271,7 @@
           <SubGrid>
             <SubGridItem key="macOS (Apple Silicon)" withSpaceY="xs">
               <Link
-                href="https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.2.1-arm64.pkg"
+                href="https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.2.2-arm64.pkg"
                 ariaLabel="Download R for macOS (Apple Silicon)"
               >
                 <Iconic name="carbon:download" />
@@ -279,7 +279,7 @@
             </SubGridItem>
             <SubGridItem key="macOS (Intel)" withSpaceY="xs">
               <Link
-                href="https://cran.r-project.org/bin/macosx/base/R-4.2.1.pkg"
+                href="https://cran.r-project.org/bin/macosx/base/R-4.2.2.pkg"
                 ariaLabel="Download R for macOS (Intel)"
               >
                 <Iconic name="carbon:download" />
@@ -287,7 +287,7 @@
             </SubGridItem>
             <SubGridItem key="Windows" withSpaceY="xs">
               <Link
-                href="https://cran.r-project.org/bin/windows/base/R-4.2.1-win.exe"
+                href="https://cran.r-project.org/bin/windows/base/R-4.2.2-win.exe"
                 ariaLabel="Download R for Windows"
               >
                 <Iconic name="carbon:download" />
