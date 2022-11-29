@@ -1,0 +1,29 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Installing Dependencies",
+      "command": "cd web && npm i"
+    },
+    {
+      "name": "Seed test data (100 units)",
+      "command": "cd web && npm run gen:fakes"
+    },
+    {
+      "name": "Seed licenses (JSON)",
+      "command": "cd web && npm run gen:dep"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "dev": {
+      "name": "Start development server",
+      "command": "cd web && npm run api",
+      "runAtStart": true,
+      "preview": {
+        "port": 5173
+      }
+    }
+  }
+}
