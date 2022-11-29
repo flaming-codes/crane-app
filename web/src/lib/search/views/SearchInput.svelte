@@ -8,7 +8,6 @@
   import { onMount } from 'svelte';
   import Kbd from '$lib/blocks/views/Kbd.svelte';
   import Iconic from '$lib/blocks/views/Iconic.svelte';
-  import MediaQuery from 'svelte-media-queries';
   import InitTypeaheadWorker from '$lib/db/workers/InitTypeaheadWorker.svelte';
   import type { TAItem } from '$lib/db/adapters/types';
   import { sendEvent } from '$lib/analytics/model';
@@ -27,9 +26,6 @@
     offset = 0;
   }
 
-  let matches: boolean | undefined = undefined;
-  $: isMobile = Boolean(matches);
-
   onMount(() => {
     isFirstUse = browser && localStorage.getItem('hint-search-shortcut') === null;
   });
@@ -42,7 +38,8 @@
     }
 
     // Hide keyboard on mobile on enter.
-    if (isMobile) {
+    // Get width of the screen.
+    if (window.innerWidth <= 480) {
       inputNode?.blur();
     }
   };
@@ -83,7 +80,6 @@
   $: placeholder = $state === 'ready' ? (isFirstUse ? '' : 'enter search...') : 'loading...';
 </script>
 
-<MediaQuery query="(max-width: 480px)" bind:matches />
 <InitTypeaheadWorker />
 
 <div class="flex-1 flex flex-row-reverse items-center gap-x-2">
