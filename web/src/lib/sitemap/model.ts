@@ -1,3 +1,4 @@
+import { authors, sitemapTuples } from '$lib/db/model';
 import { encodeSitemapSymbols } from './parse';
 
 export function getTodayLastmod() {
@@ -33,4 +34,41 @@ export function composePackageUrl([slug, lastmod]: [string, string]) {
     lastmod,
     priority: '1.0'
   });
+}
+
+export function composeCategoryUrl(name: string) {
+  return composeUrlElement({
+    path: `/category/${encodeSitemapSymbols(encodeURIComponent(name))}`,
+    lastmod: getTodayLastmod(),
+    priority: '0.8'
+  });
+}
+
+export function mapDomainToSitemapData(source: string) {
+  switch (source) {
+    case 'packages':
+      return sitemapTuples();
+    case 'authors':
+      return authors().then((record) => Object.keys(record));
+    case 'categories':
+      // TODO: fetch categories from API.
+      return [];
+
+    default:
+      throw new Error('Invalid source');
+  }
+}
+
+export function mapComposerToDomain(source: string) {
+  switch (source) {
+    case 'packages':
+      return composePackageUrl;
+    case 'authors':
+      return composeAuthorUrl;
+    case 'categories':
+      return composeCategoryUrl;
+
+    default:
+      throw new Error('Invalid source');
+  }
 }
