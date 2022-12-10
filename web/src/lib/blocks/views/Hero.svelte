@@ -14,6 +14,7 @@
     | 'gradient-dark'
     | 'gradient-black-slate'
     | 'gradient-stone'
+    | 'gradient-dark-zinc'
     | undefined = undefined;
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
@@ -50,7 +51,8 @@
       'from-zinc-200 to-slate-500 bg-gradient-to-b text-black': theme === 'gradient-slate',
       'from-neutral-100 to-stone-400 bg-gradient-to-b text-black': theme === 'gradient-stone',
       'from-zinc-900 to-slate-500 bg-gradient-to-b text-neutral-200': theme === 'gradient-dark',
-      'from-black to-slate-500 bg-gradient-to-b text-neutral-200': theme === 'gradient-black-slate'
+      'from-black to-slate-500 bg-gradient-to-b text-neutral-200': theme === 'gradient-black-slate',
+      'from-zinc-700 to-zinc-900 bg-gradient-to-b text-neutral-200': theme === 'gradient-dark-zinc'
     }
   )}
 >
