@@ -7,11 +7,11 @@
 
   $: {
     if (browser) {
-      sendEvent('package-not-found', {
-        props: { reason: $page.error?.message || '' }
+      sendEvent('category-not-found', {
+        props: { reason: $page.error?.message || 'unknown' }
       });
     }
   }
 </script>
 
-<ErrorBanner subtitle="Package '{$page.error?.message}' doesn't exist" />
+<ErrorBanner subtitle="Category {$page.error?.message} doesn't exist" />
