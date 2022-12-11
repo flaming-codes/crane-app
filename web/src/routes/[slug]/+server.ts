@@ -36,8 +36,7 @@ export const GET: RequestHandler = async (props) => {
       {
         headers: {
           'Content-Type': 'application/xml',
-          'Cache-Control': 'max-age=0, s-maxage=3600',
-          'X-Robots-Tag': 'noindex'
+          'Cache-Control': 'public, max-age=3600, s-maxage=3600'
         }
       }
     );
@@ -69,8 +68,7 @@ export const GET: RequestHandler = async (props) => {
       {
         headers: {
           'Content-Type': 'application/xml',
-          'Cache-Control': 'public, max-age=3600, s-maxage=3600',
-          'X-Robots-Tag': 'noindex'
+          'Cache-Control': 'public, max-age=3600, s-maxage=3600'
         }
       }
     );
