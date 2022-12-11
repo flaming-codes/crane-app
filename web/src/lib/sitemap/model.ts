@@ -55,7 +55,7 @@ export function mapDomainToSitemapData(source: string) {
       return [];
 
     default:
-      throw new Error('Invalid source');
+      throw new Error(`Invalid composition source: ${source}`);
   }
 }
 
@@ -69,6 +69,6 @@ export function mapComposerToDomain(source: string) {
       return composeCategoryUrl;
 
     default:
-      throw new Error('Invalid source');
+      throw new Error(`Invalid composition source: ${source}`);
   }
 }

@@ -1,3 +1,4 @@
+import { sitemapFileChunkSize } from '$lib/sitemap/constants';
 import {
   composeUrlElement,
   getTodayLastmod,
@@ -5,8 +6,6 @@ import {
   mapDomainToSitemapData
 } from '$lib/sitemap/model';
 import { error, type RequestHandler } from '@sveltejs/kit';
-
-export const prerender = true;
 
 /**
  * This is a catch-all for the single-slug routes that
@@ -45,8 +44,6 @@ export const GET: RequestHandler = async (props) => {
   if (slug?.startsWith('sitemap-')) {
     const domain = slug.split('-')[1];
     const page = parseInt(slug.split('-')[2], 10);
-    const size = 5_000;
-    console.log('domain', domain, 'page', page, 'size', size);
 
     const mapper = mapComposerToDomain(domain);
     const allTuples = await mapDomainToSitemapData(domain);
@@ -55,8 +52,8 @@ export const GET: RequestHandler = async (props) => {
       throw error(500, 'Failed to fetch sitemap tuples');
     }
 
-    const threshold = page * size;
-    const tuples = allTuples.slice(threshold, threshold + size);
+    const threshold = page * sitemapFileChunkSize;
+    const tuples = allTuples.slice(threshold, threshold + sitemapFileChunkSize);
 
     return new Response(
       `<?xml version="1.0" encoding="UTF-8" ?><urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">${tuples
