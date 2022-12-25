@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 import type { Schema } from './types';
 
 export function serializeSchema(thing: Schema) {
