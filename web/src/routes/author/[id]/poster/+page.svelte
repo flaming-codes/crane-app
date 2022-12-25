@@ -10,6 +10,7 @@
   isFixed
   title={data.id}
   titleSize="lg"
+  subtitleSize="xl"
   subtitle={`Author of ${data.packageNames.length} ${
     data.packageNames.length === 1 ? 'package' : 'packages'
   }`}
