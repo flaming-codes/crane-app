@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/test';
+import captureWebsite from 'capture-website';
 import type { Schema } from './types';
 
 export function serializeSchema(thing: Schema) {
@@ -8,21 +8,15 @@ export function serializeSchema(thing: Schema) {
 }
 
 export async function generateOgPosterImage(domain: 'author' | 'package', id?: string) {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
   const url = new URL(`${import.meta.env.VITE_BASE_URL}/${domain}/${id}/poster`);
 
-  await page.setViewportSize({ width: 1200, height: 630 });
-  await page.goto(url.toString());
-
-  // Fonts may not be loaded yet, so wait a bit.
-  await page.waitForTimeout(200);
-
-  // TODO: Maybe use image optimization?
-  // @link https://www.npmjs.com/package/jimp
-  const imageBuffer = await page.screenshot();
-
-  await browser.close();
+  const imageBuffer = await captureWebsite.buffer(url.toString(), {
+    type: 'jpeg',
+    width: 1200,
+    height: 630,
+    delay: 0.2,
+    quality: 0.8
+  });
 
   return imageBuffer;
 }
