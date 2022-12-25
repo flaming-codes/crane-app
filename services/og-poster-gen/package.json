@@ -1,0 +1,24 @@
+{
+  "name": "og-poster-gen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "scripts": {
+    "start": "micro -l tcp://0.0.0.0:7070"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL",
+  "dependencies": {
+    "capture-website": "^3.2.0",
+    "micro": "^10.0.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "prettier": "^2.8.1"
+  }
+}

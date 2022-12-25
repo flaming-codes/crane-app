@@ -39,6 +39,6 @@
 <Hero
   title="Error"
   subtitle={$page.error?.message || 'An unexpected error happend'}
-  height="full"
+  height="screen"
   isFixed={true}
 />

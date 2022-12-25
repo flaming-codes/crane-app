@@ -37,6 +37,8 @@ This repository contains all code required to build the Frontend of CRAN/E. We d
 
 > CRAN/E is not a package hosting solution for R-code. It's sole purpose is to provide a simple and effective interface for finding packages hosted on CRAN.
 
+You find the site code (frontend & main backend) in `/web`. You find different smaller backend-only services in `/services/...`. The main code in `/web` is deployed on **Vercel's Edge Platform** and uses SvelteKit to deliver the pages as well as serve endpoints to fetch their data. The `/services/...` contain different smaller backend-only services that are deployed on other platforms, like **fly.io**.
+
 ## Motivation
 
 The official [CRAN](https://cran.r-project.org/) is in a desperate visual state. Although it's using a very simple structure and basically no potentially distracting styling, using the original site is hard for a few reasons:

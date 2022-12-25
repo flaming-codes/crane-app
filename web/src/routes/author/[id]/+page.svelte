@@ -47,7 +47,15 @@
   $: isNavDark = ($searchItems.length && $searchInput) || y > getHeroScrollDelta();
 </script>
 
-<BaseMeta title="R Packages from {id}" description="All packages for {id}" path="/author/{slug}" />
+<BaseMeta
+  title="R Packages from {id}"
+  description="All packages for {id}"
+  path="/author/{slug}"
+  image={{
+    url: `https://www.cran-e.com/api/author/${slug}/poster`,
+    alt: `Poster for ${id}`
+  }}
+/>
 <PersonMeta name={id} />
 <BreadcrumbMeta
   items={[

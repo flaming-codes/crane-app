@@ -4,7 +4,10 @@ import { sveltekit } from '@sveltejs/kit/vite';
 const config = {
   plugins: [sveltekit()],
   optimizeDeps: {
-    include: ['@headlessui/react', 'clsx']
+    include: ['clsx']
+  },
+  test: {
+    include: ['src/**/*.{test,spec}.{js,ts}']
   }
 };
 

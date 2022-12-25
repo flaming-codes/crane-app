@@ -4,7 +4,8 @@
   export let title: string;
   export let titleSize: 'lg' | 'xl' = 'xl';
   export let subtitle: string | undefined = undefined;
-  export let height: '30' | '40!' | '50' | '50!' | '70' | 'full';
+  export let subtitleSize: 'lg' | 'xl' = 'lg';
+  export let height: '30' | '40!' | '50' | '50!' | '70' | 'full' | 'screen' | 'flex';
   export let isFixed: boolean | undefined = undefined;
   export let theme:
     | 'light'
@@ -43,7 +44,9 @@
       'h-[50vh]': height === '50!',
       'h-[40vh]': height === '40!',
       'h-[clamp(10vh,20vw,30vh)]': height === '30',
-      'h-screen': height === 'full',
+      'h-screen': height === 'screen',
+      'h-full': height === 'full',
+      'flex-1': height === 'flex',
       fixed: isFixed,
       'bg-zinc-100 text-black': theme === 'light',
       'bg-gray-300 text-black': theme === 'muted',
@@ -68,7 +71,12 @@
   >
     {title}
   </h1>
-  <h2 class="text-base lg:text-lg xl:text-xl opacity-70 text-center">
+  <h2
+    class={clsx('text-base opacity-70 text-center', {
+      'lg:text-lg xl:text-xl': subtitleSize === 'lg',
+      'lg:text-xl xl:text-2xl': subtitleSize === 'xl'
+    })}
+  >
     {subtitle}
   </h2>
 

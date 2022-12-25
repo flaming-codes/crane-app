@@ -27,4 +27,4 @@
   </SearchControls>
 </ControlsBase>
 
-<Hero isFixed {title} {subtitle} height="full" />
+<Hero isFixed {title} {subtitle} height="screen" />
