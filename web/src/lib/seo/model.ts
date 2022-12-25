@@ -1,4 +1,3 @@
-import captureWebsite from 'capture-website';
 import type { Schema } from './types';
 
 export function serializeSchema(thing: Schema) {
@@ -7,16 +6,9 @@ export function serializeSchema(thing: Schema) {
   return `<script type="application/ld+json">${JSON.stringify(thing, null, 2)}</script>`;
 }
 
-export async function generateOgPosterImage(domain: 'author' | 'package', id?: string) {
-  const url = new URL(`${import.meta.env.VITE_BASE_URL}/${domain}/${id}/poster`);
+export async function fetchOgPosterImage(domain: 'author' | 'package', id?: string) {
+  const url = new URL(`${import.meta.env.VITE_BASE_OG_POSTER_API_URL}/${domain}/${id}`);
+  const res = await fetch(url.toString());
 
-  const imageBuffer = await captureWebsite.buffer(url.toString(), {
-    type: 'jpeg',
-    width: 1200,
-    height: 630,
-    delay: 0.2,
-    quality: 0.8
-  });
-
-  return imageBuffer;
+  return Buffer.from(await res.arrayBuffer());
 }

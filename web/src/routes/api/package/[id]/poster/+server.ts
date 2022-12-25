@@ -1,8 +1,8 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { generateOgPosterImage } from '$lib/seo/model';
+import { fetchOgPosterImage } from '$lib/seo/model';
 
 export const GET: RequestHandler = async (ctx) => {
-  const imageBuffer = await generateOgPosterImage('package', ctx.params.id);
+  const imageBuffer = await fetchOgPosterImage('package', ctx.params.id);
   return new Response(imageBuffer, {
     headers: {
       'Content-Type': 'image/jpeg',

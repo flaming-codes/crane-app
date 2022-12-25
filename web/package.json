@@ -61,7 +61,6 @@
     "@lokidb/indexed-storage": "2.1.0",
     "@lokidb/loki": "2.1.0",
     "@rgossiaux/svelte-headlessui": "^1.0.2",
-    "capture-website": "^3.2.0",
     "comlink": "^4.3.1",
     "date-fns": "^2.29.3",
     "fuse.js": "^6.6.2",
