@@ -10,6 +10,8 @@ export default async function (req, res) {
 
   const [domain, id] = path.split('/');
 
+  // https://github.com/fly-apps/puppeteer-js-renderer/blob/master/index.js
+
   const url = new URL(`${process.env.BASE_URL}/${domain}/${id}/poster`);
   const imageBuffer = await captureWebsite.buffer(url.toString(), {
     type: 'jpeg',

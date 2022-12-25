@@ -8,7 +8,8 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "micro -l tcp://0.0.0.0:7070"
+    "dev": "micro -l tcp://0.0.0.0:7070",
+    "start": "micro -l tcp://0.0.0.0:8080"
   },
   "keywords": [],
   "author": "",
