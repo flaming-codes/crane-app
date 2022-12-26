@@ -3,9 +3,7 @@ name: Deploy service/og-img-gen
 on:
   push:
     branches:
-      - "main"
-    paths:
-      - "services/og-img-gen/**"
+      - "*"
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_OG_IMG_GEN }}
