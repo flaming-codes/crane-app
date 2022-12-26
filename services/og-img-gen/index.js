@@ -21,7 +21,7 @@ export default async function (req, res) {
   } catch (err) {
     console.error(err);
     res.statusCode = 500;
-    res.send(`Error fetching ${url}`);
+    res.send(`Error fetching domain ${domain}, id ${id}`);
   }
 }
 
