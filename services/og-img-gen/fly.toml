@@ -1,12 +1,9 @@
-# fly.toml file generated for og-poster-gen on 2022-12-26T00:24:04+01:00
+# fly.toml file generated for og-img-gen on 2022-12-26T10:16:35+01:00
 
-app = "og-poster-gen"
+app = "og-img-gen"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
-
-[build]
-  builder = "heroku/buildpacks:20"
 
 [env]
   PORT = "8080"

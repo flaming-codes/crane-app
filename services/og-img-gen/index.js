@@ -14,13 +14,15 @@ export default async function (req, res) {
 
   try {
     const url = new URL(`${process.env.FE_BASE_URL}/${domain}/${id}/poster`);
+    console.log('url', url.toString());
+
     const imageBuffer = await getScreenshot(url.toString());
 
     res.setHeader('Content-Type', 'image/jpeg');
     res.setHeader('Cache-Control', 's-maxage=31536000, stale-while-revalidate');
     res.end(imageBuffer);
   } catch (err) {
-    console.log(`Error while fetching ${url} `, err);
+    console.error(err);
     res.statusCode = 500;
     res.send(`Error fetching ${url}`);
   }
