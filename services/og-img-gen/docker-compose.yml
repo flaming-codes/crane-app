@@ -1,0 +1,12 @@
+version: '3.5'
+services:
+  js-renderer:
+    build: .
+    volumes:
+      - .:/src
+    ports:
+      - '8080:8080'
+    command: npm start
+    environment:
+      PORT: 8080
+      FE_BASE_URL: https://www.cran-e.com
