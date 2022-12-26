@@ -1,16 +1,13 @@
 <script lang="ts">
-  import Hero from '$lib/blocks/views/Hero.svelte';
-  import PosterBrandLabel from '$lib/seo/views/PosterBrandLabel.svelte';
+  import OpenGraphImage from '$lib/seo/views/OpenGraphImage.svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
 </script>
 
-<Hero
+<OpenGraphImage
   title={data.name}
   subtitle={data.title}
-  height="screen"
-  variant="prominent"
   theme="gradient-stone"
   textVariant="dense"
 />

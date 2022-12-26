@@ -6,7 +6,7 @@ export const GET: RequestHandler = async (ctx) => {
   return new Response(imageBuffer, {
     headers: {
       'Content-Type': 'image/jpeg',
-      'Cache-Control': 'public, max-age=86400 s-maxage=86400'
+      'Cache-Control': 's-maxage=3600, stale-while-revalidate=86400'
     }
   });
 };

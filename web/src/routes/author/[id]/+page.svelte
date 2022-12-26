@@ -100,7 +100,7 @@
   isFixed
   title={id}
   titleSize="lg"
-  subtitle={`Author of ${packages.length} ${packages.length === 1 ? 'package' : 'packages'}`}
+  subtitle={`Author of ${packages.length} R ${packages.length === 1 ? 'package' : 'packages'}`}
   height="50!"
   variant="prominent"
   theme="gradient-black-slate"

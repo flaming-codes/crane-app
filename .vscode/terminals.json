@@ -7,9 +7,21 @@
       "name": "web",
       "icon": "code",
       "color": "terminal.ansiCyan",
-      "commands": ["cd web", "nvm use"],
+      "commands": [
+        "cd web",
+        "nvm use"
+      ],
       "open": true,
       "focus": true
+    },
+    {
+      "name": "service/og-img-gen",
+      "color": "terminal.ansiGreen",
+      "commands": [
+        "cd services/og-img-gen",
+        "nvm use",
+        "npm run dev"
+      ]
     }
   ]
 }
