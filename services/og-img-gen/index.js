@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { send } from 'micro';
 import puppeteer from 'puppeteer-core';
 
 /** @type {import('micro').RequestHandler} */
@@ -10,17 +11,15 @@ export default async function (req, res) {
 
   const [domain, id] = path.split('/');
   if (!domain || !id) {
-    res.statusCode = 400;
-    res.send('Invalid request');
-    console.warn(`Invalid request: path ${path}, domain ${domain}, id ${id}`);
+    console.warn(`Invalid request: domain=${domain} id=${id}`);
+    send(res, 400, `Invalid request: domain=${domain} id=${id}`);
     return;
   }
 
   const allowedDomains = ['package', 'author'];
   if (!allowedDomains.includes(domain)) {
-    res.statusCode = 400;
-    res.send('Invalid request');
-    console.warn(`Invalid domain: ${domain}`);
+    warn(`Invalid domain: ${domain}`);
+    send(res, 400, `Invalid domain: ${domain}`);
     return;
   }
 
@@ -32,10 +31,9 @@ export default async function (req, res) {
 
     res.setHeader('Content-Type', 'image/jpeg');
     res.end(imageBuffer);
-  } catch (err) {
-    console.error(err);
-    res.statusCode = 500;
-    res.send(`Error fetching domain ${domain}, id ${id}`);
+  } catch (error) {
+    console.error(error);
+    send(res, 500, error.message);
   }
 }
 
