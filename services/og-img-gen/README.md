@@ -1,4 +1,4 @@
-# Services / og-poster-gen
+# og-poster-gen
 
 ## About
 
@@ -11,6 +11,8 @@ This service generates an image for the open graph poster to be used for entitie
 Make sure you have the currently selected version from `/.nvmrc` installed. You can run `nvm use` to switch to the correct version if you have nvm installed.
 
 - [Node.js](https://nodejs.org/en/) (v18.x)
+
+If not present, copy the contents of `.env.example` to `.env`. Replace the path to your local Chromium executable in the `CHROME_BIN` variable if necessary.
 
 ### Installation
 
