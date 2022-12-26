@@ -6,7 +6,7 @@ ENV TINI_SUBREAPER=true
 WORKDIR /src
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 EXPOSE 8080

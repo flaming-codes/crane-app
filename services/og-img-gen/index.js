@@ -17,7 +17,6 @@ export default async function (req, res) {
     const imageBuffer = await getScreenshot(url.toString());
 
     res.setHeader('Content-Type', 'image/jpeg');
-    res.setHeader('Cache-Control', 's-maxage=31536000, stale-while-revalidate');
     res.end(imageBuffer);
   } catch (err) {
     console.error(err);
