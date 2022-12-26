@@ -12,7 +12,9 @@
     "start": "npm run clean && micro -l tcp://0.0.0.0:8080",
     "clean": "rimraf 0.0.0.0"
   },
-  "keywords": [],
+  "keywords": [
+    "cran/e"
+  ],
   "author": "flaming.codes",
   "license": "GPL",
   "dependencies": {
