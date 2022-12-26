@@ -10,12 +10,8 @@ export default async function (req, res) {
 
   const [domain, id] = path.split('/');
 
-  // https://github.com/fly-apps/puppeteer-js-renderer/blob/master/index.js
-
   try {
     const url = new URL(`${process.env.FE_BASE_URL}/${domain}/${id}/poster`);
-    console.log('url', url.toString());
-
     const imageBuffer = await getScreenshot(url.toString());
 
     res.setHeader('Content-Type', 'image/jpeg');
@@ -29,7 +25,7 @@ export default async function (req, res) {
 }
 
 /**
- * @param {string} url               URL to take screenshot of.
+ * @param {string} url          URL to take screenshot of.
  * @returns {Promise<Buffer>}   Screenshot as image buffer.
  */
 async function getScreenshot(url) {
