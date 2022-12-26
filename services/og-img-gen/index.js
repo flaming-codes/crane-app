@@ -9,6 +9,20 @@ export default async function (req, res) {
   }
 
   const [domain, id] = path.split('/');
+  if (!domain || !id) {
+    res.statusCode = 400;
+    res.send('Invalid request');
+    console.warn(`Invalid request: path ${path}, domain ${domain}, id ${id}`);
+    return;
+  }
+
+  const allowedDomains = ['package', 'author'];
+  if (!allowedDomains.includes(domain)) {
+    res.statusCode = 400;
+    res.send('Invalid request');
+    console.warn(`Invalid domain: ${domain}`);
+    return;
+  }
 
   try {
     const url = new URL(`${process.env.FE_BASE_URL}/${domain}/${id}/poster`);
