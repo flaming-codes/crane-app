@@ -12,6 +12,8 @@ export default async function (req, res) {
 
   try {
     const url = new URL(`${process.env.FE_BASE_URL}/${domain}/${id}/poster`);
+    console.log(`Generating screenshot for ${url}`);
+
     const imageBuffer = await getScreenshot(url.toString());
 
     res.setHeader('Content-Type', 'image/jpeg');
