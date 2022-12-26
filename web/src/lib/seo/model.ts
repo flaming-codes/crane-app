@@ -10,5 +10,5 @@ export async function fetchOgPosterImage(domain: 'author' | 'package', id?: stri
   const url = new URL(`${import.meta.env.VITE_BASE_OG_POSTER_API_URL}/${domain}/${id}`);
   const res = await fetch(url.toString());
 
-  return Buffer.from(await res.arrayBuffer());
+  return res.arrayBuffer();
 }
