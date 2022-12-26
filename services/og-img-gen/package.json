@@ -9,14 +9,13 @@
   },
   "scripts": {
     "dev": "npm run clean && micro -l tcp://0.0.0.0:7070",
-    "start": "micro -l tcp://0.0.0.0:8080",
+    "start": "npm run clean && micro -l tcp://0.0.0.0:8080",
     "clean": "rimraf 0.0.0.0"
   },
   "keywords": [],
-  "author": "",
+  "author": "flaming.codes",
   "license": "GPL",
   "dependencies": {
-    "capture-website": "^3.2.0",
     "micro": "^10.0.1",
     "puppeteer-core": "^19.4.1"
   },
