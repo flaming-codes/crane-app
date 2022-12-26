@@ -17,12 +17,11 @@ export default async function (req, res) {
     const imageBuffer = await getScreenshot(url.toString());
 
     res.setHeader('Content-Type', 'image/jpeg');
-    res.setHeader('Cache-Control', 's-maxage=31536000, stale-while-revalidate');
     res.end(imageBuffer);
   } catch (err) {
     console.error(err);
     res.statusCode = 500;
-    res.send(`Error fetching ${url}`);
+    res.send(`Error fetching domain ${domain}, id ${id}`);
   }
 }
 
