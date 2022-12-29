@@ -161,7 +161,7 @@
             <strong>CRAN/E</strong> uses <Link
               href="https://plausible.io/"
               target="_blank"
-              rel="noopener noreferrer">plausible.io</Link
+              rel="noopener">plausible.io</Link
             > for a privacy-friendly, non-invasive way to collect some basic usage data of this PWA.
             This analytics service is hosted in the EU and doesn't collect any personal identifiable
             data. This is also the reason why you don't see a cookie-banner - we simply don't need consent
@@ -178,7 +178,7 @@
           <SubGrid class="not-prose">
             <SubGridItem key="Link" url="https://plausible.io">
               <div>plausible.io</div>
-              <Link href="https://plausible.io" target="_blank" rel="noopener noreferrer">
+              <Link href="https://plausible.io" target="_blank" rel="noopener">
                 <Iconic name="simple-icons:plausibleanalytics" size="20" />
               </Link>
             </SubGridItem>
@@ -208,10 +208,8 @@
             </p>
             <p>
               If you want to support us, you can do so by donating to our
-              <Link
-                href="https://buymeacoffee.com/v5728ggzwfI"
-                target="_blank"
-                rel="noopener noreferrer">BuyMeACoffee</Link
+              <Link href="https://buymeacoffee.com/v5728ggzwfI" target="_blank" rel="noopener"
+                >BuyMeACoffee</Link
               >.
             </p>
           </div>
@@ -222,18 +220,14 @@
               <Link
                 href="https://github.com/flaming-codes/crane-app"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
               >
                 <Iconic name="carbon:logo-github" />
               </Link>
             </SubGridItem>
             <SubGridItem key="Sponsor" withSpaceY="xs">
               <span>Buy-me-a-coffee</span>
-              <Link
-                href="https://buymeacoffee.com/v5728ggzwfI"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link href="https://buymeacoffee.com/v5728ggzwfI" target="_blank" rel="noopener">
                 <Iconic name="carbon:piggy-bank-slot" />
               </Link>
             </SubGridItem>
@@ -298,7 +292,7 @@
                 href="https://cran.r-project.org/bin/linux/"
                 ariaLabel="Downloads for Linux"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
               >
                 <Iconic name="carbon:arrow-up-right" />
               </Link>
@@ -326,7 +320,7 @@
               <Link
                 href="https://www.rstudio.com/"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 ariaLabel="RStudio link"
               >
                 <Iconic name="carbon:arrow-up-right" />

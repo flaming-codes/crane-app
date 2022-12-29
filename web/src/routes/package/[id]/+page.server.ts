@@ -39,6 +39,13 @@ export const load: PageServerLoad = async ({ params }) => {
   item.macos_binaries = parseMacOsBinaries(item);
   item.windows_binaries = parseWindowsBinaries(item);
 
+  // Replace the stringified DOIs with links.
+  const doiRegex = /<doi:([^>]+)>/g;
+  item.description = item.description.replace(
+    doiRegex,
+    '<a href="https://doi.org/$1" target="_blank" alt="Link to DOI $1">doi:$1</a>'
+  );
+
   const downloads = await getDownloadsWithTrends(item);
 
   const dependencyGroups = [

@@ -11,7 +11,7 @@
       <Link
         href={l.link.replace('git+', '').replace('.git', '')}
         ariaLabel={`License for ${l.name}`}
-        rel="noopener noreferrer"
+        rel="noopener"
         target="_blank"
       >
         <div class="hover:text-neutral-400 duration-200 ease-in-out py-3 space-x-2">

@@ -152,7 +152,7 @@
 
       <PackageDetailSection title="About" id="about">
         <p class="prose prose-lg prose-invert max-w-none">
-          {item.description}
+          {@html item.description}
         </p>
         <SubGrid>
           {#each aboutItems as [key, value, meta]}
@@ -289,7 +289,7 @@
                       href={link}
                       ariaLabel="Link for {name}"
                       title="Link for {name}"
-                      rel="noopener noreferrer"
+                      rel="noopener"
                       target="_blank"
                       class="text-white"
                     >
@@ -338,7 +338,7 @@
               <SubGridItem key={name} withSpaceY="md">
                 <Link
                   href={link}
-                  rel={type !== 'download' ? 'noopener noreferrer' : undefined}
+                  rel={type !== 'download' ? 'noopener' : undefined}
                   target={type !== 'download' ? '_blank' : undefined}
                   ariaLabel="Link to {name}"
                   class="block"
@@ -358,7 +358,7 @@
               <SubGridItem key={name} withSpaceY="md">
                 <Link
                   href={link}
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   target="_blank"
                   class="block"
                   ariaLabel="Open inview to {link}"
@@ -379,7 +379,7 @@
                 <SubGridItem withKeyTruncate key={link.replace('https://', '')} withSpaceY="md">
                   <Link
                     href={link}
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     target="_blank"
                     class="block"
                     ariaLabel="Open repo repo"
@@ -393,7 +393,7 @@
                 <SubGridItem key={name} withSpaceY="md">
                   <Link
                     href={link}
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     target="_blank"
                     class="block"
                     ariaLabel="Open repo {name}"
@@ -414,7 +414,7 @@
               <SubGridItem key={name} withSpaceY="md">
                 <Link
                   href={link}
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   target="_blank"
                   ariaLabel="Vignette link to {name}"
                   class="block"

@@ -150,7 +150,7 @@
                   ariaLabel="More information about {id}"
                   class="space-y-1"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                 >
                   <div>{link.replace('https://orcid.org/', '')}</div>
                   <Iconic
