@@ -6,7 +6,7 @@
   export let ariaLabel: string | undefined = undefined;
   export let title: string | undefined = undefined;
   export let target: string | undefined = undefined;
-  export let rel: 'noopener noreferrer' | undefined = undefined;
+  export let rel: 'noopener' | undefined = undefined;
   export let withForcedReload: true | undefined = undefined;
 
   let cn: string | undefined = undefined;

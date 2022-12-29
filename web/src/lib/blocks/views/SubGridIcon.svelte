@@ -12,7 +12,7 @@
     ariaLabel="Link to {meta.url}"
     title="Link to {meta.url}"
     target={meta.isExternal ? '_blank' : undefined}
-    rel={meta.isExternal ? 'noopener noreferrer' : undefined}
+    rel={meta.isExternal ? 'noopener' : undefined}
   >
     <Iconic name={meta.icon || 'carbon:arrow-up-right'} />
   </Link>

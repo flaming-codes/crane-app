@@ -54,7 +54,7 @@ Therefore we decided to develop a new user interface with search capabilities, t
 
 # Structure
 
-This repo currently only uses the `web`-directory for the PWA codebase. Subsequent releases will introduce more apps (e.g. for Android or Windows) w/ their respective directories.
+This repo uses the `web`-directory for the PWA codebase. Isolated backend services are located in the `services`-directory. The `web`-directory is a SvelteKit project. The `services`-directory contains different backend-only services that can be deployed on different platforms.
 
 <br />
 <br />

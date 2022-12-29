@@ -21,22 +21,12 @@
   </p>
   <div class="flex space-x-2">
     {#if socials.linkedin}
-      <Link
-        href={socials.linkedin}
-        target="_blank"
-        rel="noopener noreferrer"
-        ariaLabel="LinkedIn account URL"
-      >
+      <Link href={socials.linkedin} target="_blank" rel="noopener" ariaLabel="LinkedIn account URL">
         <Iconic name="carbon:logo-linkedin" size="32" />
       </Link>
     {/if}
     {#if socials.github}
-      <Link
-        href={socials.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        ariaLabel="Email address"
-      >
+      <Link href={socials.github} target="_blank" rel="noopener" ariaLabel="Email address">
         <Iconic name="carbon:logo-github" size="32" />
       </Link>
     {/if}
@@ -44,7 +34,7 @@
       <Link
         href={`mailto:${socials.email}`}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener"
         ariaLabel="Email address"
       >
         <Iconic name="carbon:email" size="32" />
