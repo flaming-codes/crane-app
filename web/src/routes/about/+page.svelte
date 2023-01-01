@@ -10,16 +10,11 @@
   import SheetContent from '$lib/blocks/views/SheetContent.svelte';
   import SubGrid from '$lib/blocks/views/SubGrid.svelte';
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
-  import ControlsBase from '$lib/controls/views/ControlsBase.svelte';
-  import ControlsLink from '$lib/controls/views/ControlsLink.svelte';
-  import SearchControls from '$lib/controls/views/SearchControls.svelte';
-  import ColorScheme from '$lib/display/views/ColorScheme.svelte';
+  import CommonControls from '$lib/controls/views/CommonControls.svelte';
   import Link from '$lib/display/views/Link.svelte';
   import LicensesList from '$lib/license/views/LicensesList.svelte';
+  import BasePageInit from '$lib/page/views/BasePageInit.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
-  import SearchInit from '$lib/search/views/SearchInit.svelte';
-  import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
-  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -28,24 +23,8 @@
   const titles = ['App', 'Team', 'Privacy', 'Source code', 'R Binaries', 'IDE', 'Legal'];
 </script>
 
-<BaseMeta title="About" path="/about" />
-<BreadcrumbMeta items={[{ name: 'About', href: '/about' }]} />
-<ColorScheme scheme="dark" />
-
-<SearchInit />
-{#await import('$lib/search/views/SearchInlinePanelResults.svelte') then Module}
-  <Module.default isEnabled />
-{/await}
-
-<ControlsBase variant="black">
-  <SearchControls withTotal={false}>
-    <svelte:fragment slot="links-start">
-      <ControlsLink withGap href="/" title="Latest packages">
-        <Iconic name="carbon:switcher" size="16" />
-      </ControlsLink>
-    </svelte:fragment>
-  </SearchControls>
-</ControlsBase>
+<BasePageInit title="About" path="/about" />
+<CommonControls />
 
 <main>
   <Hero

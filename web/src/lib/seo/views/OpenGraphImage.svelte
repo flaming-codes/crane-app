@@ -2,7 +2,7 @@
   import {
     checkForSingleLongTitle,
     getHeroGradient,
-    type HeroGradient
+    type HeroGradientTheme
   } from '$lib/blocks/models/hero';
   import clsx from 'clsx';
 
@@ -10,7 +10,7 @@
   export let titleSize: 'lg' | 'xl' = 'xl';
   export let subtitleSize: 'lg' | 'xl' = 'xl';
   export let subtitle: string | undefined = undefined;
-  export let theme: HeroGradient | undefined = undefined;
+  export let theme: HeroGradientTheme | undefined = undefined;
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
 
   const isSingleLongTitle = checkForSingleLongTitle(title);

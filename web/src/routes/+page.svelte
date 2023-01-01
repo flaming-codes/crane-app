@@ -7,6 +7,8 @@
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import SearchResults from '$lib/search/views/SearchResults.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import Iconic from '$lib/blocks/views/Iconic.svelte';
+  import ControlsLink from '$lib/controls/views/ControlsLink.svelte';
 
   export let data: PageData;
   const { initialAll } = data;
@@ -27,7 +29,13 @@
 
   <!-- We're mounting 'Controls' here so that tab-focus starts with the search input. -->
   <ControlsBase variant="black">
-    <SearchControls theme="dark" />
+    <SearchControls theme="dark">
+      <svelte:fragment slot="links-start">
+        <ControlsLink withGap href="/statistics" title="Statistics">
+          <Iconic name="carbon:chart-line" size="16" />
+        </ControlsLink>
+      </svelte:fragment>
+    </SearchControls>
   </ControlsBase>
 
   <div class="bg-white mt-[clamp(40vh,40vw,50vh)] text-black pb-10">

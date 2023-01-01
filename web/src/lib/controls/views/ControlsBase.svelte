@@ -1,14 +1,8 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import type { ControlsBaseVariant } from '../types/controls-base';
 
-  export let variant:
-    | 'light'
-    | 'dark'
-    | 'void'
-    | 'black'
-    | 'translucent'
-    | 'transparent'
-    | undefined = undefined;
+  export let variant: ControlsBaseVariant | undefined = undefined;
   let cn: string | undefined = undefined;
   export { cn as class };
 </script>

@@ -46,6 +46,7 @@
     | 'carbon:document-unknown'
     | 'carbon:cyclist'
     | 'carbon:swim'
+    | 'carbon:chart-line'
     | (string & {});
   export let size: '16' | '20' | '24' | '32' | '40' | '48' | '56' = '24';
   export let hFlip: boolean | undefined = undefined;

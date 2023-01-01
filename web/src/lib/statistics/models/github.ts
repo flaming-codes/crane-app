@@ -1,12 +1,11 @@
-import { format, subDays } from 'date-fns';
 import { Octokit } from 'octokit';
 
 const instance = new Octokit({
   auth: process.env.VITE_GITHUB_KEY
 });
 
-export async function getReposByStars(params?: { created?: string }) {
-  const { created = format(subDays(new Date(), 1), 'yyyy-MM-dd') } = params || {};
+export async function getReposByStars(params?: { pushed?: string }) {
+  // const { pushed = format(subDays(new Date(), 1), 'yyyy-MM-dd') } = params || {};
 
   const { data } = await instance.rest.search.repos({
     q: `language:R`,

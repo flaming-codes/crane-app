@@ -92,6 +92,9 @@
       <ControlsLink withGap href="/" title="Latest packages">
         <Iconic name="carbon:switcher" size="16" />
       </ControlsLink>
+      <ControlsLink withGap href="/statistics" title="Statistics">
+        <Iconic name="carbon:chart-line" size="16" />
+      </ControlsLink>
     </svelte:fragment>
   </SearchControls>
 </ControlsBase>
