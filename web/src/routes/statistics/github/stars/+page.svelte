@@ -26,6 +26,9 @@
 
   <SheetContent offset="50" class=" text-neutral-50 space-y-20 pb-60 bg-zinc-900">
     <Section withSpacingY withPaddingX class="mx-auto max-w-7xl space-y-10">
+      <pre>
+        {JSON.stringify(items, null, 2)}
+      </pre>
       <table class="w-full">
         <tbody class="space-y-8">
           {#each items as { name }}
