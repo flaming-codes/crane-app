@@ -2,7 +2,7 @@
   import clsx from 'clsx';
 
   export let cn: string | undefined = undefined;
-  export let size: '4' | '2' | undefined = undefined;
+  export let size: '4' | '2' | '1' | undefined = undefined;
   export { cn as class };
 
   const sizeFour = `
@@ -27,7 +27,8 @@
     class={clsx(
       {
         [sizeFour]: !size || size === '4',
-        [sizeTwo]: size === '2'
+        [sizeTwo]: size === '2',
+        'grid grid-cols-1 gap-4': size === '1'
       },
       cn
     )}

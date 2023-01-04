@@ -34,7 +34,7 @@ function composeFakeGithubTrendItems(params: { count: number }) {
   const items = Array.from({ length: count }).map((_, index) => {
     const name = faker.word.adjective(50);
     const author = faker.word.adjective(50);
-    const stargazers_count = faker.random.numeric(4);
+    const stargazers_count = Number(faker.random.numeric(4));
     const watchers = Number(faker.random.numeric(4));
     const avatar_url = faker.image.abstract();
 

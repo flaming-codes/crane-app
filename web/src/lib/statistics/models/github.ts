@@ -1,33 +1,23 @@
-import { Octokit } from 'octokit';
+import type { GithubTrendItem } from '../types/github';
 
-const instance = new Octokit({
-  auth: process.env.VITE_GITHUB_KEY
-});
+export async function fetchReposByStars(params: {
+  range: string;
+}): Promise<{ items: GithubTrendItem[] }> {
+  const { range } = params;
 
-export async function getReposByStars(params?: { pushed?: string }) {
-  // const { pushed = format(subDays(new Date(), 1), 'yyyy-MM-dd') } = params || {};
-
-  const { data } = await instance.rest.search.repos({
-    q: `language:R`,
-    sort: 'stars',
-    order: 'desc',
-    per_page: 50
-  });
-
-  return {
-    ...data,
-    items: data.items.map((item) => ({
-      id: item.id,
-      name: item.name,
-      full_name: item.full_name,
-      html_url: item.html_url,
-      description: item.description,
-      stargazers_count: item.stargazers_count,
-      watchers: item.watchers,
-      owner: {
-        login: item.owner?.login,
-        avatar_url: item.owner?.avatar_url
+  const fetcher = async () =>
+    fetch(`${import.meta.env.VITE_STATS_GH_TRENDS_BASE_URL}/${range}.json`, {
+      headers: {
+        'Content-Type': 'application/json'
       }
-    }))
-  };
+    });
+
+  try {
+    const res = await fetcher();
+    const items = await res.json();
+    return { items };
+  } catch (error) {
+    console.error(error);
+    return { items: [] };
+  }
 }

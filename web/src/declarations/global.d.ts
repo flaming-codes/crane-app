@@ -8,4 +8,5 @@ interface ImportMetaEnv {
   VITE_GITHUB_KEY: string;
   VITE_SITEMAP_PKGS_URL: string;
   VITE_AP_PKGS_URL: string;
+  VITE_STATS_GH_TRENDS_BASE_URL: string;
 }
