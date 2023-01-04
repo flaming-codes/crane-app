@@ -1,6 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
-  import { checkForSingleLongTitle, getHeroGradient, type HeroGradient } from '../models/hero';
+  import { checkForSingleLongTitle, getHeroGradient, type HeroGradientTheme } from '../models/hero';
 
   export let title: string;
   export let titleSize: 'lg' | 'xl' = 'xl';
@@ -8,7 +8,7 @@
   export let subtitleSize: 'lg' | 'xl' = 'lg';
   export let height: '30' | '40!' | '50' | '50!' | '70' | 'full' | 'screen' | 'flex';
   export let isFixed: boolean | undefined = undefined;
-  export let theme: HeroGradient | undefined = undefined;
+  export let theme: HeroGradientTheme | undefined = undefined;
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
 
@@ -52,14 +52,16 @@
   >
     {title}
   </h1>
-  <h2
-    class={clsx('text-base opacity-70 text-center', {
-      'lg:text-lg xl:text-xl': subtitleSize === 'lg',
-      'lg:text-xl xl:text-2xl': subtitleSize === 'xl'
-    })}
-  >
-    {subtitle}
-  </h2>
+  {#if subtitle}
+    <h2
+      class={clsx('text-base opacity-70 text-center', {
+        'lg:text-lg xl:text-xl': subtitleSize === 'lg',
+        'lg:text-xl xl:text-2xl': subtitleSize === 'xl'
+      })}
+    >
+      {subtitle}
+    </h2>
+  {/if}
 
   <slot />
 </section>

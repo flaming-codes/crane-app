@@ -27,7 +27,11 @@
         onClick(event);
       }
       if (url) {
-        window.open(url, urlTarget);
+        if (urlTarget) {
+          window.open(url, urlTarget);
+        } else {
+          window.location.href = url;
+        }
       }
     }
   }}

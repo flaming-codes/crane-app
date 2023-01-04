@@ -272,10 +272,9 @@ function prepareDirectories() {
  * Sequence of actions to execute.
  */
 function run() {
-  const packages = composeFakePackages();
-
   prepareDirectories();
 
+  const packages = composeFakePackages();
   persistFakePackages(packages);
   composeAndPersistVariants(packages);
 }

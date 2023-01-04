@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-export type HeroGradient =
+export type HeroGradientTheme =
   | 'light'
   | 'muted'
   | 'dark'
@@ -10,7 +10,7 @@ export type HeroGradient =
   | 'gradient-stone'
   | 'gradient-dark-zinc';
 
-export function getHeroGradient(theme?: HeroGradient) {
+export function getHeroGradient(theme?: HeroGradientTheme) {
   return clsx({
     'bg-zinc-100 text-black': theme === 'light',
     'bg-gray-300 text-black': theme === 'muted',
