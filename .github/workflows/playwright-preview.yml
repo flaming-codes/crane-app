@@ -32,6 +32,7 @@ jobs:
           echo VITE_SELECT_PKG_URL=${{ secrets.VITE_SELECT_PKG_URL }} >> .env
           echo VITE_SITEMAP_PKGS_URL=${{ secrets.VITE_SITEMAP_PKGS_URL }} >> .env
           echo VITE_AP_PKGS_URL=${{ secrets.VITE_AP_PKGS_URL }} >> .env
+          echo VITE_STATS_GH_TRENDS_BASE_URL=${{ secrets.VITE_STATS_GH_TRENDS_BASE_URL}} >> .env
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers

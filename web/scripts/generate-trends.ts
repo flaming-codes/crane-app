@@ -11,6 +11,7 @@ import path from 'node:path';
 // @ts-ignore Issue w/ node types.
 const cwd = process.cwd();
 const base = path.join(cwd, 'static', 'data', 'stats');
+const ranges = ['6h', '12h', '24h', '48h', '72h', '1w', '2w', '1m'];
 
 /**
  * Simple parser for CLI arguments.
@@ -74,7 +75,11 @@ function prepareDirectories(source: Array<string[]>) {
 
 function composeConfigs(params: { count: number }): Array<[pathFragments: string[], items: any[]]> {
   const { count } = params;
-  return [[[base, 'github', 'trends', '6h.json'], composeFakeGithubTrendItems({ count })]];
+
+  return ranges.map((range) => [
+    [base, 'github', 'trends', `${range}.json`],
+    composeFakeGithubTrendItems({ count })
+  ]);
 }
 
 /**

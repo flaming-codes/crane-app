@@ -25,6 +25,10 @@
         return '12 hours';
       case '24h':
         return '24 hours';
+      case '48h':
+        return '48 hours';
+      case '72h':
+        return '72 hours';
       case '1w':
         return '1 week';
       case '2w':
@@ -37,7 +41,10 @@
   };
 </script>
 
-<BasePageInit title="Packages by Github stars" path="/statistics/github/stars" />
+<BasePageInit
+  title="Trending R packages by Github stars for the last {mapRangeToLabel(selectedRange)}"
+  path="/statistics/github/stars/{selectedRange}"
+/>
 <CommonControls variant="translucent" />
 
 <main>
@@ -82,7 +89,7 @@
       {/if}
 
       <SubGrid size="1" class="gap-8">
-        {#each items as { original, trend }}
+        {#each items as { original, trend, crane }}
           <SubGridItem
             withBorder
             withSpaceY="md"
@@ -90,7 +97,7 @@
             key={original.name}
             emphasis="key"
           >
-            <div class="flex items-center space-x-2">
+            <p class="flex items-center space-x-2">
               <span class="text-sm"
                 >by
                 <Link
@@ -102,32 +109,49 @@
                 </Link>
               </span>
               <img
-                src={'https://loremflickr.com/640/480/abstract'}
+                src={original.owner.avatar_url}
                 alt="Github avatar for {original.name}"
                 loading="lazy"
                 class="w-5 h-5 object-cover rounded-full overflow-hidden"
                 width="20"
                 height="20"
               />
-              <span
-                class={clsx('flex items-center space-x-1', {
-                  'text-green-500': trend.stargazers_count,
-                  'opacity-50': !trend.stargazers_count
-                })}
-              >
-                {#if trend.stargazers_count}
-                  <span>
-                    + {trend.stargazers_count}
-                  </span>
-                  <Iconic name="carbon:star-filled" />
-                {:else}
-                  <span>-</span>
-                  <Iconic name="carbon:star-filled" />
-                {/if}
-              </span>
-            </div>
+            </p>
+
             <p>{original.description}</p>
-            <div class="text-neutral-200">
+
+            <p
+              class={clsx('flex items-center space-x-1', {
+                'text-green-500': trend.stargazers_count,
+                'text-red-500': trend.stargazers_count < 0,
+                'opacity-50': !trend.stargazers_count
+              })}
+            >
+              {#if trend.stargazers_count}
+                <span>
+                  {trend.stargazers_count > 0 ? '+' : ''}
+                  {trend.stargazers_count}
+                </span>
+                <Iconic name="carbon:star-filled" class="w-4 h-4" />
+              {:else}
+                <span>(no change)</span>
+              {/if}
+              <span class="flex items-center space-x-1 text-neutral-300">
+                <span>/</span>
+                <span>{original.stargazers_count}</span>
+                <Iconic name="carbon:star-filled" class="w-4 h-4" />
+              </span>
+            </p>
+
+            <div class="flex items-center space-x-2 text-neutral-200">
+              {#if crane.packageSlug}
+                <SubGridIcon
+                  meta={{
+                    url: `/package/${crane.packageSlug}`,
+                    icon: 'carbon:data-view-alt'
+                  }}
+                />
+              {/if}
               <SubGridIcon
                 meta={{
                   url: original.html_url,
