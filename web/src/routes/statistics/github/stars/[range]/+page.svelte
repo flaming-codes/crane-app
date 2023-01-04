@@ -13,7 +13,28 @@
   import type { PageServerData } from './$types';
 
   export let data: PageServerData;
-  const { items } = data;
+  const { items, ranges } = data;
+
+  let selectedRange = data.selectedRange;
+
+  const mapRangeToLabel = (source: string) => {
+    switch (source) {
+      case '6h':
+        return '6 hours';
+      case '12h':
+        return '12 hours';
+      case '24h':
+        return '24 hours';
+      case '1w':
+        return '1 week';
+      case '2w':
+        return '2 weeks';
+      case '1m':
+        return '1 month';
+      default:
+        return source;
+    }
+  };
 </script>
 
 <BasePageInit title="Packages by Github stars" path="/statistics/github/stars" />
@@ -31,7 +52,35 @@
   />
 
   <SheetContent offset="50" class=" text-neutral-50 space-y-20 lg:space-y-40 pb-60 bg-zinc-900">
-    <Section withSpacingY withPaddingX maxWidth="xl" class="mx-auto">
+    <Section withSpacingY="md" withPaddingX maxWidth="xl" class="mx-auto">
+      <div class="text-lg flex items-center justify-center gap-x-2">
+        Trends for last
+        <select
+          bind:value={selectedRange}
+          class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
+          on:change={(ev) => {
+            const { value } = ev.currentTarget;
+            window.location.href = `/statistics/github/stars/${value}`;
+          }}
+        >
+          {#each ranges as range}
+            <option value={range}>{mapRangeToLabel(range)}</option>
+          {/each}
+        </select>
+      </div>
+
+      {#if items.length === 0}
+        <div class="text-center space-y-2 pt-10">
+          <h3 class="text-xl">No trends yet available</h3>
+          <p class="text-lg text-neutral-300">
+            Please try again later. If you think this is a bug, please report it at <a
+              href="https://www.github.com/flaming-codes/crane-app"
+              class="underline">our repo</a
+            >.
+          </p>
+        </div>
+      {/if}
+
       <SubGrid size="1" class="gap-8">
         {#each items as { original, trend }}
           <SubGridItem
@@ -42,7 +91,16 @@
             emphasis="key"
           >
             <div class="flex items-center space-x-2">
-              <span class="text-sm">by {original.owner.login}</span>
+              <span class="text-sm"
+                >by
+                <Link
+                  href="https://github.com/{original.owner.login}"
+                  target="_external"
+                  rel="noopener"
+                >
+                  {original.owner.login}
+                </Link>
+              </span>
               <img
                 src={'https://loremflickr.com/640/480/abstract'}
                 alt="Github avatar for {original.name}"
@@ -53,7 +111,7 @@
               />
               <span
                 class={clsx('flex items-center space-x-1', {
-                  'text-green-700': trend.stargazers_count,
+                  'text-green-500': trend.stargazers_count,
                   'opacity-50': !trend.stargazers_count
                 })}
               >
@@ -68,8 +126,8 @@
                 {/if}
               </span>
             </div>
-            <p class="text-neutral-100">{original.description}</p>
-            <div>
+            <p>{original.description}</p>
+            <div class="text-neutral-200">
               <SubGridIcon
                 meta={{
                   url: original.html_url,

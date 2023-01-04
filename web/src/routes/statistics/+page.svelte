@@ -42,7 +42,7 @@
               withSpaceY="xs"
               key="Trending packages by stars"
               title="Trending packages by stars"
-              url="/statistics/github/stars"
+              url="/statistics/github/stars/6h"
               emphasis="key"
               class="p-0"
             >

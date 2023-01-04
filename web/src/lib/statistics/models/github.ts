@@ -1,7 +1,9 @@
 import type { GithubTrendItem } from '../types/github';
 
+export const githubTrendRanges = ['6h', '12h', '24h', '1w', '2w', '1m'];
+
 export async function fetchReposByStars(params: {
-  range: string;
+  range: typeof githubTrendRanges[number];
 }): Promise<{ items: GithubTrendItem[] }> {
   const { range } = params;
 
