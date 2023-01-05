@@ -123,12 +123,12 @@
 
             <div class="flex items-center space-x-3 pt-2 text-neutral-200">
               {#if crane.packageSlug}
-                <SubGridIcon
-                  meta={{
-                    url: `/package/${crane.packageSlug}`,
-                    icon: 'carbon:data-view-alt'
-                  }}
-                />
+                <Link
+                  href="/package/{crane.packageSlug}"
+                  class="rounded border border-neutral-500 px-2 py-1 text-xs"
+                >
+                  Available on <strong>CRAN/E</strong>
+                </Link>
               {/if}
               <SubGridIcon
                 meta={{
