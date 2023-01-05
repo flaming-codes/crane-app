@@ -30,7 +30,7 @@ const config = {
           'plausible.io',
           'nonce-plausible-events'
         ],
-        'img-src': ['loremflickr.com', 'avatars.githubusercontent.com'],
+        'img-src': ['self', 'https', 'loremflickr.com', 'avatars.githubusercontent.com'],
         'style-src': ['self', 'fonts.googleapis.com'],
         'font-src': ['self', 'fonts.gstatic.com']
       }
