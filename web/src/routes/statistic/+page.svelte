@@ -15,7 +15,7 @@
   const titles = ['Github'];
 </script>
 
-<BasePageInit title="Statistics" path="/statistics" />
+<BasePageInit title="Statistics" path="/statistic" />
 <CommonControls />
 
 <main>
@@ -23,7 +23,7 @@
     isFixed
     title="Statistics"
     titleSize="lg"
-    subtitle="General statistics about the R package ecosystem"
+    subtitle="General statistic about the R package ecosystem"
     height="50"
     theme="dark"
     variant="prominent"
@@ -42,7 +42,7 @@
               withSpaceY="xs"
               key="Trending packages by stars"
               title="Trending packages by stars"
-              url="/statistics/github/stars/6h"
+              url="/statistic/github/stars/6h"
               emphasis="key"
               class="p-0"
             >

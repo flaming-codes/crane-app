@@ -6,9 +6,14 @@ export function serializeSchema(thing: Schema) {
   return `<script type="application/ld+json">${JSON.stringify(thing, null, 2)}</script>`;
 }
 
-export async function fetchOgPosterImage(domain: 'author' | 'package', id?: string) {
-  const url = new URL(`${import.meta.env.VITE_BASE_OG_POSTER_API_URL}/${domain}/${id}`);
-  const res = await fetch(url.toString());
+export async function fetchOgPosterImage(
+  domain: 'author' | 'package' | 'statistic',
+  ...rest: string[]
+) {
+  const pathBase = import.meta.env.VITE_BASE_OG_POSTER_API_URL;
+  const urlPath = [pathBase, domain, ...rest, 'poster'].join('/');
+  const url = new URL(urlPath);
 
+  const res = await fetch(url.toString());
   return res.arrayBuffer();
 }

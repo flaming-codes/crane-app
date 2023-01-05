@@ -9,14 +9,14 @@ export default async function (req, res) {
     path = path.slice(1);
   }
 
-  const [domain, id] = path.split('/');
-  if (!domain || !id) {
-    console.warn(`Invalid request: domain=${domain} id=${id}`);
-    send(res, 400, `Invalid request: domain=${domain} id=${id}`);
+  const [domain, ...rest] = path.split('/');
+  if (!domain || !rest.length) {
+    console.warn(`Invalid request: domain=${domain} rest=${rest}`);
+    send(res, 400, `Invalid request: domain=${domain} rest=${rest}`);
     return;
   }
 
-  const allowedDomains = ['package', 'author'];
+  const allowedDomains = ['package', 'author', 'statistic'];
   if (!allowedDomains.includes(domain)) {
     warn(`Invalid domain: ${domain}`);
     send(res, 400, `Invalid domain: ${domain}`);
@@ -24,7 +24,9 @@ export default async function (req, res) {
   }
 
   try {
-    const url = new URL(`${process.env.FE_BASE_URL}/${domain}/${id}/poster`);
+    const urlPath = [process.env.FE_BASE_URL, domain, ...rest].join('/');
+    const url = new URL(urlPath);
+
     console.log(`Generating screenshot for ${url}`);
 
     const imageBuffer = await getScreenshot(url.toString());

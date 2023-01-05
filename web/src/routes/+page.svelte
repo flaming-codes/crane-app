@@ -31,7 +31,7 @@
   <ControlsBase variant="black">
     <SearchControls theme="dark">
       <svelte:fragment slot="links-start">
-        <ControlsLink withGap href="/statistics" title="Statistics">
+        <ControlsLink withGap href="/statistic" title="Statistics">
           <Iconic name="carbon:chart-line" size="16" />
         </ControlsLink>
       </svelte:fragment>
