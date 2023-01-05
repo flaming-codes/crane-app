@@ -13,38 +13,13 @@
   import type { PageServerData } from './$types';
 
   export let data: PageServerData;
-  const { items, ranges } = data;
+  const { items, ranges, selectedRangeLabel } = data;
 
   let selectedRange = data.selectedRange;
-
-  const mapRangeToLabel = (source: string) => {
-    switch (source) {
-      case '1h':
-        return '1 hour';
-      case '6h':
-        return '6 hours';
-      case '12h':
-        return '12 hours';
-      case '24h':
-        return '24 hours';
-      case '48h':
-        return '48 hours';
-      case '72h':
-        return '72 hours';
-      case '1w':
-        return '1 week';
-      case '2w':
-        return '2 weeks';
-      case '1m':
-        return '1 month';
-      default:
-        return source;
-    }
-  };
 </script>
 
 <BasePageInit
-  title="Trending R packages by Github stars for the last {mapRangeToLabel(selectedRange)}"
+  title="Trending R packages by Github stars for the last {selectedRangeLabel}"
   path="/statistics/github/stars/{selectedRange}"
 />
 <CommonControls variant="translucent" />
@@ -58,9 +33,10 @@
     subtitleSize="xl"
     height="50"
     variant="prominent"
+    theme="gradient-dark-zinc"
   />
 
-  <SheetContent offset="50" class=" text-neutral-50 space-y-20 lg:space-y-40 pb-60 bg-zinc-900">
+  <SheetContent offset="50" class=" text-neutral-50 space-y-20 lg:space-y-52 pb-60 bg-zinc-900">
     <Section withSpacingY="md" withPaddingX maxWidth="xl" class="mx-auto">
       <div class="text-lg flex items-center justify-center gap-x-2">
         Trends for last
@@ -73,7 +49,7 @@
           }}
         >
           {#each ranges as range}
-            <option value={range}>{mapRangeToLabel(range)}</option>
+            <option value={range}>{selectedRangeLabel}</option>
           {/each}
         </select>
       </div>
@@ -92,13 +68,13 @@
 
       <SubGrid size="1" class="gap-8">
         {#each items as { original, trend, crane }}
-          <SubGridItem
-            withBorder
-            withSpaceY="md"
-            withValueSpaceY="xs"
-            key={original.name}
-            emphasis="key"
-          >
+          <SubGridItem withBorder withSpaceY="md" withValueSpaceY="xs" key="" emphasis="key">
+            <Link
+              slot="key"
+              title={original.name}
+              href={crane.packageSlug ? `/package/${crane.packageSlug}` : original.html_url}
+              >{original.name}
+            </Link>
             <p class="flex items-center space-x-2">
               <span class="text-sm"
                 >by
@@ -145,7 +121,7 @@
               </span>
             </p>
 
-            <div class="flex items-center space-x-2 text-neutral-200">
+            <div class="flex items-center space-x-3 pt-2 text-neutral-200">
               {#if crane.packageSlug}
                 <SubGridIcon
                   meta={{

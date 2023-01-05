@@ -12,6 +12,9 @@
   export let textVariant: 'dense' | 'fit' | undefined = undefined;
   export let variant: 'prominent' | undefined = undefined;
 
+  let cn: string | undefined = undefined;
+  export { cn as class };
+
   const isSingleLongTitle = checkForSingleLongTitle(title);
 
   const defaultVariant = `
@@ -37,7 +40,8 @@
       'h-full': height === 'full',
       'flex-1': height === 'flex',
       fixed: isFixed
-    }
+    },
+    cn
   )}
 >
   <h1
