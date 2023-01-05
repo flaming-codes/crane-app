@@ -1,6 +1,41 @@
 import type { GithubTrendItem } from '../types/github';
 
-export const githubTrendRanges = ['6h', '12h', '24h', '48h', '72h', '1w', '2w', '1m'];
+export const githubTrendRanges = [
+  '1h',
+  '6h',
+  '12h',
+  '24h',
+  '48h',
+  '72h',
+  '1w',
+  '2w',
+  '1m'
+] as const;
+
+export function mapRangeToLabel(source: string) {
+  switch (source) {
+    case '1h':
+      return '1 hour';
+    case '6h':
+      return '6 hours';
+    case '12h':
+      return '12 hours';
+    case '24h':
+      return '24 hours';
+    case '48h':
+      return '48 hours';
+    case '72h':
+      return '72 hours';
+    case '1w':
+      return '1 week';
+    case '2w':
+      return '2 weeks';
+    case '1m':
+      return '1 month';
+    default:
+      return source;
+  }
+}
 
 export async function fetchReposByStars(params: {
   range: typeof githubTrendRanges[number];

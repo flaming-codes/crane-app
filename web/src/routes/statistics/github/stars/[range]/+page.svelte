@@ -9,6 +9,8 @@
   import CommonControls from '$lib/controls/views/CommonControls.svelte';
   import Link from '$lib/display/views/Link.svelte';
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
+  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
   import type { PageServerData } from './$types';
 
@@ -16,34 +18,23 @@
   const { items, ranges } = data;
 
   let selectedRange = data.selectedRange;
-
-  const mapRangeToLabel = (source: string) => {
-    switch (source) {
-      case '6h':
-        return '6 hours';
-      case '12h':
-        return '12 hours';
-      case '24h':
-        return '24 hours';
-      case '48h':
-        return '48 hours';
-      case '72h':
-        return '72 hours';
-      case '1w':
-        return '1 week';
-      case '2w':
-        return '2 weeks';
-      case '1m':
-        return '1 month';
-      default:
-        return source;
-    }
-  };
 </script>
 
 <BasePageInit
+  withBreadcrumb={false}
   title="Trending R packages by Github stars for the last {mapRangeToLabel(selectedRange)}"
   path="/statistics/github/stars/{selectedRange}"
+/>
+<BreadcrumbMeta
+  items={[
+    { name: 'Statistics', href: '/statistics' },
+    { name: 'Github statistics', href: '/github/statistics' },
+    { name: 'Trending R packages by Github stars', href: '/statistics/github/stars' },
+    {
+      name: `Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`,
+      href: `/statistics/github/stars/${selectedRange}`
+    }
+  ]}
 />
 <CommonControls variant="translucent" />
 
@@ -56,9 +47,10 @@
     subtitleSize="xl"
     height="50"
     variant="prominent"
+    theme="gradient-dark-zinc"
   />
 
-  <SheetContent offset="50" class=" text-neutral-50 space-y-20 lg:space-y-40 pb-60 bg-zinc-900">
+  <SheetContent offset="50" class=" text-neutral-50 space-y-20 lg:space-y-52 pb-60 bg-zinc-900">
     <Section withSpacingY="md" withPaddingX maxWidth="xl" class="mx-auto">
       <div class="text-lg flex items-center justify-center gap-x-2">
         Trends for last
@@ -90,13 +82,13 @@
 
       <SubGrid size="1" class="gap-8">
         {#each items as { original, trend, crane }}
-          <SubGridItem
-            withBorder
-            withSpaceY="md"
-            withValueSpaceY="xs"
-            key={original.name}
-            emphasis="key"
-          >
+          <SubGridItem withBorder withSpaceY="md" withValueSpaceY="xs" key="" emphasis="key">
+            <Link
+              slot="key"
+              title={original.name}
+              href={crane.packageSlug ? `/package/${crane.packageSlug}` : original.html_url}
+              >{original.name}
+            </Link>
             <p class="flex items-center space-x-2">
               <span class="text-sm"
                 >by
@@ -143,14 +135,14 @@
               </span>
             </p>
 
-            <div class="flex items-center space-x-2 text-neutral-200">
+            <div class="flex items-center space-x-3 pt-2 text-neutral-200">
               {#if crane.packageSlug}
-                <SubGridIcon
-                  meta={{
-                    url: `/package/${crane.packageSlug}`,
-                    icon: 'carbon:data-view-alt'
-                  }}
-                />
+                <Link
+                  href="/package/{crane.packageSlug}"
+                  class="rounded border border-neutral-500 px-2 py-1 text-xs"
+                >
+                  Available on <strong>CRAN/E</strong>
+                </Link>
               {/if}
               <SubGridIcon
                 meta={{
