@@ -11,7 +11,7 @@ import path from 'node:path';
 // @ts-ignore Issue w/ node types.
 const cwd = process.cwd();
 const base = path.join(cwd, 'static', 'data', 'stats');
-const ranges = ['6h', '12h', '24h', '48h', '72h', '1w', '2w', '1m'];
+const ranges = ['1h', '6h', '12h', '24h', '48h', '72h', '1w', '2w', '1m'];
 
 /**
  * Simple parser for CLI arguments.

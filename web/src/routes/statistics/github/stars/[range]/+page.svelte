@@ -19,6 +19,8 @@
 
   const mapRangeToLabel = (source: string) => {
     switch (source) {
+      case '1h':
+        return '1 hour';
       case '6h':
         return '6 hours';
       case '12h':

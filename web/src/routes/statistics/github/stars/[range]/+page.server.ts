@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ params, setHeaders }) => {
   });
 
   // @ts-expect-error Range not picked up by type inference.
-  const range: string = params.range;
+  const range: typeof githubTrendRanges[number] = params.range;
 
   if (!githubTrendRanges.includes(range)) {
     throw error(401, `Invalid range: ${range}`);
