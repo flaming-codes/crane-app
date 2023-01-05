@@ -6,10 +6,13 @@
 
   export let title: string;
   export let path: string;
+  export let withBreadcrumb = true;
 </script>
 
 <BaseMeta {title} {path} />
-<BreadcrumbMeta items={[{ name: title, href: path }]} />
+{#if withBreadcrumb}
+  <BreadcrumbMeta items={[{ name: title, href: path }]} />
+{/if}
 <ColorScheme scheme="dark" />
 
 <SearchInit />

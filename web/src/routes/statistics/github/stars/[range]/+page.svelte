@@ -9,18 +9,32 @@
   import CommonControls from '$lib/controls/views/CommonControls.svelte';
   import Link from '$lib/display/views/Link.svelte';
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
+  import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
+  import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
   import type { PageServerData } from './$types';
 
   export let data: PageServerData;
-  const { items, ranges, selectedRangeLabel } = data;
+  const { items, ranges } = data;
 
   let selectedRange = data.selectedRange;
 </script>
 
 <BasePageInit
-  title="Trending R packages by Github stars for the last {selectedRangeLabel}"
+  withBreadcrumb={false}
+  title="Trending R packages by Github stars for the last {mapRangeToLabel(selectedRange)}"
   path="/statistics/github/stars/{selectedRange}"
+/>
+<BreadcrumbMeta
+  items={[
+    { name: 'Statistics', href: '/statistics' },
+    { name: 'Github statistics', href: '/github/statistics' },
+    { name: 'Trending R packages by Github stars', href: '/statistics/github/stars' },
+    {
+      name: `Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`,
+      href: `/statistics/github/stars/${selectedRange}`
+    }
+  ]}
 />
 <CommonControls variant="translucent" />
 
@@ -49,7 +63,7 @@
           }}
         >
           {#each ranges as range}
-            <option value={range}>{selectedRangeLabel}</option>
+            <option value={range}>{mapRangeToLabel(range)}</option>
           {/each}
         </select>
       </div>
