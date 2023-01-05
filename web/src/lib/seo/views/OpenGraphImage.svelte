@@ -7,7 +7,7 @@
   import clsx from 'clsx';
 
   export let title: string;
-  export let titleSize: 'lg' | 'xl' = 'xl';
+  export let titleSize: 'md' | 'lg' | 'xl' = 'xl';
   export let subtitleSize: 'lg' | 'xl' = 'xl';
   export let subtitle: string | undefined = undefined;
   export let theme: HeroGradientTheme | undefined = undefined;
@@ -24,6 +24,8 @@
 >
   <h1
     class={clsx('font-bold', {
+      'text-[clamp(2.4rem,7vw,4rem)]': titleSize === 'md' && !isSingleLongTitle,
+      'text-[clamp(2rem,8vw,2.8rem)]': titleSize === 'md' && isSingleLongTitle,
       'text-[clamp(2.8rem,8vw,7rem)]': titleSize === 'lg' && !isSingleLongTitle,
       'text-[clamp(2.8rem,8vw,5rem)]': titleSize === 'lg' && isSingleLongTitle,
       'text-[clamp(2.8rem,9vw,9rem)]': titleSize === 'xl' && !isSingleLongTitle,
@@ -34,14 +36,17 @@
   >
     {title}
   </h1>
-  <h2
+  <div
     class={clsx('text-base opacity-70 text-center leading-6 lg:leading-10', {
       'text-[clamp(0.8rem,8vw,1.8rem)]': subtitleSize === 'lg',
       'text-[clamp(1rem,3vw,2rem)]': subtitleSize === 'xl'
     })}
   >
-    {subtitle}
-  </h2>
+    {#if subtitle}
+      <h2>{subtitle}</h2>
+    {/if}
+    <slot name="subtitle" />
+  </div>
 
   <slot />
 </section>

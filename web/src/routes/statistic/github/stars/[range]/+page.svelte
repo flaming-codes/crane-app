@@ -10,7 +10,7 @@
   import Link from '$lib/display/views/Link.svelte';
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
-  import { mapRangeToLabel } from '$lib/statistic/models/github';
+  import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
   import type { PageServerData } from './$types';
 

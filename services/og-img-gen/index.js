@@ -9,10 +9,12 @@ export default async function (req, res) {
     path = path.slice(1);
   }
 
+  console.log('path', path);
+
   const [domain, ...rest] = path.split('/');
   if (!domain || !rest.length) {
-    console.warn(`Invalid request: domain=${domain} id=${id}`);
-    send(res, 400, `Invalid request: domain=${domain} id=${id}`);
+    console.warn(`Invalid request: domain=${domain} rest=${rest}`);
+    send(res, 400, `Invalid request: domain=${domain} rest=${rest}`);
     return;
   }
 

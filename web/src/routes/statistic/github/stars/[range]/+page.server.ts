@@ -1,5 +1,5 @@
 import { typeAheadTuples } from '$lib/db/model';
-import { fetchReposByStars, githubTrendRanges } from '$lib/statistic/models/github';
+import { fetchReposByStars, githubTrendRanges } from '$lib/statistics/models/github';
 import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types';
 import { error } from '@sveltejs/kit';
 
