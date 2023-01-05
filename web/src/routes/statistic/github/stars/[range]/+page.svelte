@@ -7,8 +7,11 @@
   import SubGridIcon from '$lib/blocks/views/SubGridIcon.svelte';
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
   import CommonControls from '$lib/controls/views/CommonControls.svelte';
+  import ColorScheme from '$lib/display/views/ColorScheme.svelte';
   import Link from '$lib/display/views/Link.svelte';
+  import NotificationCenterAnchor from '$lib/notification/view/NotificationCenterAnchor.svelte';
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
+  import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
@@ -20,10 +23,15 @@
   let selectedRange = data.selectedRange;
 </script>
 
-<BasePageInit
-  withBreadcrumb={false}
-  title="Trending R packages by Github stars for the last {mapRangeToLabel(selectedRange)}"
+<BasePageInit withBaseMeta={false} withBreadcrumb={false} />
+<BaseMeta
+  title={`Trending R packages by Github stars`}
+  description={`Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`}
   path="/statistic/github/stars/{selectedRange}"
+  image={{
+    url: `https://www.cran-e.com/api/statistic/github/stars/${selectedRange}/poster.jpeg`,
+    alt: `Poster for range ${selectedRange}`
+  }}
 />
 <BreadcrumbMeta
   items={[
@@ -37,6 +45,8 @@
   ]}
 />
 <CommonControls variant="translucent" />
+<ColorScheme scheme="dark" />
+<NotificationCenterAnchor />
 
 <main>
   <Hero
