@@ -10,7 +10,7 @@
   import Link from '$lib/display/views/Link.svelte';
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
-  import { mapRangeToLabel } from '$lib/statistics/models/github';
+  import { mapRangeToLabel } from '$lib/statistic/models/github';
   import clsx from 'clsx';
   import type { PageServerData } from './$types';
 
@@ -23,16 +23,16 @@
 <BasePageInit
   withBreadcrumb={false}
   title="Trending R packages by Github stars for the last {mapRangeToLabel(selectedRange)}"
-  path="/statistics/github/stars/{selectedRange}"
+  path="/statistic/github/stars/{selectedRange}"
 />
 <BreadcrumbMeta
   items={[
-    { name: 'Statistics', href: '/statistics' },
-    { name: 'Github statistics', href: '/github/statistics' },
-    { name: 'Trending R packages by Github stars', href: '/statistics/github/stars' },
+    { name: 'Statistics', href: '/statistic' },
+    { name: 'Github statistic', href: '/github/statistic' },
+    { name: 'Trending R packages by Github stars', href: '/statistic/github/stars' },
     {
       name: `Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`,
-      href: `/statistics/github/stars/${selectedRange}`
+      href: `/statistic/github/stars/${selectedRange}`
     }
   ]}
 />
@@ -59,7 +59,7 @@
           class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
           on:change={(ev) => {
             const { value } = ev.currentTarget;
-            window.location.href = `/statistics/github/stars/${value}`;
+            window.location.href = `/statistic/github/stars/${value}`;
           }}
         >
           {#each ranges as range}
