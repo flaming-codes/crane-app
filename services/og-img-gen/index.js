@@ -1,9 +1,10 @@
 import 'dotenv/config';
-import { send } from 'micro';
+import http from 'node:http';
+import { send, serve } from 'micro';
 import puppeteer from 'puppeteer-core';
 
 /** @type {import('micro').RequestHandler} */
-export default async function (req, res) {
+async function handler(req, res) {
   let path = req.url.split('?')[0];
   if (path.startsWith('/')) {
     path = path.slice(1);
@@ -70,8 +71,11 @@ async function getScreenshot(url) {
   // Wait for the fonts to load.
   await new Promise((resolve) => setTimeout(resolve, 200));
 
-  const imageBuffer = await page.screenshot({ type: 'jpeg', quality: 80 });
+  const imageBuffer = await page.screenshot({ type: 'jpeg', quality: 70 });
   await browser.close();
 
   return imageBuffer;
 }
+
+const server = new http.Server(serve(handler));
+server.listen(Number(process.env.PORT) || 8080);
