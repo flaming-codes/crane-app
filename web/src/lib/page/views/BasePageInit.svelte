@@ -4,13 +4,16 @@
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
 
-  export let title: string;
-  export let path: string;
-  export let withBreadcrumb = true;
+  export let title: string | undefined = undefined;
+  export let path: string | undefined = undefined;
+  export let withBaseMeta: boolean = true;
+  export let withBreadcrumb: boolean = true;
 </script>
 
-<BaseMeta {title} {path} />
-{#if withBreadcrumb}
+{#if title && path && withBaseMeta}
+  <BaseMeta {title} {path} />
+{/if}
+{#if title && path && withBreadcrumb}
   <BreadcrumbMeta items={[{ name: title, href: path }]} />
 {/if}
 <ColorScheme scheme="dark" />
