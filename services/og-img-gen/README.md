@@ -25,9 +25,9 @@ npm i
 For development, you can simply start the server using the following command:
 
 ```bash
-npm dev
+npm run dev
 ```
 
-There's currently no live reloading. You'll have to restart the server after every change. There's no transpilation step. We're using JSDoc's TypeScript support to infer the types w/o using TypeScript.
+You'll have to use Node.js >= 18.12.1 (from the `.nvmrc`) to get the live reload. There's no transpilation step. We're using JSDoc's TypeScript support to infer the types w/o using TypeScript.
 
-After starting the server, you can simply provide the `domain` and `id` as part of the path. For example, to generate an image for the entity with the id `xadmix` for the domain `package`, you can simply visit `http://localhost:7070/package/xadmix`. This will in turn call the website and make a screenshot of the entity's poster site.
+After starting the server, you can simply provide the path that leads to a `.../poster`-endpoint. For example, to generate an image for the entity with the id `xadmix` for the domain `package`, you can simply visit `http://localhost:7070/package/xadmix`. This will in turn call the website and make a screenshot of the entity's poster site.
