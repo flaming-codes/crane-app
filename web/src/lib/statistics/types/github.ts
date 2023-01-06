@@ -1,4 +1,4 @@
-export type GithubTrendItem = {
+export type GithubRepoByStarsTrendItem = {
   original: {
     id: number;
     name: string;
@@ -14,5 +14,20 @@ export type GithubTrendItem = {
   };
   trend: {
     stargazers_count: 97;
+  };
+};
+
+export type GithubUserByFollowersTrendItem = {
+  original: {
+    id: number;
+    name: string;
+    login: string;
+    avatar_url: string;
+    followers?: number;
+    public_repos?: number;
+    following?: number;
+  };
+  trend: {
+    followers: number;
   };
 };
