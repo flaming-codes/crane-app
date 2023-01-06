@@ -21,11 +21,13 @@ export type GithubUserByFollowersTrendItem = {
   original: {
     id: number;
     name: string;
+    bio?: string;
     login: string;
     avatar_url: string;
+    html_url: string;
     followers?: number;
-    public_repos?: number;
     following?: number;
+    public_repos?: number;
   };
   trend: {
     followers: number;

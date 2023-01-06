@@ -85,11 +85,13 @@ function composeFakeUsersByFollowersItems(params: { count: number }) {
       original: {
         id: index + 100,
         name,
+        bio: faker.lorem.sentence(10),
         login,
         avatar_url,
+        html_url: `https://github.com/${login}`,
         followers: Number(faker.random.numeric(3)),
-        public_repos: Number(faker.random.numeric(2)),
-        following: Number(faker.random.numeric(2))
+        following: Number(faker.random.numeric(2)),
+        public_repos: Number(faker.random.numeric(2))
       },
       trend: {
         followers: Number(faker.random.numeric(2))

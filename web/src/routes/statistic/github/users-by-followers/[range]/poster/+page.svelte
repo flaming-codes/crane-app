@@ -9,12 +9,12 @@
 
   const subtitle =
     items && items.length
-      ? `By stars within last ${mapRangeToLabel(selectedRange)}`
+      ? `By followers within last ${mapRangeToLabel(selectedRange)}`
       : `No trend yet available for last ${mapRangeToLabel(selectedRange)}`;
 </script>
 
 <OpenGraphImage
-  title={`Trending R-code on GitHub`}
+  title="Trending R-coders on Github"
   {subtitle}
   titleSize="md"
   textVariant="fit"
@@ -26,14 +26,14 @@
         <div class="flex flex-col items-center">
           <div class="flex items-center space-x-1">
             <span>
-              {item.trend.stargazers_count > 0 ? '+' : ''}
-              {item.trend.stargazers_count}
+              {item.trend.followers > 0 ? '+' : ''}
+              {item.trend.followers}
             </span>
-            <Iconic name="carbon:star-filled" class="w-6 h-6" />
+            <Iconic name="carbon:group" class="w-6 h-6" />
           </div>
           <div class="flex items-center gap-x-2">
             <img
-              src={item.original.owner.avatar_url}
+              src={item.original.avatar_url}
               class="w-7 h-7 rounded-full overflow-hidden"
               alt="Github avatar"
               loading="eager"

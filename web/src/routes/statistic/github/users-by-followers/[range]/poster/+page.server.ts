@@ -1,4 +1,4 @@
-import { githubTrendRanges, fetchReposByStars } from '$lib/statistics/models/github';
+import { githubTrendRanges, fetchUsersByFollowers } from '$lib/statistics/models/github';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params, setHeaders }) => {
     throw error(401, `Invalid range: ${range}`);
   }
 
-  const { items } = await fetchReposByStars({ range });
+  const { items } = await fetchUsersByFollowers({ range });
 
   return {
     items: items.slice(0, 3),

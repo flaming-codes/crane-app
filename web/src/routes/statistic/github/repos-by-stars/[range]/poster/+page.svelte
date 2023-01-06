@@ -14,7 +14,7 @@
 </script>
 
 <OpenGraphImage
-  title={`Trending R-code on GitHub`}
+  title="Trending R-code on GitHub"
   {subtitle}
   titleSize="md"
   textVariant="fit"

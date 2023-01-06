@@ -1,4 +1,4 @@
-import type { GithubRepoByStarsTrendItem } from '../types/github';
+import type { GithubRepoByStarsTrendItem, GithubUserByFollowersTrendItem } from '../types/github';
 
 export const githubTrendRanges = [
   '1h',
@@ -72,9 +72,9 @@ export async function fetchReposByStars(params: {
 
 export async function fetchUsersByFollowers(params: {
   range: typeof githubTrendRanges[number];
-}): Promise<{ items: GithubRepoByStarsTrendItem[] }> {
+}): Promise<{ items: GithubUserByFollowersTrendItem[] }> {
   const { range } = params;
-  return fetchTrendItems<GithubRepoByStarsTrendItem>({
+  return fetchTrendItems<GithubUserByFollowersTrendItem>({
     range,
     path: 'users-by-followers'
   });

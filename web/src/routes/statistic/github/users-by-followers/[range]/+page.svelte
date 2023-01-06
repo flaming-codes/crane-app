@@ -29,9 +29,9 @@
   description={`Trending R coders on Github by followers for the last ${mapRangeToLabel(
     selectedRange
   )}`}
-  path="/statistic/github/repos-by-stars/{selectedRange}"
+  path="/statistic/github/users-by-followers/{selectedRange}"
   image={{
-    url: `https://www.cran-e.com/api/statistic/github/repos-by-stars/${selectedRange}/poster.jpeg`,
+    url: `https://www.cran-e.com/api/statistic/github/users-by-followers/${selectedRange}/poster.jpeg`,
     alt: `Poster for range ${selectedRange}`
   }}
 />
@@ -60,7 +60,7 @@
     isFixed
     title="Trends on Github"
     titleSize="lg"
-    subtitle="Packages by most stars"
+    subtitle="Popular R-coders by followers"
     subtitleSize="xl"
     height="50"
     variant="prominent"
@@ -76,7 +76,7 @@
           class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
           on:change={(ev) => {
             const { value } = ev.currentTarget;
-            window.location.href = `/statistic/github/repos-by-stars/${value}`;
+            window.location.href = `/statistic/github/users-by-followers/${value}`;
           }}
         >
           {#each ranges as range}
@@ -98,69 +98,51 @@
       {/if}
 
       <SubGrid size="1" class="gap-8">
-        {#each items as { original, trend, crane }}
+        {#each items as { original, trend }}
           <SubGridItem withBorder withSpaceY="md" withValueSpaceY="xs" key="" emphasis="key">
             <Link
               slot="key"
               title={original.name}
-              href={crane.packageSlug ? `/package/${crane.packageSlug}` : original.html_url}
-              >{original.name}
-            </Link>
-            <p class="flex items-center space-x-2">
-              <span class="text-sm"
-                >by
-                <Link
-                  href="https://github.com/{original.owner.login}"
-                  target="_external"
-                  rel="noopener"
-                >
-                  {original.owner.login}
-                </Link>
-              </span>
+              href={original.html_url}
+              class="flex items-center space-x-2"
+            >
               <img
-                src={original.owner.avatar_url}
-                alt="Github avatar for {original.name}"
+                src={original.avatar_url}
+                alt="Avatar for {original.name}"
+                class="w-8 h-8 rounded-full overflow-hidden object-cover"
                 loading="lazy"
-                class="w-5 h-5 object-cover rounded-full overflow-hidden"
-                width="20"
-                height="20"
               />
-            </p>
-
-            <p>{original.description}</p>
-
+              <span>{original.name}</span>
+            </Link>
+            {#if original.bio}
+              <p>
+                {original.bio}
+              </p>
+            {/if}
             <p
               class={clsx('flex items-center space-x-1', {
-                'text-green-500': trend.stargazers_count,
-                'text-red-500': trend.stargazers_count < 0,
-                'opacity-50': !trend.stargazers_count
+                'text-green-500': trend.followers,
+                'text-red-500': trend.followers < 0,
+                'opacity-50': !trend.followers
               })}
             >
-              {#if trend.stargazers_count}
+              {#if trend.followers}
                 <span>
-                  {trend.stargazers_count > 0 ? '+' : ''}
-                  {trend.stargazers_count}
+                  {trend.followers > 0 ? '+' : ''}
+                  {trend.followers}
                 </span>
-                <Iconic name="carbon:star-filled" class="w-4 h-4" />
+                <Iconic name="carbon:group" class="w-4 h-4" />
               {:else}
                 <span>(no change)</span>
               {/if}
               <span class="flex items-center space-x-1 text-neutral-300">
                 <span>/</span>
-                <span>{original.stargazers_count}</span>
-                <Iconic name="carbon:star-filled" class="w-4 h-4" />
+                <span>{original.followers}</span>
+                <Iconic name="carbon:group" class="w-4 h-4" />
               </span>
             </p>
 
             <div class="flex items-center space-x-3 pt-2 text-neutral-200">
-              {#if crane.packageSlug}
-                <Link
-                  href="/package/{crane.packageSlug}"
-                  class="rounded border border-neutral-500 px-2 py-1 text-xs"
-                >
-                  Available on <strong>CRAN/E</strong>
-                </Link>
-              {/if}
               <SubGridIcon
                 meta={{
                   url: original.html_url,
