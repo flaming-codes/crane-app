@@ -37,12 +37,22 @@
 
       <SectionsColumn>
         <PackageDetailSection title="Github Stars">
-          <SubGrid size="2">
+          <SubGrid size="1">
             <SubGridItem
               withSpaceY="xs"
               key="Trending packages by stars"
               title="Trending packages by stars"
-              url="/statistic/github/stars/6h"
+              url="/statistic/github/repos-by-stars/6h"
+              emphasis="key"
+              class="p-0"
+            >
+              <Iconic name="carbon:arrow-right" />
+            </SubGridItem>
+            <SubGridItem
+              withSpaceY="xs"
+              key="Trending users by followers"
+              title="Trending users by followers"
+              url="/statistic/github/users-by-followers/24h"
               emphasis="key"
               class="p-0"
             >

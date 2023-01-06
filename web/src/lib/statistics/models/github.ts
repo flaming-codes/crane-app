@@ -1,4 +1,4 @@
-import type { GithubTrendItem } from '../types/github';
+import type { GithubRepoByStarsTrendItem, GithubUserByFollowersTrendItem } from '../types/github';
 
 export const githubTrendRanges = [
   '1h',
@@ -37,13 +37,14 @@ export function mapRangeToLabel(source: string) {
   }
 }
 
-export async function fetchReposByStars(params: {
+async function fetchTrendItems<T>(params: {
   range: typeof githubTrendRanges[number];
-}): Promise<{ items: GithubTrendItem[] }> {
-  const { range } = params;
+  path: string;
+}): Promise<{ items: T[] }> {
+  const { path, range } = params;
 
   const fetcher = async () =>
-    fetch(`${import.meta.env.VITE_STATS_GH_TRENDS_BASE_URL}/repos-by-stars/${range}.json`, {
+    fetch([import.meta.env.VITE_STATS_GH_TRENDS_BASE_URL, path, `${range}.json`].join('/'), {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -57,4 +58,24 @@ export async function fetchReposByStars(params: {
     console.error(error);
     return { items: [] };
   }
+}
+
+export async function fetchReposByStars(params: {
+  range: typeof githubTrendRanges[number];
+}): Promise<{ items: GithubRepoByStarsTrendItem[] }> {
+  const { range } = params;
+  return fetchTrendItems<GithubRepoByStarsTrendItem>({
+    range,
+    path: 'repos-by-stars'
+  });
+}
+
+export async function fetchUsersByFollowers(params: {
+  range: typeof githubTrendRanges[number];
+}): Promise<{ items: GithubUserByFollowersTrendItem[] }> {
+  const { range } = params;
+  return fetchTrendItems<GithubUserByFollowersTrendItem>({
+    range,
+    path: 'users-by-followers'
+  });
 }

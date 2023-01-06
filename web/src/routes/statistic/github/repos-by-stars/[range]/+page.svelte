@@ -27,9 +27,9 @@
 <BaseMeta
   title={`Trending R packages by Github stars`}
   description={`Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`}
-  path="/statistic/github/stars/{selectedRange}"
+  path="/statistic/github/repos-by-stars/{selectedRange}"
   image={{
-    url: `https://www.cran-e.com/api/statistic/github/stars/${selectedRange}/poster.jpeg`,
+    url: `https://www.cran-e.com/api/statistic/github/repos-by-stars/${selectedRange}/poster.jpeg`,
     alt: `Poster for range ${selectedRange}`
   }}
 />
@@ -37,10 +37,10 @@
   items={[
     { name: 'Statistics', href: '/statistic' },
     { name: 'Github statistic', href: '/github/statistic' },
-    { name: 'Trending R packages by Github stars', href: '/statistic/github/stars' },
+    { name: 'Trending R packages by Github stars', href: '/statistic/github/repos-by-stars' },
     {
       name: `Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`,
-      href: `/statistic/github/stars/${selectedRange}`
+      href: `/statistic/github/repos-by-stars/${selectedRange}`
     }
   ]}
 />
@@ -69,7 +69,7 @@
           class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
           on:change={(ev) => {
             const { value } = ev.currentTarget;
-            window.location.href = `/statistic/github/stars/${value}`;
+            window.location.href = `/statistic/github/repos-by-stars/${value}`;
           }}
         >
           {#each ranges as range}
