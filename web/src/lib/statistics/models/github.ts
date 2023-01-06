@@ -43,7 +43,7 @@ export async function fetchReposByStars(params: {
   const { range } = params;
 
   const fetcher = async () =>
-    fetch(`${import.meta.env.VITE_STATS_GH_TRENDS_BASE_URL}/${range}.json`, {
+    fetch(`${import.meta.env.VITE_STATS_GH_TRENDS_BASE_URL}/repos-by-stars/${range}.json`, {
       headers: {
         'Content-Type': 'application/json'
       }

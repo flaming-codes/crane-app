@@ -29,7 +29,7 @@ function persist(data: Array<[pathFragments: string[], items: unknown[]]>) {
   }
 }
 
-function composeFakeGithubTrendItems(params: { count: number }) {
+function composeFakeReposByStarsItems(params: { count: number }) {
   const { count } = params;
 
   const items = Array.from({ length: count }).map((_, index) => {
@@ -77,8 +77,8 @@ function composeConfigs(params: { count: number }): Array<[pathFragments: string
   const { count } = params;
 
   return ranges.map((range) => [
-    [base, 'github', 'trends', `${range}.json`],
-    composeFakeGithubTrendItems({ count })
+    [base, 'github', 'trends', 'repos-by-stars', `${range}.json`],
+    composeFakeReposByStarsItems({ count })
   ]);
 }
 
