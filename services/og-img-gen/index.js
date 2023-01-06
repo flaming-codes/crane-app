@@ -19,7 +19,7 @@ async function handler(req, res) {
 
   const allowedDomains = ['package', 'author', 'statistic'];
   if (!allowedDomains.includes(domain)) {
-    warn(`Invalid domain: ${domain}`);
+    console.warn(`Invalid domain: ${domain}`);
     send(res, 400, `Invalid domain: ${domain}`);
     return;
   }
