@@ -151,7 +151,7 @@
                   href="/package/{crane.packageSlug}"
                   class="rounded border border-neutral-500 px-2 py-1 text-xs"
                 >
-                  Available on <strong>CRAN/E</strong>
+                  See on <strong>CRAN/E</strong>
                 </Link>
               {/if}
               <SubGridIcon
