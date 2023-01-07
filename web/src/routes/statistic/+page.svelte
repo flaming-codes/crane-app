@@ -36,14 +36,14 @@
       </SectionHeader>
 
       <SectionsColumn>
-        <PackageDetailSection title="Github Stars">
+        <PackageDetailSection title="Github trends">
           <SubGrid size="1">
             <SubGridItem
               withSpaceY="xs"
               withValueSpaceY="xs"
               key="Trending repos by stars"
               title="Trending repos by stars"
-              url="/statistic/github/repos-by-stars/6h"
+              url="/statistic/github/repos-by-stars/24h"
               emphasis="key"
               class="p-0"
             >
