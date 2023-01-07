@@ -1,8 +1,8 @@
 import { fetchReposByStars, githubTrendRanges } from '$lib/statistics/models/github';
-import type { PageLoad } from '.svelte-kit/types/src/routes/$types';
+import type { PageServerLoad } from '.svelte-kit/types/src/routes/$types';
 import { error } from '@sveltejs/kit';
 
-export const load: PageLoad = async ({ params, setHeaders }) => {
+export const load: PageServerLoad = async ({ params, setHeaders }) => {
   setHeaders({
     'Cache-Control': 's-maxage=3600, stale-while-revalidate=7200'
   });

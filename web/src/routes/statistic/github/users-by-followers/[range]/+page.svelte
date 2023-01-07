@@ -14,9 +14,9 @@
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
-  import type { PageData } from './$types';
+  import type { PageServerData } from './$types';
 
-  export let data: PageData;
+  export let data: PageServerData;
   const { items, ranges } = data;
 
   let selectedRange = data.selectedRange;
