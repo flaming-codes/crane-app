@@ -15,9 +15,9 @@
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
-  import type { PageServerData } from './$types';
+  import type { PageData } from './$types';
 
-  export let data: PageServerData;
+  export let data: PageData;
   const { items, ranges } = data;
 
   let selectedRange = data.selectedRange;
@@ -96,6 +96,7 @@
             <Link
               slot="key"
               title={original.name}
+              target={crane.packageSlug ? '_self' : '_external'}
               href={crane.packageSlug ? `/package/${crane.packageSlug}` : original.html_url}
               >{original.name}
             </Link>
@@ -151,16 +152,20 @@
                   href="/package/{crane.packageSlug}"
                   class="rounded border border-neutral-500 px-2 py-1 text-xs"
                 >
-                  See on <strong>CRAN/E</strong>
+                  Show on <strong>CRAN/E</strong>
                 </Link>
               {/if}
-              <SubGridIcon
-                meta={{
-                  url: original.html_url,
-                  icon: 'carbon:logo-github',
-                  isExternal: true
-                }}
-              />
+              <Link
+                href={original.html_url}
+                class="rounded border border-neutral-500 px-2 py-1 text-xs"
+                target="_external"
+                rel="noopener"
+              >
+                Open repository <Iconic
+                  name="carbon:repo-source-code"
+                  class="inline w-4 h-4 ml-1"
+                />
+              </Link>
             </div>
           </SubGridItem>
         {/each}

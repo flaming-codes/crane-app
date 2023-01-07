@@ -4,7 +4,6 @@
   import Section from '$lib/blocks/views/Section.svelte';
   import SheetContent from '$lib/blocks/views/SheetContent.svelte';
   import SubGrid from '$lib/blocks/views/SubGrid.svelte';
-  import SubGridIcon from '$lib/blocks/views/SubGridIcon.svelte';
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
   import CommonControls from '$lib/controls/views/CommonControls.svelte';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
@@ -15,9 +14,9 @@
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import { mapRangeToLabel } from '$lib/statistics/models/github';
   import clsx from 'clsx';
-  import type { PageServerData } from './$types';
+  import type { PageData } from './$types';
 
-  export let data: PageServerData;
+  export let data: PageData;
   const { items, ranges } = data;
 
   let selectedRange = data.selectedRange;

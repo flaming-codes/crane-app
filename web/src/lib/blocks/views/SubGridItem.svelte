@@ -41,7 +41,7 @@
       'border-l border-neutral-500 pl-2': withBorder,
       'space-y-1': withSpaceY === 'xs',
       'space-y-2': withSpaceY === 'md',
-      'cursor-pointer': url || onClick
+      'cursor-pointer hover:animate-pulse': url || onClick
     },
     cn
   )}

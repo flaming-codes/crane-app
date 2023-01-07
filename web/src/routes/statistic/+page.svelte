@@ -16,7 +16,7 @@
 </script>
 
 <BasePageInit title="Statistics" path="/statistic" />
-<CommonControls />
+<CommonControls variant="translucent" />
 
 <main>
   <Hero
@@ -25,7 +25,7 @@
     titleSize="lg"
     subtitle="General statistic about the R package ecosystem"
     height="50"
-    theme="dark"
+    theme="gradient-dark-zinc"
     variant="prominent"
   />
 
