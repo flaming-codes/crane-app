@@ -66,6 +66,9 @@ function composeFakeReposByStarsItems(params: { count: number }) {
       },
       trend: {
         stargazers_count: Number(faker.random.numeric(2))
+      },
+      crane: {
+        packageSlug: Math.random() > 0.5 ? faker.word.adjective(30) : ''
       }
     };
   });

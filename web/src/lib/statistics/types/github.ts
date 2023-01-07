@@ -15,6 +15,9 @@ export type GithubRepoByStarsTrendItem = {
   trend: {
     stargazers_count: 97;
   };
+  crane: {
+    packageSlug: string;
+  };
 };
 
 export type GithubUserByFollowersTrendItem = {
