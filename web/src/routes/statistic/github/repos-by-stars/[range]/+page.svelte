@@ -68,7 +68,7 @@
           class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
           on:change={(ev) => {
             const { value } = ev.currentTarget;
-            window.location.href = `/statistic/github/repos-by-stars/${value}`;
+            window.location.replace(`/statistic/github/repos-by-stars/${value}`);
           }}
         >
           {#each ranges as range}
