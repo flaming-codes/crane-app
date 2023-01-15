@@ -4,7 +4,6 @@
   import Section from '$lib/blocks/views/Section.svelte';
   import SheetContent from '$lib/blocks/views/SheetContent.svelte';
   import SubGrid from '$lib/blocks/views/SubGrid.svelte';
-  import SubGridIcon from '$lib/blocks/views/SubGridIcon.svelte';
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
   import CommonControls from '$lib/controls/views/CommonControls.svelte';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
@@ -76,7 +75,7 @@
           class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
           on:change={(ev) => {
             const { value } = ev.currentTarget;
-            window.location.href = `/statistic/github/users-by-followers/${value}`;
+            window.location.replace(`/statistic/github/users-by-followers/${value}`);
           }}
         >
           {#each ranges as range}
@@ -143,13 +142,29 @@
             </p>
 
             <div class="flex items-center space-x-3 pt-2 text-neutral-200">
-              <SubGridIcon
-                meta={{
-                  url: original.html_url,
-                  icon: 'carbon:logo-github',
-                  isExternal: true
-                }}
-              />
+              {#if original.public_repos}
+                <Link
+                  target="_blank"
+                  rel="noopener"
+                  href="{original.html_url}?tab=repositories"
+                  class="rounded border border-neutral-500 px-2 py-1 text-xs"
+                >
+                  {original.public_repos} public {original.public_repos === 1 ? 'repo' : 'repos'}
+                  <Iconic name="carbon:repo-source-code" class="inline w-4 h-4 ml-1" />
+                </Link>
+              {/if}
+              {#if original.following}
+                <Link
+                  target="_blank"
+                  rel="noopener"
+                  href="{original.html_url}?tab=following"
+                  class="rounded border border-neutral-500 px-2 py-1 text-xs"
+                >
+                  Following {original.following}
+                  {original.following === 1 ? 'user' : 'users'}
+                  <Iconic name="carbon:user-favorite" class="inline w-4 h-4 ml-1" />
+                </Link>
+              {/if}
             </div>
           </SubGridItem>
         {/each}

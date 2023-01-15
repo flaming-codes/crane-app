@@ -4,7 +4,6 @@
   import Section from '$lib/blocks/views/Section.svelte';
   import SheetContent from '$lib/blocks/views/SheetContent.svelte';
   import SubGrid from '$lib/blocks/views/SubGrid.svelte';
-  import SubGridIcon from '$lib/blocks/views/SubGridIcon.svelte';
   import SubGridItem from '$lib/blocks/views/SubGridItem.svelte';
   import CommonControls from '$lib/controls/views/CommonControls.svelte';
   import ColorScheme from '$lib/display/views/ColorScheme.svelte';
@@ -69,7 +68,7 @@
           class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
           on:change={(ev) => {
             const { value } = ev.currentTarget;
-            window.location.href = `/statistic/github/repos-by-stars/${value}`;
+            window.location.replace(`/statistic/github/repos-by-stars/${value}`);
           }}
         >
           {#each ranges as range}
@@ -96,6 +95,7 @@
             <Link
               slot="key"
               title={original.name}
+              target={crane.packageSlug ? '_self' : '_external'}
               href={crane.packageSlug ? `/package/${crane.packageSlug}` : original.html_url}
               >{original.name}
             </Link>
@@ -151,16 +151,20 @@
                   href="/package/{crane.packageSlug}"
                   class="rounded border border-neutral-500 px-2 py-1 text-xs"
                 >
-                  Available on <strong>CRAN/E</strong>
+                  Show on <strong>CRAN/E</strong>
                 </Link>
               {/if}
-              <SubGridIcon
-                meta={{
-                  url: original.html_url,
-                  icon: 'carbon:logo-github',
-                  isExternal: true
-                }}
-              />
+              <Link
+                href={original.html_url}
+                class="rounded border border-neutral-500 px-2 py-1 text-xs"
+                target="_external"
+                rel="noopener"
+              >
+                Open repository <Iconic
+                  name="carbon:repo-source-code"
+                  class="inline w-4 h-4 ml-1"
+                />
+              </Link>
             </div>
           </SubGridItem>
         {/each}

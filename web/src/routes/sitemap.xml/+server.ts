@@ -18,6 +18,9 @@ export const GET: RequestHandler = async () => {
       <sitemap>
         <loc>https://www.cran-e.com/sitemap-common.xml</loc>
       </sitemap>
+      <sitemap>
+        <loc>https://www.cran-e.com/sitemap-statistic.xml</loc>
+      </sitemap>
       ${Array.from(
         { length: packagesSize },
         (_, i) => `

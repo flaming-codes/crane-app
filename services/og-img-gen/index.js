@@ -78,4 +78,12 @@ async function getScreenshot(url) {
 }
 
 const server = new http.Server(serve(handler));
+
+server.on('listening', () => {
+  console.log(`Server listening on port ${process.env.PORT}`);
+});
+server.on('error', (error) => {
+  console.error(error);
+});
+
 server.listen(Number(process.env.PORT) || 8080);
