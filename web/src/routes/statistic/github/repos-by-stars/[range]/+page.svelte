@@ -13,6 +13,7 @@
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
   import { mapRangeToLabel } from '$lib/statistics/models/github';
+  import GithubRangeSelect from '$lib/statistics/views/GithubRangeSelect.svelte';
   import clsx from 'clsx';
   import type { PageServerData } from './$types';
 
@@ -63,23 +64,11 @@
     offset="50"
     class="relative text-neutral-50 space-y-20 lg:space-y-52 pb-60 bg-zinc-900"
   >
-    <div
-      class="sticky top-nav py-3 text-lg flex items-center justify-center gap-x-2 backdrop-blur-lg"
-    >
-      Trends for last
-      <select
-        bind:value={selectedRange}
-        class="appearance-none bg-black/0 overflow-hidden border border-neutral-500 px-2 rounded cursor-pointer"
-        on:change={(ev) => {
-          const { value } = ev.currentTarget;
-          window.location.replace(`/statistic/github/repos-by-stars/${value}`);
-        }}
-      >
-        {#each ranges as range}
-          <option value={range}>{mapRangeToLabel(range)}</option>
-        {/each}
-      </select>
-    </div>
+    <GithubRangeSelect
+      {ranges}
+      {selectedRange}
+      composeHref={(value) => `/statistic/github/repos-by-stars/${value}`}
+    />
 
     <Section withSpacingY="md" withPaddingX maxWidth="xl" class="mx-auto">
       {#if items.length === 0}
