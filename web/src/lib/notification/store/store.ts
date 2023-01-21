@@ -9,7 +9,7 @@ export const store = {
   ..._store,
 
   push(q: Intel[], action: Intel) {
-    if (!q.find(({ type, value }) => type !== action.type && value !== action.value)) {
+    if (!q.find(({ type, value }) => type === action.type && value === action.value)) {
       this.queue.update((queue) => [action, ...queue]);
     }
   }
