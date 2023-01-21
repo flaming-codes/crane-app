@@ -37,7 +37,7 @@
   }}
 />
 
-<Button readonly variant="highlight" withSpaceX="md" on:click={copy}>
+<Button readonly variant="highlight" withSpaceX="md" class="cursor-[copy]" on:click={copy}>
   <span>{value}</span>
   <Iconic name="carbon:copy" slot="icon" />
 </Button>
