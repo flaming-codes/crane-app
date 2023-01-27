@@ -6,7 +6,7 @@ export const GET: RequestHandler = async (ctx) => {
     throw error(400, 'Missing author id');
   }
 
-  const imageBuffer = await fetchOgPosterImage('author', ctx.params.id);
+  const imageBuffer = await fetchOgPosterImage(ctx.fetch, 'author', ctx.params.id);
   return new Response(imageBuffer, {
     headers: {
       'Content-Type': 'image/jpeg',

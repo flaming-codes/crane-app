@@ -11,7 +11,7 @@ export const GET: RequestHandler = async (ctx) => {
   const startIndex = page * size;
   const endIndex = (page + 1) * size;
   if (isAll) {
-    const all = await packagesOverview();
+    const all = await packagesOverview(ctx.fetch);
     const hits = all.slice(startIndex, endIndex);
 
     return json({
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async (ctx) => {
     });
   }
 
-  const all = (await packagesOverviewDb()).search(query);
+  const all = (await packagesOverviewDb(ctx.fetch)).search(query);
   const hits = all.slice(startIndex, endIndex).map(({ item }) => item);
 
   return json({
