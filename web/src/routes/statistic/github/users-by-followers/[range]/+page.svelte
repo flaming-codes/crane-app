@@ -102,7 +102,7 @@
               <img
                 src={original.avatar_url}
                 alt="Avatar for {original.name}"
-                class="w-8 h-8 rounded-full overflow-hidden object-cover"
+                class="w-8 h-8 rounded-full overflow-hidden object-cover bg-zinc-800"
                 loading="lazy"
               />
               <span>{original.name}</span>

@@ -23,9 +23,9 @@ const authorUrl = import.meta.env.VITE_AP_PKGS_URL;
  *
  * @returns
  */
-export async function packagesOverviewDb(): Promise<Fuse<OverviewPkg>> {
+export async function packagesOverviewDb(fetch: Fetch): Promise<Fuse<OverviewPkg>> {
   if (!packagesOverviewFuse) {
-    const items = await packagesOverview();
+    const items = await packagesOverview(fetch);
     // Apply schema for the search index.
     // Note that each key by default has '1'-weight.
     const next = new Fuse(items, {
@@ -51,9 +51,9 @@ export async function packagesOverviewDb(): Promise<Fuse<OverviewPkg>> {
  *
  * @returns
  */
-export async function authorsOverviewDb(): Promise<Fuse<OverviewAuthor>> {
+export async function authorsOverviewDb(fetch: Fetch): Promise<Fuse<OverviewAuthor>> {
   if (!authorsOverviewFuse) {
-    const items = await authorsOverview();
+    const items = await authorsOverview(fetch);
     const next = new Fuse(items, {
       threshold: 0.35,
       keys: [{ name: 'name' }]
@@ -68,17 +68,17 @@ export async function authorsOverviewDb(): Promise<Fuse<OverviewAuthor>> {
  * @param params
  * @returns
  */
-export async function select(params: { id: string }): Promise<Pkg | undefined> {
+export async function select(fetch: Fetch, params: { id: string }): Promise<Pkg | undefined> {
   const { id } = params;
   const url = selectUrl.replace('{{id}}', id);
 
-  const res = await fetcher<Pkg>(url, '');
+  const res = await fetcher<Pkg>(fetch, url, '');
   return Array.isArray(res) ? res[0] : res;
 }
 
-export async function packagesOverview() {
+export async function packagesOverview(fetch: Fetch) {
   if (!packagesOverviewData) {
-    packagesOverviewData = await fetcher<OverviewPkg[]>(overviewUrl, '');
+    packagesOverviewData = await fetcher<OverviewPkg[]>(fetch, overviewUrl, '');
   }
   return packagesOverviewData;
 }
@@ -87,9 +87,9 @@ export async function packagesOverview() {
  *
  * @returns
  */
-export async function typeAheadTuples() {
+export async function typeAheadTuples(fetch: Fetch) {
   if (!typeAheadData) {
-    const raw = await fetcher<[string, string]>(taUrl, '');
+    const raw = await fetcher<[string, string]>(fetch, taUrl, '');
     typeAheadData = raw.map(([id, slug]) => ({ id, slug }));
   }
   return typeAheadData;
@@ -99,9 +99,9 @@ export async function typeAheadTuples() {
  *
  * @returns
  */
-export async function authors() {
+export async function authors(fetch: Fetch) {
   if (!authorData) {
-    authorData = await fetcher<Record<string, string[]>>(authorUrl, '');
+    authorData = await fetcher<Record<string, string[]>>(fetch, authorUrl, '');
   }
   return authorData;
 }
@@ -110,9 +110,9 @@ export async function authors() {
  *
  * @returns
  */
-export async function authorsOverview() {
+export async function authorsOverview(fetch: Fetch) {
   if (!authorOverviewData) {
-    const authorsMap = await authors();
+    const authorsMap = await authors(fetch);
     authorOverviewData = Object.entries(authorsMap).map(([name, packageNames]) => ({
       name,
       slug: encodeSitemapSymbols(encodeURIComponent(name)),
@@ -128,14 +128,14 @@ export async function authorsOverview() {
  *
  * @returns
  */
-export async function sitemapTuples() {
+export async function sitemapTuples(fetch: Fetch) {
   if (!sitemapData) {
-    sitemapData = await fetcher<Array<[string, string]>>(sitemapUrl, '');
+    sitemapData = await fetcher<Array<[string, string]>>(fetch, sitemapUrl, '');
   }
   return sitemapData;
 }
 
-const fetcher = async <T>(href: string, path?: string): Promise<T> => {
+const fetcher = async <T>(fetch: Fetch, href: string, path?: string): Promise<T> => {
   return fetch(href + (path || ''), {
     headers: {
       Authorization: `Token ${import.meta.env.VITE_API_KEY}`,

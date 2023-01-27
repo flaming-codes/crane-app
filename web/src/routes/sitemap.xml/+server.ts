@@ -6,8 +6,8 @@ export const prerender = true;
 
 export const GET: RequestHandler = async () => {
   const [packagesSize, authorsSize] = await Promise.all([
-    mapDomainToSitemapData('packages'),
-    mapDomainToSitemapData('authors')
+    mapDomainToSitemapData(fetch, 'packages'),
+    mapDomainToSitemapData(fetch, 'authors')
   ]).then((items) => {
     return items.map((item) => Math.ceil(item.length / sitemapFileChunkSize));
   });

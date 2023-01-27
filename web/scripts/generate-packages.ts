@@ -253,27 +253,9 @@ function composeAndPersistVariants(packages: Pkg[]) {
 }
 
 /**
- * Delete the existing fake packages in 'static/data'.
- */
-function prepareDirectories() {
-  // @ts-ignore Issue w/ node types.
-  const cwd = process.cwd();
-  const dir = path.join(cwd, 'static', 'data');
-
-  if (fs.existsSync(dir)) {
-    fs.rmSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-}
-
-/**
  * Sequence of actions to execute.
  */
 function run() {
-  prepareDirectories();
-
   const packages = composeFakePackages();
   persistFakePackages(packages);
   composeAndPersistVariants(packages);

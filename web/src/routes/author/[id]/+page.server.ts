@@ -4,9 +4,9 @@ import { error } from '@sveltejs/kit';
 import { differenceInCalendarDays } from 'date-fns';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, fetch }) => {
   const id = decodeSitemapSymbols(params.id);
-  const data = await authors();
+  const data = await authors(fetch);
 
   const authorData = data[id];
 
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params }) => {
     throw error(404, id);
   }
 
-  const overviewData = await packagesOverview();
+  const overviewData = await packagesOverview(fetch);
   // TODO: simplify once the migration is done.
   const packageNames = 'packages' in authorData ? authorData.packages : authorData;
   const packages = packageNames

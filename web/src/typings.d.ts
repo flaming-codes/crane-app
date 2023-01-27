@@ -8,4 +8,6 @@ declare interface Window {
   ) => void;
 }
 
+declare type Fetch = typeof fetch;
+
 declare module 'svelte-confetti';

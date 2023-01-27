@@ -3,9 +3,9 @@ import { decodeSitemapSymbols } from '$lib/sitemap/parse';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, fetch }) => {
   const id = decodeSitemapSymbols(params.id);
-  const data = await authors();
+  const data = await authors(fetch);
 
   const authorData = data[id];
 
