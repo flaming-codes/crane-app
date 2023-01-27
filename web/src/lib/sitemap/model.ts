@@ -44,12 +44,12 @@ export function composeCategoryUrl(name: string) {
   });
 }
 
-export function mapDomainToSitemapData(source: string) {
+export function mapDomainToSitemapData(fetch: Fetch, source: string) {
   switch (source) {
     case 'packages':
-      return sitemapTuples();
+      return sitemapTuples(fetch);
     case 'authors':
-      return authors().then((record) => Object.keys(record));
+      return authors(fetch).then((record) => Object.keys(record));
     case 'categories':
       // TODO: fetch categories from API.
       return [];

@@ -6,7 +6,7 @@ export const GET: RequestHandler = async (ctx) => {
     throw error(400, 'Missing package id');
   }
 
-  const imageBuffer = await fetchOgPosterImage('package', ctx.params.id);
+  const imageBuffer = await fetchOgPosterImage(ctx.fetch, 'package', ctx.params.id);
 
   // 1 week.
   const cacheThreshold = 60 * 60 * 24 * 7;

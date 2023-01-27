@@ -7,6 +7,7 @@ export function serializeSchema(thing: Schema) {
 }
 
 export async function fetchOgPosterImage(
+  fetch: Fetch,
   domain: 'author' | 'package' | 'statistic',
   ...rest: string[]
 ) {

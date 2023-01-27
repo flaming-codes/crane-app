@@ -15,13 +15,13 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getDownloadsWithTrends } from '$lib/package/models/downloads';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, fetch }) => {
   const id = decodeSitemapSymbols(params.id);
 
   let item: Pkg | undefined;
 
   try {
-    item = await select({ id });
+    item = await select(fetch, { id });
   } catch (reason) {
     console.error(reason);
   }

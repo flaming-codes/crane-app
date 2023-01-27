@@ -37,10 +37,13 @@ export function mapRangeToLabel(source: string) {
   }
 }
 
-async function fetchTrendItems<T>(params: {
-  range: typeof githubTrendRanges[number];
-  path: string;
-}): Promise<{ items: T[] }> {
+async function fetchTrendItems<T>(
+  fetch: Fetch,
+  params: {
+    range: (typeof githubTrendRanges)[number];
+    path: string;
+  }
+): Promise<{ items: T[] }> {
   const { path, range } = params;
 
   const fetcher = async () =>
@@ -60,21 +63,27 @@ async function fetchTrendItems<T>(params: {
   }
 }
 
-export async function fetchReposByStars(params: {
-  range: typeof githubTrendRanges[number];
-}): Promise<{ items: GithubRepoByStarsTrendItem[] }> {
+export async function fetchReposByStars(
+  fetch: Fetch,
+  params: {
+    range: (typeof githubTrendRanges)[number];
+  }
+): Promise<{ items: GithubRepoByStarsTrendItem[] }> {
   const { range } = params;
-  return fetchTrendItems<GithubRepoByStarsTrendItem>({
+  return fetchTrendItems<GithubRepoByStarsTrendItem>(fetch, {
     range,
     path: 'repos-by-stars'
   });
 }
 
-export async function fetchUsersByFollowers(params: {
-  range: typeof githubTrendRanges[number];
-}): Promise<{ items: GithubUserByFollowersTrendItem[] }> {
+export async function fetchUsersByFollowers(
+  fetch: Fetch,
+  params: {
+    range: (typeof githubTrendRanges)[number];
+  }
+): Promise<{ items: GithubUserByFollowersTrendItem[] }> {
   const { range } = params;
-  return fetchTrendItems<GithubUserByFollowersTrendItem>({
+  return fetchTrendItems<GithubUserByFollowersTrendItem>(fetch, {
     range,
     path: 'users-by-followers'
   });

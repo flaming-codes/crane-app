@@ -12,7 +12,7 @@ export const GET: RequestHandler = async (ctx) => {
   const endIndex = (page + 1) * size;
 
   if (isAll) {
-    const all = await authorsOverview();
+    const all = await authorsOverview(ctx.fetch);
     const hits = all.slice(0, 6);
 
     return json({
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async (ctx) => {
     });
   }
 
-  const hits = (await authorsOverviewDb()).search(query).map(({ item }) => item);
+  const hits = (await authorsOverviewDb(ctx.fetch)).search(query).map(({ item }) => item);
 
   return json({
     hits: hits.slice(0, 6),
