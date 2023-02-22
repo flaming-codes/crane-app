@@ -16,17 +16,21 @@
 
 # Applications
 
-## PWA (Progressive Web App)
+## [PWA (Progressive Web App)](https://www.cran-e.com)
 
-You can use [CRAN/E](https://www.cran-e.com) directly in any modern browser. If supported, CRAN/E can provide its best performance by using local databases and effective caching. CRAN/E can also be installed locally in Chromium-based browsers. For more information regarding PWAs, please visit [this great guide](https://web.dev/progressive-web-apps/).
+You can use CRAN/E directly in any modern browser. If supported, CRAN/E can provide its best performance by using local databases and effective caching. CRAN/E can also be installed locally in Chromium-based browsers. For more information regarding PWAs, please visit [this great guide](https://web.dev/progressive-web-apps/).
 
-## Google Play Store
+## [Raycast Extension](https://www.raycast.com/flaming-codes/cran-e-search)
 
-CRAN/E is also available via the [Play Store](https://play.google.com/store/apps/details?id=com.cran_e.twa) on Android and Chrome OS devices. Please note that this store app is equivalant to the PWA and only repackaged for the Play Store.
+You can directly use the typeahead search of CRAN/E in Raycast. We published an extension on the Raycast Store to search for packages and authors. All CRAN/E Raycast extensions are developed as FOSS as well at [flaming-codes/crane-raycast](https://github.com/flaming-codes/crane-raycast).
 
-## Microsoft Store
+## [Google Play Store](https://play.google.com/store/apps/details?id=com.cran_e.twa)
 
-If you prefer, you can also install CRAN/E via the [Microsoft Store](https://apps.microsoft.com/store/detail/crane/9PL1GMMSC8L3). Please note that this store app is equivalant to the PWA and only repackaged for the Microsoft Store.
+CRAN/E is also available via the Play Store on Android and Chrome OS devices. Please note that this store app is equivalant to the PWA and only repackaged for the Play Store.
+
+## [Microsoft Store](https://apps.microsoft.com/store/detail/crane/9PL1GMMSC8L3)
+
+If you prefer, you can also install CRAN/E via the Microsoft Store. Please note that this store app is equivalant to the PWA and only repackaged for the Microsoft Store.
 
 <br />
 <br />
