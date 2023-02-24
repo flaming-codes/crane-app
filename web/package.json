@@ -25,7 +25,7 @@
     "@faker-js/faker": "7.5.0",
     "@iconify/svelte": "2.2.1",
     "@playwright/test": "^1.29.1",
-    "@sveltejs/adapter-vercel": "2.1.0",
+    "@sveltejs/adapter-vercel": "2.1.1",
     "@sveltejs/kit": "1.8.3",
     "@tailwindcss/forms": "0.5.3",
     "@tailwindcss/line-clamp": "0.4.2",
