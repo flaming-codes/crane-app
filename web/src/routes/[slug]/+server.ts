@@ -20,7 +20,7 @@ import { error, type RequestHandler } from '@sveltejs/kit';
  * is defined in /routes/sitemap-index/+server.ts.
  */
 export const GET: RequestHandler = async (props) => {
-  const { params } = props;
+  const { params, fetch } = props;
   const { slug } = params;
 
   if (slug === 'sitemap-common.xml') {
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async (props) => {
     const page = parseInt(slug.split('-')[2], 10);
 
     const mapper = mapComposerToDomain(domain);
-    const allTuples = await mapDomainToSitemapData(domain);
+    const allTuples = await mapDomainToSitemapData(fetch, domain);
 
     if (!allTuples) {
       throw error(500, 'Failed to fetch sitemap tuples');
