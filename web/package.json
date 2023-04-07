@@ -26,7 +26,7 @@
     "@iconify/svelte": "2.2.1",
     "@playwright/test": "^1.29.1",
     "@sveltejs/adapter-vercel": "2.4.1",
-    "@sveltejs/kit": "1.14.0",
+    "@sveltejs/kit": "1.15.2",
     "@tailwindcss/forms": "0.5.3",
     "@tailwindcss/line-clamp": "0.4.2",
     "@tailwindcss/typography": "0.5.9",
