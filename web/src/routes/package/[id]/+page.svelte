@@ -35,7 +35,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  const { item, overviewTuples, maintainer, materials, aboutItems, contacts, downloads } = data;
+  $: ({ item, overviewTuples, maintainer, materials, aboutItems, contacts, downloads } = data);
 
   let y = 0;
 
@@ -250,7 +250,6 @@
                 {/if}
                 <div class="flex gap-x-3 pt-1">
                   <Link
-                    withForcedReload
                     href="/author/{value}"
                     ariaLabel="All packages for {value}"
                     title="All packages for {value}"
@@ -279,7 +278,6 @@
                 {/if}
                 <div class="flex gap-x-3 pt-1">
                   <Link
-                    withForcedReload
                     href="/author/{name}"
                     ariaLabel="All packages for {name}"
                     title="All packages for {name}"

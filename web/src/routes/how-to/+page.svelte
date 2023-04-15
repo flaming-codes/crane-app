@@ -120,7 +120,6 @@
               <div class="text-xs text-neutral-300 font-mono">lukas.schoenmann@outlook.com</div>
               <div class="flex gap-x-3 pt-1">
                 <Link
-                  withForcedReload
                   href="/author/{value}"
                   ariaLabel="All packages for {value}"
                   title="All packages for {value}"

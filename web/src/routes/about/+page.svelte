@@ -18,7 +18,7 @@
   import type { PageData } from './$types';
 
   export let data: PageData;
-  const { licenses = [] } = data;
+  $: ({ licenses = [] } = data);
 
   const titles = ['App', 'Team', 'Privacy', 'Source code', 'R Binaries', 'IDE', 'Legal'];
 </script>
@@ -297,7 +297,7 @@
           <SubGrid>
             <SubGridItem key="Current version" withSpaceY="xs">
               <Link
-                href="https://www.rstudio.com/"
+                href="https://docs.posit.co/ide/news/"
                 target="_blank"
                 rel="noopener"
                 ariaLabel="RStudio link"

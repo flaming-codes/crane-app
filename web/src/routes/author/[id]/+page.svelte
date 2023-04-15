@@ -31,7 +31,8 @@
   const { queue } = notificationStore;
 
   export let data: PageData;
-  const { id, packages, otherAuthors, totalOtherAuthors, links, activeEventType } = data;
+  $: ({ id, packages, otherAuthors, totalOtherAuthors, links, activeEventType } = data);
+
   const slug = encodeURIComponent(id);
 
   let y = 0;
@@ -122,7 +123,7 @@
     </SectionHeader>
     <SectionsColumn>
       <PackageDetailSection title="Quick info" id="quick info">
-        <p class="prose  prose-lg prose-invert max-w-none">
+        <p class="prose prose-lg prose-invert max-w-none">
           {id} has worked on {packages.length}
           {packages.length === 1 ? 'package' : 'packages'} so far. In total, {id} has worked with {totalOtherAuthors}
           other {totalOtherAuthors === 1 ? 'author' : 'authors'} on those packages.
@@ -187,7 +188,7 @@
               url="/package/{slug}"
               urlTarget="_self"
             >
-              <Link withForcedReload href="/package/{slug}">
+              <Link href="/package/{slug}">
                 <Iconic name="carbon:arrow-right" />
               </Link>
             </SubGridItem>
@@ -208,7 +209,7 @@
               <p class="text-neutral-300 text-lg">{title}</p>
               <p class="text-sml leading-6">
                 {#each author_names as author, i}
-                  <Link withForcedReload href="/author/{author}">{author}</Link>
+                  <Link href="/author/{author}">{author}</Link>
                   {#if i < author_names.length - 1}
                     {', '}
                   {/if}
@@ -233,7 +234,7 @@
         <SubGrid>
           {#each otherAuthors as name}
             <SubGridItem key={name} withSpaceY="xs" withValueSpaceY="xs">
-              <Link withForcedReload href="/author/{name}">
+              <Link href="/author/{name}">
                 <Iconic name="carbon:arrow-right" />
               </Link>
             </SubGridItem>
