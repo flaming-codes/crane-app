@@ -1,7 +1,7 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+import type { Config } from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
@@ -20,9 +20,5 @@ module.exports = {
       }
     }
   },
-  plugins: [
-    require('@tailwindcss/line-clamp'),
-    require('tailwindcss-safe-area'),
-    require('@tailwindcss/typography')
-  ]
-};
+  plugins: [require('tailwindcss-safe-area'), require('@tailwindcss/typography')]
+} satisfies Config;

@@ -18,7 +18,7 @@
   import type { PageServerData } from './$types';
 
   export let data: PageServerData;
-  const { items, ranges } = data;
+  $: ({ items, ranges } = data);
 
   let selectedRange = data.selectedRange;
 </script>

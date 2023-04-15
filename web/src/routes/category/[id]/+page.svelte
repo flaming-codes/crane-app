@@ -21,7 +21,7 @@
   const { items: searchItems } = hits;
 
   export let data: PageData;
-  const { id } = data;
+  $: ({ id } = data);
   const slug = encodeURIComponent(id);
 
   let y = 0;
