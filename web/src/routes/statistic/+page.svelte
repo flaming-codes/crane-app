@@ -12,7 +12,7 @@
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
 
-  const titles = ['Github'];
+  const titles = ['Github', 'CRAN/E'];
 </script>
 
 <BasePageInit title="Statistics" path="/statistic" />
@@ -30,7 +30,7 @@
   />
 
   <SheetContent offset="50" class=" text-neutral-50 space-y-20 pb-60 bg-zinc-900">
-    <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="usage">
+    <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="github">
       <SectionHeader>
         <SectionTitleSelect selected="Github" options={titles} />
       </SectionHeader>
@@ -60,6 +60,30 @@
               class="p-0"
             >
               <p>List of Github users with the most new followers within the selected period</p>
+              <Iconic name="carbon:arrow-right" />
+            </SubGridItem>
+          </SubGrid>
+        </PackageDetailSection>
+      </SectionsColumn>
+    </Section>
+
+    <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="crane">
+      <SectionHeader>
+        <SectionTitleSelect selected="CRAN/E" options={titles} />
+      </SectionHeader>
+      <SectionsColumn>
+        <PackageDetailSection title="CRAN/E trends">
+          <SubGrid size="1">
+            <SubGridItem
+              withSpaceY="xs"
+              withValueSpaceY="xs"
+              key="Trending packages & authors"
+              title="Trending packages & authors"
+              url="/statistic/crane/page-visits"
+              emphasis="key"
+              class="p-0"
+            >
+              <p>List of packages and authors with the most page visits within the last 24h</p>
               <Iconic name="carbon:arrow-right" />
             </SubGridItem>
           </SubGrid>
