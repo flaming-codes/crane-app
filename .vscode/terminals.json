@@ -9,7 +9,8 @@
       "color": "terminal.ansiCyan",
       "commands": [
         "cd web",
-        "nvm use"
+        "nvm use",
+        "npm i",
       ],
       "open": true,
       "focus": true
@@ -20,6 +21,7 @@
       "commands": [
         "cd services/og-img-gen",
         "nvm use",
+        "npm i",
         "npm run dev"
       ]
     }
