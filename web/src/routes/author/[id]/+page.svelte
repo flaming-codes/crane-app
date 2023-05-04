@@ -33,7 +33,9 @@
   export let data: PageData;
   $: ({ id, packages, otherAuthors, totalOtherAuthors, links, activeEventType } = data);
 
-  const slug = encodeURIComponent(id);
+  console.log('data', data);
+
+  $: slug = encodeURIComponent(id);
 
   let y = 0;
 
