@@ -15,7 +15,6 @@
 <MetaTags
   title="CRAN/E | {title}"
   {description}
-  canonical={url}
   twitter={{
     handle: '@CodesFlaming',
     site: '@CodesFlaming',
