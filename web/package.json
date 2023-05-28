@@ -26,7 +26,7 @@
     "@iconify/svelte": "2.2.1",
     "@playwright/test": "^1.29.1",
     "@sveltejs/adapter-vercel": "3.0.0",
-    "@sveltejs/kit": "1.18.0",
+    "@sveltejs/kit": "1.19.0",
     "@tailwindcss/forms": "0.5.3",
     "@tailwindcss/typography": "0.5.9",
     "@types/node": "18.7.18",
@@ -54,7 +54,7 @@
     "ts-node": "10.9.1",
     "tslib": "2.5.0",
     "typescript": "5.0.4",
-    "vite": "4.3.7",
+    "vite": "4.3.9",
     "yargs": "17.7.2"
   },
   "dependencies": {
