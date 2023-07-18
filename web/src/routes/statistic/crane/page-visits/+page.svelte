@@ -12,10 +12,10 @@
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
   import BaseMeta from '$lib/seo/views/BaseMeta.svelte';
   import BreadcrumbMeta from '$lib/seo/views/BreadcrumbMeta.svelte';
-  import clsx from 'clsx';
   import type { PageServerData } from './$types';
 
   export let data: PageServerData;
+  
   $: ({ grouped } = data);
 </script>
 
@@ -69,7 +69,11 @@
         {#each grouped.package as { page, visitors }}
           <SubGridItem withBorder withSpaceY="md" withValueSpaceY="xs" key="" emphasis="key">
             <Link slot="key" title={page} target={page} href={page}
-              >Package <strong>{page.split('/').pop()}</strong></Link
+              >{#if page=== "/"}
+                <strong>CRAN/E Homepage</strong>
+              {:else}
+                <span class="opacity-70">Package</span> <strong>{page.split('/').pop()}</strong>
+              {/if}</Link
             >
             <p class="flex items-center space-x-1 text-lg text-green-500">
               <span>
