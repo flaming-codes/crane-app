@@ -16,9 +16,12 @@ function formatted(source: Date) {
  */
 function endpoint(template: TemplateStringsArray, ...params: (string | Date)[]) {
   // Zip template and params together and remove the last empty ''.
-  const zipped = template.slice(0, -1).reduce((acc, part, i) => {
-    return acc.concat(part, params[i]);
-  }, [] as (string | Date)[]);
+  const zipped = template.slice(0, -1).reduce(
+    (acc, part, i) => {
+      return acc.concat(part, params[i]);
+    },
+    [] as (string | Date)[]
+  );
   // Replace all dates with formatted dates.
   const stringified = zipped.map((part) => {
     if (typeof part === 'string') return part;
@@ -62,8 +65,15 @@ export async function getPackageDownloadsLastNDays(params: {
   days: number;
   from?: Date;
 }) {
-  const { name, days, from = new Date() } = params;
-  const past = sub(from, { days });
+  const { name, days, from } = params;
 
-  return load<CranDownloadsResponse>`/downloads/total/${past}:${from}/${name}`;
+  // Special case as the logs-API returns data earliest for
+  // the last day according to its point of reference (likely UTC).
+  if (days === 1 && !from) {
+    return load<CranDownloadsResponse>`/downloads/total/last-day/${name}`;
+  }
+
+  const validFrom = from || new Date();
+  const past = sub(validFrom, { days });
+  return load<CranDownloadsResponse>`/downloads/total/${past}:${validFrom}/${name}`;
 }

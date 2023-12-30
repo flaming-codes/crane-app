@@ -13,7 +13,7 @@ import type { Pkg } from '../type';
  * @returns
  */
 export async function getDownloadsWithTrends(item: Pkg) {
-  const getDownloads = async (days: number, from = new Date()) => {
+  const getDownloads = async (days: number, from?: Date) => {
     const res = await getPackageDownloadsLastNDays({ name: item.name, days, from });
     return res?.[0]?.downloads;
   };
@@ -23,13 +23,13 @@ export async function getDownloadsWithTrends(item: Pkg) {
   const [stats, trendReferences] = await Promise.all([
     Promise.all([
       getDownloads(1),
-      getDownloads(7),
-      getDownloads(30),
-      getDownloads(90),
-      getDownloads(365)
+      getDownloads(7, now),
+      getDownloads(30, now),
+      getDownloads(90, now),
+      getDownloads(365, now)
     ]),
     Promise.all([
-      getDownloads(1, sub(now, { days: 1 })),
+      getDownloads(0, sub(now, { days: 2 })),
       getDownloads(7, sub(now, { days: 7 })),
       getDownloads(30, sub(now, { days: 30 })),
       getDownloads(90, sub(now, { days: 90 })),
@@ -49,7 +49,7 @@ export async function getDownloadsWithTrends(item: Pkg) {
   });
 
   // Aggregate the statistics into a single object.
-  const labels = ['Last 24 hours', 'Last 7 days', 'Last 30 days', 'Last 90 days', 'Last 365 days'];
+  const labels = ['Yesterday', 'Last 7 days', 'Last 30 days', 'Last 90 days', 'Last 365 days'];
   const downloads = stats
     .map((value, i) => ({
       value,
