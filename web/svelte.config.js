@@ -10,9 +10,7 @@ const config = {
     preserve: ['ld+json']
   }),
   kit: {
-    adapter: adapter({
-      runtime: 'edge'
-    }),
+    adapter: adapter(),
     csp: {
       directives: {
         'default-src': [
