@@ -20,7 +20,7 @@
 
 <tr
   {title}
-  on:click={(event) => {
+  on:click|preventDefault={(event) => {
     if (onClick || url) {
       event.stopPropagation();
       if (onClick) {
