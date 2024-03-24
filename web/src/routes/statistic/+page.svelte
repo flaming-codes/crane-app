@@ -12,7 +12,7 @@
   import BasePageInit from '$lib/page/views/BasePageInit.svelte';
   import PackageDetailSection from '$lib/page/views/PackageDetailSection.svelte';
 
-  const titles = ['Github', 'CRAN/E'];
+  const titles = ['CRAN/E'];
 </script>
 
 <BasePageInit title="Statistics" path="/statistic" />
@@ -30,43 +30,6 @@
   />
 
   <SheetContent offset="50" class=" text-neutral-50 space-y-20 pb-60 bg-zinc-900">
-    <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="github">
-      <SectionHeader>
-        <SectionTitleSelect selected="Github" options={titles} />
-      </SectionHeader>
-
-      <SectionsColumn>
-        <PackageDetailSection title="Github trends">
-          <SubGrid size="1">
-            <SubGridItem
-              withSpaceY="xs"
-              withValueSpaceY="xs"
-              key="Trending repos by stars"
-              title="Trending repos by stars"
-              url="/statistic/github/repos-by-stars/24h"
-              emphasis="key"
-              class="p-0"
-            >
-              <p>List of repositories with the most new stars within the selected period</p>
-              <Iconic name="carbon:arrow-right" />
-            </SubGridItem>
-            <SubGridItem
-              withSpaceY="xs"
-              withValueSpaceY="xs"
-              key="Trending users by followers"
-              title="Trending users by followers"
-              url="/statistic/github/users-by-followers/24h"
-              emphasis="key"
-              class="p-0"
-            >
-              <p>List of Github users with the most new followers within the selected period</p>
-              <Iconic name="carbon:arrow-right" />
-            </SubGridItem>
-          </SubGrid>
-        </PackageDetailSection>
-      </SectionsColumn>
-    </Section>
-
     <Section withTwoFoldLayout withPaddingX={false} withSpacingY id="crane">
       <SectionHeader>
         <SectionTitleSelect selected="CRAN/E" options={titles} />
