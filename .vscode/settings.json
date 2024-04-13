@@ -1,6 +1,7 @@
 {
-  "cSpell.words": [
-    "CRAN"
-  ],
-  "git-blame.gitWebUrl": ""
+ "cSpell.words": ["CRAN"],
+ "tailwindCSS.experimental.classRegex": [
+  ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+  ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+ ]
 }

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+ html {
+  @apply bg-slate-2 text-gray-12;
+ }
+}

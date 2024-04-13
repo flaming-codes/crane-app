@@ -1,17 +1,26 @@
 {
-  "extends": "./.svelte-kit/tsconfig.json",
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "paths": {
-      "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"]
-    }
+ "compilerOptions": {
+  "allowJs": true,
+  "target": "ES2017",
+  "module": "ES2022",
+  "lib": ["es2022", "DOM", "WebWorker", "DOM.Iterable"],
+  "jsx": "react-jsx",
+  "jsxImportSource": "@builder.io/qwik",
+  "strict": true,
+  "forceConsistentCasingInFileNames": true,
+  "resolveJsonModule": true,
+  "moduleResolution": "node",
+  "esModuleInterop": true,
+  "skipLibCheck": true,
+  "incremental": true,
+  "isolatedModules": true,
+  "outDir": "tmp",
+  "noEmit": true,
+  "types": ["node", "vite/client"],
+  "paths": {
+   "~/*": ["./src/*"]
   }
+ },
+ "files": ["./.eslintrc.cjs"],
+ "include": ["src", "./*.d.ts", "./*.config.ts", "./*.config.js"]
 }

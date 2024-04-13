@@ -1,24 +1,29 @@
-import type { Config } from 'tailwindcss';
-import defaultTheme from 'tailwindcss/defaultTheme';
+import { type Config } from "tailwindcss";
+import { createPlugin } from "windy-radix-palette";
+
+const colors = createPlugin();
 
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Syne', ...defaultTheme.fontFamily.sans]
-      },
-      fontSize: {
-        sml: '0.975rem'
-      },
-      screens: {
-        xs: '375px',
-        smx: '480px'
-      },
-      spacing: {
-        nav: 'var(--base-controls-h-sm)'
-      }
-    }
+ content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+ theme: {
+  extend: {
+   fontFamily: {
+    sans: [
+     "system-ui",
+     "-apple-system",
+     "BlinkMacSystemFont",
+     "Segoe UI",
+     "Roboto",
+     "Oxygen",
+     "Ubuntu",
+     "Cantarell",
+     "Fira Sans",
+     "Droid Sans",
+     "Helvetica Neue",
+     "sans-serif",
+    ],
+   },
   },
-  plugins: [require('tailwindcss-safe-area'), require('@tailwindcss/typography')]
+ },
+ plugins: [colors.plugin],
 } satisfies Config;
