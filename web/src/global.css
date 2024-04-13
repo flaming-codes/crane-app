@@ -3,7 +3,15 @@
 @tailwind utilities;
 
 @layer base {
- html {
-  @apply bg-slate-2 text-gray-12;
- }
+  html {
+    @apply bg-mauve-1 text-mauve-12;
+
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+    }
+  }
+
+  body {
+    @apply h-dvh font-sans antialiased;
+  }
 }
