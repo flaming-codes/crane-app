@@ -48,6 +48,8 @@
     "windy-radix-palette": "^2.0.0-beta.7"
   },
   "dependencies": {
-    "cva": "^1.0.0-beta.1"
+    "@qwikest/icons": "^0.0.13",
+    "cva": "^1.0.0-beta.1",
+    "tailwindcss-base-font-size": "^1.0.1"
   }
 }

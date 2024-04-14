@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply bg-mauve-1 text-mauve-12;
+    @apply bg-mauve-1 text-base text-mauve-12;
 
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;

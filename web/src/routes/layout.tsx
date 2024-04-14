@@ -1,5 +1,8 @@
 import { component$, Slot } from "@builder.io/qwik";
-import type { RequestHandler } from "@builder.io/qwik-city";
+import { Link, type RequestHandler } from "@builder.io/qwik-city";
+import { pane } from "~/modules/app/views/pane";
+import { TbBrandGithub } from "@qwikest/icons/tablericons";
+import { Slug } from "~/modules/ui/views/slug";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -14,13 +17,16 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 
 export default component$(() => {
   return (
-    <div class="grid h-full grid-cols-2">
-      <section class="min-h-full overflow-y-auto bg-mauve-3">
-        <h2>CRAN/E</h2>
-        <div class="h-[1000px]" />
-        <p>Content</p>
+    <div class="grid h-full md:grid-cols-2 lg:grid-cols-[1fr_1.6fr]">
+      <section class={pane({ kind: "primary" })}>
+        <header class="flex items-center justify-between">
+          <Slug />
+          <Link href="https://github.com">
+            <TbBrandGithub />
+          </Link>
+        </header>
       </section>
-      <main>
+      <main class={pane({ kind: "secondary" })}>
         <Slot />
       </main>
     </div>

@@ -1,7 +1,8 @@
 {
- "cSpell.words": ["CRAN"],
+ "cSpell.words": ["CRAN", "Subline", "tailwindcss"],
  "tailwindCSS.experimental.classRegex": [
   ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
   ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
- ]
+ ],
+ "tailwindCSS.rootFontSize": 10
 }
