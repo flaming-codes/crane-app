@@ -11,22 +11,18 @@ export default component$(() => {
     <>
       <header class={paneHeaderSpacing()}>
         <h1 class={headingHeadline()}>{id}</h1>
-        <p class={headingSubline()}>
-          Can't wait to see what you build with qwik!
-          <br />
-          Happy coding.
-        </p>
+        <p class={headingSubline()}>Author page</p>
       </header>
     </>
   );
 });
 
 export const head: DocumentHead = {
-  title: "Package",
+  title: "Author",
   meta: [
     {
       name: "description",
-      content: "Package page description",
+      content: "Author page description",
     },
   ],
 };
