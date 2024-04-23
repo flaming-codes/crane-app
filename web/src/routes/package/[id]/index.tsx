@@ -7,6 +7,7 @@ export default component$(() => {
   const {
     params: { id },
   } = useLocation();
+
   return (
     <>
       <header class={paneHeaderSpacing()}>

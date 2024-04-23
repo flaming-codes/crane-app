@@ -15,5 +15,13 @@ export const pane = cva({
 });
 
 export const paneHeaderSpacing = cva({
-  base: "mt-40",
+  variants: {
+    offset: {
+      none: "mt-40",
+      header: "mt-[calc(230px-44px)]",
+    },
+  },
+  defaultVariants: {
+    offset: "none",
+  },
 });

@@ -1,11 +1,6 @@
 import { component$ } from "@builder.io/qwik";
+import { paneHeaderSpacing } from "~/modules/app/views/pane";
 
 export default component$(() => {
-  return (
-    <>
-      <header class="flex items-center justify-between">
-        Welcome to CRAN/E
-      </header>
-    </>
-  );
+  return <div class={paneHeaderSpacing()}>Welcome to CRAN/E</div>;
 });

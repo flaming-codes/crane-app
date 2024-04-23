@@ -1,7 +1,8 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
-import { pane } from "~/modules/app/views/pane";
+import { pane, paneHeaderSpacing } from "~/modules/app/views/pane";
 import { AppHead } from "~/modules/app/views/app-head";
+import { Command } from "~/modules/command/views/command";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -19,6 +20,8 @@ export default component$(() => {
     <div class="grid h-full grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.6fr]">
       <section class={pane({ kind: "primary" })}>
         <AppHead />
+
+        <Command class={paneHeaderSpacing({ offset: "header" })} />
       </section>
       <main class={pane({ kind: "secondary" })}>
         <Slot />
