@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@qwikest/icons": "^0.0.13",
+    "@svgx/vite-plugin-qwik": "^1.0.1",
     "cva": "^1.0.0-beta.1",
     "tailwindcss-base-font-size": "^1.0.1"
   }
