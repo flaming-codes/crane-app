@@ -1,6 +1,6 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
-import { pane, paneHeaderSpacing } from "~/modules/app/views/pane";
+import { pane, paneHeader } from "~/modules/app/views/pane";
 import { AppHead } from "~/modules/app/views/app-head";
 import { Command } from "~/modules/command/views/command";
 
@@ -19,9 +19,9 @@ export default component$(() => {
   return (
     <div class="grid h-full grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.6fr]">
       <section class={pane({ kind: "primary" })}>
-        <AppHead />
+        <AppHead class="absolute inset-x-4 top-4" />
 
-        <Command class={paneHeaderSpacing({ offset: "header" })} />
+        <Command class={paneHeader()} />
       </section>
       <main class={pane({ kind: "secondary" })}>
         <Slot />

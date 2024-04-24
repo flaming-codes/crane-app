@@ -1,7 +1,7 @@
 import { cva } from "cva";
 
 export const pane = cva({
-  base: "overflow-y-auto p-4",
+  base: "overflow-y-auto p-4 relative",
   variants: {
     kind: {
       primary: "min-h-full bg-mauve-4 dark:bg-mauve-2",
@@ -14,11 +14,11 @@ export const pane = cva({
   },
 });
 
-export const paneHeaderSpacing = cva({
+export const paneHeader = cva({
   variants: {
     offset: {
       none: "mt-40",
-      header: "mt-[calc(230px-44px)]",
+      default: "mt-[calc(230px-44px)]",
     },
   },
   defaultVariants: {

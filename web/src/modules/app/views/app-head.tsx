@@ -12,10 +12,20 @@ const item = cva({
   base: "px-2 py-1",
 });
 
-export const AppHead = component$(() => {
+const header = cva({
+  base: "-mt-2 flex items-center justify-between",
+});
+
+type Props = {
+  class?: string;
+};
+
+export const AppHead = component$<Props>((props) => {
+  const { class: cn } = props;
+
   return (
     <>
-      <header class="-mt-2 flex items-center justify-between">
+      <header class={header({ class: cn })}>
         <nav class="flex flex-1 items-center gap-1 ">
           <div class="flex-1">
             <Link href="/" class={item()}>

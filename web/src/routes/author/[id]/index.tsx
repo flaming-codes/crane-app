@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
-import { paneHeaderSpacing } from "~/modules/app/views/pane";
+import { paneHeader } from "~/modules/app/views/pane";
 import { headingHeadline, headingSubline } from "~/modules/ui/views/heading";
 
 export default component$(() => {
@@ -9,7 +9,7 @@ export default component$(() => {
   } = useLocation();
   return (
     <>
-      <header class={paneHeaderSpacing()}>
+      <header class={paneHeader()}>
         <h1 class={headingHeadline()}>{id}</h1>
         <p class={headingSubline()}>Author page</p>
       </header>
