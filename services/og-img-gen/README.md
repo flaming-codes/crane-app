@@ -2,7 +2,7 @@
 
 ## About
 
-This service generates an image for the open graph poster to be used for entities' sites hosted on https://www.cran-e.com. It makes a screenshot of the entity's poster site and returns it as a JPEG image.
+This service generates an image for the open graph poster to be used for entities' sites hosted on https://cran-e.com. It makes a screenshot of the entity's poster site and returns it as a JPEG image.
 
 ## Development
 

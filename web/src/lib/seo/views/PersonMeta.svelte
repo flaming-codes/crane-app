@@ -12,7 +12,7 @@
       '@context': 'https://schema.org',
       '@type': 'Person',
       name: name,
-      url: 'https://www.cran-e.com/author/' + encodeURIComponent(name)
+      url: 'https://cran-e.com/author/' + encodeURIComponent(name)
     }}
   />
 {/if}

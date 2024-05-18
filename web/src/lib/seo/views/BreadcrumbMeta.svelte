@@ -15,7 +15,7 @@
         '@type': 'ListItem',
         position: i + 1,
         name: item.name,
-        item: 'https://www.cran-e.com' + item.href
+        item: 'https://cran-e.com' + item.href
       }))
     }}
   />

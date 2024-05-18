@@ -7,8 +7,8 @@
   export let path: string | undefined = '';
   export let image: { url: string; alt: string } | undefined = undefined;
 
-  const url = `https://www.cran-e.com${path}`;
-  const imageUrl = image?.url || 'https://www.cran-e.com/images/og/cover-01.jpg';
+  const url = `https://cran-e.com${path}`;
+  const imageUrl = image?.url || 'https://cran-e.com/images/og/cover-01.jpg';
   const imageAlt = image?.alt || 'CRAN/E logo in written form, white text on a black background';
 </script>
 

@@ -16,23 +16,23 @@ export const GET: RequestHandler = async () => {
     `<?xml version="1.0" encoding="UTF-8" ?>
     <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       <sitemap>
-        <loc>https://www.cran-e.com/sitemap-common.xml</loc>
+        <loc>https://cran-e.com/sitemap-common.xml</loc>
       </sitemap>
       <sitemap>
-        <loc>https://www.cran-e.com/sitemap-statistic.xml</loc>
+        <loc>https://cran-e.com/sitemap-statistic.xml</loc>
       </sitemap>
       ${Array.from(
         { length: packagesSize },
         (_, i) => `
         <sitemap>
-          <loc>https://www.cran-e.com/sitemap-packages-${i}.xml</loc>
+          <loc>https://cran-e.com/sitemap-packages-${i}.xml</loc>
         </sitemap>`
       ).join('')}
          ${Array.from(
            { length: authorsSize },
            (_, i) => `
         <sitemap>
-          <loc>https://www.cran-e.com/sitemap-authors-${i}.xml</loc>
+          <loc>https://cran-e.com/sitemap-authors-${i}.xml</loc>
         </sitemap>`
          ).join('')}
     </sitemapindex>`.trim(),
