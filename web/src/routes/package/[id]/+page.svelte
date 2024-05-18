@@ -75,7 +75,7 @@
   description="R package for {item.title}"
   path="/package/{item.slug}"
   image={{
-    url: `https://www.cran-e.com/api/package/${item.slug}/poster.jpeg`,
+    url: `https://cran-e.com/api/package/${item.slug}/poster.jpeg`,
     alt: `R package ${item.name} poster`
   }}
 />

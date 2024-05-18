@@ -53,7 +53,7 @@
   description="All packages for {id}"
   path="/author/{slug}"
   image={{
-    url: `https://www.cran-e.com/api/author/${slug}/poster.jpeg`,
+    url: `https://cran-e.com/api/author/${slug}/poster.jpeg`,
     alt: `Poster for ${id}`
   }}
 />

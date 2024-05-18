@@ -4,7 +4,7 @@
 
 <p align="center"><img src="./web/static/images/og/cover-01.jpg" /></p>
 <h2 align="center">
-<a href="https://www.cran-e.com">CRAN/E</a>
+<a href="https://cran-e.com">CRAN/E</a>
 </h2>
 <p align="center">CRAN/E is a modern PWA (Progressive Web App) that serves as a search engine and information display for packages hosted on CRAN. CRAN/E means 'The Comprehensive R Archive Network, Enhanced' and aims at finding R-packages as fast as possible.</p>
 
@@ -16,7 +16,7 @@
 
 # Applications
 
-## [PWA (Progressive Web App)](https://www.cran-e.com)
+## [PWA (Progressive Web App)](https://cran-e.com)
 
 You can use CRAN/E directly in any modern browser. If supported, CRAN/E can provide its best performance by using local databases and effective caching. CRAN/E can also be installed locally in Chromium-based browsers. For more information regarding PWAs, please visit [this great guide](https://web.dev/progressive-web-apps/).
 

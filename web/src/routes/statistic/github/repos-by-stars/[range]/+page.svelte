@@ -29,7 +29,7 @@
   description={`Trending R packages by Github stars for the last ${mapRangeToLabel(selectedRange)}`}
   path="/statistic/github/repos-by-stars/{selectedRange}"
   image={{
-    url: `https://www.cran-e.com/api/statistic/github/repos-by-stars/${selectedRange}/poster.jpeg`,
+    url: `https://cran-e.com/api/statistic/github/repos-by-stars/${selectedRange}/poster.jpeg`,
     alt: `Poster for range ${selectedRange}`
   }}
 />

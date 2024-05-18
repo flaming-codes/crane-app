@@ -31,7 +31,7 @@
   )}`}
   path="/statistic/github/users-by-followers/{selectedRange}"
   image={{
-    url: `https://www.cran-e.com/api/statistic/github/users-by-followers/${selectedRange}/poster.jpeg`,
+    url: `https://cran-e.com/api/statistic/github/users-by-followers/${selectedRange}/poster.jpeg`,
     alt: `Poster for range ${selectedRange}`
   }}
 />
