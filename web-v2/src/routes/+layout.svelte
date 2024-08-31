@@ -5,20 +5,10 @@
     HeaderUtilities,
     HeaderSearch,
     SkipToContent,
-    Content,
-    Grid,
-    Row,
-    Column,
-    Button,
-    Theme,
-    RadioButtonGroup,
-    RadioButton,
-    HeaderGlobalAction
+    HeaderGlobalAction,
+    Theme
   } from 'carbon-components-svelte';
   import SettingsAdjust from 'carbon-icons-svelte/lib/SettingsAdjust.svelte';
-
-  /** @type import( "carbon-components-svelte/src/Theme/Theme.svelte").CarbonTheme */
-  let theme = 'g90';
 
   const data = [
     {
@@ -46,6 +36,9 @@
     }
   ];
 
+  /** @type import( "carbon-components-svelte/src/Theme/Theme.svelte").CarbonTheme */
+  let theme = 'g90';
+
   /** @type any */
   let ref = null;
   let active = false;
@@ -71,9 +64,9 @@
   $: console.log('selectedResultIndex', selectedResultIndex);
 </script>
 
-<Theme bind:theme />
+<Theme persist persistKey="__carbon-theme" bind:theme />
 
-<Header company="CRAN/E">
+<Header company="CRAN/E" href="/">
   <svelte:fragment slot="skip-to-content">
     <SkipToContent />
   </svelte:fragment>
