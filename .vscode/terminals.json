@@ -1,29 +1,15 @@
 {
-  "autorun": true,
-  "autokill": true,
-  "restore": false,
-  "terminals": [
-    {
-      "name": "web",
-      "icon": "code",
-      "color": "terminal.ansiCyan",
-      "commands": [
-        "cd web",
-        "nvm use",
-        "npm i",
-      ],
-      "open": true,
-      "focus": true
-    },
-    {
-      "name": "service/og-img-gen",
-      "color": "terminal.ansiGreen",
-      "commands": [
-        "cd services/og-img-gen",
-        "nvm use",
-        "npm i",
-        "npm run dev"
-      ]
-    }
-  ]
+ "autorun": true,
+ "autokill": true,
+ "restore": false,
+ "terminals": [
+  {
+   "name": "app",
+   "icon": "code",
+   "color": "terminal.ansiCyan",
+   "commands": ["cd web", "nvm use", "npm i"],
+   "open": true,
+   "focus": true
+  }
+ ]
 }
