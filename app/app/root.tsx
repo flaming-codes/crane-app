@@ -76,10 +76,10 @@ export default function App() {
     <Header aria-label="IBM Platform Name">
      <SkipToContent />
      <HeaderMenuButton
-      aria-label={false ? "Close menu" : "Open menu"}
+      aria-label={true ? "Close menu" : "Open menu"}
       onClick={() => {}}
-      isActive={false}
-      aria-expanded={false}
+      isActive={true}
+      aria-expanded={true}
      />
      <HeaderName href="/" prefix="">
       CRAN/E
@@ -110,7 +110,7 @@ export default function App() {
      </HeaderGlobalBar>
      <SideNav
       aria-label="Side navigation"
-      expanded={false}
+      expanded={true}
       onSideNavBlur={() => {}}
       href="#main-content"
      >
