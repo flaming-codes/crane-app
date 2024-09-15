@@ -10,8 +10,8 @@ export const meta: MetaFunction = () => {
 
 const twInput = cva({
   base: [
-    "col-span-full text-3xl text-center bg-transparent py-4 transition-opacity duration-300 ease-in-out",
-    "placeholder:text-center",
+    "col-span-full text-2xl text-center bg-transparent py-4 tracking-wide",
+    "placeholder:text-center placeholder:transition-opacity placeholder:duration-200 placeholder:ease-in-out",
     "focus:outline-none focus:ring-0 focus:placeholder:opacity-50",
   ],
 });
@@ -19,7 +19,7 @@ const twInput = cva({
 export default function Index() {
   return (
     <main className="h-full">
-      <section className="grid grid-cols-6 w-[min(100%,600px)] place-content-center mx-auto h-full gap-16">
+      <section className="grid grid-cols-6 w-[min(100%,600px)] place-content-center mx-auto h-full gap-16 ">
         <input
           type="text"
           className={twInput()}
