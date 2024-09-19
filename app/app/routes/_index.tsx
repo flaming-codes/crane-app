@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import { useSearchParams } from "@remix-run/react";
 import { cva } from "cva";
 
 export const meta: MetaFunction = () => {
@@ -8,24 +9,40 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+const twMain = cva({
+  base: ["grid grid-cols-6 divide divide-green-7"],
+  variants: {
+    pattern: {
+      dots: "pattern-dots pattern-gray-11 pattern-bg-transparent pattern-size-6 pattern-opacity-100",
+    },
+  },
+  defaultVariants: {
+    pattern: undefined,
+  },
+});
+
 const twInput = cva({
   base: [
-    "col-span-full text-2xl text-center bg-transparent py-4 tracking-wide",
-    "placeholder:text-center placeholder:transition-opacity placeholder:duration-200 placeholder:ease-in-out",
+    "bg-transparent text-9xl font-black w-full break-words inline-block",
+    "placeholder:transition-opacity placeholder:duration-200 placeholder:ease-in-out",
     "focus:outline-none focus:ring-0 focus:placeholder:opacity-50",
   ],
 });
 
 export default function Index() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+
   return (
-    <main className="h-full">
-      <section className="grid grid-cols-6 w-[min(100%,600px)] place-content-center mx-auto h-full gap-16 ">
+    <main className={twMain()}>
+      <div className="col-span-full break-all">
         <input
-          type="text"
           className={twInput()}
-          placeholder="Type to search packages..."
+          placeholder="Type to search..."
+          value={search}
+          onChange={(e) => setSearchParams({ search: e.target.value })}
         />
-      </section>
+      </div>
     </main>
   );
 }
