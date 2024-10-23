@@ -1,3 +1,4 @@
+import { LoaderFunction } from "@remix-run/node";
 import { cva } from "cva";
 
 const twMain = cva({
@@ -21,7 +22,11 @@ const twInput = cva({
   ],
 });
 
-export function SearchOnly() {
+export const loader: LoaderFunction = async () => {
+  return { props: {} };
+};
+
+export default function SearchOnly() {
   return (
     <main className={twMain()}>
       <section className="grid grid-cols-6 w-[min(100%,600px)] place-content-center mx-auto h-full gap-16 ">

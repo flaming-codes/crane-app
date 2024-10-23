@@ -22,6 +22,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <footer className="h-20 flex gap-4 items-center px-8 border-t border-gray-12">
+          <span>About</span> <span>Help</span> <span>Privacy</span>
+        </footer>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -30,5 +33,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <main className="min-h-full">
+      <Outlet />
+    </main>
+  );
 }

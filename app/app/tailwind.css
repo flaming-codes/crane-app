@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply h-full bg-white dark:bg-black/80 text-blacka-normal;
+  @apply h-full bg-white dark:bg-black text-black dark:text-white;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
