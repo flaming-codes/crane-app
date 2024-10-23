@@ -1,4 +1,5 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,5 +13,10 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function Index() {
-  return <div>Index page</div>;
+  return (
+    <div>
+      <h1>Index</h1>
+      <Link to="/package/xadmix">xadmix</Link>
+    </div>
+  );
 }
