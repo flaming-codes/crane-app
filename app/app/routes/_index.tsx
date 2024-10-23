@@ -15,11 +15,12 @@ export const loader: LoaderFunction = async () => {
 export default function Index() {
   return (
     <>
-      <nav className="border-b border-gray-12 h-14 flex items-center px-8 sticky top-0 backdrop-blur-lg">
-        Search
+      <nav className="border-b border-gray-12 h-14 flex items-center sticky top-0 backdrop-blur-lg full-width">
+        <span>Search</span>
       </nav>
-      <section>
-        <div className="bg-gradient-to-tr from-iris-10 to-teal-11 min-h-40 gap-2 flex-col md:flex-row text-gray-1 px-8 py-4 flex items-center justify-between">
+
+      <div className="full-width bg-gradient-to-tr from-iris-10  text-gray-1 py-4 min-h-48">
+        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
           <div className=" flex flex-col justify-center gap-1">
             <h1 className="text-4xl font-light">GaussSuppression</h1>
             <p className="text-xl">
@@ -30,44 +31,63 @@ export default function Index() {
             CRAN PACKAGE
           </span>
         </div>
-      </section>
+      </div>
 
-      <nav className="flex overflow-x-auto divide-x divide-gray-12 border-y border-gray-12 text-xs sticky top-12 backdrop-blur-lg">
-        {[
-          "Synopsis",
-          "Statistics",
-          "Team",
-          "Documentation",
-          "Downloads",
-          "Dependencies",
-        ].map((item) => (
-          <Link
-            key={item}
-            to={`#${item.toLowerCase()}`}
-            className="min-w-24 lg:min-w-40 text-center py-3 shrink-0 px-2 md:px-4"
-          >
-            {item}
-          </Link>
-        ))}
+      <nav className=" full-width overflow-x-auto divide-x divide-gray-12 border-y border-gray-12 text-xs sticky top-14 backdrop-blur-lg">
+        <div className="flex gap-1">
+          {[
+            "Synopsis",
+            "Statistics",
+            "Team",
+            "Documentation",
+            "Downloads",
+            "Dependencies",
+          ].map((item) => (
+            <Link
+              key={item}
+              to={`#${item.toLowerCase()}`}
+              className="min-w-24 text-center py-3 shrink-0 flex-1 border-b border-transparent hover:border-gray-8 transition-colors"
+            >
+              {item}
+            </Link>
+          ))}
+        </div>
       </nav>
 
-      <section className="px-8 mt-16 py-4">
-        <blockquote className="max-w-[80ch] text-xl font-light leading-normal text-gray-1">
-          A statistical disclosure control tool to protect tables by suppression
-          using the Gaussian elimination secondary suppression algorithm. A
-          suggestion is to start by working with functions SuppressSmallCounts()
-          and SuppressDominantCells(). These functions use primary suppression
-          functions for the minimum frequency rule and the dominance rule,
-          respectively. Novel functionality for suppression of disclosive cells
-          is also included. General primary suppression functions can be
-          supplied as input to the general working horse function,
-          GaussSuppressionFromData(). Suppressed frequencies can be replaced by
-          synthetic decimal numbers as described in Langsrud (2019)
-          doi:10.1007/s11222-018-9848-9.
-        </blockquote>
-      </section>
-
-      <div className="h-[100vh]"></div>
+      <div className="full-width pt-16">
+        <div className="flex flex-col gap-16">
+          <section className="border-b border-gray-11 pb-8">
+            <blockquote className="text-xl font-light leading-normal">
+              A statistical disclosure control tool to protect tables by
+              suppression using the Gaussian elimination secondary suppression
+              algorithm. A suggestion is to start by working with functions
+              SuppressSmallCounts() and SuppressDominantCells(). These functions
+              use primary suppression functions for the minimum frequency rule
+              and the dominance rule, respectively. Novel functionality for
+              suppression of disclosive cells is also included. General primary
+              suppression functions can be supplied as input to the general
+              working horse function, GaussSuppressionFromData(). Suppressed
+              frequencies can be replaced by synthetic decimal numbers as
+              described in Langsrud (2019) doi:10.1007/s11222-018-9848-9.
+            </blockquote>
+          </section>
+          <section>
+            <blockquote className="text-xl font-light leading-normal ">
+              A statistical disclosure control tool to protect tables by
+              suppression using the Gaussian elimination secondary suppression
+              algorithm. A suggestion is to start by working with functions
+              SuppressSmallCounts() and SuppressDominantCells(). These functions
+              use primary suppression functions for the minimum frequency rule
+              and the dominance rule, respectively. Novel functionality for
+              suppression of disclosive cells is also included. General primary
+              suppression functions can be supplied as input to the general
+              working horse function, GaussSuppressionFromData(). Suppressed
+              frequencies can be replaced by synthetic decimal numbers as
+              described in Langsrud (2019) doi:10.1007/s11222-018-9848-9.
+            </blockquote>
+          </section>
+        </div>
+      </div>
     </>
   );
 }
