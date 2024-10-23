@@ -44,7 +44,7 @@
 }
 
 html {
-  @apply h-full bg-gray-app text-gray-normal;
+  @apply h-full bg-white dark:bg-black text-gray-normal;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
