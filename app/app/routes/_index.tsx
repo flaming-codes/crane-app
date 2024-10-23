@@ -20,14 +20,14 @@ export default function Index() {
       </nav>
 
       <div className="full-width bg-gradient-to-tr from-iris-10 py-4 min-h-48 text-gray-1">
-        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
-          <div className=" flex flex-col justify-center gap-1">
+        <div className="flex flex-col md:flex-row gap-6 items-center justify-center md:justify-between">
+          <div className=" flex flex-col justify-center items-center text-center gap-1 md:items-start md:text-start">
             <h1 className="text-4xl font-light">GaussSuppression</h1>
-            <p className="text-xl">
+            <p className="text-xl opacity-70">
               Tabular Data Suppression using Gaussian Elimination
             </p>
           </div>
-          <span className="text-[0.5rem] font-semibold mb-1 uppercase border border-gray-3 rounded-full px-2 py-1 shrink-0 max-w-min whitespace-nowrap">
+          <span className="text-[0.5rem] font-semibold md:mb-1 uppercase border border-gray-3 rounded-full px-2 py-1 shrink-0 max-w-min whitespace-nowrap">
             CRAN PACKAGE
           </span>
         </div>
