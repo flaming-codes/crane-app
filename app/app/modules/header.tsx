@@ -35,3 +35,5 @@ export function Header(props: Props) {
     </div>
   );
 }
+
+Header.displayName = "Header";

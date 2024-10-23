@@ -23,6 +23,8 @@ export function Anchors(props: Props) {
   );
 }
 
+Anchors.displayName = "Anchors";
+
 export function AnchorLink(props: PropsWithChildren<{ fragment: string }>) {
   const { fragment, children } = props;
 
@@ -35,3 +37,5 @@ export function AnchorLink(props: PropsWithChildren<{ fragment: string }>) {
     </Link>
   );
 }
+
+AnchorLink.displayName = "AnchorLink";

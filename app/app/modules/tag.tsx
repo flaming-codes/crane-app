@@ -18,3 +18,5 @@ export function Tag(props: Props) {
 
   return <span className={twBase({ className })}>{children}</span>;
 }
+
+Tag.displayName = "Tag";
