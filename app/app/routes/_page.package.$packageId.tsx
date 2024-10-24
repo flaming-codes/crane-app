@@ -16,6 +16,7 @@ import {
   RiArrowRightSLine,
   RiBug2Line,
   RiExternalLinkLine,
+  RiFileCopyLine,
   RiGithubLine,
 } from "@remixicon/react";
 
@@ -91,13 +92,20 @@ export default function PackagePage() {
                 <span>{item.license.map((l) => l.name).join(", ")}</span>.
               </>
             ) : null}{" "}
-            {item.name} {item.needscompilation ? "needs" : "does not need"} to
-            be compiled.
+            {item.name}{" "}
+            {item.needscompilation === "no" ? "doesn't need" : "needs"} to be
+            compiled.
           </p>
         </section>
 
         <div className="flex flex-col gap-6">
           <ul className="flex flex-wrap gap-2">
+            <li>
+              <button className="flex items-center gap-2 px-4 py-2 text-sm rounded-full border-gray-dim bg-gradient-to-tr hover:brightness-110 transition-all from-iris-11 to-iris-12">
+                <RiFileCopyLine size={18} />{" "}
+                <code>install.packages('{item.name}')</code>
+              </button>
+            </li>
             {item.link
               ? item.link.links.map((url) => (
                   <li key={url}>
@@ -158,7 +166,7 @@ export default function PackagePage() {
               : null}
             <li className="rounded-full border border-gray-dim px-4 py-2 inline-flex gap-2 items-center">
               <span className="text-sm text-gray-dim">Needs compilation?</span>
-              <span>{item.needscompilation ? "Yes" : "No"}</span>
+              <span>{item.needscompilation === "no" ? "No" : "Yes"}</span>
             </li>
             <li className="rounded-full border border-gray-dim px-4 py-2 inline-flex gap-2 items-center">
               <span className="text-sm text-gray-dim">Language</span>
@@ -166,37 +174,6 @@ export default function PackagePage() {
             </li>
           </ul>
         </div>
-
-        {false && (
-          <ul className="grid grid-cols-2 sm:grid-cols-3 -my-8 lg:grid-cols-4 text-center place-content-start gap-x-4 gap-y-8">
-            <DataPointListItem label="Version">
-              {item.version}
-            </DataPointListItem>
-            <DataPointListItem label="Last Release">
-              {formatRelative(item.date, new Date())}
-            </DataPointListItem>
-            {rVersion ? (
-              <DataPointListItem label="R Version">
-                {rVersion}
-              </DataPointListItem>
-            ) : null}
-            <DataPointListItem label="Compilation?">
-              {item.needscompilation ? "Yes" : "No"}
-            </DataPointListItem>
-            {item.license && item.license.length > 0
-              ? item.license.map((license) => (
-                  <DataPointListItem key={license.name} label="License">
-                    {license.name}
-                  </DataPointListItem>
-                ))
-              : null}
-            {item.language ? (
-              <DataPointListItem label="Language">
-                {item.language}
-              </DataPointListItem>
-            ) : null}
-          </ul>
-        )}
 
         <Separator />
       </PageContent>

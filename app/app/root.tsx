@@ -34,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <main className="min-h-full content-grid overflow-hidden">
+    <main className="min-h-full content-grid">
       <Outlet />
     </main>
   );
