@@ -11,7 +11,7 @@ export function DataPointListItem(props: Props) {
 
   return (
     <li className={classNames("flex flex-col", className)}>
-      <span className="font-mono text-lg">{children}</span>
+      <span className="font-light tracking-wider text-lg">{children}</span>
       <span className="font-semibold opacity-60">{label}</span>
     </li>
   );
