@@ -10,15 +10,14 @@ import { Prose } from "../modules/prose";
 import { Separator } from "../modules/seperator";
 import { PageContent } from "../modules/page-content";
 import { formatRelative } from "date-fns";
-import { DataPointListItem } from "../modules/data-point-list-item";
 import { ExternalLink } from "../modules/external-link";
 import {
-  RiArrowRightSLine,
   RiBug2Line,
   RiExternalLinkLine,
   RiFileCopyLine,
   RiGithubLine,
 } from "@remixicon/react";
+import classNames from "classnames";
 
 export const meta: MetaFunction = () => {
   return [
@@ -101,7 +100,12 @@ export default function PackagePage() {
         <div className="flex flex-col gap-6">
           <ul className="flex flex-wrap gap-2">
             <li>
-              <button className="flex items-center gap-2 px-4 py-2 text-sm rounded-full border-gray-dim bg-gradient-to-tr hover:brightness-110 transition-all from-iris-11 to-iris-12">
+              <button
+                className={classNames(
+                  "flex items-center gap-2 px-4 py-2 text-sm rounded-full border-gray-dim bg-gradient-to-tr hover:brightness-110 transition-all",
+                  "from-iris-4 to-iris-6 dark:from-iris-11 dark:to-iris-12",
+                )}
+              >
                 <RiFileCopyLine size={18} />{" "}
                 <code>install.packages('{item.name}')</code>
               </button>
