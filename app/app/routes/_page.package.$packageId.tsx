@@ -9,6 +9,9 @@ import { Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/seperator";
 import { PageContent } from "../modules/page-content";
+import { formatRelative } from "date-fns";
+import { DataPointListItem } from "../modules/data-point-list-item";
+import { ExternalLink } from "../modules/external-link";
 
 export const meta: MetaFunction = () => {
   return [
@@ -42,6 +45,8 @@ export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
 
+  const rVersion = item.depends?.find((d) => d.name === "R")?.version;
+
   return (
     <>
       <Header
@@ -70,6 +75,38 @@ export default function PackagePage() {
         <section>
           <Prose html={item.description} />
         </section>
+
+        <Separator />
+
+        <ul className="grid grid-cols-4 gap-x-4 gap-y-16">
+          <DataPointListItem label="Version">{item.version}</DataPointListItem>
+          <DataPointListItem label="Last Release">
+            {formatRelative(item.date, new Date())}
+          </DataPointListItem>
+          {rVersion ? (
+            <DataPointListItem label="R Version">{rVersion}</DataPointListItem>
+          ) : null}
+          <DataPointListItem label="Needs compilation?">
+            {item.needscompilation ? "Yes" : "No"}
+          </DataPointListItem>
+          {item.license && item.license.length > 0
+            ? item.license.map((license) => (
+                <DataPointListItem key={license.name} label="License">
+                  {license.name}
+                </DataPointListItem>
+              ))
+            : null}
+          <ExternalLink href={item.cran_checks.link}>
+            <DataPointListItem label="CRAN Checks">
+              {item.cran_checks.label}
+            </DataPointListItem>
+          </ExternalLink>
+          {item.language ? (
+            <DataPointListItem label="Language">
+              {item.language}
+            </DataPointListItem>
+          ) : null}
+        </ul>
 
         <Separator />
       </PageContent>

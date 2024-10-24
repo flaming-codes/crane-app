@@ -10,7 +10,7 @@ export function PageContent(props: Props) {
   const { children, outerClassName, innerClassName } = props;
 
   return (
-    <div className={classNames("full-width pt-32", outerClassName)}>
+    <div className={classNames("full-width pt-16", outerClassName)}>
       <div className={classNames("flex flex-col gap-16", innerClassName)}>
         {children}
       </div>
