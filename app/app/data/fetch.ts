@@ -7,5 +7,7 @@ export async function fetchData<T>(href: string, path?: string): Promise<T> {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-  }).then((res) => res.json());
+  }).then((res) => {
+    return res.json();
+  });
 }

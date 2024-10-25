@@ -4,7 +4,7 @@ import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
 import { PackageService } from "../data/package.service";
 import { useLoaderData } from "@remix-run/react";
-import { json } from "react-router";
+import { json, useLocation } from "react-router";
 import { Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
@@ -53,12 +53,18 @@ export const loader: LoaderFunction = async ({ params }) => {
   if (!packageId) {
     throw new Response(null, {
       status: 404,
-      statusText: `Package '${packageId}' not found`,
+      statusText: `No package ID provided`,
     });
   }
 
-  const item = await PackageService.getPackage(packageId);
-  if (!item) {
+  let item: Pkg | undefined = undefined;
+
+  try {
+    item = await PackageService.getPackage(packageId);
+    if (!item) {
+      throw new Error(`Package '${packageId}' not found`);
+    }
+  } catch (error) {
     throw new Response(null, {
       status: 404,
       statusText: `Package '${packageId}' not found`,
@@ -145,7 +151,7 @@ export default function PackagePage() {
               ) : null}
               <li>
                 <ExternalLinkPill
-                  href={item.cran_checks.label}
+                  href={item.cran_checks.link}
                   icon={<RiExternalLinkLine size={18} />}
                 >
                   {item.cran_checks.label}
@@ -437,6 +443,8 @@ function DependenciesPageContentSection(
     reverse_linkingto,
   } = props;
 
+  const location = useLocation();
+
   const hasAny =
     depends?.length ||
     imports?.length ||
@@ -460,7 +468,7 @@ function DependenciesPageContentSection(
       className=" min-h-96"
     >
       <Suspense>
-        <PackageDependencySearch {...props} />
+        <PackageDependencySearch key={location.pathname} {...props} />
       </Suspense>
     </PageContentSection>
   );

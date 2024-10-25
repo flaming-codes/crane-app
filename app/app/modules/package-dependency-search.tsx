@@ -37,114 +37,28 @@ export function PackageDependencySearch(props: Props) {
     reverse_linkingto,
   } = props;
 
-  const countDependencies = depends?.length || 0;
-  const countImports = imports?.length || 0;
-  const countEnhances = enhances?.length || 0;
-  const countSuggests = suggests?.length || 0;
-  const countLinkingto = linkingto?.length || 0;
-  const countReverseDepends = reverse_depends?.length || 0;
-  const countReverseImports = reverse_imports?.length || 0;
-  const countReverseSuggests = reverse_suggests?.length || 0;
-  const countReverseEnhances = reverse_enhances?.length || 0;
-  const countReverseLinkingto = reverse_linkingto?.length || 0;
-
   const totalCounts: Array<[string, number]> = [
-    ["Depends", countDependencies],
-    ["Imports", countImports],
-    ["Enhances", countEnhances],
-    ["Suggests", countSuggests],
-    ["Linking To", countLinkingto],
-    ["Reverse Depends", countReverseDepends],
-    ["Reverse Imports", countReverseImports],
-    ["Reverse Suggests", countReverseSuggests],
-    ["Reverse Enhances", countReverseEnhances],
-    ["Reverse LinkingTo", countReverseLinkingto],
+    ["Depends", depends?.length ?? 0],
+    ["Imports", imports?.length ?? 0],
+    ["Enhances", enhances?.length ?? 0],
+    ["Suggests", suggests?.length ?? 0],
+    ["Linking To", linkingto?.length ?? 0],
+    ["Reverse Depends", reverse_depends?.length ?? 0],
+    ["Reverse Imports", reverse_imports?.length ?? 0],
+    ["Reverse Suggests", reverse_suggests?.length ?? 0],
+    ["Reverse Enhances", reverse_enhances?.length ?? 0],
+    ["Reverse LinkingTo", reverse_linkingto?.length ?? 0],
   ];
+
   const hasAny = totalCounts.some(([, count]) => count > 0);
 
   const [input, setInput] = useState("");
   const [searchResults, setSearchResults] = useState<
     Array<SearchableDependency>
   >([]);
-  const [store, setStore] = useState(() => {
-    const fields: Array<keyof Dependency> = ["name"];
-    const storeFields: Array<keyof SearchableDependency> = [
-      "name",
-      "link",
-      "group",
-    ];
-    const store = new MiniSearch({
-      idField: "name",
-      fields, // fields to index for full-text search
-      storeFields, // fields to return with search results
-    });
-
-    let items: Array<SearchableDependency> = [];
-    if (depends) {
-      items = items.concat(depends.map((d) => ({ ...d, group: "Depends" })));
-    }
-    if (imports) {
-      items = items.concat(imports.map((d) => ({ ...d, group: "Imports" })));
-    }
-    if (enhances) {
-      items = items.concat(enhances.map((d) => ({ ...d, group: "Enhances" })));
-    }
-    if (suggests) {
-      items = items.concat(suggests.map((d) => ({ ...d, group: "Suggests" })));
-    }
-    if (linkingto) {
-      items = items.concat(
-        linkingto.map((d) => ({ ...d, group: "Linking To" })),
-      );
-    }
-    if (reverse_depends) {
-      items = items.concat(
-        reverse_depends.map((d) => ({
-          ...d,
-
-          group: "Reverse Depends",
-        })),
-      );
-    }
-    if (reverse_imports) {
-      items = items.concat(
-        reverse_imports.map((d) => ({
-          ...d,
-
-          group: "Reverse Imports",
-        })),
-      );
-    }
-    if (reverse_suggests) {
-      items = items.concat(
-        reverse_suggests.map((d) => ({
-          ...d,
-
-          group: "Reverse Suggests",
-        })),
-      );
-    }
-    if (reverse_enhances) {
-      items = items.concat(
-        reverse_enhances.map((d) => ({
-          ...d,
-
-          group: "Reverse Enhances",
-        })),
-      );
-    }
-    if (reverse_linkingto) {
-      items = items.concat(
-        reverse_linkingto.map((d) => ({
-          ...d,
-
-          group: "Reverse LinkingTo",
-        })),
-      );
-    }
-    store.addAll(items);
-    return store;
-  });
+  const [store, setStore] = useState<MiniSearch<SearchableDependency>>(() =>
+    initSearch(props),
+  );
 
   // use debounce search
   const debouncedSearch = useDebounce(input, 150);
@@ -161,6 +75,7 @@ export function PackageDependencySearch(props: Props) {
 
   const location = useLocation();
   useEffect(() => {
+    return;
     // Remix doesn't unmount Outlets when navigating to a different route,
     // so we need to reset the search state when the route changes.
     setInput("");
@@ -186,8 +101,7 @@ export function PackageDependencySearch(props: Props) {
     <>
       <div
         className={clsx(
-          "border-t border-gray-dim bg-gradient-to-b rounded-xl min-h-16 flex flex-col items-center p-4 overflow-hidden",
-          "relative ",
+          "relative border-t border-gray-dim bg-gradient-to-b rounded-xl min-h-16 flex flex-col items-center p-4 overflow-hidden",
         )}
       >
         <form
@@ -250,7 +164,7 @@ export function PackageDependencySearch(props: Props) {
               <ul className="flex flex-wrap gap-2">
                 {items.map((item) => (
                   <li key={item.name}>
-                    <Link to={`/package/${item.name}`}>
+                    <Link to={item.link || `/package/${item.link}`}>
                       <InfoPill
                         label={item.group}
                         className="bg-gray-ghost transition-colors"
@@ -271,4 +185,69 @@ export function PackageDependencySearch(props: Props) {
       ) : null}
     </>
   );
+}
+
+function initSearch(params: Props): MiniSearch<SearchableDependency> {
+  const {
+    depends,
+    imports,
+    enhances,
+    suggests,
+    linkingto,
+    reverse_depends,
+    reverse_imports,
+    reverse_suggests,
+    reverse_enhances,
+    reverse_linkingto,
+  } = params;
+
+  const fields: Array<keyof Dependency> = ["name"];
+  const storeFields: Array<keyof SearchableDependency> = [
+    "name",
+    "link",
+    "group",
+  ];
+  const store = new MiniSearch({
+    fields, // fields to index for full-text search
+    storeFields, // fields to return with search results
+  });
+
+  const groups = [
+    ["Depends", depends],
+    ["Imports", imports],
+    ["Enhances", enhances],
+    ["Suggests", suggests],
+    ["Linking To", linkingto],
+    ["Reverse Depends", reverse_depends],
+    ["Reverse Imports", reverse_imports],
+    ["Reverse Suggests", reverse_suggests],
+    ["Reverse Enhances", reverse_enhances],
+    ["Reverse LinkingTo", reverse_linkingto],
+  ] as const;
+
+  let items: Array<SearchableDependency> = [];
+
+  groups.forEach(([group, dependencies]) => {
+    if (dependencies && dependencies.length) {
+      items = items.concat(
+        dependencies.map((d) => ({
+          id: `${d.name}-${group}`,
+          name: d.name,
+          link: `/package/${d.name}`,
+          group,
+        })),
+      );
+    }
+  });
+
+  // Deduplicate items
+  items = items.filter(
+    (item, index, self) =>
+      index ===
+      self.findIndex((t) => t.name === item.name && t.group === item.group),
+  );
+
+  store.addAll(items);
+
+  return store;
 }
