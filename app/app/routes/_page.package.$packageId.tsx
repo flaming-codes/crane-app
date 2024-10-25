@@ -17,7 +17,6 @@ import {
   RiFilePdf2Line,
   RiGithubLine,
 } from "@remixicon/react";
-import clsx from "clsx";
 import { InfoPill } from "../modules/info-pill";
 import { CopyPillButton } from "../modules/copy-pill-button";
 import { ExternalLinkPill } from "../modules/external-link-pill";
@@ -25,6 +24,13 @@ import { PageContentSection } from "../modules/page-content-section";
 import { BinaryDownloadListItem } from "../modules/binary-download-link";
 import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
+import { lazy, Suspense } from "react";
+
+const PackageDependencySearch = lazy(() =>
+  import("../modules/package-dependency-search").then((mod) => ({
+    default: mod.PackageDependencySearch,
+  })),
+);
 
 export const meta: MetaFunction = () => {
   return [
@@ -215,6 +221,21 @@ export default function PackagePage() {
           materials={item.materials}
           inviews={item.inviews}
         />
+
+        <Separator />
+
+        <DependenciesPageContentSection
+          depends={item.depends}
+          imports={item.imports}
+          enhances={item.enhances}
+          suggests={item.suggests}
+          linkingto={item.linkingto}
+          reverse_depends={item.reverse_depends}
+          reverse_imports={item.reverse_imports}
+          reverse_suggests={item.reverse_suggests}
+          reverse_enhances={item.reverse_enhances}
+          reverse_linkingto={item.reverse_linkingto}
+        />
       </PageContent>
     </>
   );
@@ -384,6 +405,63 @@ function DocumentationPageContentSection(
           </ul>
         </section>
       ) : null}
+    </PageContentSection>
+  );
+}
+
+function DependenciesPageContentSection(
+  props: Pick<
+    Pkg,
+    | "depends"
+    | "imports"
+    | "enhances"
+    | "suggests"
+    | "linkingto"
+    | "reverse_depends"
+    | "reverse_imports"
+    | "reverse_suggests"
+    | "reverse_enhances"
+    | "reverse_linkingto"
+  >,
+) {
+  const {
+    depends,
+    imports,
+    enhances,
+    suggests,
+    linkingto,
+    reverse_depends,
+    reverse_imports,
+    reverse_suggests,
+    reverse_enhances,
+    reverse_linkingto,
+  } = props;
+
+  const hasAny =
+    depends?.length ||
+    imports?.length ||
+    enhances?.length ||
+    suggests?.length ||
+    linkingto?.length ||
+    reverse_depends?.length ||
+    reverse_imports?.length ||
+    reverse_suggests?.length ||
+    reverse_enhances?.length ||
+    reverse_linkingto?.length;
+
+  if (!hasAny) {
+    return null;
+  }
+
+  return (
+    <PageContentSection
+      headline="Dependencies"
+      fragment="dependencies"
+      className=" min-h-96"
+    >
+      <Suspense>
+        <PackageDependencySearch {...props} />
+      </Suspense>
     </PageContentSection>
   );
 }

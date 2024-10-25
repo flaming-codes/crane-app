@@ -3,13 +3,13 @@ import { PropsWithChildren, ReactNode } from "react";
 
 type Props = PropsWithChildren<
   VariantProps<typeof twBase> & {
-    label: ReactNode;
+    label?: ReactNode;
     className?: string;
   }
 >;
 
 const twBase = cva({
-  base: "rounded-full border border-gray-dim inline-flex gap-2 items-center shrink-0",
+  base: "rounded-full border border-gray-dim inline-flex gap-2 items-center shrink-0 group/pill",
   variants: {
     size: {
       xs: "text-xs px-2 py-1",
@@ -28,7 +28,9 @@ export function InfoPill(props: Props) {
 
   return (
     <div className={twBase({ className, size })}>
-      <span className="text-sm text-gray-dim whitespace-nowrap">{label}</span>
+      {label ? (
+        <span className="text-sm text-gray-dim whitespace-nowrap">{label}</span>
+      ) : null}
       {children}
     </div>
   );
