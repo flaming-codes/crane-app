@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 import radixColors from "tailwindcss-radix-colors";
 // @ts-expect-error - no types.
 import bgPatterns from "tailwindcss-bg-patterns";
+import animated from "tailwindcss-animated";
 
 export default {
   content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
@@ -22,5 +23,5 @@ export default {
       },
     },
   },
-  plugins: [radixColors, bgPatterns],
+  plugins: [radixColors, bgPatterns, animated],
 } satisfies Config;

@@ -17,6 +17,7 @@ export default function Index() {
     <div>
       <h1>Index</h1>
       <Link to="/package/xadmix">xadmix</Link>
+      <Link to="/package/GaussSuppression">GaussSuppression</Link>
     </div>
   );
 }

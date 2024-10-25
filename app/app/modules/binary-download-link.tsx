@@ -11,7 +11,7 @@ type Props = Required<VariantProps<typeof twGradient>> & {
 };
 
 const twBase = cva({
-  base: "p-4 rounded-lg group/binary border border-gray-dim flex flex-col isolate gap-1 transition-colors relative",
+  base: "py-3 px-4 rounded-lg overflow-hidden group/binary border border-gray-dim flex items-center isolate gap-6 transition-colors relative",
 });
 
 const twGradient = cva({
@@ -29,12 +29,17 @@ export function BinaryDownloadListItem(props: Props) {
 
   return (
     <a href={href} className={twBase({ className })}>
-      <span className={twGradient({ variant })} />
-      <span className="font-mono">{headline}</span>
-      <span className="text-gray-dim">
-        {os} <span className="text-gray-normal opacity-30">/</span> {arch}
-      </span>
-      <RiDownloadLine size={18} className="mt-4" />
+      <RiDownloadLine
+        size={18}
+        className="opacity-50 group-hover/binary:opacity-100 group-hover/binary:animate-wiggle-more group-hover/binary:animate-infinite transition-opacity"
+      />
+      <div className="flex flex-col gap-1">
+        <span className={twGradient({ variant })} />
+        <span className="font-mono leading-none">{headline}</span>
+        <span className="text-gray-dim">
+          {os} <span className="text-gray-normal opacity-30">/</span> {arch}
+        </span>
+      </div>
     </a>
   );
 }

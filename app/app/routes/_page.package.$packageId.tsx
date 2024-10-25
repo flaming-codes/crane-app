@@ -13,17 +13,18 @@ import { formatRelative } from "date-fns";
 import { ExternalLink } from "../modules/external-link";
 import {
   RiBug2Line,
-  RiDownloadLine,
   RiExternalLinkLine,
   RiFilePdf2Line,
   RiGithubLine,
 } from "@remixicon/react";
 import clsx from "clsx";
-import { InfoPillListItem } from "../modules/info-pill-list-item";
+import { InfoPill } from "../modules/info-pill";
 import { CopyPillButton } from "../modules/copy-pill-button";
 import { ExternalLinkPill } from "../modules/external-link-pill";
 import { PageContentSection } from "../modules/page-content-section";
 import { BinaryDownloadListItem } from "../modules/binary-download-link";
+import { ContactPill } from "../modules/contact-pill";
+import { InfoCard } from "../modules/info-card";
 
 export const meta: MetaFunction = () => {
   return [
@@ -31,6 +32,14 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "<Package> to CRAN/E" },
   ];
 };
+
+const sections = [
+  "Synopsis",
+  "Team",
+  "Binaries",
+  "Documentation",
+  "Dependencies",
+];
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { packageId } = params;
@@ -69,14 +78,7 @@ export default function PackagePage() {
       />
 
       <Anchors>
-        {[
-          "Synopsis",
-          "Downloads",
-          "Team",
-          "Documentation",
-          "Binaries",
-          "Dependencies",
-        ].map((item) => (
+        {sections.map((item) => (
           <AnchorLink key={item} fragment={item.toLowerCase()}>
             {item}
           </AnchorLink>
@@ -104,10 +106,12 @@ export default function PackagePage() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 overflow-x-hidden">
             <ul className="flex flex-wrap gap-2">
               <li>
-                <CopyPillButton>install.packages('{item.name}')</CopyPillButton>
+                <CopyPillButton textToCopy={`install.packages('${item.name}')`}>
+                  install.packages('{item.name}')
+                </CopyPillButton>
               </li>
               {item.link
                 ? item.link.links.map((url) => (
@@ -151,83 +155,235 @@ export default function PackagePage() {
               </li>
             </ul>
             <ul className="flex flex-wrap gap-2 items-start">
-              <InfoPillListItem label="Version">
-                {item.version}
-              </InfoPillListItem>
-              <InfoPillListItem label="Last release">
-                {formatRelative(item.date, new Date())}
-              </InfoPillListItem>
-              <InfoPillListItem label="R version">
-                {rVersion || "unknown"}
-              </InfoPillListItem>
+              <li>
+                <InfoPill label="Version">{item.version}</InfoPill>
+              </li>
+              <li>
+                <InfoPill label="Last release">
+                  {formatRelative(item.date, new Date())}
+                </InfoPill>
+              </li>
+              <li>
+                <InfoPill label="R version">{rVersion || "unknown"}</InfoPill>
+              </li>
               {item.license && item.license.length > 0
                 ? item.license.map((license) => (
-                    <ExternalLink key={license.link} href={license.link}>
-                      <InfoPillListItem label="License">
-                        {license.name}
-                        <RiExternalLinkLine
-                          size={12}
-                          className="text-gray-dim"
-                        />
-                      </InfoPillListItem>
-                    </ExternalLink>
+                    <li key={license.link}>
+                      <ExternalLink href={license.link}>
+                        <InfoPill label="License">
+                          {license.name}
+                          <RiExternalLinkLine
+                            size={12}
+                            className="text-gray-dim"
+                          />
+                        </InfoPill>
+                      </ExternalLink>
+                    </li>
                   ))
                 : null}
-              <InfoPillListItem label="Needs compilation?">
-                {item.needscompilation === "no" ? "No" : "Yes"}
-              </InfoPillListItem>
-              <InfoPillListItem label="Language">
-                {item.language}
-              </InfoPillListItem>
+              <li>
+                <InfoPill label="Needs compilation?">
+                  {item.needscompilation === "no" ? "No" : "Yes"}
+                </InfoPill>
+              </li>
+              <li>
+                <InfoPill label="Language">{item.language}</InfoPill>
+              </li>
             </ul>
           </div>
         </PageContentSection>
 
         <Separator />
 
-        <PageContentSection headline="Binaries" fragment="binaries">
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {item.macos_binaries?.map((item) => (
-              <BinaryDownloadListItem
-                variant="iris"
-                href={item.link}
-                os="macOS"
-                headline={item.label.split(" ")?.[0]?.replace(":", "")}
-                arch={
-                  item.label
-                    .split(" ")?.[1]
-                    ?.replace(":", "")
-                    .replace("(", "")
-                    .replace(")", "") || "x86_64"
-                }
-              />
-            )) || null}
-            {item.windows_binaries?.map((item) => (
-              <BinaryDownloadListItem
-                variant="iris"
-                href={item.link}
-                os="Windows"
-                headline={item.label.split(" ")?.[0]?.replace(":", "")}
-                arch={
-                  item.label
-                    .split(" ")?.[1]
-                    ?.replace(":", "")
-                    .replace("(", "")
-                    .replace(")", "") || "x86_64"
-                }
-              />
-            )) || null}
-            {item.old_sources ? (
-              <BinaryDownloadListItem
-                variant="iris"
-                href={item.old_sources.link}
-                os="Old Source"
-                headline={item.old_sources.label}
-              />
-            ) : null}
-          </ul>
-        </PageContentSection>
+        <TeamPageContentSection
+          maintainer={item.maintainer}
+          author={item.author}
+        />
+
+        <Separator />
+
+        <BinariesPageContentSection
+          macos_binaries={item.macos_binaries}
+          windows_binaries={item.windows_binaries}
+          old_sources={item.old_sources}
+        />
+
+        <Separator />
+
+        <DocumentationPageContentSection
+          vignettes={item.vignettes}
+          materials={item.materials}
+          inviews={item.inviews}
+        />
       </PageContent>
     </>
+  );
+}
+
+function BinariesPageContentSection(
+  props: Pick<Pkg, "macos_binaries" | "windows_binaries" | "old_sources">,
+) {
+  const { macos_binaries, windows_binaries, old_sources } = props;
+
+  return (
+    <PageContentSection
+      headline="Binaries"
+      // subline="Download all available executables for this package"
+      fragment="binaries"
+    >
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {macos_binaries?.map((item) => (
+          <BinaryDownloadListItem
+            key={item.link}
+            variant="iris"
+            href={item.link}
+            os="macOS"
+            headline={item.label.split(" ")?.[0]?.replace(":", "")}
+            arch={
+              item.label
+                .split(" ")?.[1]
+                ?.replace(":", "")
+                .replace("(", "")
+                .replace(")", "") || "x86_64"
+            }
+          />
+        )) || null}
+        {windows_binaries?.map((item) => (
+          <BinaryDownloadListItem
+            key={item.link}
+            variant="iris"
+            href={item.link}
+            os="Windows"
+            headline={item.label.split(" ")?.[0]?.replace(":", "")}
+            arch={
+              item.label
+                .split(" ")?.[1]
+                ?.replace(":", "")
+                .replace("(", "")
+                .replace(")", "") || "x86_64"
+            }
+          />
+        )) || null}
+        {old_sources ? (
+          <BinaryDownloadListItem
+            key={old_sources.link}
+            variant="iris"
+            href={old_sources.link}
+            os="Old Source"
+            headline={old_sources.label}
+          />
+        ) : null}
+      </ul>
+    </PageContentSection>
+  );
+}
+
+function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
+  const { maintainer, author } = props;
+
+  const otherAuthors = author?.filter((a) => a.name !== maintainer?.name);
+  const maintainerRoles = author?.find(
+    (a) => a.name === maintainer?.name,
+  )?.roles;
+
+  const hasOtherAuthors = otherAuthors && otherAuthors.length > 0;
+
+  return (
+    <PageContentSection
+      headline="Team"
+      // subline="See everyone of the team behind this package"
+      fragment="team"
+    >
+      <ul className="grid grid-cols-1 gap-8">
+        {maintainer ? (
+          <li>
+            <ContactPill
+              isMaintainer
+              name={maintainer.name}
+              roles={maintainerRoles || []}
+              email={maintainer.email}
+            />
+          </li>
+        ) : null}
+        {hasOtherAuthors
+          ? otherAuthors?.map((author) => (
+              <li key={author.name}>
+                <ContactPill
+                  name={author.name}
+                  roles={author.roles || []}
+                  email={author.link}
+                />
+              </li>
+            ))
+          : null}
+      </ul>
+    </PageContentSection>
+  );
+}
+
+function DocumentationPageContentSection(
+  props: Pick<Pkg, "vignettes" | "materials" | "inviews">,
+) {
+  const { vignettes, materials, inviews } = props;
+
+  const hasVignettes = vignettes && vignettes.length > 0;
+  const hasMaterials = materials && materials.length > 0;
+  const hasInviews = inviews && inviews.length > 0;
+
+  const hasAny = hasVignettes || hasMaterials || hasInviews;
+
+  if (!hasAny) {
+    return null;
+  }
+
+  return (
+    <PageContentSection
+      headline="Documentation"
+      // subline="This section contains all available documentation for this package, which includes vignettes, materials, and in views"
+      fragment="documentation"
+    >
+      {hasAny ? (
+        <section>
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {vignettes?.map((item) => (
+              <li key={item.name}>
+                <ExternalLink href={item.link}>
+                  <InfoCard variant="iris" icon="external">
+                    <span className="flex flex-col gap-1">
+                      <span className="text-xs text-gray-dim">Vignette</span>
+                      <span>{item.name}</span>
+                    </span>
+                  </InfoCard>
+                </ExternalLink>
+              </li>
+            ))}
+            {materials?.map((item) => (
+              <li key={item.name}>
+                <ExternalLink href={item.link}>
+                  <InfoCard variant="iris" icon="external">
+                    <span className="flex flex-col gap-1">
+                      <span className="text-xs text-gray-dim">Material</span>
+                      <span>{item.name}</span>
+                    </span>
+                  </InfoCard>
+                </ExternalLink>
+              </li>
+            ))}
+            {inviews?.map((item) => (
+              <li key={item.name}>
+                <ExternalLink href={item.link}>
+                  <InfoCard variant="iris" icon="external">
+                    <span className="flex flex-col gap-1">
+                      <span className="text-xs text-gray-dim">In Views</span>
+                      <span>{item.name}</span>
+                    </span>
+                  </InfoCard>
+                </ExternalLink>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </PageContentSection>
   );
 }
