@@ -10,7 +10,7 @@ type Props = PropsWithChildren<{
 
 const twBase = cva({
   base: [
-    "full-width overflow-x-auto border-y text-xs sticky top-14 backdrop-blur-lg",
+    "full-width overflow-x-auto border-y text-xs sticky top-14 backdrop-blur-lg z-10",
     "border-gray-6 dark:border-gray-12",
   ],
 });

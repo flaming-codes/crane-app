@@ -22,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <footer className="h-20 flex gap-4 items-center px-8 border-t border-gray-12">
+        <footer className="py-6 text-sm flex justify-center gap-4 items-center px-8 border-t border-gray-dim">
           <span>About</span> <span>Help</span> <span>Privacy</span>
         </footer>
         <ScrollRestoration />

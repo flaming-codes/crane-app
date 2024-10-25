@@ -41,9 +41,9 @@ export const meta: MetaFunction = () => {
 
 const sections = [
   "Synopsis",
+  "Documentation",
   "Team",
   "Binaries",
-  "Documentation",
   "Dependencies",
 ];
 
@@ -78,8 +78,6 @@ export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
 
-  const rVersion = item.depends?.find((d) => d.name === "R")?.version;
-
   return (
     <>
       <Header
@@ -98,114 +96,15 @@ export default function PackagePage() {
       </Anchors>
 
       <PageContent>
-        <PageContentSection>
-          <div className="space-y-6">
-            <Prose html={item.description} />
-            <p hidden className="text-gray-dim ">
-              Current version is <span>{item.version}</span> since{" "}
-              <span>{formatRelative(item.date, new Date())}</span> and requires
-              R <span>{rVersion || "unknown"}</span> to run.
-              {item.license && item.license.length > 0 ? (
-                <>
-                  {" "}
-                  Licensed under{" "}
-                  <span>{item.license.map((l) => l.name).join(", ")}</span>.
-                </>
-              ) : null}{" "}
-              {item.name}{" "}
-              {item.needscompilation === "no" ? "doesn't need" : "needs"} to be
-              compiled.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-6 overflow-x-hidden">
-            <ul className="flex flex-wrap gap-2">
-              <li>
-                <CopyPillButton textToCopy={`install.packages('${item.name}')`}>
-                  install.packages('{item.name}')
-                </CopyPillButton>
-              </li>
-              {item.link
-                ? item.link.links.map((url) => (
-                    <li key={url}>
-                      <ExternalLinkPill
-                        href={url}
-                        icon={<RiGithubLine size={18} />}
-                      >
-                        {item.link?.text.includes("github.com")
-                          ? "GitHub"
-                          : item.link?.text}
-                      </ExternalLinkPill>
-                    </li>
-                  ))
-                : null}
-              {item.bugreports ? (
-                <li>
-                  <ExternalLinkPill
-                    href={item.bugreports}
-                    icon={<RiBug2Line size={18} />}
-                  >
-                    File a bug report
-                  </ExternalLinkPill>
-                </li>
-              ) : null}
-              <li>
-                <ExternalLinkPill
-                  href={item.cran_checks.link}
-                  icon={<RiExternalLinkLine size={18} />}
-                >
-                  {item.cran_checks.label}
-                </ExternalLinkPill>
-              </li>
-              <li>
-                <ExternalLinkPill
-                  href={item.reference_manual.link}
-                  icon={<RiFilePdf2Line size={18} />}
-                >
-                  {item.reference_manual.label}
-                </ExternalLinkPill>
-              </li>
-            </ul>
-            <ul className="flex flex-wrap gap-2 items-start">
-              <li>
-                <InfoPill label="Version">{item.version}</InfoPill>
-              </li>
-              <li>
-                <InfoPill label="Last release">
-                  {formatRelative(item.date, new Date())}
-                </InfoPill>
-              </li>
-              <li>
-                <InfoPill label="R version">{rVersion || "unknown"}</InfoPill>
-              </li>
-              {item.license && item.license.length > 0
-                ? item.license.map((license) => (
-                    <li key={license.link}>
-                      <ExternalLink href={license.link}>
-                        <InfoPill label="License">
-                          {license.name}
-                          <RiExternalLinkLine
-                            size={12}
-                            className="text-gray-dim"
-                          />
-                        </InfoPill>
-                      </ExternalLink>
-                    </li>
-                  ))
-                : null}
-              <li>
-                <InfoPill label="Needs compilation?">
-                  {item.needscompilation === "no" ? "No" : "Yes"}
-                </InfoPill>
-              </li>
-              <li>
-                <InfoPill label="Language">{item.language}</InfoPill>
-              </li>
-            </ul>
-          </div>
-        </PageContentSection>
+        <AboveTheFoldSection item={item} />
 
         <Separator />
+
+        <DocumentationPageContentSection
+          vignettes={item.vignettes}
+          materials={item.materials}
+          inviews={item.inviews}
+        />
 
         <TeamPageContentSection
           maintainer={item.maintainer}
@@ -218,14 +117,6 @@ export default function PackagePage() {
           macos_binaries={item.macos_binaries}
           windows_binaries={item.windows_binaries}
           old_sources={item.old_sources}
-        />
-
-        <Separator />
-
-        <DocumentationPageContentSection
-          vignettes={item.vignettes}
-          materials={item.materials}
-          inviews={item.inviews}
         />
 
         <Separator />
@@ -244,6 +135,117 @@ export default function PackagePage() {
         />
       </PageContent>
     </>
+  );
+}
+
+function AboveTheFoldSection(props: { item: Pkg }) {
+  const { item } = props;
+  const rVersion = item.depends?.find((d) => d.name === "R")?.version;
+
+  return (
+    <PageContentSection>
+      <div className="space-y-6">
+        <Prose html={item.description} />
+        <p hidden className="text-gray-dim ">
+          Current version is <span>{item.version}</span> since{" "}
+          <span>{formatRelative(item.date, new Date())}</span> and requires R{" "}
+          <span>{rVersion || "unknown"}</span> to run.
+          {item.license && item.license.length > 0 ? (
+            <>
+              {" "}
+              Licensed under{" "}
+              <span>{item.license.map((l) => l.name).join(", ")}</span>.
+            </>
+          ) : null}{" "}
+          {item.name}{" "}
+          {item.needscompilation === "no" ? "doesn't need" : "needs"} to be
+          compiled.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-6 overflow-x-hidden">
+        <ul className="flex flex-wrap gap-2">
+          <li>
+            <CopyPillButton textToCopy={`install.packages('${item.name}')`}>
+              install.packages('{item.name}')
+            </CopyPillButton>
+          </li>
+          {item.link
+            ? item.link.links.map((url) => (
+                <li key={url}>
+                  <ExternalLinkPill
+                    href={url}
+                    icon={<RiGithubLine size={18} />}
+                  >
+                    {item.link?.text.includes("github.com")
+                      ? "GitHub"
+                      : item.link?.text}
+                  </ExternalLinkPill>
+                </li>
+              ))
+            : null}
+          {item.bugreports ? (
+            <li>
+              <ExternalLinkPill
+                href={item.bugreports}
+                icon={<RiBug2Line size={18} />}
+              >
+                File a bug report
+              </ExternalLinkPill>
+            </li>
+          ) : null}
+          <li>
+            <ExternalLinkPill
+              href={item.cran_checks.link}
+              icon={<RiExternalLinkLine size={18} />}
+            >
+              {item.cran_checks.label}
+            </ExternalLinkPill>
+          </li>
+          <li>
+            <ExternalLinkPill
+              href={item.reference_manual.link}
+              icon={<RiFilePdf2Line size={18} />}
+            >
+              {item.reference_manual.label}
+            </ExternalLinkPill>
+          </li>
+        </ul>
+        <ul className="flex flex-wrap gap-2 items-start">
+          <li>
+            <InfoPill label="Version">{item.version}</InfoPill>
+          </li>
+          <li>
+            <InfoPill label="Last release">
+              {formatRelative(item.date, new Date())}
+            </InfoPill>
+          </li>
+          <li>
+            <InfoPill label="R version">{rVersion || "unknown"}</InfoPill>
+          </li>
+          {item.license && item.license.length > 0
+            ? item.license.map((license) => (
+                <li key={license.link}>
+                  <ExternalLink href={license.link}>
+                    <InfoPill label="License">
+                      {license.name}
+                      <RiExternalLinkLine size={12} className="text-gray-dim" />
+                    </InfoPill>
+                  </ExternalLink>
+                </li>
+              ))
+            : null}
+          <li>
+            <InfoPill label="Needs compilation?">
+              {item.needscompilation === "no" ? "No" : "Yes"}
+            </InfoPill>
+          </li>
+          <li>
+            <InfoPill label="Language">{item.language}</InfoPill>
+          </li>
+        </ul>
+      </div>
+    </PageContentSection>
   );
 }
 
@@ -364,54 +366,57 @@ function DocumentationPageContentSection(
   }
 
   return (
-    <PageContentSection
-      headline="Documentation"
-      // subline="This section contains all available documentation for this package, which includes vignettes, materials, and in views"
-      fragment="documentation"
-    >
-      {hasAny ? (
-        <section>
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {vignettes?.map((item) => (
-              <li key={item.name}>
-                <ExternalLink href={item.link}>
-                  <InfoCard variant="iris" icon="external">
-                    <span className="flex flex-col gap-1">
-                      <span className="text-xs text-gray-dim">Vignette</span>
-                      <span>{item.name}</span>
-                    </span>
-                  </InfoCard>
-                </ExternalLink>
-              </li>
-            ))}
-            {materials?.map((item) => (
-              <li key={item.name}>
-                <ExternalLink href={item.link}>
-                  <InfoCard variant="iris" icon="external">
-                    <span className="flex flex-col gap-1">
-                      <span className="text-xs text-gray-dim">Material</span>
-                      <span>{item.name}</span>
-                    </span>
-                  </InfoCard>
-                </ExternalLink>
-              </li>
-            ))}
-            {inviews?.map((item) => (
-              <li key={item.name}>
-                <ExternalLink href={item.link}>
-                  <InfoCard variant="iris" icon="external">
-                    <span className="flex flex-col gap-1">
-                      <span className="text-xs text-gray-dim">In Views</span>
-                      <span>{item.name}</span>
-                    </span>
-                  </InfoCard>
-                </ExternalLink>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-    </PageContentSection>
+    <>
+      <PageContentSection
+        headline="Documentation"
+        // subline="This section contains all available documentation for this package, which includes vignettes, materials, and in views"
+        fragment="documentation"
+      >
+        {hasAny ? (
+          <section>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {vignettes?.map((item) => (
+                <li key={item.name}>
+                  <ExternalLink href={item.link}>
+                    <InfoCard variant="iris" icon="external">
+                      <span className="flex flex-col gap-1">
+                        <span className="text-xs text-gray-dim">Vignette</span>
+                        <span>{item.name}</span>
+                      </span>
+                    </InfoCard>
+                  </ExternalLink>
+                </li>
+              ))}
+              {materials?.map((item) => (
+                <li key={item.name}>
+                  <ExternalLink href={item.link}>
+                    <InfoCard variant="iris" icon="external">
+                      <span className="flex flex-col gap-1">
+                        <span className="text-xs text-gray-dim">Material</span>
+                        <span>{item.name}</span>
+                      </span>
+                    </InfoCard>
+                  </ExternalLink>
+                </li>
+              ))}
+              {inviews?.map((item) => (
+                <li key={item.name}>
+                  <ExternalLink href={item.link}>
+                    <InfoCard variant="iris" icon="external">
+                      <span className="flex flex-col gap-1">
+                        <span className="text-xs text-gray-dim">In Views</span>
+                        <span>{item.name}</span>
+                      </span>
+                    </InfoCard>
+                  </ExternalLink>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </PageContentSection>
+      <Separator />
+    </>
   );
 }
 
