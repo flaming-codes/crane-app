@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import { PropsWithChildren, ReactNode } from "react";
 
 type Props = PropsWithChildren<{
@@ -10,7 +10,7 @@ export function DataPointListItem(props: Props) {
   const { label, children, className } = props;
 
   return (
-    <li className={classNames("flex flex-col", className)}>
+    <li className={clsx("flex flex-col", className)}>
       <span className="font-light tracking-wider text-lg">{children}</span>
       <span className="font-semibold opacity-60">{label}</span>
     </li>

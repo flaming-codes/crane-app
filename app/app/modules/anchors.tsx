@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@remix-run/react";
-import classNames from "classnames";
+import clsx from "clsx";
 import { cva } from "cva";
 import { PropsWithChildren } from "react";
 import { useHydrated } from "remix-utils/use-hydrated";
@@ -43,7 +43,7 @@ export function AnchorLink(props: PropsWithChildren<{ fragment: string }>) {
   return (
     <Link
       to={`#${fragment}`}
-      className={classNames(
+      className={clsx(
         "min-w-32 text-center py-3 shrink-0 border-b border-transparent hover:border-gray-normal transition-colors",
         { "border-gray-11 dark:border-gray-6": isHydrated && isSelected },
       )}

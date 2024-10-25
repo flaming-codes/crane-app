@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import clsx from "clsx";
 import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<{
@@ -10,8 +10,8 @@ export function PageContent(props: Props) {
   const { children, outerClassName, innerClassName } = props;
 
   return (
-    <div className={classNames("full-width pt-16", outerClassName)}>
-      <div className={classNames("flex flex-col gap-16", innerClassName)}>
+    <div className={clsx("full-width pt-16", outerClassName)}>
+      <div className={clsx("flex flex-col gap-16", innerClassName)}>
         {children}
       </div>
     </div>
