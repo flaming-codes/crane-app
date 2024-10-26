@@ -10,6 +10,7 @@ import { useLockBodyScroll } from "@uidotdev/usehooks";
 import {
   ChangeEvent,
   PropsWithChildren,
+  ReactNode,
   RefObject,
   useCallback,
   useState,
@@ -27,6 +28,7 @@ type Props = {
   inputRef: RefObject<HTMLInputElement>;
   isFocused: boolean;
   setIsFocused: (isFocused: boolean) => void;
+  actions?: ReactNode;
 };
 
 type SearchResults = {
@@ -44,7 +46,8 @@ const fallbackSearchResults: SearchResults = {
 };
 
 export function NavSearch(props: Props) {
-  const { searchContentRef, inputRef, isFocused, setIsFocused } = props;
+  const { searchContentRef, inputRef, isFocused, setIsFocused, actions } =
+    props;
 
   const [input, setInput] = useState("");
   const fetcher = useDebounceFetcher();
@@ -97,24 +100,14 @@ export function NavSearch(props: Props) {
           ref={inputRef}
           type="search"
           placeholder={
-            isFocused ? "Type to search for packages and authors" : "Search"
+            isFocused ? "Type to search for packages and authors" : "Search..."
           }
           className="flex-1 h-full bg-transparent focus:outline-none"
           value={input}
           onFocus={() => setIsFocused(true)}
           onChange={onChange}
         />
-        <Link
-          to="/"
-          className="h-full flex items-center pl-4 group"
-          title="Landing page"
-        >
-          <RiHomeLine
-            size={18}
-            className="text-gray-dim group-hover:animate-wiggle-more group-hover:animate-infinite"
-          />
-          <span className="sr-only">Home</span>
-        </Link>
+        {actions}
       </div>
       {isFocused && searchContentRef.current && actionData ? (
         <ClientOnly>

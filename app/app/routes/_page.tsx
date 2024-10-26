@@ -1,32 +1,14 @@
 import { Outlet } from "@remix-run/react";
-import { NavSearch } from "../modules/nav-search";
-import { useRef, useState } from "react";
-import clsx from "clsx";
+import NavigationPage from "../modules/nav";
+
+export const handle = {
+  hasFooter: true,
+};
 
 export default function PackageLayoutPage() {
-  const searchContentPortalRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const [isFocused, setIsFocused] = useState(false);
-
   return (
-    <>
-      <nav
-        className={clsx(
-          "border-b border-gray-8 dark:border-gray-12 sticky inset-x-0 top-0 backdrop-blur-lg z-10 full-width",
-        )}
-      >
-        <NavSearch
-          searchContentRef={searchContentPortalRef}
-          inputRef={inputRef}
-          isFocused={isFocused}
-          setIsFocused={setIsFocused}
-        />
-      </nav>
-
+    <NavigationPage hasHomeLink>
       <Outlet />
-
-      <div id="search-content-portal" ref={searchContentPortalRef} />
-    </>
+    </NavigationPage>
   );
 }
