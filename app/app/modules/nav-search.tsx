@@ -64,7 +64,7 @@ export function NavSearch(props: Props) {
     });
   }, []);
 
-  const onSelect = useCallback((item: SearchResult) => {
+  const onSelect = useCallback((item?: SearchResult) => {
     setInput("");
     setIsFocused(false);
     inputRef.current?.blur();

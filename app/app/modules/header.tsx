@@ -9,7 +9,7 @@ type Props = Required<VariantProps<typeof twBase>> & {
 };
 
 const twBase = cva({
-  base: "full-width min-h-48 py-4 text-gray-normal",
+  base: "full-width min-h-48 py-4 text-gray-normal relative",
   variants: {
     gradient: {
       iris: "bg-gradient-to-tr from-iris-6 dark:from-iris-10",
