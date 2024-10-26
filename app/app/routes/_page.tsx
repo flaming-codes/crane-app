@@ -13,7 +13,7 @@ export default function PackageLayoutPage() {
     <>
       <nav
         className={clsx(
-          "border-b border-gray-8 dark:border-gray-12 sticky top-0 backdrop-blur-lg left-0 z-10",
+          "border-b border-gray-8 dark:border-gray-12 sticky top-0 backdrop-blur-lg w-full z-10",
         )}
       >
         <NavSearch

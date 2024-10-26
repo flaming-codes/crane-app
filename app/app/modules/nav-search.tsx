@@ -1,18 +1,26 @@
 import { Link } from "@remix-run/react";
-import { RiHomeLine } from "@remixicon/react";
+import {
+  RiArrowRightSLine,
+  RiCloseFill,
+  RiFireFill,
+  RiGlassesFill,
+  RiHomeLine,
+} from "@remixicon/react";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 import {
   ChangeEvent,
   PropsWithChildren,
   RefObject,
   useCallback,
-  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { ClientOnly } from "remix-utils/client-only";
-import { useKeyboardEvent } from "./app";
+import { useKeyboardEvent, useKeyboardShortcut } from "./app";
 import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
+import { SearchResult } from "minisearch";
+import { Separator } from "./separator";
+import { InfoPill } from "./info-pill";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -21,11 +29,27 @@ type Props = {
   setIsFocused: (isFocused: boolean) => void;
 };
 
+type SearchResults = {
+  authors: {
+    hits: SearchResult[];
+  };
+  packages: {
+    hits: SearchResult[];
+  };
+};
+
+const fallbackSearchResults: SearchResults = {
+  authors: { hits: [] },
+  packages: { hits: [] },
+};
+
 export function NavSearch(props: Props) {
   const { searchContentRef, inputRef, isFocused, setIsFocused } = props;
 
   const [input, setInput] = useState("");
   const fetcher = useDebounceFetcher();
+  const actionData =
+    (fetcher.data as SearchResults | undefined) || fallbackSearchResults;
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -34,10 +58,16 @@ export function NavSearch(props: Props) {
     data.set("q", e.target.value);
     data.set("action", "all");
     fetcher.submit(data, {
-      debounceTimeout: 300,
+      debounceTimeout: 200,
       method: "POST",
       action: "/search?index",
     });
+  }, []);
+
+  const onSelect = useCallback((item: SearchResult) => {
+    setInput("");
+    setIsFocused(false);
+    inputRef.current?.blur();
   }, []);
 
   useKeyboardEvent(
@@ -50,6 +80,14 @@ export function NavSearch(props: Props) {
       setIsFocused(false);
       inputRef.current?.blur();
     }, [isFocused]),
+  );
+
+  useKeyboardShortcut(
+    "cmd+k",
+    useCallback(() => {
+      inputRef.current?.focus();
+      setIsFocused(true);
+    }, []),
   );
 
   return (
@@ -76,25 +114,15 @@ export function NavSearch(props: Props) {
           <span className="sr-only">Home</span>
         </Link>
       </div>
-      {isFocused && searchContentRef.current ? (
+      {isFocused && searchContentRef.current && actionData ? (
         <ClientOnly>
           {() =>
             createPortal(
-              <SearchResults input={input} setInput={setInput}>
-                <pre>
-                  {" "}
-                  {JSON.stringify(
-                    {
-                      state: fetcher.state,
-                      data: fetcher.data,
-                      json: fetcher.json,
-                      action: fetcher.formAction || "-",
-                    },
-                    null,
-                    2,
-                  )}
-                </pre>
-              </SearchResults>,
+              <SearchResults
+                data={actionData}
+                isDataExpected={input.length > 0}
+                onSelect={onSelect}
+              />,
               searchContentRef.current!,
             )
           }
@@ -106,19 +134,124 @@ export function NavSearch(props: Props) {
 
 export function SearchResults(
   props: PropsWithChildren<{
-    input: string;
-    setInput: (input: string) => void;
+    data: SearchResults;
+    isDataExpected?: boolean;
+    onSelect: (item?: SearchResult) => void;
   }>,
 ) {
-  const { input, setInput, children } = props;
+  const { data, isDataExpected, onSelect, children } = props;
+  const { authors, packages } = data;
 
   useLockBodyScroll();
 
   return (
-    <div className="fixed top-14 left-0 w-full backdrop-blur-xl bg-white/90 dark:bg-black/90 h-[calc(100%-56px)] z-10 overflow-y-auto">
+    <div className="fixed top-14 py-16 left-0 w-full backdrop-blur-xl bg-white/90 dark:bg-black/90 h-[calc(100%-56px)] z-10 overflow-y-auto">
       <div className="content-grid">
-        <div className="full-width">{children}</div>
+        <div className="full-width">
+          <div className="flex flex-col gap-16">
+            {isDataExpected ? (
+              <>
+                <section>
+                  <h3 className="pb-6 text-lg">Packages</h3>
+                  {packages.hits.length > 0 ? (
+                    <ul className="flex flex-wrap gap-2">
+                      {packages.hits.map((item) => (
+                        <li key={item.id}>
+                          <Link
+                            to={`/package/${item.slug}`}
+                            onClick={(e) => {
+                              onSelect(item);
+                            }}
+                          >
+                            <InfoPill
+                              variant="iris"
+                              label={<FlameOfFame score={item.score} />}
+                            >
+                              <span className="shrink-0">{item.name}</span>{" "}
+                              <span className="text-xs text-gray-dim">
+                                by{" "}
+                                {sliceNamesWithEllipsis(item.author_names, 3)}
+                              </span>
+                              <RiArrowRightSLine
+                                size={14}
+                                className="text-gray-dim"
+                              />
+                            </InfoPill>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-dim">No packages found</p>
+                  )}
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="pb-6 text-lg">Authors</h3>
+                  {authors.hits.length > 0 ? (
+                    <ul className="flex flex-wrap gap-2">
+                      {authors.hits.map((item) => (
+                        <li key={item.id}>
+                          <Link
+                            to={`/author/${item.slug}`}
+                            onClick={(e) => {
+                              onSelect(item);
+                            }}
+                          >
+                            <InfoPill
+                              variant="ruby"
+                              label={<FlameOfFame score={item.score} />}
+                            >
+                              {item.name}
+                            </InfoPill>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-dim">No authors found</p>
+                  )}
+                </section>
+              </>
+            ) : (
+              <section className="flex flex-col items-center gap-32">
+                <p className="text-md text-center w-full">
+                  Ready when you are{" "}
+                  <RiGlassesFill
+                    size={32}
+                    className="animate-wiggle animate-infinite inline ml-2 mb-2"
+                  />
+                </p>
+                <button
+                  className="bg-gray-ghost text-sm text-gray-dim flex items-center gap-2 rounded-md py-1 px-2 overflow-hidden"
+                  onClick={() => onSelect(undefined)}
+                >
+                  <span>Close</span>
+                  <RiCloseFill size={16} className="inline" />
+                </button>
+              </section>
+            )}
+          </div>
+
+          {children}
+        </div>
       </div>
     </div>
   );
+}
+
+function sliceNamesWithEllipsis(names: string[], limit: number) {
+  return names.length > limit ? names.slice(0, limit).concat("...") : names;
+}
+
+function FlameOfFame(props: { score: number; threshold?: number }) {
+  const { score, threshold = 11 } = props;
+
+  if (score < threshold) {
+    return null;
+  }
+
+  return <RiFireFill size={16} className="text-ruby-9 animate-pulse" />;
 }
