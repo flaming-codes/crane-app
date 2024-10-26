@@ -203,7 +203,7 @@ export function SearchResults(
                             }}
                           >
                             <InfoPill
-                              variant="ruby"
+                              variant="jade"
                               label={<FlameOfFame score={item.score} />}
                             >
                               {item.name}
