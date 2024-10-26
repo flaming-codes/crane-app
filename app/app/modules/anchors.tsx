@@ -10,7 +10,10 @@ type Props = PropsWithChildren<{
 
 const twBase = cva({
   base: [
-    "full-width overflow-x-auto border-y text-xs sticky top-14 backdrop-blur-lg z-10",
+    // Tiny hack using `top-[57px]` instead of `top-14` to
+    // make border of nav work correctly, otherwise it wouldn't
+    // be visible.
+    "full-width overflow-x-auto border-b text-xs sticky top-[57px] backdrop-blur-lg z-10",
     "border-gray-6 dark:border-gray-12",
   ],
 });

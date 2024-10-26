@@ -3,6 +3,13 @@ import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { AnchorLink, Anchors } from "../modules/anchors";
 import { Separator } from "../modules/separator";
+import { ExternalLink } from "../modules/external-link";
+import { InfoPill } from "../modules/info-pill";
+import {
+  RiExternalLinkLine,
+  RiGithubFill,
+  RiPieChart2Fill,
+} from "@remixicon/react";
 
 const anchors = ["Mission", "Team", "Analytics", "Source Code", "Licenses"];
 
@@ -69,6 +76,12 @@ export default function PrivacyPage() {
           Please note that we only collect anonymous core web vitals data and no
           personal identifiable data. This means that we can't identify you in
           any way. Your opt-out will be stored in your browser's local storage.
+          <ExternalLink href="https://plausible.io">
+            <InfoPill label={<RiPieChart2Fill size={20} />} className="pl-2">
+              Plausible
+              <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
+            </InfoPill>
+          </ExternalLink>
         </PageContentSection>
 
         <Separator />
@@ -81,6 +94,12 @@ export default function PrivacyPage() {
           the project, feel free to open a pull request or an issue on Github.
           We're always happy to hear from you! If you want to support us, you
           can do so by donating to our BuyMeACoffee.
+          <ExternalLink href="https://github.com/flaming-codes/crane-app">
+            <InfoPill label={<RiGithubFill size={24} />} className="pl-2">
+              Github
+              <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
+            </InfoPill>
+          </ExternalLink>
         </PageContentSection>
 
         <Separator />
