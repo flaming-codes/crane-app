@@ -22,6 +22,7 @@ import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
 import { SearchResult } from "minisearch";
 import { Separator } from "./separator";
 import { InfoPill } from "./info-pill";
+import clsx from "clsx";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -29,6 +30,7 @@ type Props = {
   isFocused: boolean;
   setIsFocused: (isFocused: boolean) => void;
   actions?: ReactNode;
+  inputClassName?: string;
 };
 
 type SearchResults = {
@@ -46,8 +48,14 @@ const fallbackSearchResults: SearchResults = {
 };
 
 export function NavSearch(props: Props) {
-  const { searchContentRef, inputRef, isFocused, setIsFocused, actions } =
-    props;
+  const {
+    searchContentRef,
+    inputRef,
+    isFocused,
+    setIsFocused,
+    actions,
+    inputClassName,
+  } = props;
 
   const [input, setInput] = useState("");
   const fetcher = useDebounceFetcher();
@@ -102,7 +110,10 @@ export function NavSearch(props: Props) {
           placeholder={
             isFocused ? "Type to search for packages and authors" : "Search..."
           }
-          className="flex-1 h-full bg-transparent focus:outline-none"
+          className={clsx(
+            "flex-1 h-full bg-transparent focus:outline-none",
+            inputClassName,
+          )}
           value={input}
           onFocus={() => setIsFocused(true)}
           onChange={onChange}

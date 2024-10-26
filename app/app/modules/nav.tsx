@@ -8,10 +8,17 @@ type Props = PropsWithChildren<{
   className?: string;
   hasHomeLink?: boolean;
   hasSubtleBackground?: boolean;
+  inputClassName?: string;
 }>;
 
 export default function NavigationPage(props: Props) {
-  const { className, children, hasHomeLink, hasSubtleBackground } = props;
+  const {
+    className,
+    children,
+    hasHomeLink,
+    hasSubtleBackground,
+    inputClassName,
+  } = props;
 
   const searchContentPortalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,7 +32,7 @@ export default function NavigationPage(props: Props) {
           "border-b border-gray-8 dark:border-gray-12 sticky inset-x-0 top-0 backdrop-blur-lg z-10 full-width",
           { "bg-white/90 dark:bg-black/90": isFocused },
           {
-            "bg-black/10 dark:bg-black/20 border-transparent dark:border-transparent":
+            "bg-black/10 dark:bg-black/25 border-transparent dark:border-transparent":
               !isFocused && hasSubtleBackground,
           },
           className,
@@ -36,6 +43,7 @@ export default function NavigationPage(props: Props) {
           inputRef={inputRef}
           isFocused={isFocused}
           setIsFocused={setIsFocused}
+          inputClassName={inputClassName}
           actions={
             hasHomeLink ? (
               <Link
