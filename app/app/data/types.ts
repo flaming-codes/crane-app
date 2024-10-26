@@ -90,3 +90,7 @@ export type OverviewPkg = {
   slug: string;
   author_names: string[];
 };
+
+export type AllAuthorsMap = Record<string, string[]>;
+
+export type PackageAuthor = Record<string, string[]>;
