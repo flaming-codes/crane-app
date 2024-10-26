@@ -96,7 +96,9 @@ export function NavSearch(props: Props) {
         <input
           ref={inputRef}
           type="search"
-          placeholder="Search"
+          placeholder={
+            isFocused ? "Type to search for packages and authors" : "Search"
+          }
           className="flex-1 h-full bg-transparent focus:outline-none"
           value={input}
           onFocus={() => setIsFocused(true)}
@@ -216,16 +218,32 @@ export function SearchResults(
                 </section>
               </>
             ) : (
-              <section className="flex flex-col items-center gap-32">
-                <p className="text-md text-center w-full">
+              <section className="flex flex-col items-center gap-6">
+                <p className="text-md text-center">
                   Ready when you are{" "}
                   <RiGlassesFill
                     size={32}
                     className="animate-wiggle animate-infinite inline ml-2 mb-2"
                   />
                 </p>
+                <div className="text-sm text-center text-gray-dim space-y-1 mt-28">
+                  <p>
+                    Press{" "}
+                    <kbd className="font-mono font-bold">
+                      {navigator?.platform?.toLowerCase().includes("mac")
+                        ? "⌘"
+                        : "Ctrl"}
+                    </kbd>{" "}
+                    + <kbd className="font-mono font-bold">K</kbd> to open
+                    search from anywhere
+                  </p>
+                  <p>
+                    Use <kbd className="font-mono font-bold">Esc</kbd> to close
+                    it
+                  </p>
+                </div>
                 <button
-                  className="bg-gray-ghost text-sm text-gray-dim flex items-center gap-2 rounded-md py-1 px-2 overflow-hidden"
+                  className="bg-gray-ghost text-sm text-gray-dim flex items-center gap-2 rounded-md py-1 px-2 overflow-hidden border border-gray-dim"
                   onClick={() => onSelect(undefined)}
                 >
                   <span>Close</span>
