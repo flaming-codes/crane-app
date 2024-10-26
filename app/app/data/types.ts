@@ -94,3 +94,9 @@ export type OverviewPkg = {
 export type AllAuthorsMap = Record<string, string[]>;
 
 export type PackageAuthor = Record<string, string[]>;
+
+export type SearchableAuthor = {
+  name: string;
+  slug: string;
+  totalPackages?: number;
+};

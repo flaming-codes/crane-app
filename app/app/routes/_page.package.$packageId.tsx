@@ -240,9 +240,11 @@ function AboveTheFoldSection(props: { item: Pkg }) {
               {item.needscompilation === "no" ? "No" : "Yes"}
             </InfoPill>
           </li>
-          <li>
-            <InfoPill label="Language">{item.language}</InfoPill>
-          </li>
+          {item.language ? (
+            <li>
+              <InfoPill label="Language">{item.language}</InfoPill>
+            </li>
+          ) : null}
         </ul>
       </div>
     </PageContentSection>

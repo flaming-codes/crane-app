@@ -3,24 +3,24 @@ import { authorSlugSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { PackageService } from "./package.service";
-import { AllAuthorsMap, PackageAuthor } from "./types";
+import { AllAuthorsMap, PackageAuthor, SearchableAuthor } from "./types";
+import MiniSearch from "minisearch";
+import { encodeSitemapSymbols } from "../modules/sitemap";
 
 export class AuthorService {
-  private static allAuthors: AllAuthorsMap = {};
+  private static _allAuthors: AllAuthorsMap = {};
+
+  private static _authorsSearchIndex: MiniSearch<SearchableAuthor> | undefined =
+    undefined;
 
   static async getAuthor(authorId: string) {
     authorSlugSchema.parse(authorId);
 
-    if (Object.keys(this.allAuthors).length === 0) {
-      const url = ENV.VITE_AP_PKGS_URL;
-      this.allAuthors = await fetchData<AllAuthorsMap>(url);
-    }
-
-    if (!this.allAuthors[authorId]) {
+    if (!this._allAuthors[authorId]) {
       throw new Error("Author not found");
     }
 
-    const authorPackageSlugs = this.allAuthors[authorId];
+    const authorPackageSlugs = this._allAuthors[authorId];
     const allPackages = await PackageService.getAllOverviewPackages();
 
     const authorPackages = authorPackageSlugs
@@ -46,6 +46,51 @@ export class AuthorService {
       activeEventType,
       description,
     };
+  }
+
+  static async getAllAuthors() {
+    if (Object.keys(this._allAuthors).length === 0) {
+      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+    }
+    return this._allAuthors;
+  }
+
+  static async searchAuthors(query: string, options?: { limit?: number }) {
+    const { limit = 20 } = options || {};
+
+    if (!this._authorsSearchIndex) {
+      await this.initSearchableAuthorsIndex();
+    }
+
+    const hits = this._authorsSearchIndex
+      ?.search(query, {
+        fuzzy: 0.3,
+        prefix: true,
+      })
+      ?.slice(0, limit);
+
+    return hits || [];
+  }
+
+  private static async initSearchableAuthorsIndex() {
+    this._authorsSearchIndex = new MiniSearch({
+      idField: "name",
+      fields: ["name"],
+      storeFields: ["name", "slug", "totalPackages"],
+    });
+
+    const authors = await this.getAllAuthors();
+    const searchableAuthors: SearchableAuthor[] = Object.entries(authors).map(
+      ([name, packageNames]) => ({
+        name,
+        slug: encodeSitemapSymbols(encodeURIComponent(name)),
+        totalPackages: Array.isArray(packageNames)
+          ? packageNames.length
+          : undefined,
+      }),
+    );
+
+    this._authorsSearchIndex.addAll(searchableAuthors);
   }
 
   private static getEventForAuthor(authorId: string) {

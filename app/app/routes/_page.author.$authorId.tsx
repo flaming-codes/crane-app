@@ -62,7 +62,7 @@ export default function AuthorPage() {
       <Header
         gradient="jade"
         headline={authorId}
-        subline={`Author of ${countPackages} ${countPackages === 1 ? "package" : "packages"}`}
+        subline={`Author of ${countPackages} CRAN ${countPackages === 1 ? "package" : "packages"}`}
         ornament={<Tag>CRAN Author</Tag>}
       />
 
