@@ -1,15 +1,16 @@
 import {
+  Link,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useMatch,
   useMatches,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
+import { Footer } from "./modules/footer";
 
 export const links: LinksFunction = () => [];
 
@@ -31,9 +32,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         {hasFooter ? (
-          <footer className="py-6 text-sm flex justify-center gap-4 items-center px-8 border-t border-gray-dim">
-            <span>About</span> <span>Help</span> <span>Privacy</span>
-          </footer>
+          <Footer
+            variant="page"
+            start={
+              <li>
+                <Link to="/" className="hover:underline underline-offset-4">
+                  Start
+                </Link>
+              </li>
+            }
+          />
         ) : null}
         <ScrollRestoration />
         <Scripts />

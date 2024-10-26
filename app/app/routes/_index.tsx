@@ -1,10 +1,10 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
-import { json, Link, useLoaderData } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/node";
+import { json, useLoaderData } from "@remix-run/react";
 import { SineLogo } from "../modules/svg";
 import NavigationPage from "../modules/nav";
 import { randomInt } from "es-toolkit";
 import clsx from "clsx";
-import { ExternalLink } from "../modules/external-link";
+import { Footer } from "../modules/footer";
 
 export const handle = {
   hasFooter: false,
@@ -61,34 +61,7 @@ export default function Index() {
         </div>
 
         <div className="absolute bottom-0 inset-x-0 content-grid">
-          <div className="full-width">
-            <ul className="flex items-center gap-6 text-sm text-gray-dim py-6 font-light">
-              <li>
-                <Link
-                  to="/privacy"
-                  className="hover:underline underline-offset-4"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/privacy"
-                  className="hover:underline underline-offset-4"
-                >
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <ExternalLink
-                  href="https://github.com/flaming-codes/crane-app"
-                  className="hover:underline underline-offset-4"
-                >
-                  Github
-                </ExternalLink>
-              </li>
-            </ul>
-          </div>
+          <Footer variant="start" />
         </div>
       </NavigationPage>
     </>
