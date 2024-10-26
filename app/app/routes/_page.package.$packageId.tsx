@@ -25,6 +25,7 @@ import { BinaryDownloadListItem } from "../modules/binary-download-link";
 import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
 import { lazy, Suspense } from "react";
+import { ClientOnly } from "remix-utils/client-only";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -215,11 +216,15 @@ function AboveTheFoldSection(props: { item: Pkg }) {
           <li>
             <InfoPill label="Version">{item.version}</InfoPill>
           </li>
-          <li>
-            <InfoPill label="Last release">
-              {formatRelative(item.date, new Date())}
-            </InfoPill>
-          </li>
+          <ClientOnly>
+            {() => (
+              <li>
+                <InfoPill label="Last release">
+                  {formatRelative(item.date, new Date())}
+                </InfoPill>
+              </li>
+            )}
+          </ClientOnly>
           <li>
             <InfoPill label="R version">{rVersion || "unknown"}</InfoPill>
           </li>
