@@ -32,20 +32,20 @@ const PackageDependencySearch = lazy(() =>
   })),
 );
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CRAN/E" },
-    { name: "description", content: "<Package> to CRAN/E" },
-  ];
-};
-
 const sections = [
   "Synopsis",
   "Documentation",
   "Team",
   "Binaries",
   "Dependencies",
-];
+] as const;
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CRAN/E" },
+    { name: "description", content: "<Package> to CRAN/E" },
+  ];
+};
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { packageId } = params;
@@ -373,46 +373,44 @@ function DocumentationPageContentSection(
         fragment="documentation"
       >
         {hasAny ? (
-          <section>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {vignettes?.map((item) => (
-                <li key={item.name}>
-                  <ExternalLink href={item.link}>
-                    <InfoCard variant="iris" icon="external">
-                      <span className="flex flex-col gap-1">
-                        <span className="text-xs text-gray-dim">Vignette</span>
-                        <span>{item.name}</span>
-                      </span>
-                    </InfoCard>
-                  </ExternalLink>
-                </li>
-              ))}
-              {materials?.map((item) => (
-                <li key={item.name}>
-                  <ExternalLink href={item.link}>
-                    <InfoCard variant="iris" icon="external">
-                      <span className="flex flex-col gap-1">
-                        <span className="text-xs text-gray-dim">Material</span>
-                        <span>{item.name}</span>
-                      </span>
-                    </InfoCard>
-                  </ExternalLink>
-                </li>
-              ))}
-              {inviews?.map((item) => (
-                <li key={item.name}>
-                  <ExternalLink href={item.link}>
-                    <InfoCard variant="iris" icon="external">
-                      <span className="flex flex-col gap-1">
-                        <span className="text-xs text-gray-dim">In Views</span>
-                        <span>{item.name}</span>
-                      </span>
-                    </InfoCard>
-                  </ExternalLink>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {vignettes?.map((item) => (
+              <li key={item.name}>
+                <ExternalLink href={item.link}>
+                  <InfoCard variant="iris" icon="external">
+                    <span className="flex flex-col gap-1">
+                      <span className="text-xs text-gray-dim">Vignette</span>
+                      <span>{item.name}</span>
+                    </span>
+                  </InfoCard>
+                </ExternalLink>
+              </li>
+            ))}
+            {materials?.map((item) => (
+              <li key={item.name}>
+                <ExternalLink href={item.link}>
+                  <InfoCard variant="iris" icon="external">
+                    <span className="flex flex-col gap-1">
+                      <span className="text-xs text-gray-dim">Material</span>
+                      <span>{item.name}</span>
+                    </span>
+                  </InfoCard>
+                </ExternalLink>
+              </li>
+            ))}
+            {inviews?.map((item) => (
+              <li key={item.name}>
+                <ExternalLink href={item.link}>
+                  <InfoCard variant="iris" icon="external">
+                    <span className="flex flex-col gap-1">
+                      <span className="text-xs text-gray-dim">In Views</span>
+                      <span>{item.name}</span>
+                    </span>
+                  </InfoCard>
+                </ExternalLink>
+              </li>
+            ))}
+          </ul>
         ) : null}
       </PageContentSection>
       <Separator />

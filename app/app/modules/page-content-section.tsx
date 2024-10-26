@@ -13,11 +13,9 @@ export function PageContentSection(props: Props) {
 
   return (
     <section className={clsx("flex flex-col gap-16", className)}>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3" id={fragment}>
         {headline ? (
-          <h2 id={fragment} className="text-xl text-gray-normal font-semibold">
-            {headline}
-          </h2>
+          <h2 className="text-xl text-gray-normal font-semibold">{headline}</h2>
         ) : null}
         {subline ? <p className="text-gray-normal text-sm">{subline}</p> : null}
       </div>
