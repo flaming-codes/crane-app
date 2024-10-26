@@ -164,7 +164,7 @@ function AboveTheFoldSection(props: { item: Pkg }) {
       </div>
 
       <div className="flex flex-col gap-6 overflow-x-hidden">
-        <ul className="flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-2 items-start">
           <li>
             <CopyPillButton textToCopy={`install.packages('${item.name}')`}>
               install.packages('{item.name}')
@@ -260,7 +260,7 @@ function BinariesPageContentSection(
       // subline="Download all available executables for this package"
       fragment="binaries"
     >
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-start">
         {macos_binaries?.map((item) => (
           <BinaryDownloadListItem
             key={item.link}
@@ -323,7 +323,7 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
       // subline="See everyone of the team behind this package"
       fragment="team"
     >
-      <ul className="grid grid-cols-1 gap-8">
+      <ul className="grid grid-cols-1 gap-8 items-start">
         {maintainer ? (
           <li>
             <ContactPill
@@ -373,7 +373,7 @@ function DocumentationPageContentSection(
         fragment="documentation"
       >
         {hasAny ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 items-start">
             {vignettes?.map((item) => (
               <li key={item.name}>
                 <ExternalLink href={item.link}>
@@ -468,7 +468,7 @@ function DependenciesPageContentSection(
     <PageContentSection
       headline="Dependencies"
       fragment="dependencies"
-      className=" min-h-96"
+      className="min-h-96"
     >
       <Suspense>
         <PackageDependencySearch key={location.pathname} {...props} />

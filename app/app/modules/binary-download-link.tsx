@@ -28,7 +28,7 @@ export function BinaryDownloadListItem(props: Props) {
   const { href, headline, os, arch, className, variant } = props;
 
   return (
-    <a href={href} className={twBase({ className })}>
+    <a download href={href} className={twBase({ className })}>
       <RiDownloadLine
         size={18}
         className="opacity-50 group-hover/binary:opacity-100 group-hover/binary:animate-wiggle-more group-hover/binary:animate-infinite transition-opacity"

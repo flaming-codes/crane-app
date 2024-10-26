@@ -111,7 +111,7 @@ function PackagesSection(props: Pick<AuthorRes, "packages">) {
 
   return (
     <PageContentSection headline="Packages" fragment="packages">
-      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 items-start">
         {packages.map((item) => (
           <li key={item.name}>
             <Link to={`/package/${item.slug}`}>
@@ -134,7 +134,7 @@ function TeamSection(props: Pick<AuthorRes, "otherAuthors">) {
 
   return (
     <PageContentSection headline="Team" fragment="team">
-      <ul className="flex flex-wrap gap-2">
+      <ul className="flex flex-wrap gap-2 items-start">
         {otherAuthors.map((name) => (
           <li key={name}>
             <Link to={`/author/${name}`}>

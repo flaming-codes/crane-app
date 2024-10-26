@@ -129,13 +129,33 @@ export class AuthorService {
       ];
       packageDescription = getRandomDescription(descriptions);
     } else if (packageCount > 5 && packageCount <= 10) {
-      packageDescription = `${authorName} has been quite busy, working on ${packageCount} packages. You could say ${authorName} is on a coding spree! Keep up the great work!`;
+      const descriptions = [
+        `${authorName} has been quite busy, working on ${packageCount} packages. You could say ${authorName} is on a coding spree! Keep up the great work!`,
+        `${authorName} has worked on ${packageCount} packages so far. That's a lot of coding! Clearly, ${authorName} is on a mission.`,
+        `With ${packageCount} packages completed, ${authorName} is proving to be quite the prolific developer. Keep it up!`,
+      ];
+      packageDescription = getRandomDescription(descriptions);
     } else if (packageCount > 10 && packageCount <= 15) {
-      packageDescription = `${authorName} has worked on ${packageCount} packages so far. Wow, ${authorName} is really cranking out the code—this is dedication on another level!`;
+      const descriptions = [
+        `${authorName} has worked on ${packageCount} packages so far. Wow, ${authorName} is really cranking out the code—this is dedication on another level!`,
+        `Impressive! ${authorName} has worked on ${packageCount} packages, showing some serious commitment to the craft.`,
+        `${authorName} has ${packageCount} packages under their belt. That's not just dedication, it's a passion for coding!`,
+      ];
+      packageDescription = getRandomDescription(descriptions);
     } else if (packageCount > 15 && packageCount <= 20) {
-      packageDescription = `${authorName} has worked on ${packageCount} packages. That's an impressive feat! ${authorName} must have some serious passion for coding.`;
+      const descriptions = [
+        `${authorName} has worked on ${packageCount} packages. That's an impressive feat! ${authorName} must have some serious passion for coding.`,
+        `With ${packageCount} packages completed, ${authorName} is showing some serious coding chops. The future looks bright!`,
+        `${authorName} has put out ${packageCount} packages—clearly, they're unstoppable. Keep those packages coming!`,
+      ];
+      packageDescription = getRandomDescription(descriptions);
     } else if (packageCount > 20) {
-      packageDescription = `${authorName} has been on fire, working on ${packageCount} packages to date. Honestly, does ${authorName} even sleep? This is some serious dedication!`;
+      const descriptions = [
+        `${authorName} has been on fire, working on ${packageCount} packages to date. Honestly, does ${authorName} even sleep? This is some serious dedication!`,
+        `${authorName} has completed over ${packageCount} packages! The dedication here is off the charts—clearly a coding superstar!`,
+        `${authorName} has worked on ${packageCount} packages, which is nothing short of amazing. Who needs sleep when you've got code to write?`,
+      ];
+      packageDescription = getRandomDescription(descriptions);
     } else {
       packageDescription = `${authorName} hasn't worked on any packages yet, but stay tuned! Great things often start with a bit of patience.`;
     }
@@ -163,19 +183,54 @@ export class AuthorService {
       ];
       authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount === 3) {
-      authorDescription = ` ${authorName} has worked with 3 other authors: ${joinAuthors(otherAuthors)}. Four brilliant minds coming together—what could go wrong?`;
+      const descriptions = [
+        ` ${authorName} has worked with 3 other authors: ${joinAuthors(otherAuthors)}. Four brilliant minds coming together—what could go wrong?`,
+        ` ${authorName} and their 3 collaborators—${joinAuthors(otherAuthors)}—made a fantastic team. Four is definitely not a crowd when it comes to coding!`,
+        ` Working with 3 others, ${authorName} and ${joinAuthors(otherAuthors)} showed that teamwork makes the dream work!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount === 4) {
-      authorDescription = ` ${authorName} has collaborated with 4 other authors: ${joinAuthors(otherAuthors)}. Five people, five different ideas—sounds like a lot of fun!`;
+      const descriptions = [
+        ` ${authorName} has collaborated with 4 other authors: ${joinAuthors(otherAuthors)}. Five people, five different ideas—sounds like a lot of fun!`,
+        ` ${authorName} worked with 4 other talented individuals—${joinAuthors(otherAuthors)}. Five coders, one goal, endless possibilities!`,
+        ` Four collaborators joined ${authorName} on this project, making for a team of five. With ${joinAuthors(otherAuthors)}, the possibilities were endless!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount === 5) {
-      authorDescription = ` ${authorName} has worked alongside 5 other authors: ${joinAuthors(otherAuthors)}. Six people coding together—it's like a party, but with more bugs and commits!`;
+      const descriptions = [
+        ` ${authorName} has worked alongside 5 other authors: ${joinAuthors(otherAuthors)}. Six people coding together—it's like a party, but with more bugs and commits!`,
+        ` ${authorName} and 5 others—${joinAuthors(otherAuthors)}—teamed up to tackle the challenge. A party of six, ready to conquer the code!`,
+        ` With 5 collaborators, ${authorName} and ${joinAuthors(otherAuthors)} brought the energy of a six-person team to the project. It was an adventure!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount > 5 && otherAuthorCount <= 10) {
-      authorDescription = ` ${authorName} has joined forces with over ${otherAuthorCount} authors, making it a true team effort. Imagine all those brainstorming sessions—must've been epic!`;
+      const descriptions = [
+        ` ${authorName} has joined forces with over ${otherAuthorCount} authors, making it a true team effort. Imagine all those brainstorming sessions—must've been epic!`,
+        ` ${authorName} worked with ${otherAuthorCount} other authors. That's a lot of creative energy! No wonder the results were fantastic.`,
+        ` Collaborating with ${otherAuthorCount} other authors, ${authorName} experienced the power of teamwork. The more, the merrier—especially in coding!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount > 10 && otherAuthorCount <= 15) {
-      authorDescription = ` ${authorName} has worked with ${otherAuthorCount} other authors. That's a whole squad of coders! It must be like managing a small battalion of creativity and caffeine.`;
+      const descriptions = [
+        ` ${authorName} has worked with ${otherAuthorCount} other authors. That's a whole squad of coders! It must be like managing a small battalion of creativity and caffeine.`,
+        ` ${authorName} teamed up with ${otherAuthorCount} others, making it a large and lively crew of coders. The synergy must have been amazing!`,
+        ` ${authorName} collaborated with ${otherAuthorCount} other developers. That's like an entire class of coding geniuses coming together!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount > 15 && otherAuthorCount <= 20) {
-      authorDescription = ` ${authorName} has collaborated with ${otherAuthorCount} other authors. That's a huge network of talent—imagine all those lines of communication and brilliant ideas flying around!`;
+      const descriptions = [
+        ` ${authorName} has collaborated with ${otherAuthorCount} other authors. That's a huge network of talent—imagine all those lines of communication and brilliant ideas flying around!`,
+        ` With ${otherAuthorCount} collaborators, ${authorName} was part of a truly massive undertaking. It takes a village to code something great!`,
+        ` ${authorName} and ${otherAuthorCount} other talented individuals worked together, forming a powerhouse of developers. That's some serious talent!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     } else if (otherAuthorCount > 20) {
-      authorDescription = ` ${authorName} has collaborated with a whopping ${otherAuthorCount} other authors. It's basically a small army of coders! Who knew package development could be such a social event?`;
+      const descriptions = [
+        ` ${authorName} has collaborated with a whopping ${otherAuthorCount} other authors. It's basically a small army of coders! Who knew package development could be such a social event?`,
+        ` ${authorName} worked with over ${otherAuthorCount} collaborators. That's a huge group of developers—almost like a coding festival!`,
+        ` ${authorName} teamed up with ${otherAuthorCount} other developers, making this project a gigantic collaborative effort. The coding world is a better place for it!`,
+      ];
+      authorDescription = getRandomDescription(descriptions);
     }
 
     return packageDescription + authorDescription;
