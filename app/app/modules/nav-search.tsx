@@ -107,6 +107,10 @@ export function NavSearch(props: Props) {
         <input
           ref={inputRef}
           type="search"
+          autoCapitalize="off"
+          autoCorrect="off"
+          autoComplete="off"
+          spellCheck="false"
           placeholder={
             isFocused ? "Type to search for packages and authors" : "Search..."
           }
