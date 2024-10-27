@@ -1,0 +1,136 @@
+{
+  "url": "https://cran.r-project.org/web/packages/xadmix/index.html",
+  "name": "xadmix",
+  "slug": "xadmix",
+  "title": "Subsetting and Plotting Optimized for Admixture Data",
+  "description": "A few functions which provide a quick way of subsetting genomic admixture data and generating customizable stacked barplots.",
+  "version": "1.0.0",
+  "date": "2022-07-08",
+  "maintainer": {
+    "name": "Lukas Schönmann",
+    "email": "lukas.schoenmann@outlook.com"
+  },
+  "bugreports": "https://github.com/SpaceCowboy-71/xadmix/issues",
+  "needscompilation": "no",
+  "cran_checks": {
+    "label": "xadmix results",
+    "link": "https://cran.r-project.org/web/checks/check_results_xadmix.html"
+  },
+  "link": {
+    "text": "https://github.com/SpaceCowboy-71/xadmix",
+    "links": ["https://github.com/SpaceCowboy-71/xadmix"]
+  },
+  "language": "en-US",
+  "depends": [{ "name": "R", "link": "", "version": "≥ 2.10" }],
+  "imports": [
+    {
+      "name": "dplyr",
+      "link": "https://cran.r-project.org/web/packages/dplyr/index.html"
+    },
+    {
+      "name": "forcats",
+      "link": "https://cran.r-project.org/web/packages/forcats/index.html"
+    },
+    {
+      "name": "ggplot2",
+      "link": "https://cran.r-project.org/web/packages/ggplot2/index.html"
+    },
+    {
+      "name": "magrittr",
+      "link": "https://cran.r-project.org/web/packages/magrittr/index.html"
+    },
+    { "name": "methods", "link": "" },
+    {
+      "name": "rlang",
+      "link": "https://cran.r-project.org/web/packages/rlang/index.html"
+    },
+    {
+      "name": "stringr",
+      "link": "https://cran.r-project.org/web/packages/stringr/index.html"
+    },
+    {
+      "name": "tidyr",
+      "link": "https://cran.r-project.org/web/packages/tidyr/index.html"
+    },
+    {
+      "name": "viridis",
+      "link": "https://cran.r-project.org/web/packages/viridis/index.html"
+    }
+  ],
+  "suggests": [
+    {
+      "name": "knitr",
+      "link": "https://cran.r-project.org/web/packages/knitr/index.html"
+    },
+    {
+      "name": "rmarkdown",
+      "link": "https://cran.r-project.org/web/packages/rmarkdown/index.html"
+    }
+  ],
+  "materials": [
+    {
+      "name": "NEWS",
+      "link": "https://cran.r-project.org/web/packages/xadmix/news/news.html"
+    }
+  ],
+  "author": [
+    {
+      "name": "Lukas Schönmann",
+      "roles": ["aut", "cre"],
+      "link": "https://orcid.org/0000-0002-3161-4270"
+    }
+  ],
+  "license": [
+    {
+      "name": "GPL (≥ 3)",
+      "link": "https://cran.r-project.org/web/licenses/GPL-3"
+    }
+  ],
+  "reference_manual": {
+    "label": "xadmix.pdf",
+    "link": "https://cran.r-project.org/web/packages/xadmix/xadmix.pdf"
+  },
+  "vignettes": [
+    {
+      "name": "Manual - 'xadmix'",
+      "link": "https://cran.r-project.org/web/packages/xadmix/vignettes/xadmix-manual.html"
+    }
+  ],
+  "package_source": {
+    "label": "xadmix_1.0.0.tar.gz",
+    "link": "https://cran.r-project.org//src/contrib/xadmix_1.0.0.tar.gz"
+  },
+  "windows_binaries": [
+    {
+      "label": "r-devel:",
+      "link": "https://cran.r-project.org//bin/windows/contrib/4.3/xadmix_1.0.0.zip"
+    },
+    {
+      "label": "r-release:",
+      "link": "https://cran.r-project.org//bin/windows/contrib/4.2/xadmix_1.0.0.zip"
+    },
+    {
+      "label": "r-oldrel:",
+      "link": "https://cran.r-project.org//bin/windows/contrib/4.1/xadmix_1.0.0.zip"
+    }
+  ],
+  "macos_binaries": [
+    {
+      "label": "r-release (arm64):",
+      "link": "https://cran.r-project.org//bin/macosx/big-sur-arm64/contrib/4.2/xadmix_1.0.0.tgz"
+    },
+    {
+      "label": "r-oldrel (arm64):",
+      "link": "https://cran.r-project.org//bin/macosx/big-sur-arm64/contrib/4.1/xadmix_1.0.0.tgz"
+    },
+    {
+      "label": "r-release (x86_64):",
+      "link": "https://cran.r-project.org//bin/macosx/contrib/4.2/xadmix_1.0.0.tgz"
+    },
+    {
+      "label": "r-oldrel (x86_64):",
+      "link": "https://cran.r-project.org//bin/macosx/contrib/4.1/xadmix_1.0.0.tgz"
+    }
+  ],
+  "last_scraped": "2022-08-28 23:48:42"
+}

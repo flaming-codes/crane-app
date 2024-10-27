@@ -1,6 +1,30 @@
 {
   "cSpell.words": [
-    "CRAN"
+    "clsx",
+    "CRAN",
+    "Inviews",
+    "Lukas",
+    "minisearch",
+    "needscompilation",
+    "ORCID",
+    "remixicon",
+    "revalidator",
+    "sonner",
+    "subline",
+    "tailwindcss"
   ],
-  "git-blame.gitWebUrl": ""
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "cva\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ],
+    [
+      "cx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ],
+    [
+      "tw`([^`]*)`",
+      "tw`([^`]*)`"
+    ],
+  ]
 }
