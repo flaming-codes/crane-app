@@ -3,6 +3,7 @@ import {
   Link,
   Links,
   Meta,
+  MetaFunction,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -13,6 +14,17 @@ import type { LinksFunction } from "@remix-run/node";
 import { Footer } from "./modules/footer";
 import "./tailwind.css";
 import { ENV } from "./data/env";
+import { BASE_URL } from "./modules/app";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "CRAN/E" },
+    { name: "description", content: "A collection of R packages for CRAN" },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: BASE_URL },
+    { property: "og:image", content: BASE_URL + "/images/og/cover-01.jpg" },
+  ];
+};
 
 export const links: LinksFunction = () => {
   return [

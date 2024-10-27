@@ -12,8 +12,8 @@ export const handle = {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "CRAN/E" },
-    { name: "description", content: "Welcome to CRAN/E" },
+    { title: "Privacy | CRAN/E" },
+    { name: "description", content: "How privacy is handled to CRAN/E" },
   ];
 };
 

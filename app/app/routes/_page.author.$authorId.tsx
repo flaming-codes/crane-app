@@ -1,4 +1,4 @@
-import { json, type LoaderFunction, type MetaFunction } from "@remix-run/node";
+import { json, type LoaderFunction } from "@remix-run/node";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
@@ -12,17 +12,76 @@ import { InfoCard } from "../modules/info-card";
 import { InfoPill } from "../modules/info-pill";
 import { uniqBy } from "es-toolkit";
 import { RiArrowRightSLine } from "@remixicon/react";
+import {
+  composeBreadcrumbsJsonLd,
+  composeFAQJsonLd,
+  mergeMeta,
+} from "../modules/meta";
+import { BASE_URL } from "../modules/app";
 
 type AuthorRes = Awaited<ReturnType<typeof AuthorService.getAuthor>>;
 
 const anchors = ["Synopsis", "Packages", "Team"] as const;
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CRAN/E" },
-    { name: "description", content: "<Author> to CRAN/E" },
-  ];
-};
+export const meta = mergeMeta(
+  (params) => {
+    const data = params.data as AuthorRes;
+    const url = BASE_URL + `/author/${data.authorId}`;
+
+    return [
+      { title: `${data.authorId} | CRAN/E` },
+      {
+        name: "description",
+        content: `All R packages created by ${data.authorId} for CRAN`,
+      },
+      { property: "og:title", content: `${data.authorId} | CRAN/E` },
+      {
+        property: "og:description",
+        content: `All R packages created by ${data.authorId} for CRAN`,
+      },
+      { property: "og:url", content: url },
+    ];
+  },
+  (params) => {
+    const data = params.data as AuthorRes;
+
+    return [
+      {
+        "script:ld+json": composeBreadcrumbsJsonLd([
+          {
+            name: "Authors",
+            href: "/author",
+          },
+          {
+            name: data.authorId,
+            href: `/author/${data.authorId}`,
+          },
+        ]),
+      },
+      {
+        "script:ld+json": composeFAQJsonLd([
+          {
+            q: `Who is ${data.authorId}?`,
+            a: `${data.authorId} is the author of ${data.packages.length} CRAN packages.`,
+          },
+          {
+            q: `What packages has ${data.authorId} created?`,
+            a: `${data.authorId} has created the following CRAN packages: ${data.packages
+              .slice(5)
+              .map((pkg) => pkg.name)
+              .join(", ")}`,
+          },
+          {
+            q: `Who else has worked with ${data.authorId}?`,
+            a: `${data.authorId} has worked with the following authors: ${data.otherAuthors
+              .slice(5)
+              .join(", ")}`,
+          },
+        ]),
+      },
+    ];
+  },
+);
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { authorId } = params;

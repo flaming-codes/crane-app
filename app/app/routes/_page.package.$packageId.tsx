@@ -1,4 +1,4 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
@@ -27,6 +27,12 @@ import { InfoCard } from "../modules/info-card";
 import { lazy, Suspense } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import { sendEvent } from "../modules/plausible";
+import {
+  composeBreadcrumbsJsonLd,
+  composeFAQJsonLd,
+  mergeMeta,
+} from "../modules/meta";
+import { BASE_URL } from "../modules/app";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -42,12 +48,69 @@ const sections = [
   "Dependencies",
 ] as const;
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CRAN/E" },
-    { name: "description", content: "<Package> to CRAN/E" },
-  ];
-};
+export const meta = mergeMeta(
+  ({ data }) => {
+    const { item } = data as { item: Pkg };
+    const url = BASE_URL + `/${item.name}`;
+
+    return [
+      { title: `${item.name} | CRAN/E` },
+      { name: "description", content: item.title },
+      { property: "og:title", content: `${item.name} | CRAN/E` },
+      { property: "og:description", content: item.title },
+      { property: "og:url", content: url },
+    ];
+  },
+  ({ data }) => {
+    const { item } = data as { item: Pkg };
+
+    return [
+      {
+        "script:ld+json": composeBreadcrumbsJsonLd([
+          {
+            name: "Packages",
+            href: "/packages",
+          },
+          {
+            name: item.name,
+            href: `/package/${item.name}`,
+          },
+        ]),
+      },
+      {
+        "script:ld+json": composeFAQJsonLd([
+          {
+            q: `What does the R-package '${item.name}' do?`,
+            a: item.title,
+          },
+          {
+            q: `Who maintains ${item.name}?`,
+            a: item.maintainer?.name || "Unknown",
+          },
+          {
+            q: `Who authored ${item.name}?`,
+            a: item.author?.map((a) => a.name).join(", ") || "Unknown",
+          },
+          {
+            q: `What is the current version of ${item.name}?`,
+            a: `The current version of the R-package '${item.version}' is ${item.version}`,
+          },
+          {
+            q: `When was the last release of ${item.name}?`,
+            a: `The last release of the R-package '${item.version}' was ${formatRelative(
+              item.date,
+              new Date(),
+            )}`,
+          },
+          {
+            q: `Where can I search for the R-package '${item.name}'?`,
+            a: `You can search for the R-package '${item.name}' on CRAN/E at ${BASE_URL}`,
+          },
+        ]),
+      },
+    ];
+  },
+);
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { packageId } = params;

@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+export const BASE_URL = "https://cran-e.com";
+
 export function useKeyboardEvent(
   key: string,
   callback: (event: KeyboardEvent) => void,
