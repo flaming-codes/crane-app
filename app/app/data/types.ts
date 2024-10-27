@@ -100,3 +100,13 @@ export type SearchableAuthor = {
   slug: string;
   totalPackages?: number;
 };
+
+/**
+ * Wrapper type for any object that has an expiration date.
+ * If possible, use a stub index + expiresAt of 0 for init and then update the index
+ * once it has expired.
+ */
+export type ExpiringSearchIndex<T> = {
+  index: T;
+  expiresAt: number;
+};

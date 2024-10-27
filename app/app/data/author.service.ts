@@ -1,17 +1,26 @@
-import { differenceInCalendarDays } from "date-fns";
+import { addHours, differenceInCalendarDays } from "date-fns";
 import { authorSlugSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { PackageService } from "./package.service";
-import { AllAuthorsMap, PackageAuthor, SearchableAuthor } from "./types";
+import {
+  AllAuthorsMap,
+  ExpiringSearchIndex,
+  PackageAuthor,
+  SearchableAuthor,
+} from "./types";
 import MiniSearch from "minisearch";
 import { encodeSitemapSymbols } from "../modules/sitemap";
 
 export class AuthorService {
   private static _allAuthors: AllAuthorsMap = {};
 
-  private static _authorsSearchIndex: MiniSearch<SearchableAuthor> | undefined =
-    undefined;
+  private static _authorsSearchIndex: ExpiringSearchIndex<
+    MiniSearch<SearchableAuthor>
+  > = {
+    index: new MiniSearch({ fields: ["ignore"] }),
+    expiresAt: 0,
+  };
 
   static async getAuthor(authorId: string) {
     authorSlugSchema.parse(authorId);
@@ -58,26 +67,26 @@ export class AuthorService {
   static async searchAuthors(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    if (!this._authorsSearchIndex) {
+    if (this._authorsSearchIndex.expiresAt < Date.now()) {
       await this.initSearchableAuthorsIndex();
     }
 
-    const hits = this._authorsSearchIndex
-      ?.search(query, {
-        fuzzy: 0.3,
-        prefix: true,
-      })
-      ?.slice(0, limit);
+    const hits = this._authorsSearchIndex.index
+      .search(query, { fuzzy: 0.3, prefix: true })
+      .slice(0, limit);
 
     return hits || [];
   }
 
   private static async initSearchableAuthorsIndex() {
-    this._authorsSearchIndex = new MiniSearch({
-      idField: "name",
-      fields: ["name"],
-      storeFields: ["name", "slug", "totalPackages"],
-    });
+    this._authorsSearchIndex = {
+      expiresAt: addHours(Date.now(), 12).getTime(),
+      index: new MiniSearch({
+        idField: "name",
+        fields: ["name"],
+        storeFields: ["name", "slug", "totalPackages"],
+      }),
+    };
 
     const authors = await this.getAllAuthors();
     const searchableAuthors: SearchableAuthor[] = Object.entries(authors).map(
@@ -90,7 +99,7 @@ export class AuthorService {
       }),
     );
 
-    this._authorsSearchIndex.addAll(searchableAuthors);
+    this._authorsSearchIndex.index.addAll(searchableAuthors);
   }
 
   private static getEventForAuthor(authorId: string) {

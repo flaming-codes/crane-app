@@ -2,13 +2,18 @@ import { uniqBy } from "es-toolkit";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { packageSlugSchema } from "./package.shape";
-import { OverviewPkg, Pkg } from "./types";
+import { ExpiringSearchIndex, OverviewPkg, Pkg } from "./types";
 import MiniSearch from "minisearch";
+import { addHours } from "date-fns";
 
 export class PackageService {
   private static allOverviewPackages: OverviewPkg[] = [];
-  private static _packagesSearchIndex: MiniSearch<OverviewPkg> | undefined =
-    undefined;
+  private static _packagesSearchIndex: ExpiringSearchIndex<
+    MiniSearch<OverviewPkg>
+  > = {
+    index: new MiniSearch<OverviewPkg>({ fields: ["ignore"] }),
+    expiresAt: 0,
+  };
 
   static async getPackage(packageId: string): Promise<Pkg | undefined> {
     packageSlugSchema.parse(packageId);
@@ -29,26 +34,26 @@ export class PackageService {
   static async searchPackages(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    if (!this._packagesSearchIndex) {
+    if (this._packagesSearchIndex.expiresAt < Date.now()) {
       await this.initSearchablePackagesIndex();
     }
 
-    const hits = this._packagesSearchIndex
-      ?.search(query, {
-        fuzzy: 0.3,
-        prefix: true,
-      })
-      ?.slice(0, limit);
+    const hits = this._packagesSearchIndex.index
+      .search(query, { fuzzy: 0.3, prefix: true })
+      .slice(0, limit);
 
     return hits || [];
   }
 
   private static async initSearchablePackagesIndex() {
-    this._packagesSearchIndex = new MiniSearch({
-      idField: "name",
-      fields: ["name", "title"],
-      storeFields: ["name", "slug", "description", "author_names"],
-    });
+    this._packagesSearchIndex = {
+      expiresAt: addHours(Date.now(), 12).getTime(),
+      index: new MiniSearch({
+        idField: "name",
+        fields: ["name", "title"],
+        storeFields: ["name", "slug", "description", "author_names"],
+      }),
+    };
 
     const packages = await this.getAllOverviewPackages().then((pkgs) =>
       uniqBy(pkgs, (pkg) => pkg.name),
@@ -61,6 +66,6 @@ export class PackageService {
       author_names: pkg.author_names,
     }));
 
-    this._packagesSearchIndex.addAll(searchablePackages);
+    this._packagesSearchIndex.index.addAll(searchablePackages);
   }
 }

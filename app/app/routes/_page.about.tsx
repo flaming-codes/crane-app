@@ -54,9 +54,24 @@ export default function PrivacyPage() {
         <Separator />
 
         <PageContentSection headline="Team" fragment="team">
+          <div className="flex gap-6 md:gap-16 md:justify-center">
+            {["Lukas", "Tom"].map((name) => (
+              <figure
+                key={name}
+                className="text-center text-gray-dim text-sm space-y-2"
+              >
+                <img
+                  src={`/images/we/${name.toLowerCase()}.webp`}
+                  alt={`A portrait of ${name}`}
+                  className="aspect-square w-20 rounded-full hover:animate-wiggle hover:animate-infinite"
+                />
+                <figcaption>{name}</figcaption>
+              </figure>
+            ))}
+          </div>
           Our names are Lukas and Tom and we're two developers from Austria. Our
           passion for coding (the one in R, the other in TypeScript) led us to
-          the discovery of the original CRAN-site. Seeing the desparate visual
+          the discovery of the original CRAN-site. Seeing the desperate visual
           state the site was in, we decided to give it a facelift. We're not
           affiliated with CRAN or RStudio in any way. CRAN/E is the culmination
           of our efforts to make the site more modern and user-friendly and we
@@ -77,7 +92,10 @@ export default function PrivacyPage() {
           personal identifiable data. This means that we can't identify you in
           any way. Your opt-out will be stored in your browser's local storage.
           <ExternalLink href="https://plausible.io">
-            <InfoPill label={<RiPieChart2Fill size={20} />} className="pl-2">
+            <InfoPill
+              label={<RiPieChart2Fill size={20} />}
+              className="pl-2 bg-gray-ghost"
+            >
               Plausible
               <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
             </InfoPill>
@@ -95,7 +113,10 @@ export default function PrivacyPage() {
           We're always happy to hear from you! If you want to support us, you
           can do so by donating to our BuyMeACoffee.
           <ExternalLink href="https://github.com/flaming-codes/crane-app">
-            <InfoPill label={<RiGithubFill size={24} />} className="pl-2">
+            <InfoPill
+              label={<RiGithubFill size={24} />}
+              className="pl-2 bg-gray-ghost"
+            >
               Github
               <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
             </InfoPill>
