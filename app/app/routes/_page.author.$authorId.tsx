@@ -136,7 +136,7 @@ export default function AuthorPage() {
             return true;
           })
           .map((item) => (
-            <AnchorLink key={item} fragment={`#${item.toLowerCase()}`}>
+            <AnchorLink key={item} fragment={item.toLowerCase()}>
               {item}
             </AnchorLink>
           ))}

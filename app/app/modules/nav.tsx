@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { NavSearch } from "../modules/nav-search";
 import { PropsWithChildren, useRef, useState } from "react";
 import clsx from "clsx";
-import { RiHomeLine } from "@remixicon/react";
+import { RiHomeFill } from "@remixicon/react";
 
 type Props = PropsWithChildren<{
   className?: string;
@@ -51,7 +51,7 @@ export default function NavigationPage(props: Props) {
                 className="group flex h-full items-center pl-4"
                 title="Landing page"
               >
-                <RiHomeLine
+                <RiHomeFill
                   size={18}
                   className="text-gray-dim group-hover:animate-wiggle-more group-hover:animate-infinite"
                 />

@@ -1,10 +1,8 @@
 import { Outlet } from "@remix-run/react";
 import NavigationPage from "../modules/nav";
 import { lazy } from "react";
-
-const Toaster = lazy(async () => ({
-  default: (await import("sonner")).Toaster,
-}));
+import { ClientOnly } from "remix-utils/client-only";
+import { Toaster } from "sonner";
 
 export const handle = {
   hasFooter: true,

@@ -8,7 +8,7 @@ import MiniSearch from "minisearch";
 import { encodeSitemapSymbols } from "../modules/sitemap";
 
 export class AuthorService {
-  private static _allAuthors: AllAuthorsMap = {};
+  private static _allAuthors: AllAuthorsMap | undefined = undefined;
 
   private static _authorsSearchIndex: ExpiringSearchIndex<
     MiniSearch<SearchableAuthor>
@@ -19,6 +19,10 @@ export class AuthorService {
 
   static async getAuthor(authorId: string) {
     authorSlugSchema.parse(authorId);
+
+    if (!this._allAuthors) {
+      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+    }
 
     if (!this._allAuthors[authorId]) {
       throw new Error("Author not found");
@@ -53,7 +57,7 @@ export class AuthorService {
   }
 
   static async getAllAuthors() {
-    if (Object.keys(this._allAuthors).length === 0) {
+    if (!this._allAuthors) {
       this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
     }
     return this._allAuthors;
@@ -62,7 +66,7 @@ export class AuthorService {
   static async getAllSitemapAuthors(): Promise<
     Array<[slug: string, lastMod: undefined]>
   > {
-    if (Object.keys(this._allAuthors).length === 0) {
+    if (!this._allAuthors) {
       this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
     }
     return Object.keys(this._allAuthors).map((name) => [
