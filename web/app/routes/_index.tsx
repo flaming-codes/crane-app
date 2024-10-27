@@ -52,10 +52,10 @@ export default function Index() {
             Search for R packages and authors hosted on CRAN
           </p>
           <div className="text-gray-dim mt-16 space-y-2">
-            <p>
+            <p className="animate-fade">
               Click on the <strong>top search bar</strong> to start searching
             </p>
-            <p>
+            <p className="animate-fade animate-delay-150">
               Or press{" "}
               <kbd className="font-mono font-bold">
                 {navigator?.platform?.toLowerCase().includes("mac")
