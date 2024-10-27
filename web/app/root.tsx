@@ -264,9 +264,7 @@ export default function App() {
   const revalidator = useRevalidator();
   useEffect(() => {
     revalidator.revalidate();
-    // if (data?.isProduction) {
-    //   revalidator.revalidate();
-    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -325,11 +323,4 @@ export default function App() {
       </body>
     </html>
   );
-  /*
-  return (
-    <main className="content-grid min-h-full">
-      <Outlet />
-    </main>
-  );
-  */
 }

@@ -2,7 +2,7 @@
 <br />
 <br />
 
-<p align="center"><img src="./web/static/images/og/cover-01.jpg" /></p>
+<p align="center"><img src="./web/public/images/og/cover-01.jpg" /></p>
 <h2 align="center">
 <a href="https://cran-e.com">CRAN/E</a>
 </h2>
