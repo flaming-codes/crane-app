@@ -7,7 +7,7 @@
    "name": "app",
    "icon": "code",
    "color": "terminal.ansiCyan",
-   "commands": ["cd app", "nvm use", "npm i"],
+   "commands": ["cd web", "nvm use", "npm i", "npm run dev"],
    "open": true,
    "focus": true
   }
