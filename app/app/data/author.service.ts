@@ -3,12 +3,7 @@ import { authorSlugSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { PackageService } from "./package.service";
-import {
-  AllAuthorsMap,
-  ExpiringSearchIndex,
-  PackageAuthor,
-  SearchableAuthor,
-} from "./types";
+import { AllAuthorsMap, ExpiringSearchIndex, SearchableAuthor } from "./types";
 import MiniSearch from "minisearch";
 import { encodeSitemapSymbols } from "../modules/sitemap";
 

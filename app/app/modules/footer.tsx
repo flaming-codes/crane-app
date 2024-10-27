@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { ExternalLink } from "./external-link";
 import { cva, VariantProps } from "cva";
 import { ReactNode } from "react";
@@ -27,19 +27,19 @@ export function Footer(props: Props) {
       <ul className={twBase({ variant, className })}>
         {start}
         <li>
-          <Link to="/about" className="hover:underline underline-offset-4">
+          <Link to="/about" className="underline-offset-4 hover:underline">
             About
           </Link>
         </li>
         <li>
-          <Link to="/privacy" className="hover:underline underline-offset-4">
+          <Link to="/privacy" className="underline-offset-4 hover:underline">
             Privacy
           </Link>
         </li>
         <li>
           <ExternalLink
             href="https://github.com/flaming-codes/crane-app"
-            className="hover:underline underline-offset-4"
+            className="underline-offset-4 hover:underline"
           >
             Github
           </ExternalLink>

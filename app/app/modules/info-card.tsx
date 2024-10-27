@@ -1,6 +1,6 @@
-import { RiDownloadLine, RiExternalLinkLine } from "@remixicon/react";
+import { RiExternalLinkLine } from "@remixicon/react";
 import { cva, VariantProps } from "cva";
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<
   Required<VariantProps<typeof twGradient>> & {

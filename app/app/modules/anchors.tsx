@@ -47,7 +47,7 @@ export function AnchorLink(props: PropsWithChildren<{ fragment: string }>) {
     <Link
       to={`#${fragment}`}
       className={clsx(
-        "min-w-32 text-center py-3 shrink-0 border-b border-transparent hover:border-gray-normal transition-colors",
+        "min-w-32 shrink-0 border-b border-transparent py-3 text-center transition-colors hover:border-gray-normal",
         { "border-gray-11 dark:border-gray-6": isHydrated && isSelected },
       )}
     >

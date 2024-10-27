@@ -29,10 +29,10 @@ export default function NavigationPage(props: Props) {
     <>
       <nav
         className={clsx(
-          "border-b border-gray-8 dark:border-gray-12 sticky inset-x-0 top-0 backdrop-blur-lg z-10 full-width",
+          "full-width sticky inset-x-0 top-0 z-10 border-b border-gray-8 backdrop-blur-lg dark:border-gray-12",
           { "bg-white/90 dark:bg-black/90": isFocused },
           {
-            "bg-black/10 dark:bg-black/25 border-transparent dark:border-transparent":
+            "border-transparent bg-black/10 dark:border-transparent dark:bg-black/25":
               !isFocused && hasSubtleBackground,
           },
           className,
@@ -48,7 +48,7 @@ export default function NavigationPage(props: Props) {
             hasHomeLink ? (
               <Link
                 to="/"
-                className="h-full flex items-center pl-4 group"
+                className="group flex h-full items-center pl-4"
                 title="Landing page"
               >
                 <RiHomeLine

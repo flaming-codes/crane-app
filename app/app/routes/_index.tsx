@@ -18,7 +18,7 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async () => {
-  const meshIndex = randomInt(0, 16);
+  const meshIndex = randomInt(0, 25);
   return json({ meshIndex });
 };
 
@@ -33,17 +33,17 @@ export default function Index() {
         hasSubtleBackground
         inputClassName="placeholder:text-gray-6 dark:placeholder:text-gray-dim"
       >
-        <div className="h-[90svh] flex flex-col justify-center gap-6">
+        <div className="flex h-[90svh] flex-col justify-center gap-6">
           <div>
-            <SineLogo className="w-[max(100px,60%)] text-gray-normal" />
+            <SineLogo className="text-gray-normal w-[max(100px,60%)]" />
             <h1 className="sr-only">
               CRAN/E - The R Packages Search Engine, Enhanced
             </h1>
           </div>
-          <p className="text-lg md:text-xl xl:text-2xl font-light text-gray-dim">
+          <p className="text-gray-dim text-lg font-light md:text-xl xl:text-2xl">
             Search for R packages and authors hosted on CRAN
           </p>
-          <div className="mt-16 text-gray-dim space-y-2">
+          <div className="text-gray-dim mt-16 space-y-2">
             <p>
               Click on the <strong>top search bar</strong> to start searching
             </p>
@@ -60,7 +60,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="absolute bottom-0 inset-x-0 content-grid">
+        <div className="content-grid absolute inset-x-0 bottom-0">
           <Footer variant="start" />
         </div>
       </NavigationPage>
@@ -72,7 +72,7 @@ function GradientBackground({ meshIndex }: { meshIndex: number }) {
   return (
     <>
       <div
-        className={clsx("fixed top-0 inset-x-0 h-[60vh] -z-50", {
+        className={clsx("fixed inset-x-0 top-0 -z-50 h-[60vh]", {
           "bg-mesh-1": meshIndex === 0,
           "bg-mesh-2": meshIndex === 1,
           "bg-mesh-3": meshIndex === 2,
@@ -92,11 +92,17 @@ function GradientBackground({ meshIndex }: { meshIndex: number }) {
           "bg-mesh-17": meshIndex === 16,
           "bg-mesh-18": meshIndex === 17,
           "bg-mesh-19": meshIndex === 18,
+          "bg-mesh-20": meshIndex === 19,
+          "bg-mesh-21": meshIndex === 20,
+          "bg-mesh-22": meshIndex === 21,
+          "bg-mesh-23": meshIndex === 22,
+          "bg-mesh-24": meshIndex === 23,
+          "bg-mesh-25": meshIndex === 24,
         })}
       />
-      <div className="fixed top-0 inset-x-0 bg-gradient-to-t from-white dark:from-black h-[60vh] -z-50" />
-      <div className="fixed top-0 inset-x-0 bg-gradient-to-t from-white dark:from-black via-white dark:via-black h-[60vh] opacity-50 -z-40" />
-      <div className="fixed top-[40vh] inset-x-0 bg-gradient-to-t from-white dark:from-black via-white dark:via-black h-[20vh] opacity-80 -z-30" />
+      <div className="fixed inset-x-0 top-0 -z-50 h-[60vh] bg-gradient-to-t from-white dark:from-black" />
+      <div className="fixed inset-x-0 top-0 -z-40 h-[60vh] bg-gradient-to-t from-white via-white opacity-50 dark:from-black dark:via-black" />
+      <div className="fixed inset-x-0 top-[40vh] -z-30 h-[20vh] bg-gradient-to-t from-white via-white opacity-80 dark:from-black dark:via-black" />
     </>
   );
 }

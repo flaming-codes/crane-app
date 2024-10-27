@@ -10,7 +10,7 @@ type Props = PropsWithChildren<
 >;
 
 const twBase = cva({
-  base: "relative rounded-full border border-gray-dim inline-flex gap-2 items-center shrink-0 group/pill overflow-hidden",
+  base: "relative rounded-full border border-gray-dim inline-flex gap-2 items-center shrink-0 group/pill overflow-hidden transition-colors",
   variants: {
     size: {
       xs: "text-xs px-2 py-1",
@@ -31,6 +31,7 @@ const twGradient = cva({
       iris: "from-iris-4 dark:from-iris-11",
       ruby: "from-ruby-4 dark:from-ruby-11",
       jade: "from-jade-5 dark:from-jade-11",
+      slate: "from-slate-4 dark:from-slate-11",
     },
   },
 });
@@ -41,7 +42,7 @@ export function InfoPill(props: Props) {
   return (
     <div className={twBase({ className, size })}>
       {label ? (
-        <span className="text-sm text-gray-dim whitespace-nowrap">{label}</span>
+        <span className="text-gray-dim whitespace-nowrap text-sm">{label}</span>
       ) : null}
       {children}
       <span className={twGradient({ variant })} />

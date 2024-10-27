@@ -26,8 +26,7 @@ type Props = {
   link?: string;
 };
 
-const whoDidWhatUrl =
-  "https://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf";
+// const whoDidWhatUrl = "https://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf";
 
 const emailSchema = z.string().email();
 
@@ -44,17 +43,15 @@ const readableRoles: Record<Role, string> = {
   trl: "Translator",
 };
 
-const readableRolesList = Object.entries(readableRoles) as [Role, string][];
-
 export function ContactPill(props: Props) {
   const { className, name, isMaintainer, roles, link } = props;
 
   const hasRoles = roles.length > 0;
 
   return (
-    <div className={clsx("flex flex-col sm:flex-row gap-3", className)}>
+    <div className={clsx("flex flex-col gap-3 sm:flex-row", className)}>
       <h4 className="text-lg">{name}</h4>
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         {isMaintainer ? (
           <InfoPill
             size="sm"
@@ -64,7 +61,7 @@ export function ContactPill(props: Props) {
                 className="text-gold-1 dark:text-gold-2"
               />
             }
-            className="bg-gold-10 dark:bg-gold-11 text-gold-1 dark:text-gold-2 border-transparent"
+            className="border-transparent bg-gold-10 text-gold-1 dark:bg-gold-11 dark:text-gold-2"
           >
             Maintainer
           </InfoPill>
@@ -104,12 +101,12 @@ function ContactLinkPill(props: Required<Pick<Props, "link">>) {
     <a
       href={isEmail ? `mailto:${link}` : link}
       target={isOrcID ? "_blank" : undefined}
-      rel={isOrcID ? "noopener" : undefined}
+      rel={isOrcID ? "noreferrer" : undefined}
     >
       <InfoPill size="sm" label={isOrcID ? "ORCID" : "@"}>
         {link?.replace("https://orcid.org/", "")}
         {isOrcID ? (
-          <RiExternalLinkLine size={12} className="ml-1 text-gray-dim" />
+          <RiExternalLinkLine size={12} className="text-gray-dim ml-1" />
         ) : null}
       </InfoPill>
     </a>

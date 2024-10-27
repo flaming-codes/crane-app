@@ -44,6 +44,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     item.packages = uniqBy(item.packages, (pkg) => pkg.name);
     item.otherAuthors = uniqBy(item.otherAuthors, (author) => author);
   } catch (error) {
+    console.error(error);
     throw new Response(null, {
       status: 404,
       statusText: `Author '${authorId}' not found`,
@@ -114,13 +115,13 @@ function PackagesSection(props: Pick<AuthorRes, "packages">) {
 
   return (
     <PageContentSection headline="Packages" fragment="packages">
-      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 items-start">
+      <ul className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4">
         {packages.map((item) => (
           <li key={item.name}>
             <Link to={`/package/${item.slug}`}>
               <InfoCard variant="jade">
                 <span className="flex flex-col gap-2">
-                  <span className="text-xs text-gray-dim">{item.name}</span>
+                  <span className="text-gray-dim text-xs">{item.name}</span>
                   <span>{item.title}</span>
                 </span>
               </InfoCard>
@@ -137,7 +138,7 @@ function TeamSection(props: Pick<AuthorRes, "otherAuthors">) {
 
   return (
     <PageContentSection headline="Team" fragment="team">
-      <ul className="flex flex-wrap gap-2 items-start">
+      <ul className="flex flex-wrap items-start gap-2">
         {otherAuthors.map((name) => (
           <li key={name}>
             <Link to={`/author/${name}`}>

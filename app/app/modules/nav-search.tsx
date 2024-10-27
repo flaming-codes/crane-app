@@ -4,7 +4,6 @@ import {
   RiCloseFill,
   RiFireFill,
   RiGlassesFill,
-  RiHomeLine,
 } from "@remixicon/react";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 import {
@@ -103,7 +102,7 @@ export function NavSearch(props: Props) {
 
   return (
     <>
-      <div className="h-14 flex items-center">
+      <div className="flex h-14 items-center">
         <input
           ref={inputRef}
           type="search"
@@ -115,7 +114,7 @@ export function NavSearch(props: Props) {
             isFocused ? "Type to search for packages and authors" : "Search..."
           }
           className={clsx(
-            "flex-1 h-full bg-transparent focus:outline-none",
+            "h-full flex-1 bg-transparent focus:outline-none",
             inputClassName,
           )}
           value={input}
@@ -155,7 +154,7 @@ export function SearchResults(
   useLockBodyScroll();
 
   return (
-    <div className="fixed top-14 py-16 left-0 w-full backdrop-blur-xl bg-white/90 dark:bg-black/90 h-[calc(100%-56px)] z-10 overflow-y-auto">
+    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full overflow-y-auto bg-white/90 py-16 backdrop-blur-xl dark:bg-black/90">
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-16">
@@ -169,7 +168,7 @@ export function SearchResults(
                         <li key={item.id}>
                           <Link
                             to={`/package/${item.slug}`}
-                            onClick={(e) => {
+                            onClick={() => {
                               onSelect(item);
                             }}
                           >
@@ -178,7 +177,7 @@ export function SearchResults(
                               label={<FlameOfFame score={item.score} />}
                             >
                               <span className="shrink-0">{item.name}</span>{" "}
-                              <span className="text-xs text-gray-dim">
+                              <span className="text-gray-dim text-xs">
                                 by{" "}
                                 {sliceNamesWithEllipsis(item.author_names, 3)}
                               </span>
@@ -206,7 +205,7 @@ export function SearchResults(
                         <li key={item.id}>
                           <Link
                             to={`/author/${item.slug}`}
-                            onClick={(e) => {
+                            onClick={() => {
                               onSelect(item);
                             }}
                           >
@@ -231,10 +230,10 @@ export function SearchResults(
                   Ready when you are{" "}
                   <RiGlassesFill
                     size={32}
-                    className="animate-wiggle animate-infinite inline ml-2 mb-2"
+                    className="mb-2 ml-2 inline animate-wiggle animate-infinite"
                   />
                 </p>
-                <div className="text-sm text-center text-gray-dim space-y-1 mt-28">
+                <div className="text-gray-dim mt-28 space-y-1 text-center text-sm">
                   <p>
                     Press{" "}
                     <kbd className="font-mono font-bold">
@@ -251,7 +250,7 @@ export function SearchResults(
                   </p>
                 </div>
                 <button
-                  className="bg-gray-ghost text-sm text-gray-dim flex items-center gap-2 rounded-md py-1 px-2 overflow-hidden border border-gray-dim"
+                  className="bg-gray-ghost border-gray-dim text-gray-dim flex items-center gap-2 overflow-hidden rounded-md border px-2 py-1 text-sm"
                   onClick={() => onSelect(undefined)}
                 >
                   <span>Close</span>
@@ -279,5 +278,5 @@ function FlameOfFame(props: { score: number; threshold?: number }) {
     return null;
   }
 
-  return <RiFireFill size={16} className="text-ruby-9 animate-pulse" />;
+  return <RiFireFill size={16} className="animate-pulse text-ruby-9" />;
 }

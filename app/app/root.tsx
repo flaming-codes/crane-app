@@ -1,4 +1,5 @@
 import {
+  json,
   Link,
   Links,
   Meta,
@@ -6,10 +7,12 @@ import {
   Scripts,
   ScrollRestoration,
   useMatches,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import { Footer } from "./modules/footer";
 import "./tailwind.css";
+import { ENV } from "./data/env";
 
 export const links: LinksFunction = () => {
   return [
@@ -225,12 +228,23 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export const loader = async () => {
+  return json({
+    isProduction: ENV.NODE_ENV === "production",
+    domain: ENV.VITE_PLAUSIBLE_SITE_ID,
+  });
+};
+
+export default function App() {
+  const data = useRouteLoaderData<typeof loader>("root");
+
   const matches = useMatches().slice(1);
   const hasFooter = matches.some((match) => {
     const handle = match.handle as { hasFooter?: boolean } | undefined;
     return handle?.hasFooter;
   });
+
+  const isPlausibleEnabled = data?.isProduction && data?.domain;
 
   return (
     <html lang="en">
@@ -244,13 +258,37 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        {isPlausibleEnabled ? (
+          <>
+            <script
+              defer
+              data-domain="cran-e.com"
+              src="https://plausible.io/js/script.outbound-links.js"
+            />
+            <script>
+              {`
+                window.plausible = window.plausible || function()
+                {(window.plausible.q = window.plausible.q || []).push(arguments)}
+              `}
+            </script>
+          </>
+        ) : null}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify({
+              isPlausibleEnabled,
+            })}`,
+          }}
+        />
+        <main className="content-grid min-h-full">
+          <Outlet />
+        </main>
         {hasFooter ? (
           <Footer
             variant="page"
             start={
               <li>
-                <Link to="/" className="hover:underline underline-offset-4">
+                <Link to="/" className="underline-offset-4 hover:underline">
                   Start
                 </Link>
               </li>
@@ -262,12 +300,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
-}
-
-export default function App() {
+  /*
   return (
-    <main className="min-h-full content-grid">
+    <main className="content-grid min-h-full">
       <Outlet />
     </main>
   );
+  */
 }

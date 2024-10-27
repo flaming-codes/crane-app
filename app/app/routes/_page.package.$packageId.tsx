@@ -26,6 +26,7 @@ import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
 import { lazy, Suspense } from "react";
 import { ClientOnly } from "remix-utils/client-only";
+import { sendEvent } from "../modules/plausible";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -66,6 +67,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       throw new Error(`Package '${packageId}' not found`);
     }
   } catch (error) {
+    console.error(error);
     throw new Response(null, {
       status: 404,
       statusText: `Package '${packageId}' not found`,
@@ -147,7 +149,7 @@ function AboveTheFoldSection(props: { item: Pkg }) {
     <PageContentSection>
       <div className="space-y-6">
         <Prose html={item.description} />
-        <p hidden className="text-gray-dim ">
+        <p hidden className="text-gray-dim">
           Current version is <span>{item.version}</span> since{" "}
           <span>{formatRelative(item.date, new Date())}</span> and requires R{" "}
           <span>{rVersion || "unknown"}</span> to run.
@@ -159,15 +161,20 @@ function AboveTheFoldSection(props: { item: Pkg }) {
             </>
           ) : null}{" "}
           {item.name}{" "}
-          {item.needscompilation === "no" ? "doesn't need" : "needs"} to be
+          {item.needscompilation === "no" ? "doesn&apos;t need" : "needs"} to be
           compiled.
         </p>
       </div>
 
       <div className="flex flex-col gap-6 overflow-x-hidden">
-        <ul className="flex flex-wrap gap-2 items-start">
+        <ul className="flex flex-wrap items-start gap-2">
           <li>
-            <CopyPillButton textToCopy={`install.packages('${item.name}')`}>
+            <CopyPillButton
+              textToCopy={`install.packages('${item.name}')`}
+              onSuccess={() => {
+                sendEvent("copy-to-clipboard", { props: { value: item.name } });
+              }}
+            >
               install.packages('{item.name}')
             </CopyPillButton>
           </li>
@@ -212,7 +219,7 @@ function AboveTheFoldSection(props: { item: Pkg }) {
             </ExternalLinkPill>
           </li>
         </ul>
-        <ul className="flex flex-wrap gap-2 items-start">
+        <ul className="flex flex-wrap items-start gap-2">
           <li>
             <InfoPill label="Version">{item.version}</InfoPill>
           </li>
@@ -267,7 +274,7 @@ function BinariesPageContentSection(
       // subline="Download all available executables for this package"
       fragment="binaries"
     >
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-start">
+      <ul className="grid grid-cols-2 items-start gap-4 md:grid-cols-3 lg:grid-cols-4">
         {macos_binaries?.map((item) => (
           <BinaryDownloadListItem
             key={item.link}
@@ -330,7 +337,7 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
       // subline="See everyone of the team behind this package"
       fragment="team"
     >
-      <ul className="grid grid-cols-1 gap-8 items-start">
+      <ul className="grid grid-cols-1 items-start gap-8">
         {maintainer ? (
           <li>
             <ContactPill
@@ -380,13 +387,13 @@ function DocumentationPageContentSection(
         fragment="documentation"
       >
         {hasAny ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 items-start">
+          <ul className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4">
             {vignettes?.map((item) => (
               <li key={item.name}>
                 <ExternalLink href={item.link}>
                   <InfoCard variant="iris" icon="external">
                     <span className="flex flex-col gap-1">
-                      <span className="text-xs text-gray-dim">Vignette</span>
+                      <span className="text-gray-dim text-xs">Vignette</span>
                       <span>{item.name}</span>
                     </span>
                   </InfoCard>
@@ -398,7 +405,7 @@ function DocumentationPageContentSection(
                 <ExternalLink href={item.link}>
                   <InfoCard variant="iris" icon="external">
                     <span className="flex flex-col gap-1">
-                      <span className="text-xs text-gray-dim">Material</span>
+                      <span className="text-gray-dim text-xs">Material</span>
                       <span>{item.name}</span>
                     </span>
                   </InfoCard>
@@ -410,7 +417,7 @@ function DocumentationPageContentSection(
                 <ExternalLink href={item.link}>
                   <InfoCard variant="iris" icon="external">
                     <span className="flex flex-col gap-1">
-                      <span className="text-xs text-gray-dim">In Views</span>
+                      <span className="text-gray-dim text-xs">In Views</span>
                       <span>{item.name}</span>
                     </span>
                   </InfoCard>

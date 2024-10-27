@@ -1,5 +1,10 @@
-import { Link, useLocation } from "@remix-run/react";
-import { RiArrowRightLine } from "@remixicon/react";
+import { Link } from "@remix-run/react";
+import {
+  RiArrowRightLine,
+  RiCollapseVerticalLine,
+  RiExpandUpDownFill,
+  RiExpandVerticalLine,
+} from "@remixicon/react";
 import { useDebounce } from "@uidotdev/usehooks";
 import clsx from "clsx";
 import MiniSearch from "minisearch";
@@ -37,26 +42,26 @@ export function PackageDependencySearch(props: Props) {
     reverse_linkingto,
   } = props;
 
-  const totalCounts: Array<[string, number]> = [
-    ["Depends", depends?.length ?? 0],
-    ["Imports", imports?.length ?? 0],
-    ["Enhances", enhances?.length ?? 0],
-    ["Suggests", suggests?.length ?? 0],
-    ["Linking To", linkingto?.length ?? 0],
-    ["Reverse Depends", reverse_depends?.length ?? 0],
-    ["Reverse Imports", reverse_imports?.length ?? 0],
-    ["Reverse Suggests", reverse_suggests?.length ?? 0],
-    ["Reverse Enhances", reverse_enhances?.length ?? 0],
-    ["Reverse LinkingTo", reverse_linkingto?.length ?? 0],
+  const groupedAll: Array<[string, Dependency[]]> = [
+    ["Depends", depends || []],
+    ["Imports", imports || []],
+    ["Enhances", enhances || []],
+    ["Suggests", suggests || []],
+    ["Linking To", linkingto || []],
+    ["Reverse Depends", reverse_depends || []],
+    ["Reverse Imports", reverse_imports || []],
+    ["Reverse Suggests", reverse_suggests || []],
+    ["Reverse Enhances", reverse_enhances || []],
+    ["Reverse LinkingTo", reverse_linkingto || []],
   ];
 
-  const hasAny = totalCounts.some(([, count]) => count > 0);
+  const hasAny = groupedAll.some(([, items]) => items.length > 0);
 
   const [input, setInput] = useState("");
   const [searchResults, setSearchResults] = useState<
     Array<SearchableDependency>
   >([]);
-  const [store, setStore] = useState<MiniSearch<SearchableDependency>>(() =>
+  const [store] = useState<MiniSearch<SearchableDependency>>(() =>
     initSearch(props),
   );
 
@@ -71,22 +76,14 @@ export function PackageDependencySearch(props: Props) {
         group: r.group,
       })),
     );
-  }, [debouncedSearch]);
-
-  const location = useLocation();
-  useEffect(() => {
-    return;
-    // Remix doesn't unmount Outlets when navigating to a different route,
-    // so we need to reset the search state when the route changes.
-    setInput("");
-    setSearchResults([]);
-  }, [location.pathname]);
+  }, [store, debouncedSearch]);
 
   if (!hasAny) {
     return null;
   }
 
-  const groupedResults = searchResults.reduce(
+  const [isGroupingEnabled, setIsGroupingEnabled] = useState(true);
+  const groupedSearchResults = searchResults.reduce(
     (acc, item) => {
       if (!acc[item.group]) {
         acc[item.group] = [];
@@ -101,11 +98,11 @@ export function PackageDependencySearch(props: Props) {
     <>
       <div
         className={clsx(
-          "relative border-t border-gray-dim bg-gradient-to-b rounded-xl min-h-16 flex flex-col items-center p-4 overflow-hidden",
+          "border-gray-dim relative flex min-h-16 flex-col items-center overflow-hidden rounded-xl border-t bg-gradient-to-b p-4",
         )}
       >
         <form
-          className="peer relative w-full flex items-center gap-4"
+          className="peer relative flex w-full items-center gap-4"
           onSubmit={(e) => {
             e.preventDefault();
             const input = document.getElementById("search") as HTMLInputElement;
@@ -116,7 +113,7 @@ export function PackageDependencySearch(props: Props) {
             type="text"
             id="search"
             placeholder="Type to search dependencies..."
-            className="bg-transparent p-1 flex-grow focus:outline-none"
+            className="flex-grow bg-transparent p-1 focus:outline-none"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
@@ -127,63 +124,100 @@ export function PackageDependencySearch(props: Props) {
                 setInput("");
                 store.search("");
               }}
-              className="text-gray-dim border bg-iris-ghost border-gray-normal px-2 py-1 rounded-md text-xs uppercase"
+              className="border-gray-normal text-gray-dim bg-iris-ghost rounded-md border px-2 py-1 text-xs uppercase"
             >
               Clear
             </button>
           ) : null}
           <button
             type="submit"
-            className="bg-iris-ui px-2 py-1 rounded-md border border-gray-dim text-xs uppercase"
+            className="border-gray-dim bg-iris-ui rounded-md border px-2 py-1 text-xs uppercase"
           >
             Search
           </button>
         </form>
 
-        <div className="absolute isolate bg-gradient-to-b inset-0 from-gray-4 dark:from-gray-12 -z-10 peer-focus-within:from-iris-6 dark:peer-focus-within:from-iris-12" />
+        <div className="absolute inset-0 isolate -z-10 bg-gradient-to-b from-gray-4 peer-focus-within:from-iris-6 dark:from-gray-12 dark:peer-focus-within:from-iris-12" />
       </div>
 
       {!input ? (
-        <ul className="flex gap-2 flex-wrap">
-          {totalCounts.map(([group, count]) =>
-            count ? (
-              <li key={group}>
-                <InfoPill label={group}>
-                  {count} {count === 1 ? "package" : "packages"}
-                </InfoPill>
-              </li>
-            ) : null,
+        <ul className="flex flex-wrap gap-4">
+          <li>
+            <button onClick={() => setIsGroupingEnabled((prev) => !prev)}>
+              <InfoPill
+                className="bg-gray-ui"
+                label={
+                  isGroupingEnabled ? (
+                    <RiExpandVerticalLine size={16} className="text-gray-dim" />
+                  ) : (
+                    <RiCollapseVerticalLine
+                      size={16}
+                      className="text-gray-dim"
+                    />
+                  )
+                }
+              >
+                {isGroupingEnabled ? " Expand grouping" : "Collapse grouping"}
+              </InfoPill>
+            </button>
+          </li>
+          {isGroupingEnabled ? (
+            groupedAll.map(([group, items]) => {
+              const count = items.length;
+              if (!count) {
+                return null;
+              }
+              return (
+                <li key={group}>
+                  <InfoPill label={group}>
+                    {count} {count === 1 ? "package" : "packages"}
+                  </InfoPill>
+                </li>
+              );
+            })
+          ) : (
+            <ul className="flex flex-col gap-4">
+              {groupedAll.map(([group, items]) => (
+                <li key={group}>
+                  <DependencyPills group={group} items={items} />
+                </li>
+              ))}
+            </ul>
           )}
         </ul>
       ) : null}
 
       {input ? (
-        <ul className="grid grid-cols-1 gap-4">
-          {Object.entries(groupedResults).map(([group, items]) => (
+        <ul className="flex flex-col gap-4">
+          {Object.entries(groupedSearchResults).map(([group, items]) => (
             <li key={group}>
-              <ul className="flex flex-wrap gap-2">
-                {items.map((item) => (
-                  <li key={item.name}>
-                    <Link to={item.link || `/package/${item.link}`}>
-                      <InfoPill
-                        label={item.group}
-                        className="bg-gray-ghost transition-colors"
-                      >
-                        {item.name}{" "}
-                        <RiArrowRightLine
-                          size={16}
-                          className="group-hover/pill:animate-wiggle-more group-hover/pill:animate-infinite"
-                        />
-                      </InfoPill>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <DependencyPills group={group} items={items} />
             </li>
           ))}
         </ul>
       ) : null}
     </>
+  );
+}
+
+function DependencyPills(props: { group: string; items: Array<Dependency> }) {
+  const { group, items } = props;
+  return (
+    <ul className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <li key={item.name}>
+          <Link to={item.link || `/package/${item.link}`}>
+            <InfoPill label={group} className="bg-gray-ghost transition-colors">
+              {item.name}{" "}
+              <RiArrowRightLine
+                size={16}
+                className="group-hover/pill:animate-wiggle-more group-hover/pill:animate-infinite"
+              />
+            </InfoPill>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 
