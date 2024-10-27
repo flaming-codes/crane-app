@@ -2,12 +2,15 @@ import { uniqBy } from "es-toolkit";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { packageSlugSchema } from "./package.shape";
-import { ExpiringSearchIndex, OverviewPkg, Pkg } from "./types";
+import { ExpiringSearchIndex, OverviewPkg, Pkg, SitemapPackage } from "./types";
 import MiniSearch from "minisearch";
 import { addHours } from "date-fns";
 
 export class PackageService {
   private static allOverviewPackages: OverviewPkg[] = [];
+
+  private static allSitemapPackages: SitemapPackage[] = [];
+
   private static _packagesSearchIndex: ExpiringSearchIndex<
     MiniSearch<OverviewPkg>
   > = {
@@ -31,6 +34,19 @@ export class PackageService {
     return this.allOverviewPackages;
   }
 
+  static async getAllSitemapPackages(): Promise<SitemapPackage[]> {
+    if (this.allSitemapPackages.length === 0) {
+      const items = await fetchData<SitemapPackage[]>(
+        ENV.VITE_SITEMAP_PKGS_URL,
+      );
+      this.allSitemapPackages = items.map(([name, lastMod]) => [
+        this.sanitizeSitemapName(name),
+        lastMod,
+      ]);
+    }
+    return this.allSitemapPackages;
+  }
+
   static async searchPackages(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
@@ -43,6 +59,14 @@ export class PackageService {
       .slice(0, limit);
 
     return hits || [];
+  }
+
+  private static sanitizeSitemapName(name: string) {
+    let next = name.trim();
+    if (next.startsWith(`"`)) next = next.slice(1);
+    if (next.endsWith(`"`)) next = next.slice(0, -1);
+    if (next.endsWith(",")) next = next.slice(0, -1);
+    return next.trim();
   }
 
   private static async initSearchablePackagesIndex() {

@@ -91,6 +91,8 @@ export type OverviewPkg = {
   author_names: string[];
 };
 
+export type SitemapPackage = [slug: string, lastMod: string];
+
 export type AllAuthorsMap = Record<string, string[]>;
 
 export type PackageAuthor = Record<string, string[]>;

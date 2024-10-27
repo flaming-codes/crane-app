@@ -59,6 +59,18 @@ export class AuthorService {
     return this._allAuthors;
   }
 
+  static async getAllSitemapAuthors(): Promise<
+    Array<[slug: string, lastMod: undefined]>
+  > {
+    if (Object.keys(this._allAuthors).length === 0) {
+      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+    }
+    return Object.keys(this._allAuthors).map((name) => [
+      this.sanitizeSitemapName(name),
+      undefined,
+    ]);
+  }
+
   static async searchAuthors(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
@@ -71,6 +83,16 @@ export class AuthorService {
       .slice(0, limit);
 
     return hits || [];
+  }
+
+  private static sanitizeSitemapName(name: string) {
+    let next = name.trim();
+    if (next.startsWith(`"`)) next = next.slice(1);
+    if (next.endsWith(`"`)) next = next.slice(0, -1);
+    if (next.startsWith("'")) next = next.slice(1);
+    if (next.endsWith("'")) next = next.slice(0, -1);
+    if (next.endsWith(",")) next = next.slice(0, -1);
+    return next.trim();
   }
 
   private static async initSearchableAuthorsIndex() {

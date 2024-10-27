@@ -2,7 +2,6 @@ import { Link } from "@remix-run/react";
 import {
   RiArrowRightLine,
   RiCollapseVerticalLine,
-  RiExpandUpDownFill,
   RiExpandVerticalLine,
 } from "@remixicon/react";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -206,7 +205,7 @@ function DependencyPills(props: { group: string; items: Array<Dependency> }) {
     <ul className="flex flex-wrap gap-2">
       {items.map((item) => (
         <li key={item.name}>
-          <Link to={item.link || `/package/${item.link}`}>
+          <Link to={`/package/${item.name}`}>
             <InfoPill label={group} className="bg-gray-ghost transition-colors">
               {item.name}{" "}
               <RiArrowRightLine

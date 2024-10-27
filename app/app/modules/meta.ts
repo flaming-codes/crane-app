@@ -27,9 +27,9 @@ export const mergeMeta = (
     );
 
     // replace any parent meta with the same name or property with the override
-    let overrides = overrideFn(arg);
+    const overrides = overrideFn(arg);
 
-    for (let override of overrides) {
+    for (const override of overrides) {
       const index = mergedMeta.findIndex(
         (meta) =>
           ("name" in meta &&
