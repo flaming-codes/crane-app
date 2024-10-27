@@ -77,10 +77,6 @@ export function PackageDependencySearch(props: Props) {
     );
   }, [store, debouncedSearch]);
 
-  if (!hasAny) {
-    return null;
-  }
-
   const [isGroupingEnabled, setIsGroupingEnabled] = useState(true);
   const groupedSearchResults = searchResults.reduce(
     (acc, item) => {
@@ -92,6 +88,10 @@ export function PackageDependencySearch(props: Props) {
     },
     {} as Record<string, Array<SearchableDependency>>,
   );
+
+  if (!hasAny) {
+    return null;
+  }
 
   return (
     <>

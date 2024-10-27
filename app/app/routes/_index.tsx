@@ -5,6 +5,7 @@ import NavigationPage from "../modules/nav";
 import { randomInt } from "es-toolkit";
 import clsx from "clsx";
 import { Footer } from "../modules/footer";
+import { ENV } from "../data/env";
 
 export const handle = {
   hasFooter: false,
@@ -19,11 +20,12 @@ export const meta: MetaFunction = () => {
 
 export const loader = async () => {
   const meshIndex = randomInt(0, 25);
-  return json({ meshIndex });
+  const version = ENV.npm_package_version;
+  return json({ meshIndex, version });
 };
 
 export default function Index() {
-  const { meshIndex } = useLoaderData<typeof loader>();
+  const { meshIndex, version } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -61,7 +63,7 @@ export default function Index() {
         </div>
 
         <div className="content-grid absolute inset-x-0 bottom-0">
-          <Footer variant="start" />
+          <Footer variant="start" version={version} />
         </div>
       </NavigationPage>
     </>

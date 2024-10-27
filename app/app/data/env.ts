@@ -26,6 +26,14 @@ export const envSchema = z.object({
     .url()
     .describe("Packages for overview URL"),
   VITE_SITEMAP_PKGS_URL: z.string().url().describe("Packages for sitemap URL"),
+  // NPM provides the package version as a string
+  // when running `npm run start`.
+  npm_package_version: z
+    .string()
+    .optional()
+    .transform((v) => {
+      return v || "x.y.z";
+    }),
 });
 
 export const ENV = envSchema.parse(process.env);

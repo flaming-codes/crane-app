@@ -244,6 +244,7 @@ export const loader = async () => {
   return json({
     isProduction: ENV.NODE_ENV === "production",
     domain: ENV.VITE_PLAUSIBLE_SITE_ID,
+    version: ENV.npm_package_version,
   });
 };
 
@@ -298,6 +299,7 @@ export default function App() {
         {hasFooter ? (
           <Footer
             variant="page"
+            version={data?.version}
             start={
               <li>
                 <Link to="/" className="underline-offset-4 hover:underline">

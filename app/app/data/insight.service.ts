@@ -1,7 +1,6 @@
 import { addHours } from "date-fns";
 import { ENV } from "./env";
 import { ExpiringSearchIndex } from "./types";
-import { BASE_URL } from "../modules/app";
 
 type PlausibleDataPoint = { page: string; visitors: number };
 
