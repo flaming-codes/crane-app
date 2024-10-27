@@ -31,7 +31,8 @@ const twGradient = cva({
       iris: "from-iris-4 dark:from-iris-11",
       ruby: "from-ruby-4 dark:from-ruby-11",
       jade: "from-jade-5 dark:from-jade-11",
-      slate: "from-slate-4 dark:from-slate-11",
+      slate: "from-slate-5 dark:from-slate-11",
+      sand: "from-sand-5 via-gold-5 dark:from-sand-11 dark:via-gold-12",
     },
   },
 });

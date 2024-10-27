@@ -4,7 +4,8 @@ import { ExpiringSearchIndex } from "./types";
 
 type PlausibleDataPoint = { page: string; visitors: number };
 
-type TopPagesIndex = Record<"authors" | "packages", Array<PlausibleDataPoint>>;
+type TopPageDomain = "authors" | "packages" | "start" | "about";
+type TopPagesIndex = Record<TopPageDomain, Array<PlausibleDataPoint>>;
 
 export class InsightService {
   private static plausibleBaseUrl = "https://plausible.io/api/v1/stats";
@@ -13,6 +14,8 @@ export class InsightService {
     index: {
       authors: [],
       packages: [],
+      start: [],
+      about: [],
     },
     expiresAt: 0,
   };
@@ -37,16 +40,20 @@ export class InsightService {
       const grouped: TopPagesIndex = {
         authors: [],
         packages: [],
+        start: [],
+        about: [],
       };
 
       results.forEach((item: PlausibleDataPoint) => {
-        // Skip landing page.
-        if (item.page === "/") {
-          return;
-        }
+        const getDomain = (): TopPageDomain => {
+          if (item.page === "/") return "start";
+          if (item.page === "/about") return "about";
+          if (item.page.startsWith("/author/")) return "authors";
+          return "packages";
+        };
 
-        const domain =
-          item.page.indexOf("/author/") === 0 ? "authors" : "packages";
+        const domain = getDomain();
+
         if (!grouped[domain]) {
           grouped[domain] = [];
         }

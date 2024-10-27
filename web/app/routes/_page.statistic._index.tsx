@@ -3,6 +3,8 @@ import { Anchors, AnchorLink } from "../modules/anchors";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { InfoCard } from "../modules/info-card";
+import { Header } from "../modules/header";
+import { Tag } from "../modules/tag";
 
 const anchors = ["Site usage"];
 
@@ -24,6 +26,13 @@ export function loader() {
 export default function StatisticsOverviewPage() {
   return (
     <>
+      <Header
+        gradient="bronze"
+        headline="Insights"
+        subline="Get insights into CRAN/E and CRAN data"
+        ornament={<Tag>Statistics</Tag>}
+      />
+
       <Anchors>
         {anchors.map((anchor) => (
           <AnchorLink key={anchor} fragment={anchor.toLowerCase()}>
@@ -31,11 +40,13 @@ export default function StatisticsOverviewPage() {
           </AnchorLink>
         ))}
       </Anchors>
-      <PageContent>
-        <h1 className="text-3xl">Statistics</h1>
 
-        <PageContentSection headline="Site usage" fragment="site-usage">
-          <p>See what packages and authors are trending on CRAN/E.</p>
+      <PageContent>
+        <PageContentSection
+          headline="Site usage"
+          subline="See what packages and authors are trending on CRAN/E"
+          fragment="site-usage"
+        >
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             <li>
               <Link to="/statistic/crane/page-visits">

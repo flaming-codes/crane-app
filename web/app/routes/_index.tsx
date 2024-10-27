@@ -20,7 +20,7 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async () => {
-  const meshIndex = randomInt(0, 25);
+  const meshIndex = randomInt(0, 27);
   const version = ENV.npm_package_version;
   return json({ meshIndex, version });
 };
@@ -111,6 +111,8 @@ function GradientBackground({ meshIndex }: { meshIndex: null | number }) {
             "bg-mesh-23": meshIndex === 22,
             "bg-mesh-24": meshIndex === 23,
             "bg-mesh-25": meshIndex === 24,
+            "bg-mesh-26": meshIndex === 25,
+            "bg-mesh-27": meshIndex === 26,
           },
         )}
       />

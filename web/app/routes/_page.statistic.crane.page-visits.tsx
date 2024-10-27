@@ -8,7 +8,7 @@ import { Tag } from "../modules/tag";
 import { InsightService } from "../data/insight.service";
 import { Separator } from "../modules/separator";
 
-const anchors = ["Packages", "Authors"];
+const anchors = ["Sites", "Packages", "Authors"];
 
 export const handle = {
   hasFooter: true,
@@ -30,7 +30,9 @@ export async function loader() {
 }
 
 export default function StatisticsCranPageVisitTrendsPage() {
-  const { authors, packages } = useLoaderData<typeof loader>();
+  const { authors, packages, start, about } = useLoaderData<typeof loader>();
+
+  const hasAnyCommon = start.length > 0 || about.length > 0;
 
   return (
     <>
@@ -50,6 +52,34 @@ export default function StatisticsCranPageVisitTrendsPage() {
       </Anchors>
 
       <PageContent>
+        {hasAnyCommon ? (
+          <>
+            <PageContentSection headline="Sites" fragment="sites">
+              <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {[...start, ...about].map((item, index) => (
+                  <li key={index}>
+                    <Link to={item.page}>
+                      <InfoCard variant="sand" icon="internal">
+                        <div className="space-y-2">
+                          <h3 className="font-mono">
+                            {item.page.replace("/package/", "")}
+                          </h3>
+                          <p className="text-gray-dim">
+                            {item.visitors}{" "}
+                            {item.visitors === 1 ? "visitor" : "visitors"}
+                          </p>
+                        </div>
+                      </InfoCard>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </PageContentSection>
+
+            <Separator />
+          </>
+        ) : null}
+
         <PageContentSection headline="Packages" fragment="packages">
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {packages.map((item, index) => (
