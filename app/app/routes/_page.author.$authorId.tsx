@@ -2,7 +2,6 @@ import { json, type LoaderFunction, type MetaFunction } from "@remix-run/node";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
-import { PackageAuthor, Pkg } from "../data/types";
 import { AuthorService } from "../data/author.service";
 import { Link, useLoaderData } from "@remix-run/react";
 import { PageContent } from "../modules/page-content";
@@ -11,6 +10,8 @@ import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { InfoCard } from "../modules/info-card";
 import { InfoPill } from "../modules/info-pill";
+import { uniqBy } from "es-toolkit";
+import { RiArrowRightSLine } from "@remixicon/react";
 
 type AuthorRes = Awaited<ReturnType<typeof AuthorService.getAuthor>>;
 
@@ -40,6 +41,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     if (!item) {
       throw new Error(`Author '${authorId}' not found`);
     }
+    item.packages = uniqBy(item.packages, (pkg) => pkg.name);
+    item.otherAuthors = uniqBy(item.otherAuthors, (author) => author);
   } catch (error) {
     throw new Response(null, {
       status: 404,
@@ -138,7 +141,9 @@ function TeamSection(props: Pick<AuthorRes, "otherAuthors">) {
         {otherAuthors.map((name) => (
           <li key={name}>
             <Link to={`/author/${name}`}>
-              <InfoPill>{name}</InfoPill>
+              <InfoPill variant="jade">
+                {name} <RiArrowRightSLine size={16} className="text-gray-dim" />
+              </InfoPill>
             </Link>
           </li>
         ))}

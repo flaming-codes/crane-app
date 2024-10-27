@@ -1,7 +1,12 @@
-import { RiUserFill, RiVipCrown2Fill } from "@remixicon/react";
+import {
+  RiExternalLinkLine,
+  RiUserFill,
+  RiVipCrown2Fill,
+} from "@remixicon/react";
 import clsx from "clsx";
 import { InfoPill } from "./info-pill";
 import { Link } from "@remix-run/react";
+import { z } from "zod";
 
 type Props = {
   className?: string;
@@ -18,11 +23,13 @@ type Props = {
    */
   roles: Array<Role | (string & {})>;
   name: string;
-  email?: string;
+  link?: string;
 };
 
 const whoDidWhatUrl =
   "https://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf";
+
+const emailSchema = z.string().email();
 
 type Role = "aut" | "cre" | "ctb" | "rev" | "cph" | "com" | "ths" | "trl";
 
@@ -40,7 +47,7 @@ const readableRoles: Record<Role, string> = {
 const readableRolesList = Object.entries(readableRoles) as [Role, string][];
 
 export function ContactPill(props: Props) {
-  const { className, name, isMaintainer, roles, email } = props;
+  const { className, name, isMaintainer, roles, link } = props;
 
   const hasRoles = roles.length > 0;
 
@@ -81,14 +88,30 @@ export function ContactPill(props: Props) {
               .join(", ")}
           </InfoPill>
         ) : null}
-        {email ? (
-          <a href={`mailto:${email}`}>
-            <InfoPill size="sm" label="Email">
-              {email}
-            </InfoPill>
-          </a>
-        ) : null}
+        {link ? <ContactLinkPill link={link} /> : null}
       </div>
     </div>
+  );
+}
+
+function ContactLinkPill(props: Required<Pick<Props, "link">>) {
+  const { link } = props;
+
+  const isEmail = emailSchema.safeParse(link).success;
+  const isOrcID = !isEmail && link?.startsWith("https://orcid.org/");
+
+  return (
+    <a
+      href={isEmail ? `mailto:${link}` : link}
+      target={isOrcID ? "_blank" : undefined}
+      rel={isOrcID ? "noopener" : undefined}
+    >
+      <InfoPill size="sm" label={isOrcID ? "ORCID" : "@"}>
+        {link?.replace("https://orcid.org/", "")}
+        {isOrcID ? (
+          <RiExternalLinkLine size={12} className="ml-1 text-gray-dim" />
+        ) : null}
+      </InfoPill>
+    </a>
   );
 }

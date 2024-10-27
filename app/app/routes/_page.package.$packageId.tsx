@@ -337,7 +337,7 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
               isMaintainer
               name={maintainer.name}
               roles={maintainerRoles || []}
-              email={maintainer.email}
+              link={maintainer.email}
             />
           </li>
         ) : null}
@@ -347,7 +347,7 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
                 <ContactPill
                   name={author.name}
                   roles={author.roles || []}
-                  email={author.link}
+                  link={author.link}
                 />
               </li>
             ))
