@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
   useMatches,
+  useRevalidator,
   useRouteLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
@@ -15,6 +16,7 @@ import { Footer } from "./modules/footer";
 import "./tailwind.css";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
+import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -251,13 +253,21 @@ export const loader = async () => {
 export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
 
+  const isPlausibleEnabled = data?.isProduction && data?.domain;
+
   const matches = useMatches().slice(1);
   const hasFooter = matches.some((match) => {
     const handle = match.handle as { hasFooter?: boolean } | undefined;
     return handle?.hasFooter;
   });
 
-  const isPlausibleEnabled = data?.isProduction && data?.domain;
+  const revalidator = useRevalidator();
+  useEffect(() => {
+    revalidator.revalidate();
+    // if (data?.isProduction) {
+    //   revalidator.revalidate();
+    // }
+  }, []);
 
   return (
     <html lang="en">
@@ -271,6 +281,13 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify({
+              isPlausibleEnabled,
+            })}`,
+          }}
+        />
         {isPlausibleEnabled ? (
           <>
             <script
@@ -286,13 +303,7 @@ export default function App() {
             </script>
           </>
         ) : null}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify({
-              isPlausibleEnabled,
-            })}`,
-          }}
-        />
+
         <main className="content-grid min-h-full">
           <Outlet />
         </main>

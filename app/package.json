@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "@remix-pwa/worker-runtime": "^2.1.4",
     "@remix-run/node": "^2.13.1",
     "@remix-run/react": "^2.13.1",
     "@remix-run/serve": "^2.13.1",
@@ -38,6 +39,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@remix-pwa/dev": "^3.1.0",
     "@remix-run/dev": "^2.13.1",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
