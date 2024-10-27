@@ -80,7 +80,7 @@ function GradientBackground({ meshIndex }: { meshIndex: number }) {
   return (
     <>
       <div
-        className={clsx("fixed inset-x-0 top-0 -z-50 h-[60vh]", {
+        className={clsx("fixed inset-x-0 top-0 -z-50 h-[60vh] animate-fade", {
           "bg-mesh-1": meshIndex === 0,
           "bg-mesh-2": meshIndex === 1,
           "bg-mesh-3": meshIndex === 2,
