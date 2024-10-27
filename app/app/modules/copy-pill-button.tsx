@@ -3,6 +3,7 @@ import { useCopyToClipboard } from "@uidotdev/usehooks";
 import clsx from "clsx";
 import { PropsWithChildren, useRef } from "react";
 import { toast } from "sonner";
+import { useKeyboardShortcut } from "./app";
 
 type Props = PropsWithChildren<{
   className?: string;

@@ -41,25 +41,15 @@ export async function loader(props: LoaderFunctionArgs) {
     );
   }
 
-  // TODO: Returning empty urlset for now, need to implement this.
   if (slug === "sitemap-statistic.xml") {
     return new Response(
       `<?xml version="1.0" encoding="UTF-8" ?>
       <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-          ${
-            ""
-            /* ["repos-by-stars", "users-by-followers"].map((domain) =>
-            githubTrendRanges
-              .map((range) =>
-                composeUrlElement({
-                  path: `/statistic/github/${domain}/${range}`,
-                  lastmod: today,
-                  changefreq: "daily",
-                }),
-              )
-              .join(""),
-          )*/
-          }
+          ${composeUrlElement({
+            path: `/statistic/crane/page-visits`,
+            lastmod: today,
+            changefreq: "daily",
+          })}
       </urlset>`.trim(),
       {
         headers: {

@@ -37,6 +37,11 @@ export function Footer(props: Props) {
           </Link>
         </li>
         <li>
+          <Link to="/statistic" className="underline-offset-4 hover:underline">
+            Statistics
+          </Link>
+        </li>
+        <li>
           <ExternalLink
             href="https://github.com/flaming-codes/crane-app"
             className="underline-offset-4 hover:underline"

@@ -1,10 +1,10 @@
-import { RiExternalLinkLine } from "@remixicon/react";
+import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import { cva, VariantProps } from "cva";
 import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<
   Required<VariantProps<typeof twGradient>> & {
-    icon?: "external";
+    icon?: "external" | "internal";
     className?: string;
   }
 >;
@@ -20,23 +20,34 @@ const twGradient = cva({
       iris: "from-iris-4 dark:from-iris-11",
       ruby: "from-ruby-4 dark:from-ruby-11",
       jade: "from-jade-5 dark:from-jade-11",
+      bronze: "from-bronze-6 dark:from-bronze-11",
     },
   },
 });
 
+const iconMap: Record<string, JSX.Element> = {
+  external: (
+    <RiExternalLinkLine
+      className="group-hover/card:animate-wiggle-more group-hover/card:animate-infinite"
+      size={16}
+    />
+  ),
+  internal: (
+    <RiArrowRightSLine
+      className="group-hover/card:animate-wiggle-more group-hover/card:animate-infinite"
+      size={16}
+    />
+  ),
+};
+
 export function InfoCard(props: Props) {
-  const { className, variant, children, icon } = props;
+  const { className, variant, children, icon = null } = props;
 
   return (
     <div className={twBase({ className })}>
       <span className={twGradient({ variant })} />
       {children}
-      {icon === "external" ? (
-        <RiExternalLinkLine
-          className="group-hover/card:animate-wiggle-more group-hover/card:animate-infinite"
-          size={16}
-        />
-      ) : null}
+      {icon ? iconMap[icon] || null : null}
     </div>
   );
 }

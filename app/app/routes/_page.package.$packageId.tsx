@@ -33,6 +33,7 @@ import {
   mergeMeta,
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
+import { uniq } from "es-toolkit";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -242,7 +243,7 @@ function AboveTheFoldSection(props: { item: Pkg }) {
             </CopyPillButton>
           </li>
           {item.link
-            ? item.link.links.map((url) => (
+            ? uniq(item.link.links).map((url) => (
                 <li key={url}>
                   <ExternalLinkPill
                     href={url}

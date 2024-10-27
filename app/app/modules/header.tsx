@@ -16,6 +16,7 @@ const twBase = cva({
       gold: "bg-gradient-to-tr from-gold-6 dark:from-gold-10",
       ruby: "bg-gradient-to-tr from-ruby-6 dark:from-ruby-10",
       jade: "bg-gradient-to-bl from-jade-8 dark:from-jade-11",
+      bronze: "bg-gradient-to-tl from-bronze-8 dark:from-bronze-11",
     },
   },
 });
