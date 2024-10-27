@@ -2,25 +2,15 @@
   "theme_color": "#000000",
   "background_color": "#000000",
   "display": "standalone",
-  "display_override": [
-    "standalone"
-  ],
+  "display_override": ["standalone"],
   "scope": "/",
   "start_url": "/",
   "name": "CRAN/E",
   "short_name": "CRAN/E",
   "description": "A modern variant of the cran-r package hosting solution",
   "orientation": "natural",
-  "categories": [
-    "utilities",
-    "education",
-    "productivity"
-  ],
-  "features": [
-    "r packages",
-    "r package authors",
-    "search"
-  ],
+  "categories": ["utilities", "education", "productivity"],
+  "features": ["r packages", "r package authors", "search"],
   "lang": "en",
   "dir": "auto",
   "related_applications": [],
@@ -57,28 +47,28 @@
       "src": "/images/screenshots/screenshot-wide-0.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
-      "platform": "wide",
+      "form_factor": "wide",
       "label": "Homescreen of CRAN/E"
     },
     {
       "src": "/images/screenshots/screenshot-wide-1.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
-      "platform": "wide",
+      "form_factor": "wide",
       "label": "Package detail page of CRAN/E"
     },
     {
       "src": "/images/screenshots/screenshot-wide-2.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
-      "platform": "wide",
+      "form_factor": "wide",
       "label": "How-to page of CRAN/E"
     },
     {
       "src": "/images/screenshots/screenshot-wide-3.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
-      "platform": "wide",
+      "form_factor": "wide",
       "label": "About-page of CRAN/E"
     },
     {
