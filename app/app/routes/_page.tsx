@@ -1,12 +1,23 @@
 import { Outlet } from "@remix-run/react";
 import NavigationPage from "../modules/nav";
-import { lazy } from "react";
-import { ClientOnly } from "remix-utils/client-only";
 import { Toaster } from "sonner";
+import { cva } from "cva";
 
 export const handle = {
   hasFooter: true,
 };
+
+const twToaster = cva({
+  base: "bg-gradient-to-tr px-6 py-4 text-sm backdrop-blur-lg rounded-lg w-full inline-flex gap-2 items-center",
+  variants: {
+    variant: {
+      default: "from-gray-2 dark:from-gray-12",
+      success: "from-grass-6 dark:from-grass-11",
+      error: "from-crimson-6 dark:from-crimson-11",
+      info: "from-sky-6 dark:from-sky-11",
+    },
+  },
+});
 
 export default function PackageLayoutPage() {
   return (
@@ -15,11 +26,10 @@ export default function PackageLayoutPage() {
         toastOptions={{
           unstyled: true,
           classNames: {
-            toast:
-              "from-gray-2 dark:from-gray-12 bg-gradient-to-tr px-6 py-4 text-sm backdrop-blur-lg rounded-lg w-full inline-flex gap-2 items-center",
-            success: "from-grass-6 dark:from-grass-11",
-            error: "from-crimson-6 dark:from-crimson-11",
-            info: "from-sky-6 dark:from-sky-11",
+            toast: twToaster({}),
+            success: twToaster({ variant: "success" }),
+            error: twToaster({ variant: "error" }),
+            info: twToaster({ variant: "info" }),
             title: "text-gray-normal",
             description: "text-gray-dim",
             actionButton: "text-sky-normal",
