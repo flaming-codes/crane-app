@@ -51,7 +51,7 @@ export function ContactPill(props: Props) {
 
   return (
     <div className={clsx("flex flex-col gap-4 sm:flex-row", className)}>
-      <h4 className="shrink-0 text-lg">{name}</h4>
+      <h3 className="shrink-0 text-lg">{name}</h3>
       <div className="flex flex-wrap gap-2">
         {isMaintainer ? (
           <InfoPill

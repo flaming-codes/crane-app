@@ -237,21 +237,6 @@ function AboveTheFoldSection(props: { item: Pkg }) {
     <PageContentSection>
       <div className="space-y-6">
         <Prose html={item.description} />
-        <p hidden className="text-gray-dim">
-          Current version is <span>{item.version}</span> since{" "}
-          <span>{formatRelative(item.date, new Date())}</span> and requires R{" "}
-          <span>{rVersion || "unknown"}</span> to run.
-          {item.license && item.license.length > 0 ? (
-            <>
-              {" "}
-              Licensed under{" "}
-              <span>{item.license.map((l) => l.name).join(", ")}</span>.
-            </>
-          ) : null}{" "}
-          {item.name}{" "}
-          {item.needscompilation === "no" ? "doesn&apos;t need" : "needs"} to be
-          compiled.
-        </p>
       </div>
 
       <div className="flex flex-col gap-6 overflow-x-hidden">
