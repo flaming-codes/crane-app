@@ -20,7 +20,7 @@ import { InfoPill } from "../modules/info-pill";
 import { CopyPillButton } from "../modules/copy-pill-button";
 import { ExternalLinkPill } from "../modules/external-link-pill";
 import { PageContentSection } from "../modules/page-content-section";
-import { BinaryDownloadListItem } from "../modules/binary-download-link";
+import { BinaryDownloadLink } from "../modules/binary-download-link";
 import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
 import { lazy, ReactNode, Suspense, useMemo } from "react";
@@ -396,45 +396,48 @@ function BinariesPageContentSection(
     >
       <ul className="grid grid-cols-2 items-start gap-4 md:grid-cols-3 lg:grid-cols-4">
         {macos_binaries?.map((item, i) => (
-          <BinaryDownloadListItem
-            key={item.link + i}
-            variant="iris"
-            href={item.link}
-            os="macOS"
-            headline={item.label.split(" ")?.[0]?.replace(":", "")}
-            arch={
-              item.label
-                .split(" ")?.[1]
-                ?.replace(":", "")
-                .replace("(", "")
-                .replace(")", "") || "x86_64"
-            }
-          />
+          <li key={item.link + i}>
+            <BinaryDownloadLink
+              variant="iris"
+              href={item.link}
+              os="macOS"
+              headline={item.label.split(" ")?.[0]?.replace(":", "")}
+              arch={
+                item.label
+                  .split(" ")?.[1]
+                  ?.replace(":", "")
+                  .replace("(", "")
+                  .replace(")", "") || "x86_64"
+              }
+            />
+          </li>
         )) || null}
         {windows_binaries?.map((item, i) => (
-          <BinaryDownloadListItem
-            key={item.link + i}
-            variant="iris"
-            href={item.link}
-            os="Windows"
-            headline={item.label.split(" ")?.[0]?.replace(":", "")}
-            arch={
-              item.label
-                .split(" ")?.[1]
-                ?.replace(":", "")
-                .replace("(", "")
-                .replace(")", "") || "x86_64"
-            }
-          />
+          <li key={item.link + i}>
+            <BinaryDownloadLink
+              variant="iris"
+              href={item.link}
+              os="Windows"
+              headline={item.label.split(" ")?.[0]?.replace(":", "")}
+              arch={
+                item.label
+                  .split(" ")?.[1]
+                  ?.replace(":", "")
+                  .replace("(", "")
+                  .replace(")", "") || "x86_64"
+              }
+            />
+          </li>
         )) || null}
         {old_sources ? (
-          <BinaryDownloadListItem
-            key={old_sources.link}
-            variant="iris"
-            href={old_sources.link}
-            os="Old Source"
-            headline={old_sources.label}
-          />
+          <li key={old_sources.link}>
+            <BinaryDownloadLink
+              variant="iris"
+              href={old_sources.link}
+              os="Old Source"
+              headline={old_sources.label}
+            />
+          </li>
         ) : null}
       </ul>
     </PageContentSection>

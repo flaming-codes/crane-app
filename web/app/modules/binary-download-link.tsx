@@ -24,7 +24,7 @@ const twGradient = cva({
   },
 });
 
-export function BinaryDownloadListItem(props: Props) {
+export function BinaryDownloadLink(props: Props) {
   const { href, headline, os, arch, className, variant } = props;
 
   return (

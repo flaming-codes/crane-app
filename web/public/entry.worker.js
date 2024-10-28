@@ -362,15 +362,15 @@ const assets = [
   "/icons/safari-pinned-tab.svg",
   "/images/og/cover-01.jpg",
   "/images/og/cover-02.jpg",
+  "/images/we/lukas.webp",
+  "/images/we/tom.webp",
   "/images/screenshots/screenshot-portrait-0.jpg",
   "/images/screenshots/screenshot-portrait-1.jpg",
   "/images/screenshots/screenshot-portrait-2.jpg",
   "/images/screenshots/screenshot-wide-0.jpg",
   "/images/screenshots/screenshot-wide-1.jpg",
   "/images/screenshots/screenshot-wide-2.jpg",
-  "/images/screenshots/screenshot-wide-3.jpg",
-  "/images/we/lukas.webp",
-  "/images/we/tom.webp"
+  "/images/screenshots/screenshot-wide-3.jpg"
 ];
 const routes = {
   "root": {
