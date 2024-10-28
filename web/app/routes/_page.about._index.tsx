@@ -1,4 +1,4 @@
-import { json, Link, MetaFunction } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { AnchorLink, Anchors } from "../modules/anchors";
@@ -14,23 +14,16 @@ import {
 } from "@remixicon/react";
 import { Header } from "../modules/header";
 import { PlausibleChoicePillButton } from "../modules/plausible";
+import { mergeMeta } from "../modules/meta";
 
 const anchors = ["Mission", "Team", "Analytics", "Source Code", "Licenses"];
 
-export const handle = {
-  hasFooter: true,
-};
-
-export const meta: MetaFunction = () => {
+export const meta = mergeMeta(() => {
   return [
     { title: "About | CRAN/E" },
     { name: "description", content: "About the creators of CRAN/E" },
   ];
-};
-
-export function loader() {
-  return json({});
-}
+});
 
 export default function PrivacyPage() {
   return (

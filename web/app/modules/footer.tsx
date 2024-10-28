@@ -3,6 +3,14 @@ import { ExternalLink } from "./external-link";
 import { cva, VariantProps } from "cva";
 import { ReactNode } from "react";
 import clsx from "clsx";
+import { RiGithubLine } from "@remixicon/react";
+
+const BASE_ITEMS: Array<{ label: string; href: string }> = [
+  { label: "About", href: "/about" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Statistics", href: "/statistic" },
+  { label: "Newsroom", href: "/press/news" },
+];
 
 const twBase = cva({
   base: "text-sm flex flex-wrap items-center gap-6 text-gray-dim py-6 font-light",
@@ -33,32 +41,27 @@ export function Footer(props: Props) {
       <ul className={twBase({ variant, className })}>
         {start}
 
-        <li>
-          <Link to="/about" className="underline-offset-4 hover:underline">
-            About
-          </Link>
-        </li>
-        <li>
-          <Link to="/privacy" className="underline-offset-4 hover:underline">
-            Privacy
-          </Link>
-        </li>
-        <li>
-          <Link to="/statistic" className="underline-offset-4 hover:underline">
-            Statistics
-          </Link>
-        </li>
+        {BASE_ITEMS.map(({ label, href }) => (
+          <li key={label}>
+            <Link to={href} className="underline-offset-4 hover:underline">
+              {label}
+            </Link>
+          </li>
+        ))}
         <li>
           <ExternalLink
             href="https://github.com/flaming-codes/crane-app"
-            className="underline-offset-4 hover:underline"
+            className="underline-offset-4 hover:brightness-75"
           >
-            Github
+            <RiGithubLine size={16} />
+            <span className="sr-only">Github</span>
           </ExternalLink>
         </li>
         {version && (
-          <li className="text-gray-dim font-mono text-xs opacity-70">
-            v{version}
+          <li className="text-gray-dim font-mono text-xs opacity-70 hover:brightness-75">
+            <ExternalLink href="https://github.com/flaming-codes/crane-app">
+              v{version}
+            </ExternalLink>
           </li>
         )}
         {end}

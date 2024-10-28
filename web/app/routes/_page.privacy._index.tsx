@@ -1,4 +1,4 @@
-import { json, Link, MetaFunction } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { Anchors, AnchorLink } from "../modules/anchors";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
@@ -12,6 +12,7 @@ import {
 } from "@remixicon/react";
 import { ExternalLink } from "../modules/external-link";
 import { InfoPill } from "../modules/info-pill";
+import { mergeMeta } from "../modules/meta";
 
 const anchors = ["General", "Plausible"];
 
@@ -19,16 +20,12 @@ export const handle = {
   hasFooter: true,
 };
 
-export const meta: MetaFunction = () => {
+export const meta = mergeMeta(() => {
   return [
     { title: "Privacy | CRAN/E" },
     { name: "description", content: "How privacy is handled to CRAN/E" },
   ];
-};
-
-export function loader() {
-  return json({});
-}
+});
 
 export default function PrivacyPage() {
   return (

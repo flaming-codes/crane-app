@@ -24,7 +24,6 @@ import { BinaryDownloadLink } from "../modules/binary-download-link";
 import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
 import { lazy, ReactNode, Suspense, useMemo } from "react";
-import { ClientOnly } from "remix-utils/client-only";
 import { sendEvent } from "../modules/plausible";
 import {
   composeBreadcrumbsJsonLd,
@@ -151,7 +150,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   return json(
-    { item, downloads },
+    { item, downloads, lastRelease: formatRelative(item.date, new Date()) },
     {
       headers: {
         "Cache-Control": `public, max-age=${minutesToSeconds(10)}`,
@@ -164,6 +163,7 @@ export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
   const downloads = data.downloads as PackageDownloadTrend[];
+  const lastRelease = data.lastRelease as string;
 
   return (
     <>
@@ -183,7 +183,7 @@ export default function PackagePage() {
       </Anchors>
 
       <PageContent>
-        <AboveTheFoldSection item={item} />
+        <AboveTheFoldSection item={item} lastRelease={lastRelease} />
 
         <Separator />
 
@@ -229,8 +229,8 @@ export default function PackagePage() {
   );
 }
 
-function AboveTheFoldSection(props: { item: Pkg }) {
-  const { item } = props;
+function AboveTheFoldSection(props: { item: Pkg; lastRelease: string }) {
+  const { item, lastRelease } = props;
   const rVersion = item.depends?.find((d) => d.name === "R")?.version;
 
   return (
@@ -331,18 +331,14 @@ function AboveTheFoldSection(props: { item: Pkg }) {
                 </li>
               ))
             : null}
-          <ClientOnly>
-            {() => (
-              <li>
-                <InfoPill
-                  label="Last release"
-                  className="animate-fade animate-duration-200"
-                >
-                  {formatRelative(item.date, new Date())}
-                </InfoPill>
-              </li>
-            )}
-          </ClientOnly>
+          <li>
+            <InfoPill
+              label="Last release"
+              className="animate-fade animate-duration-200"
+            >
+              {lastRelease}
+            </InfoPill>
+          </li>
         </ul>
       </div>
     </PageContentSection>

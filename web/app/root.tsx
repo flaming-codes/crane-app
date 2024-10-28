@@ -311,12 +311,8 @@ export default function App() {
             version={data?.version}
             start={
               <li>
-                <Link
-                  to="/"
-                  className="underline-offset-4 hover:underline"
-                  aria-label="Open landing page"
-                >
-                  Start
+                <Link to="/" className="underline-offset-4 hover:underline">
+                  Home
                 </Link>
               </li>
             }
