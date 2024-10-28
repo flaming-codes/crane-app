@@ -522,6 +522,9 @@ function InsightsPageContentSection(props: {
                     "text-green-10 dark:text-green-8":
                       item.trend.startsWith("+"),
                     "text-red-10 dark:text-red-8": item.trend.startsWith("-"),
+                    "text-gray-dim":
+                      !item.trend.startsWith("+") &&
+                      !item.trend.startsWith("-"),
                   },
                 )}
               >
