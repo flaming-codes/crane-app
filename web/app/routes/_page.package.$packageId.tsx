@@ -34,8 +34,8 @@ import {
 import { BASE_URL } from "../modules/app";
 import { uniq } from "es-toolkit";
 import { PackageInsightService } from "../data/package-insight-service.server";
-import { clog } from "../modules/observability";
 import { slog } from "../modules/observability.server";
+import clsx from "clsx";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -47,6 +47,7 @@ const sections = [
   "Synopsis",
   "Documentation",
   "Team",
+  "Insights",
   "Binaries",
   "Dependencies",
 ] as const;
@@ -164,8 +165,6 @@ export default function PackagePage() {
   const item = data.item as Pkg;
   const downloads = data.downloads as PackageDownloadTrend[];
 
-  clog.log("downloads", downloads);
-
   return (
     <>
       <Header
@@ -198,6 +197,10 @@ export default function PackagePage() {
           maintainer={item.maintainer}
           author={item.author}
         />
+
+        <Separator />
+
+        <InsightsPageContentSection downloads={downloads} />
 
         <Separator />
 
@@ -474,6 +477,73 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
             ))
           : null}
       </ul>
+    </PageContentSection>
+  );
+}
+
+function InsightsPageContentSection(props: {
+  downloads: PackageDownloadTrend[];
+}) {
+  const { downloads } = props;
+
+  const hasDownloads = downloads && downloads.length > 0;
+
+  return (
+    <PageContentSection
+      headline="Insights"
+      // subline="Get the latest insights on this package"
+      fragment="insights"
+    >
+      <h3 className="text-lg">Downloads for...</h3>
+
+      {hasDownloads ? (
+        <ul
+          className={clsx(
+            "relative mb-3 flex items-end justify-center gap-4 sm:mx-8 md:mx-16",
+            "after:absolute after:inset-x-0 after:bottom-0 after:z-0 after:h-1 after:rounded-full after:content-['']",
+            "after:bg-gradient-to-l after:from-sand-6 after:from-90% after:dark:from-sand-10",
+            // "after:bg-sand-4 after:dark:bg-sand-10",
+          )}
+        >
+          {downloads.map((item) => (
+            <li
+              key={item.label}
+              className={clsx(
+                "relative flex flex-1 flex-col items-center gap-1 pb-6 text-center",
+                "after:absolute after:bottom-0 after:left-1/2 after:h-4 after:w-1 after:-translate-x-1/2 after:rounded-t-full after:bg-sand-6 after:content-[''] after:dark:bg-sand-10",
+              )}
+            >
+              <span className="text-gray-dim text-xs">{item.label}</span>
+              <span className="font-semibold">{item.value}</span>
+              <span
+                className={clsx(
+                  "absolute bottom-0 translate-y-full pt-3 font-mono text-sm font-semibold",
+                  {
+                    "text-green-10 dark:text-green-8":
+                      item.trend.startsWith("+"),
+                    "text-red-10 dark:text-red-8": item.trend.startsWith("-"),
+                  },
+                )}
+              >
+                {item.trend}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-dim">No downloads available</p>
+      )}
+
+      <p className="text-gray-dim mt-16 text-right text-xs">
+        Data provided by{" "}
+        <ExternalLink
+          href="https://github.com/r-hub/cranlogs.app"
+          className="inline-flex items-center gap-1 underline underline-offset-4"
+        >
+          cranlogs
+          <RiExternalLinkLine size={10} className="text-gray-dim" />
+        </ExternalLink>
+      </p>
     </PageContentSection>
   );
 }
