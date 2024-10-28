@@ -1,26 +1,10 @@
-import { json, Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet } from "@remix-run/react";
 import NavigationPage from "../modules/nav";
 import { Toaster } from "sonner";
 import { cva } from "cva";
-import { useNetworkStateToast } from "../modules/network";
-import { ENV } from "../data/env";
-import { hoursToSeconds } from "date-fns";
 
 export const handle = {
   hasFooter: true,
-};
-
-export const loader = () => {
-  return json(
-    {
-      isProduction: ENV.NODE_ENV === "production",
-    },
-    {
-      headers: {
-        "Cache-Control": `public, max-age=${hoursToSeconds(24)}`,
-      },
-    },
-  );
 };
 
 const twToaster = cva({
@@ -37,10 +21,6 @@ const twToaster = cva({
 });
 
 export default function PackageLayoutPage() {
-  const { isProduction } = useLoaderData<typeof loader>();
-
-  useNetworkStateToast(isProduction);
-
   return (
     <>
       <Toaster
