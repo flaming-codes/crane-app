@@ -1,6 +1,7 @@
 import { AuthorService } from "../data/author.service";
 import { PackageService } from "../data/package.service";
 import { BASE_URL } from "./app";
+import { slog } from "./observability.server";
 
 export const SITEMAP_FILE_CHUNK_SIZE = 5_000;
 
@@ -58,7 +59,7 @@ export function composeAuthorUrl([name, lastmod]: [
   string | undefined,
 ]) {
   if (name.includes("Prachi Misra Sahoo")) {
-    console.log([
+    slog.log([
       "Prachi Misra Sahoo",
       encodeURIComponent(name),
       encodeSitemapSymbols(encodeURIComponent(name)),

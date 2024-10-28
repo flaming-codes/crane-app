@@ -33,10 +33,10 @@ export function BinaryDownloadListItem(props: Props) {
         size={18}
         className="opacity-50 transition-opacity group-hover/binary:animate-wiggle-more group-hover/binary:opacity-100 group-hover/binary:animate-infinite"
       />
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         <span className={twGradient({ variant })} />
         <span className="font-mono leading-none">{headline}</span>
-        <span className="text-gray-dim">
+        <span className="text-gray-dim leading-none">
           {os} <span className="text-gray-normal opacity-30">/</span> {arch}
         </span>
       </div>

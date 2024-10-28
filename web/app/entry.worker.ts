@@ -4,14 +4,18 @@ export {};
 
 declare let self: ServiceWorkerGlobalScope;
 
+import { Logger } from "@remix-pwa/sw";
+
+const logger = new Logger({ prefix: "[SW]" });
+
 self.addEventListener("install", (event) => {
-  console.log("Service worker installed");
+  logger.log("Service worker installed");
 
   event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("Service worker activated");
+  logger.log("Service worker activated");
 
   const cachesToKeep: string[] = [];
 

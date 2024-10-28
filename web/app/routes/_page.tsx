@@ -1,10 +1,26 @@
-import { Outlet } from "@remix-run/react";
+import { json, Outlet, useLoaderData } from "@remix-run/react";
 import NavigationPage from "../modules/nav";
 import { Toaster } from "sonner";
 import { cva } from "cva";
+import { useNetworkStateToast } from "../modules/network";
+import { ENV } from "../data/env";
+import { hoursToSeconds } from "date-fns";
 
 export const handle = {
   hasFooter: true,
+};
+
+export const loader = () => {
+  return json(
+    {
+      isProduction: ENV.NODE_ENV === "production",
+    },
+    {
+      headers: {
+        "Cache-Control": `public, max-age=${hoursToSeconds(24)}`,
+      },
+    },
+  );
 };
 
 const twToaster = cva({
@@ -15,11 +31,16 @@ const twToaster = cva({
       success: "from-grass-6 dark:from-grass-11",
       error: "from-crimson-6 dark:from-crimson-11",
       info: "from-sky-6 dark:from-sky-11",
+      warning: "from-amber-6 dark:from-amber-11",
     },
   },
 });
 
 export default function PackageLayoutPage() {
+  const { isProduction } = useLoaderData<typeof loader>();
+
+  useNetworkStateToast(isProduction);
+
   return (
     <>
       <Toaster
@@ -30,6 +51,7 @@ export default function PackageLayoutPage() {
             success: twToaster({ variant: "success" }),
             error: twToaster({ variant: "error" }),
             info: twToaster({ variant: "info" }),
+            warning: twToaster({ variant: "warning" }),
             title: "text-gray-normal",
             description: "text-gray-dim",
             actionButton: "text-sky-normal",

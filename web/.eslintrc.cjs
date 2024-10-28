@@ -72,6 +72,7 @@ module.exports = {
         "plugin:import/typescript",
       ],
       rules: {
+        "no-console": "error",
         "unused-imports/no-unused-imports": "error",
         "unused-imports/no-unused-vars": [
           "warn",

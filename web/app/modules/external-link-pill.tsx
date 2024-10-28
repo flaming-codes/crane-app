@@ -6,7 +6,7 @@ type Props = PropsWithChildren<{
   href: string;
   children: ReactNode;
   className?: string;
-  icon?: JSX.Element;
+  icon?: ReactNode;
 }>;
 
 export function ExternalLinkPill(props: Props) {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { InfoPill } from "./info-pill";
 import { ClientOnly } from "remix-utils/client-only";
 import clsx from "clsx";
+import { clog } from "./observability";
 
 /**
  * Log an analytics-event.
@@ -15,7 +16,7 @@ export function sendEvent(
     try {
       window.plausible?.(...params);
     } catch (error) {
-      console.error("Error sending analytics event", error);
+      clog.error("Error sending analytics event", error);
     }
   }
 }

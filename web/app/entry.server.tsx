@@ -11,13 +11,14 @@ import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { server } from "./mocks/node.server";
+import { slog } from "./modules/observability.server";
 
 const ABORT_DELAY = 5_000;
 
 if (process.env.NODE_ENV === "development") {
   server.listen();
   server.events.on("request:start", ({ request }) => {
-    console.debug("MSW intercepted:", request.method, request.url);
+    slog.debug("MSW intercepted:", request.method, request.url);
   });
 }
 
@@ -82,7 +83,7 @@ function handleBotRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            slog.error(error);
           }
         },
       },
@@ -132,7 +133,7 @@ function handleBrowserRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            slog.error(error);
           }
         },
       },

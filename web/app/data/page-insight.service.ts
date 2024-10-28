@@ -7,7 +7,7 @@ type PlausibleDataPoint = { page: string; visitors: number };
 type TopPageDomain = "authors" | "packages" | "start" | "about";
 type TopPagesIndex = Record<TopPageDomain, Array<PlausibleDataPoint>>;
 
-export class InsightService {
+export class PageInsightService {
   private static plausibleBaseUrl = "https://plausible.io/api/v1/stats";
 
   private static topPages: ExpiringSearchIndex<TopPagesIndex> = {

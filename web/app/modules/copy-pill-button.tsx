@@ -1,8 +1,9 @@
 import { RiFileCopyLine } from "@remixicon/react";
-import { useCopyToClipboard } from "@uidotdev/usehooks";
 import clsx from "clsx";
 import { PropsWithChildren, useRef } from "react";
 import { toast } from "sonner";
+import { copyTextToClipboard } from "@remix-pwa/client";
+import { clog } from "./observability";
 
 type Props = PropsWithChildren<{
   className?: string;
@@ -13,17 +14,16 @@ type Props = PropsWithChildren<{
 export function CopyPillButton(props: Props) {
   const { children, className, textToCopy, onSuccess } = props;
 
-  const [_, copy] = useCopyToClipboard();
-
   const timeLockUntilNextCopyAllowed = useRef(0);
   const onCopy = async () => {
     if (Date.now() >= timeLockUntilNextCopyAllowed.current) {
       timeLockUntilNextCopyAllowed.current = Date.now() + 5_000;
       try {
-        await copy(textToCopy);
+        await copyTextToClipboard(textToCopy);
         toast.success("Copied to clipboard");
         onSuccess?.();
       } catch (error) {
+        clog.error(error);
         toast.error("Failed to copy to clipboard");
       }
     }

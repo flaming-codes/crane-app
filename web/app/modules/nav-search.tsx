@@ -70,14 +70,16 @@ export function NavSearch(props: Props) {
     fetcher.submit(data, {
       debounceTimeout: 200,
       method: "POST",
-      action: "/search?index",
+      action: "/api/search?index",
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSelect = useCallback((item?: SearchResult) => {
+  const onSelect = useCallback(() => {
     setInput("");
     setIsFocused(false);
     inputRef.current?.blur();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useKeyboardEvent(
@@ -89,6 +91,7 @@ export function NavSearch(props: Props) {
       setInput("");
       setIsFocused(false);
       inputRef.current?.blur();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]),
   );
 
@@ -97,6 +100,7 @@ export function NavSearch(props: Props) {
     useCallback(() => {
       inputRef.current?.focus();
       setIsFocused(true);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
 

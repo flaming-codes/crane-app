@@ -112,3 +112,18 @@ export type ExpiringSearchIndex<T> = {
   index: T;
   expiresAt: number;
 };
+
+export type CranDownloadsResponse = Array<{
+  downloads: number;
+  start: string;
+  end: string;
+  package: string;
+}>;
+
+export type CranResponse = CranDownloadsResponse;
+
+export type PackageDownloadTrend = {
+  trend: string;
+  label: string;
+  value: string;
+};

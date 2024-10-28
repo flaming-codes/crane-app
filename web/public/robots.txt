@@ -1,5 +1,4 @@
 Sitemap: https://cran-e.com/sitemap.xml
-Sitemap: https://cran-e.com/sitemap.xml
 
 User-agent: *
 Disallow: /api/*

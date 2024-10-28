@@ -1,15 +1,14 @@
-import type { LoaderFunction } from "@remix-run/node";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
 import { PackageService } from "../data/package.service";
 import { useLoaderData } from "@remix-run/react";
-import { json, useLocation } from "react-router";
-import { Pkg } from "../data/types";
+import { json, LoaderFunctionArgs, useLocation } from "react-router";
+import { PackageDownloadTrend, Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { PageContent } from "../modules/page-content";
-import { formatRelative } from "date-fns";
+import { formatRelative, minutesToSeconds } from "date-fns";
 import { ExternalLink } from "../modules/external-link";
 import {
   RiBug2Line,
@@ -24,7 +23,7 @@ import { PageContentSection } from "../modules/page-content-section";
 import { BinaryDownloadListItem } from "../modules/binary-download-link";
 import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
-import { lazy, Suspense } from "react";
+import { lazy, ReactNode, Suspense, useMemo } from "react";
 import { ClientOnly } from "remix-utils/client-only";
 import { sendEvent } from "../modules/plausible";
 import {
@@ -34,6 +33,9 @@ import {
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
 import { uniq } from "es-toolkit";
+import { PackageInsightService } from "../data/package-insight-service.server";
+import { slog } from "../modules/observability.server";
+import clsx from "clsx";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -45,6 +47,7 @@ const sections = [
   "Synopsis",
   "Documentation",
   "Team",
+  "Insights",
   "Binaries",
   "Dependencies",
 ] as const;
@@ -113,7 +116,7 @@ export const meta = mergeMeta(
   },
 );
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { packageId } = params;
 
   if (!packageId) {
@@ -124,26 +127,43 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
 
   let item: Pkg | undefined = undefined;
+  let downloads: PackageDownloadTrend[] = [];
 
   try {
-    item = await PackageService.getPackage(packageId);
-    if (!item) {
-      throw new Error(`Package '${packageId}' not found`);
+    const [_item, _downloads] = await Promise.all([
+      PackageService.getPackage(packageId),
+      PackageInsightService.getDownloadsWithTrends(packageId),
+    ]);
+    if (!_item) {
+      throw new Response(null, {
+        status: 404,
+        statusText: `Package '${packageId}' not found`,
+      });
     }
+    item = _item;
+    downloads = _downloads;
   } catch (error) {
-    console.error(error);
+    slog.error(error);
     throw new Response(null, {
       status: 404,
       statusText: `Package '${packageId}' not found`,
     });
   }
 
-  return json({ item });
+  return json(
+    { item, downloads },
+    {
+      headers: {
+        "Cache-Control": `public, max-age=${minutesToSeconds(10)}`,
+      },
+    },
+  );
 };
 
 export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
+  const downloads = data.downloads as PackageDownloadTrend[];
 
   return (
     <>
@@ -177,6 +197,10 @@ export default function PackagePage() {
           maintainer={item.maintainer}
           author={item.author}
         />
+
+        <Separator />
+
+        <InsightsPageContentSection downloads={downloads} />
 
         <Separator />
 
@@ -231,7 +255,7 @@ function AboveTheFoldSection(props: { item: Pkg }) {
       </div>
 
       <div className="flex flex-col gap-6 overflow-x-hidden">
-        <ul className="flex flex-wrap items-start gap-2">
+        <ul className="flex flex-wrap items-start gap-4">
           <li>
             <CopyPillButton
               textToCopy={`install.packages('${item.name}')`}
@@ -243,16 +267,9 @@ function AboveTheFoldSection(props: { item: Pkg }) {
             </CopyPillButton>
           </li>
           {item.link
-            ? uniq(item.link.links).map((url) => (
-                <li key={url}>
-                  <ExternalLinkPill
-                    href={url}
-                    icon={<RiGithubLine size={18} />}
-                  >
-                    {item.link?.text.includes("github.com")
-                      ? "GitHub"
-                      : item.link?.text}
-                  </ExternalLinkPill>
+            ? uniq(item.link.links).map((href, i) => (
+                <li key={href + i}>
+                  <ItemExternalGeneralLinkPill href={href} />
                 </li>
               ))
             : null}
@@ -283,7 +300,7 @@ function AboveTheFoldSection(props: { item: Pkg }) {
             </ExternalLinkPill>
           </li>
         </ul>
-        <ul className="flex flex-wrap items-start gap-2">
+        <ul className="flex flex-wrap items-start gap-4">
           <li>
             <InfoPill label="Version">{item.version}</InfoPill>
           </li>
@@ -312,10 +329,27 @@ function AboveTheFoldSection(props: { item: Pkg }) {
               <InfoPill label="Language">{item.language}</InfoPill>
             </li>
           ) : null}
+          {item.os_type ? (
+            <li>
+              <InfoPill label="OS">{item.os_type}</InfoPill>
+            </li>
+          ) : null}
+          {item.citation && item.citation.link.length > 0
+            ? item.citation.link.map((href) => (
+                <li key={href}>
+                  <ExternalLinkPill href={href}>
+                    {item.citation?.label || href}
+                  </ExternalLinkPill>
+                </li>
+              ))
+            : null}
           <ClientOnly>
             {() => (
               <li>
-                <InfoPill label="Last release">
+                <InfoPill
+                  label="Last release"
+                  className="animate-fade animate-duration-200"
+                >
                   {formatRelative(item.date, new Date())}
                 </InfoPill>
               </li>
@@ -324,6 +358,25 @@ function AboveTheFoldSection(props: { item: Pkg }) {
         </ul>
       </div>
     </PageContentSection>
+  );
+}
+
+function ItemExternalGeneralLinkPill(props: { href: string }) {
+  const { href } = props;
+
+  const [icon, label] = useMemo(() => {
+    const mapToProperties = (): [ReactNode, ReactNode] => {
+      if (href.includes("github.com"))
+        return [<RiGithubLine key="github" size={18} />, "GitHub"];
+      return [<RiExternalLinkLine key="external" size={18} />, href];
+    };
+    return mapToProperties();
+  }, [href]);
+
+  return (
+    <ExternalLinkPill href={href} icon={icon}>
+      {label}
+    </ExternalLinkPill>
   );
 }
 
@@ -424,6 +477,76 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
             ))
           : null}
       </ul>
+    </PageContentSection>
+  );
+}
+
+function InsightsPageContentSection(props: {
+  downloads: PackageDownloadTrend[];
+}) {
+  const { downloads } = props;
+
+  const hasDownloads = downloads && downloads.length > 0;
+
+  return (
+    <PageContentSection
+      headline="Insights"
+      // subline="Get the latest insights on this package"
+      fragment="insights"
+    >
+      <h3 className="text-lg">Downloads for...</h3>
+
+      {hasDownloads ? (
+        <ul
+          className={clsx(
+            "relative mb-3 flex items-end justify-center gap-4 sm:mx-8 md:mx-16",
+            "after:absolute after:inset-x-0 after:bottom-0 after:z-0 after:h-1 after:rounded-full after:content-['']",
+            "after:bg-gradient-to-l after:from-sand-6 after:from-90% after:dark:from-sand-10",
+            // "after:bg-sand-4 after:dark:bg-sand-10",
+          )}
+        >
+          {downloads.map((item) => (
+            <li
+              key={item.label}
+              className={clsx(
+                "relative flex flex-1 flex-col items-center gap-1 pb-6 text-center",
+                "after:absolute after:bottom-0 after:left-1/2 after:h-4 after:w-1 after:-translate-x-1/2 after:rounded-t-full after:bg-sand-6 after:content-[''] after:dark:bg-sand-10",
+              )}
+            >
+              <span className="text-gray-dim text-xs">{item.label}</span>
+              <span className="font-semibold">{item.value}</span>
+              <span
+                className={clsx(
+                  "absolute bottom-0 translate-y-full pt-3 font-mono text-sm font-semibold",
+                  {
+                    "text-green-10 dark:text-green-8":
+                      item.trend.startsWith("+"),
+                    "text-red-10 dark:text-red-8": item.trend.startsWith("-"),
+                    "text-gray-dim":
+                      !item.trend.startsWith("+") &&
+                      !item.trend.startsWith("-"),
+                  },
+                )}
+              >
+                {item.trend}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-dim">No downloads available</p>
+      )}
+
+      <p className="text-gray-dim mt-16 text-right text-xs">
+        Data provided by{" "}
+        <ExternalLink
+          href="https://github.com/r-hub/cranlogs.app"
+          className="inline-flex items-center gap-1 underline underline-offset-4"
+        >
+          cranlogs
+          <RiExternalLinkLine size={10} className="text-gray-dim" />
+        </ExternalLink>
+      </p>
     </PageContentSection>
   );
 }
