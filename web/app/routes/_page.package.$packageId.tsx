@@ -334,7 +334,10 @@ function AboveTheFoldSection(props: { item: Pkg }) {
               <InfoPill label="OS">{item.os_type}</InfoPill>
             </li>
           ) : null}
-          {item.citation && item.citation.link.length > 0
+          {item.citation &&
+          item.citation.link &&
+          Array.isArray(item.citation.link) &&
+          item.citation.link.length > 0
             ? item.citation.link.map((href) => (
                 <li key={href}>
                   <ExternalLinkPill href={href}>
