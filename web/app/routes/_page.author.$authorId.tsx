@@ -18,6 +18,8 @@ import {
   mergeMeta,
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
+import { hoursToSeconds } from "date-fns";
+import { slog } from "../modules/observability.server";
 
 type AuthorRes = Awaited<ReturnType<typeof AuthorService.getAuthor>>;
 
@@ -103,14 +105,18 @@ export const loader: LoaderFunction = async ({ params }) => {
     item.packages = uniqBy(item.packages, (pkg) => pkg.name);
     item.otherAuthors = uniqBy(item.otherAuthors, (author) => author);
   } catch (error) {
-    console.error(error);
+    slog.error(error);
     throw new Response(null, {
       status: 404,
       statusText: `Author '${authorId}' not found`,
     });
   }
 
-  return json(item);
+  return json(item, {
+    headers: {
+      "Cache-Control": `public, max-age=${hoursToSeconds(12)}`,
+    },
+  });
 };
 
 export default function AuthorPage() {
@@ -182,7 +188,7 @@ function PackagesSection(props: Pick<AuthorRes, "packages">) {
         {packages.map((item) => (
           <li key={item.name}>
             <Link to={`/package/${item.slug}`}>
-              <InfoCard variant="jade">
+              <InfoCard variant="iris">
                 <span className="flex flex-col gap-2">
                   <span className="text-gray-dim text-xs">{item.name}</span>
                   <span>{item.title}</span>

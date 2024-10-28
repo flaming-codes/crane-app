@@ -5,7 +5,7 @@ import { PageContentSection } from "../modules/page-content-section";
 import { InfoCard } from "../modules/info-card";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
-import { InsightService } from "../data/insight.service";
+import { PageInsightService } from "../data/page-insight.service";
 import { Separator } from "../modules/separator";
 
 const anchors = ["Sites", "Packages", "Authors"];
@@ -25,7 +25,7 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader() {
-  const grouped = await InsightService.getTopPages();
+  const grouped = await PageInsightService.getTopPages();
   return json(grouped);
 }
 

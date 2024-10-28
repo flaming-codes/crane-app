@@ -1,4 +1,5 @@
 import {
+  RiArrowRightSLine,
   RiExternalLinkLine,
   RiUserFill,
   RiVipCrown2Fill,
@@ -49,8 +50,8 @@ export function ContactPill(props: Props) {
   const hasRoles = roles.length > 0;
 
   return (
-    <div className={clsx("flex flex-col gap-3 sm:flex-row", className)}>
-      <h4 className="text-lg">{name}</h4>
+    <div className={clsx("flex flex-col gap-4 sm:flex-row", className)}>
+      <h4 className="shrink-0 text-lg">{name}</h4>
       <div className="flex flex-wrap gap-2">
         {isMaintainer ? (
           <InfoPill
@@ -67,12 +68,9 @@ export function ContactPill(props: Props) {
           </InfoPill>
         ) : null}
         <Link to={`/author/${name}`}>
-          <InfoPill
-            size="sm"
-            label={<RiUserFill size={16} />}
-            className="bg-gray-ui border-transparent"
-          >
-            Show author details
+          <InfoPill size="sm" label={<RiUserFill size={16} />} variant="jade">
+            Show author details{" "}
+            <RiArrowRightSLine size={16} className="text-gray-dim" />
           </InfoPill>
         </Link>
         {hasRoles ? (

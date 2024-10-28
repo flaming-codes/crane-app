@@ -1,3 +1,6 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 function _mergeNamespaces(n, m) {
   for (var i = 0; i < m.length; i++) {
     const e = m[i];
@@ -17,12 +20,86 @@ function _mergeNamespaces(n, m) {
   }
   return Object.freeze(Object.defineProperty(n, Symbol.toStringTag, { value: "Module" }));
 }
+const _Logger = class _Logger {
+  constructor(o) {
+    __publicField(this, "options");
+    __publicField(this, "inGroup", false);
+    this.options = { ..._Logger.defaultOptions, ...o };
+  }
+  setLogLevel(o) {
+    this.options.logLevel = o;
+  }
+  setStyles(o) {
+    this.options.styles = { ...this.options.styles, ...o };
+  }
+  print(o, r) {
+    const { isProductionEnv: i, styles: e } = this.options;
+    if (i) return;
+    const t = o;
+    if ("groupCollapsed" === t && /^((?!chrome|android).*safari)/i.test(navigator.userAgent)) return void console[t](...r);
+    const n = Object.entries(e[o]).map(([o2, r2]) => `${o2}: ${r2}`).join("; "), s = this.inGroup ? [] : [`%c${this.options.prefix}`, n];
+    console[t](...s, ...r), "groupCollapsed" === t && (this.inGroup = true), "groupEnd" === t && (this.inGroup = false);
+  }
+  debug(...o) {
+    this.shouldLog("debug") && this.print("debug", o);
+  }
+  info(...o) {
+    this.shouldLog("info") && this.print("info", o);
+  }
+  log(...o) {
+    this.shouldLog("log") && this.print("log", o);
+  }
+  warn(...o) {
+    this.shouldLog("warn") && this.print("warn", o);
+  }
+  error(...o) {
+    this.shouldLog("error") && this.print("error", o);
+  }
+  groupCollapsed(...o) {
+    this.print("groupCollapsed", o);
+  }
+  groupEnd() {
+    this.print("groupEnd", []);
+  }
+  shouldLog(o) {
+    const { logLevel: r } = this.options, i = ["debug", "info", "log", "warn", "error"];
+    return i.indexOf(o) >= i.indexOf(r);
+  }
+};
+__publicField(_Logger, "defaultOptions", { prefix: "remix-pwa", styles: { debug: { background: "#7f8c8d", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, info: { background: "#3498db", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, log: { background: "#2ecc71", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, warn: { background: "#f39c12", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, error: { background: "#c0392b", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, groupCollapsed: { background: "#3498db", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, groupEnd: { background: null, color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" } }, logLevel: "debug", isProductionEnv: false });
+let Logger = _Logger;
+new Logger();
+function getAugmentedNamespace(n) {
+  if (n.__esModule) return n;
+  var f = n.default;
+  if (typeof f == "function") {
+    var a = function a2() {
+      if (this instanceof a2) {
+        return Reflect.construct(f, arguments, this.constructor);
+      }
+      return f.apply(this, arguments);
+    };
+    a.prototype = f.prototype;
+  } else a = {};
+  Object.defineProperty(a, "__esModule", { value: true });
+  Object.keys(n).forEach(function(k) {
+    var d = Object.getOwnPropertyDescriptor(n, k);
+    Object.defineProperty(a, k, d.get ? d : {
+      enumerable: true,
+      get: function() {
+        return n[k];
+      }
+    });
+  });
+  return a;
+}
+const logger = new Logger({ prefix: "[SW]" });
 self.addEventListener("install", (event) => {
-  console.log("Service worker installed");
+  logger.log("Service worker installed");
   event.waitUntil(self.skipWaiting());
 });
 self.addEventListener("activate", (event) => {
-  console.log("Service worker activated");
+  logger.log("Service worker activated");
   const cachesToKeep = [];
   const clearUpAllLegacyCaches = async () => {
     return caches.keys().then(
@@ -44,6 +121,34 @@ self.addEventListener("activate", (event) => {
 const entryWorker = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null
 }, Symbol.toStringTag, { value: "Module" }));
+var __getOwnPropNames$d = Object.getOwnPropertyNames;
+var __commonJS$d = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames$d(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var require_worker_runtime$d = __commonJS$d({
+  "@remix-pwa/worker-runtime"(exports, module) {
+    module.exports = {};
+  }
+});
+var worker_runtime_default$d = require_worker_runtime$d();
+const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: worker_runtime_default$d
+}, Symbol.toStringTag, { value: "Module" }));
+var __getOwnPropNames$c = Object.getOwnPropertyNames;
+var __commonJS$c = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames$c(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var require_worker_runtime$c = __commonJS$c({
+  "@remix-pwa/worker-runtime"(exports, module) {
+    module.exports = {};
+  }
+});
+var worker_runtime_default$c = require_worker_runtime$c();
+const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: worker_runtime_default$c
+}, Symbol.toStringTag, { value: "Module" }));
 var __getOwnPropNames$b = Object.getOwnPropertyNames;
 var __commonJS$b = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames$b(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -54,7 +159,7 @@ var require_worker_runtime$b = __commonJS$b({
   }
 });
 var worker_runtime_default$b = require_worker_runtime$b();
-const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$b
 }, Symbol.toStringTag, { value: "Module" }));
@@ -68,7 +173,7 @@ var require_worker_runtime$a = __commonJS$a({
   }
 });
 var worker_runtime_default$a = require_worker_runtime$a();
-const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$a
 }, Symbol.toStringTag, { value: "Module" }));
@@ -82,7 +187,7 @@ var require_worker_runtime$9 = __commonJS$9({
   }
 });
 var worker_runtime_default$9 = require_worker_runtime$9();
-const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$9
 }, Symbol.toStringTag, { value: "Module" }));
@@ -96,7 +201,7 @@ var require_worker_runtime$8 = __commonJS$8({
   }
 });
 var worker_runtime_default$8 = require_worker_runtime$8();
-const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$8
 }, Symbol.toStringTag, { value: "Module" }));
@@ -110,7 +215,7 @@ var require_worker_runtime$7 = __commonJS$7({
   }
 });
 var worker_runtime_default$7 = require_worker_runtime$7();
-const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$7
 }, Symbol.toStringTag, { value: "Module" }));
@@ -124,7 +229,7 @@ var require_worker_runtime$6 = __commonJS$6({
   }
 });
 var worker_runtime_default$6 = require_worker_runtime$6();
-const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$6
 }, Symbol.toStringTag, { value: "Module" }));
@@ -138,7 +243,7 @@ var require_worker_runtime$5 = __commonJS$5({
   }
 });
 var worker_runtime_default$5 = require_worker_runtime$5();
-const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$5
 }, Symbol.toStringTag, { value: "Module" }));
@@ -152,7 +257,7 @@ var require_worker_runtime$4 = __commonJS$4({
   }
 });
 var worker_runtime_default$4 = require_worker_runtime$4();
-const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$4
 }, Symbol.toStringTag, { value: "Module" }));
@@ -166,7 +271,7 @@ var require_worker_runtime$3 = __commonJS$3({
   }
 });
 var worker_runtime_default$3 = require_worker_runtime$3();
-const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -180,7 +285,7 @@ var require_worker_runtime$2 = __commonJS$2({
   }
 });
 var worker_runtime_default$2 = require_worker_runtime$2();
-const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -194,7 +299,7 @@ var require_worker_runtime$1 = __commonJS$1({
   }
 });
 var worker_runtime_default$1 = require_worker_runtime$1();
-const route10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$1
 }, Symbol.toStringTag, { value: "Module" }));
@@ -208,7 +313,7 @@ var require_worker_runtime = __commonJS({
   }
 });
 var worker_runtime_default = require_worker_runtime();
-const route11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default
 }, Symbol.toStringTag, { value: "Module" }));
@@ -217,6 +322,7 @@ const assets = [
   "/entry.worker.js",
   "/manifest.webmanifest",
   "/robots.txt",
+  "/images/logo.jpeg",
   "/icons/apple-icon-180.png",
   "/icons/apple-splash-1125-2436.jpg",
   "/icons/apple-splash-1136-640.jpg",
@@ -254,7 +360,6 @@ const assets = [
   "/icons/manifest-icon-192.maskable.png",
   "/icons/manifest-icon-512.maskable.png",
   "/icons/safari-pinned-tab.svg",
-  "/images/logo.jpeg",
   "/images/og/cover-01.jpg",
   "/images/og/cover-02.jpg",
   "/images/screenshots/screenshot-portrait-0.jpg",
@@ -328,6 +433,18 @@ const routes = {
     hasWorkerAction: false,
     module: route4
   },
+  "routes/_page.package._index": {
+    id: "routes/_page.package._index",
+    parentId: "routes/_page",
+    path: "package",
+    index: true,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: false,
+    module: route5
+  },
   "routes/_page.privacy._index": {
     id: "routes/_page.privacy._index",
     parentId: "routes/_page",
@@ -338,7 +455,7 @@ const routes = {
     hasAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route5
+    module: route6
   },
   "routes/sitemap[.xml]._index": {
     id: "routes/sitemap[.xml]._index",
@@ -350,7 +467,19 @@ const routes = {
     hasAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route6
+    module: route7
+  },
+  "routes/_page.author._index": {
+    id: "routes/_page.author._index",
+    parentId: "routes/_page",
+    path: "author",
+    index: true,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: false,
+    module: route8
   },
   "routes/$slug[.xml]._index": {
     id: "routes/$slug[.xml]._index",
@@ -362,7 +491,7 @@ const routes = {
     hasAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route7
+    module: route9
   },
   "routes/_page.about._index": {
     id: "routes/_page.about._index",
@@ -374,19 +503,19 @@ const routes = {
     hasAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route8
+    module: route10
   },
-  "routes/search._index": {
-    id: "routes/search._index",
+  "routes/api.search._index": {
+    id: "routes/api.search._index",
     parentId: "root",
-    path: "search",
+    path: "api/search",
     index: true,
     caseSensitive: void 0,
     hasLoader: false,
     hasAction: true,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route9
+    module: route11
   },
   "routes/_index": {
     id: "routes/_index",
@@ -398,7 +527,7 @@ const routes = {
     hasAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route10
+    module: route12
   },
   "routes/_page": {
     id: "routes/_page",
@@ -406,11 +535,11 @@ const routes = {
     path: void 0,
     index: void 0,
     caseSensitive: void 0,
-    hasLoader: false,
+    hasLoader: true,
     hasAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route11
+    module: route13
   }
 };
 const entry = { module: entryWorker };
@@ -4529,30 +4658,6 @@ const router$2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProp
   resolveTo,
   stripBasename
 }, Symbol.toStringTag, { value: "Module" }));
-function getAugmentedNamespace(n) {
-  if (n.__esModule) return n;
-  var f = n.default;
-  if (typeof f == "function") {
-    var a = function a2() {
-      if (this instanceof a2) {
-        return Reflect.construct(f, arguments, this.constructor);
-      }
-      return f.apply(this, arguments);
-    };
-    a.prototype = f.prototype;
-  } else a = {};
-  Object.defineProperty(a, "__esModule", { value: true });
-  Object.keys(n).forEach(function(k) {
-    var d = Object.getOwnPropertyDescriptor(n, k);
-    Object.defineProperty(a, k, d.get ? d : {
-      enumerable: true,
-      get: function() {
-        return n[k];
-      }
-    });
-  });
-  return a;
-}
 var mode$2 = {};
 /**
  * @remix-run/server-runtime v2.13.1
