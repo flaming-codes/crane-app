@@ -4,9 +4,6 @@ import { ENV } from "../data/env";
 import { addDays, getSeconds } from "date-fns";
 import { authorSlugSchema } from "../data/author.shape";
 
-export const OG_IMAGE_WIDTH = 1200;
-export const OG_IMAGE_HEIGHT = 630;
-
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
   const { authorId } = params;

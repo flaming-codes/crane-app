@@ -3,9 +3,6 @@ import { composeNewsArticleOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { addDays, getSeconds } from "date-fns";
 
-export const OG_IMAGE_WIDTH = 1200;
-export const OG_IMAGE_HEIGHT = 630;
-
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
 
