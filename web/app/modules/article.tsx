@@ -103,7 +103,7 @@ export function ArticlePreviewInfoCard(
       <div className="grid gap-4 sm:min-h-60 sm:grid-cols-2">
         <div
           className={clsx(
-            "absolute inset-0 bg-gradient-to-br from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
+            "absolute inset-0 bg-gradient-to-br from-violet-6 dark:from-violet-12",
             "opacity-0 transition-opacity duration-500 group-hover/card:opacity-100",
           )}
         />
