@@ -20,11 +20,10 @@ import { InfoPill } from "../modules/info-pill";
 import { CopyPillButton } from "../modules/copy-pill-button";
 import { ExternalLinkPill } from "../modules/external-link-pill";
 import { PageContentSection } from "../modules/page-content-section";
-import { BinaryDownloadListItem } from "../modules/binary-download-link";
+import { BinaryDownloadLink } from "../modules/binary-download-link";
 import { ContactPill } from "../modules/contact-pill";
 import { InfoCard } from "../modules/info-card";
 import { lazy, ReactNode, Suspense, useMemo } from "react";
-import { ClientOnly } from "remix-utils/client-only";
 import { sendEvent } from "../modules/plausible";
 import {
   composeBreadcrumbsJsonLd,
@@ -55,20 +54,20 @@ const sections = [
 export const meta = mergeMeta(
   ({ data }) => {
     const { item } = data as { item: Pkg };
-    const url = BASE_URL + `/${item.name}`;
 
     return [
       { title: `${item.name} | CRAN/E` },
       { name: "description", content: item.title },
-      { property: "og:title", content: `${item.name} | CRAN/E` },
-      { property: "og:description", content: item.title },
-      { property: "og:url", content: url },
     ];
   },
   ({ data }) => {
     const { item } = data as { item: Pkg };
+    const url = BASE_URL + `/${item.name}`;
 
     return [
+      { property: "og:title", content: `${item.name} | CRAN/E` },
+      { property: "og:description", content: item.title },
+      { property: "og:url", content: url },
       {
         "script:ld+json": composeBreadcrumbsJsonLd([
           {
@@ -151,7 +150,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   return json(
-    { item, downloads },
+    { item, downloads, lastRelease: formatRelative(item.date, new Date()) },
     {
       headers: {
         "Cache-Control": `public, max-age=${minutesToSeconds(10)}`,
@@ -164,6 +163,7 @@ export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
   const downloads = data.downloads as PackageDownloadTrend[];
+  const lastRelease = data.lastRelease as string;
 
   return (
     <>
@@ -183,7 +183,7 @@ export default function PackagePage() {
       </Anchors>
 
       <PageContent>
-        <AboveTheFoldSection item={item} />
+        <AboveTheFoldSection item={item} lastRelease={lastRelease} />
 
         <Separator />
 
@@ -229,29 +229,14 @@ export default function PackagePage() {
   );
 }
 
-function AboveTheFoldSection(props: { item: Pkg }) {
-  const { item } = props;
+function AboveTheFoldSection(props: { item: Pkg; lastRelease: string }) {
+  const { item, lastRelease } = props;
   const rVersion = item.depends?.find((d) => d.name === "R")?.version;
 
   return (
     <PageContentSection>
       <div className="space-y-6">
         <Prose html={item.description} />
-        <p hidden className="text-gray-dim">
-          Current version is <span>{item.version}</span> since{" "}
-          <span>{formatRelative(item.date, new Date())}</span> and requires R{" "}
-          <span>{rVersion || "unknown"}</span> to run.
-          {item.license && item.license.length > 0 ? (
-            <>
-              {" "}
-              Licensed under{" "}
-              <span>{item.license.map((l) => l.name).join(", ")}</span>.
-            </>
-          ) : null}{" "}
-          {item.name}{" "}
-          {item.needscompilation === "no" ? "doesn&apos;t need" : "needs"} to be
-          compiled.
-        </p>
       </div>
 
       <div className="flex flex-col gap-6 overflow-x-hidden">
@@ -346,18 +331,14 @@ function AboveTheFoldSection(props: { item: Pkg }) {
                 </li>
               ))
             : null}
-          <ClientOnly>
-            {() => (
-              <li>
-                <InfoPill
-                  label="Last release"
-                  className="animate-fade animate-duration-200"
-                >
-                  {formatRelative(item.date, new Date())}
-                </InfoPill>
-              </li>
-            )}
-          </ClientOnly>
+          <li>
+            <InfoPill
+              label="Last release"
+              className="animate-fade animate-duration-200"
+            >
+              {lastRelease}
+            </InfoPill>
+          </li>
         </ul>
       </div>
     </PageContentSection>
@@ -396,45 +377,48 @@ function BinariesPageContentSection(
     >
       <ul className="grid grid-cols-2 items-start gap-4 md:grid-cols-3 lg:grid-cols-4">
         {macos_binaries?.map((item, i) => (
-          <BinaryDownloadListItem
-            key={item.link + i}
-            variant="iris"
-            href={item.link}
-            os="macOS"
-            headline={item.label.split(" ")?.[0]?.replace(":", "")}
-            arch={
-              item.label
-                .split(" ")?.[1]
-                ?.replace(":", "")
-                .replace("(", "")
-                .replace(")", "") || "x86_64"
-            }
-          />
+          <li key={item.link + i}>
+            <BinaryDownloadLink
+              variant="iris"
+              href={item.link}
+              os="macOS"
+              headline={item.label.split(" ")?.[0]?.replace(":", "")}
+              arch={
+                item.label
+                  .split(" ")?.[1]
+                  ?.replace(":", "")
+                  .replace("(", "")
+                  .replace(")", "") || "x86_64"
+              }
+            />
+          </li>
         )) || null}
         {windows_binaries?.map((item, i) => (
-          <BinaryDownloadListItem
-            key={item.link + i}
-            variant="iris"
-            href={item.link}
-            os="Windows"
-            headline={item.label.split(" ")?.[0]?.replace(":", "")}
-            arch={
-              item.label
-                .split(" ")?.[1]
-                ?.replace(":", "")
-                .replace("(", "")
-                .replace(")", "") || "x86_64"
-            }
-          />
+          <li key={item.link + i}>
+            <BinaryDownloadLink
+              variant="iris"
+              href={item.link}
+              os="Windows"
+              headline={item.label.split(" ")?.[0]?.replace(":", "")}
+              arch={
+                item.label
+                  .split(" ")?.[1]
+                  ?.replace(":", "")
+                  .replace("(", "")
+                  .replace(")", "") || "x86_64"
+              }
+            />
+          </li>
         )) || null}
         {old_sources ? (
-          <BinaryDownloadListItem
-            key={old_sources.link}
-            variant="iris"
-            href={old_sources.link}
-            os="Old Source"
-            headline={old_sources.label}
-          />
+          <li key={old_sources.link}>
+            <BinaryDownloadLink
+              variant="iris"
+              href={old_sources.link}
+              os="Old Source"
+              headline={old_sources.label}
+            />
+          </li>
         ) : null}
       </ul>
     </PageContentSection>

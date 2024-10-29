@@ -312,7 +312,7 @@ export default function App() {
             start={
               <li>
                 <Link to="/" className="underline-offset-4 hover:underline">
-                  Start
+                  Home
                 </Link>
               </li>
             }

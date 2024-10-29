@@ -18,6 +18,8 @@ const twBase = cva({
       jade: "bg-gradient-to-bl from-jade-8 dark:from-jade-11",
       bronze: "bg-gradient-to-tl from-bronze-8 dark:from-bronze-11",
       sand: "bg-gradient-to-br from-sand-8 via-gold-6 dark:from-sand-11 dark:via-gold-12/60",
+      amethyst:
+        "bg-gradient-to-tl from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
     },
   },
 });

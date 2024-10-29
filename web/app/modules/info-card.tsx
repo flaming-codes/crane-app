@@ -17,11 +17,14 @@ const twGradient = cva({
   base: "inset-0 absolute bg-gradient-to-tr -z-10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700",
   variants: {
     variant: {
+      none: "",
       iris: "from-iris-4 dark:from-iris-11",
       ruby: "from-ruby-4 dark:from-ruby-11",
       jade: "from-jade-5 dark:from-jade-11",
       bronze: "from-bronze-6 dark:from-bronze-11",
       sand: "from-sand-8 via-gold-6 dark:from-sand-11 dark:via-gold-12",
+      amethyst:
+        "bg-gradient-to-tl from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
     },
   },
 });

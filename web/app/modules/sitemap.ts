@@ -93,7 +93,9 @@ export async function mapDomainToSitemapData(
       return AuthorService.getAllSitemapAuthors();
 
     default:
-      throw new Error(`Invalid composition source: ${source}`);
+      throw new Error(
+        `[mapDomainToSitemapData] Invalid composition source: ${source}`,
+      );
   }
 }
 
@@ -105,6 +107,8 @@ export function mapComposerToDomain(source: string) {
       return composeAuthorUrl;
 
     default:
-      throw new Error(`Invalid composition source: ${source}`);
+      throw new Error(
+        `[mapComposerToDomain] Invalid composition source: ${source}`,
+      );
   }
 }

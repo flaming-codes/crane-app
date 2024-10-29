@@ -1,4 +1,4 @@
-import { json, Link, MetaFunction, useLoaderData } from "@remix-run/react";
+import { json, Link, useLoaderData } from "@remix-run/react";
 import { Anchors, AnchorLink } from "../modules/anchors";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
@@ -7,14 +7,11 @@ import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { PageInsightService } from "../data/page-insight.service";
 import { Separator } from "../modules/separator";
+import { mergeMeta } from "../modules/meta";
 
 const anchors = ["Sites", "Packages", "Authors"];
 
-export const handle = {
-  hasFooter: true,
-};
-
-export const meta: MetaFunction = () => {
+export const meta = mergeMeta(() => {
   return [
     { title: "Page Visits | CRAN/E" },
     {
@@ -22,7 +19,7 @@ export const meta: MetaFunction = () => {
       content: "Data insights about page visits of CRAN/E",
     },
   ];
-};
+});
 
 export async function loader() {
   const grouped = await PageInsightService.getTopPages();

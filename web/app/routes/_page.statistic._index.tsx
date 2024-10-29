@@ -1,27 +1,20 @@
-import { json, Link, MetaFunction } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { Anchors, AnchorLink } from "../modules/anchors";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { InfoCard } from "../modules/info-card";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
+import { mergeMeta } from "../modules/meta";
 
 const anchors = ["Site usage"];
 
-export const handle = {
-  hasFooter: true,
-};
-
-export const meta: MetaFunction = () => {
+export const meta = mergeMeta(() => {
   return [
     { title: "Statistics | CRAN/E" },
     { name: "description", content: "Data insights on CRAN/E" },
   ];
-};
-
-export function loader() {
-  return json({});
-}
+});
 
 export default function StatisticsOverviewPage() {
   return (

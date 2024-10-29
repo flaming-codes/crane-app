@@ -28,7 +28,6 @@ const anchors = ["Synopsis", "Packages", "Team"] as const;
 export const meta = mergeMeta(
   (params) => {
     const data = params.data as AuthorRes;
-    const url = BASE_URL + `/author/${data.authorId}`;
 
     return [
       { title: `${data.authorId} | CRAN/E` },
@@ -36,18 +35,19 @@ export const meta = mergeMeta(
         name: "description",
         content: `All R packages created by ${data.authorId} for CRAN`,
       },
+    ];
+  },
+  (params) => {
+    const data = params.data as AuthorRes;
+    const url = BASE_URL + `/author/${data.authorId}`;
+
+    return [
       { property: "og:title", content: `${data.authorId} | CRAN/E` },
       {
         property: "og:description",
         content: `All R packages created by ${data.authorId} for CRAN`,
       },
       { property: "og:url", content: url },
-    ];
-  },
-  (params) => {
-    const data = params.data as AuthorRes;
-
-    return [
       {
         "script:ld+json": composeBreadcrumbsJsonLd([
           {
@@ -188,7 +188,7 @@ function PackagesSection(props: Pick<AuthorRes, "packages">) {
         {packages.map((item) => (
           <li key={item.name}>
             <Link to={`/package/${item.slug}`}>
-              <InfoCard variant="iris">
+              <InfoCard variant="iris" icon="internal" className="min-h-48">
                 <span className="flex flex-col gap-2">
                   <span className="text-gray-dim text-xs">{item.name}</span>
                   <span>{item.title}</span>
