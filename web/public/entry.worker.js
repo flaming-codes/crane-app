@@ -416,13 +416,11 @@ const assets = [
   "/icons/manifest-icon-192.maskable.png",
   "/icons/manifest-icon-512.maskable.png",
   "/icons/safari-pinned-tab.svg",
-  "/images/logo.jpeg",
   "/news/crane-v2-0.webp",
   "/news/crane-v2-1.webp",
   "/news/crane-v2-2.webp",
   "/news/crane-v2-3.webp",
-  "/images/we/lukas.webp",
-  "/images/we/tom.webp",
+  "/images/logo.jpeg",
   "/images/og/cover-01.jpg",
   "/images/og/cover-02.jpg",
   "/images/screenshots/screenshot-portrait-0.jpg",
@@ -431,7 +429,9 @@ const assets = [
   "/images/screenshots/screenshot-wide-0.jpg",
   "/images/screenshots/screenshot-wide-1.jpg",
   "/images/screenshots/screenshot-wide-2.jpg",
-  "/images/screenshots/screenshot-wide-3.jpg"
+  "/images/screenshots/screenshot-wide-3.jpg",
+  "/images/we/lukas.webp",
+  "/images/we/tom.webp"
 ];
 const routes = {
   "root": {

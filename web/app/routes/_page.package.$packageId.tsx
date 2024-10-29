@@ -54,7 +54,7 @@ const sections = [
 export const meta = mergeMeta(
   ({ data }) => {
     const { item } = data as { item: Pkg };
-    const url = BASE_URL + `/${encodeURIComponent(item.name)}`;
+    const url = BASE_URL + `/package/${encodeURIComponent(item.name)}`;
 
     return [
       { title: `${item.name} | CRAN/E` },
