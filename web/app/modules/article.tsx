@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 import { mergeMeta } from "./meta";
 import { InfoPill } from "./info-pill";
 import clsx from "clsx";
+import { InfoCard } from "./info-card";
 
 export type NewsArticleHandle = {
   slug: string;
@@ -85,5 +86,41 @@ export function ProminentArticleImage(props: { src: string; caption: string }) {
         {caption}
       </figcaption>
     </figure>
+  );
+}
+
+export function ArticlePreviewInfoCard(
+  props: PropsWithChildren<{
+    headline: string;
+    subline: string;
+    createdAt: string;
+  }>,
+) {
+  const { headline, subline, createdAt, children } = props;
+
+  return (
+    <InfoCard variant="none" className="relative isolate">
+      <div className="grid gap-4 sm:min-h-60 sm:grid-cols-2">
+        <div
+          className={clsx(
+            "absolute inset-0 bg-gradient-to-br from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
+            "opacity-0 transition-opacity duration-500 group-hover/card:opacity-100",
+          )}
+        />
+        <div className="z-10 space-y-1">
+          <span className="text-gray-dim font-mono text-xs">{createdAt}</span>
+          <h3 className="text-lg">{headline}</h3>
+          <p className="text-gray-dim pt-2">{subline}</p>
+        </div>
+        <div
+          className={clsx(
+            "text-gray-dim relative -z-10 hidden overflow-hidden px-4 text-xl leading-relaxed opacity-50 sm:block",
+            "after:absolute after:inset-x-0 after:bottom-0 after:h-full after:bg-gradient-to-t after:content-[''] after:dark:from-black",
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    </InfoCard>
   );
 }

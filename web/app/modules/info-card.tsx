@@ -17,6 +17,7 @@ const twGradient = cva({
   base: "inset-0 absolute bg-gradient-to-tr -z-10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700",
   variants: {
     variant: {
+      none: "",
       iris: "from-iris-4 dark:from-iris-11",
       ruby: "from-ruby-4 dark:from-ruby-11",
       jade: "from-jade-5 dark:from-jade-11",

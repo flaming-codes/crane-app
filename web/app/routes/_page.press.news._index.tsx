@@ -3,7 +3,7 @@ import { PageContentSection } from "../modules/page-content-section";
 import { Header } from "../modules/header";
 import { mergeMeta } from "../modules/meta";
 import { Link } from "@remix-run/react";
-import { InfoCard } from "../modules/info-card";
+import { ArticlePreviewInfoCard } from "../modules/article";
 
 export const handle = {
   hasFooter: true,
@@ -27,19 +27,21 @@ export default function PrivacyPage() {
 
       <PageContent>
         <PageContentSection headline="Latest articles">
-          <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
+          <ul className="grid grid-cols-1">
             <Link to="crane-v2">
-              <InfoCard variant="amethyst" icon="internal" className="min-h-60">
-                <div className="space-y-1">
-                  <span className="text-gray-dim font-mono text-xs">
-                    2024-10-28
-                  </span>
-                  <h3 className="text-lg">Announcing CRAN/E 2.0</h3>
-                  <p className="text-gray-dim pt-2">
-                    A modernized search platform for the R community
-                  </p>
-                </div>
-              </InfoCard>
+              <ArticlePreviewInfoCard
+                headline="Announcing CRAN/E 2.0"
+                subline="A modernized search platform for the R community"
+                createdAt="2024-10-28"
+              >
+                CRAN/E, the{" "}
+                <strong>Comprehensive R Archive Network / Enhanced</strong>, has
+                officially launched version 2.0 today. This major release
+                introduces a modernized design, significant usability
+                enhancements, and an optimized site structure to facilitate
+                easier searches, improved information retrieval, and an overall
+                more intuitive experience.
+              </ArticlePreviewInfoCard>
             </Link>
           </ul>
         </PageContentSection>
