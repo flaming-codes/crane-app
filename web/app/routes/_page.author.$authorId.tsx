@@ -188,7 +188,7 @@ function PackagesSection(props: Pick<AuthorRes, "packages">) {
         {packages.map((item) => (
           <li key={item.name}>
             <Link to={`/package/${item.slug}`}>
-              <InfoCard variant="iris">
+              <InfoCard variant="iris" icon="internal" className="min-h-48">
                 <span className="flex flex-col gap-2">
                   <span className="text-gray-dim text-xs">{item.name}</span>
                   <span>{item.title}</span>
