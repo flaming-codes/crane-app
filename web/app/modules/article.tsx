@@ -3,6 +3,7 @@ import { mergeMeta } from "./meta";
 import { InfoPill } from "./info-pill";
 import clsx from "clsx";
 import { InfoCard } from "./info-card";
+import { BASE_URL } from "./app";
 
 export type NewsArticleHandle = {
   slug: string;
@@ -20,6 +21,10 @@ export const composeArticleMeta = mergeMeta(({ matches }) => {
   return [
     { title: `${article?.title} | CRAN/E` },
     { name: "description", content: article?.subline },
+    { property: "og:title", content: `${article?.title} | CRAN/E` },
+    { property: "og:url", content: `${BASE_URL}/press/news/${article?.slug}` },
+    { property: "og:description", content: article?.subline },
+    { property: "og:image", content: `${BASE_URL}/press/news/og` },
   ];
 });
 

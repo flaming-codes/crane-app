@@ -42,6 +42,8 @@ export const mergeMeta = (
       );
       if (index !== -1) {
         mergedMeta.splice(index, 1, override);
+      } else {
+        mergedMeta.push(override);
       }
     }
 

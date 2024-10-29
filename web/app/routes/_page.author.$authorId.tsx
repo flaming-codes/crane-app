@@ -28,6 +28,7 @@ const anchors = ["Synopsis", "Packages", "Team"] as const;
 export const meta = mergeMeta(
   (params) => {
     const data = params.data as AuthorRes;
+    const url = BASE_URL + `/author/${encodeURIComponent(data.authorId)}`;
 
     return [
       { title: `${data.authorId} | CRAN/E` },
@@ -37,21 +38,20 @@ export const meta = mergeMeta(
       },
       {
         property: "og:image",
-        content: `${BASE_URL}/author/${data.authorId}/og`,
+        content: `${url}/og`,
       },
-    ];
-  },
-  (params) => {
-    const data = params.data as AuthorRes;
-    const url = BASE_URL + `/author/${data.authorId}`;
-
-    return [
       { property: "og:title", content: `${data.authorId} | CRAN/E` },
       {
         property: "og:description",
         content: `All R packages created by ${data.authorId} for CRAN`,
       },
       { property: "og:url", content: url },
+    ];
+  },
+  (params) => {
+    const data = params.data as AuthorRes;
+
+    return [
       {
         "script:ld+json": composeBreadcrumbsJsonLd([
           {

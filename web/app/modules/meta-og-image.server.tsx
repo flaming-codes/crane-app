@@ -101,3 +101,39 @@ export async function composePackageOGImage(params: {
 
   return new Resvg(svg).render().asPng();
 }
+
+export async function composeNewsArticleOGImage(params: {
+  headline: string;
+  subline?: string;
+  requestUrl: string;
+}) {
+  const { headline, subline, requestUrl } = params;
+
+  // Design the image and generate an SVG with "satori"
+  const svg = await satori(
+    <div
+      style={{
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
+        background: "linear-gradient(to top left, #953ea3, #2f265f,#000 )",
+        color: "white",
+        fontFamily: "Inter",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 20,
+        textAlign: "center",
+        padding: 40,
+      }}
+    >
+      <span style={{ fontSize: 80 }}>{headline}</span>
+      {subline ? (
+        <span style={{ fontSize: 60, opacity: 80 }}>{subline}</span>
+      ) : null}
+    </div>,
+    await getBaseOptions(requestUrl),
+  );
+
+  return new Resvg(svg).render().asPng();
+}

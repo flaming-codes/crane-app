@@ -54,21 +54,21 @@ const sections = [
 export const meta = mergeMeta(
   ({ data }) => {
     const { item } = data as { item: Pkg };
+    const url = BASE_URL + `/${encodeURIComponent(item.name)}`;
 
     return [
       { title: `${item.name} | CRAN/E` },
       { name: "description", content: item.title },
-      { property: "og:image", content: `${BASE_URL}/package/${item.name}/og` },
+      { property: "og:title", content: `${item.name} | CRAN/E` },
+      { property: "og:description", content: item.title },
+      { property: "og:url", content: url },
+      { property: "og:image", content: `${url}/og` },
     ];
   },
   ({ data }) => {
     const { item } = data as { item: Pkg };
-    const url = BASE_URL + `/${item.name}`;
 
     return [
-      { property: "og:title", content: `${item.name} | CRAN/E` },
-      { property: "og:description", content: item.title },
-      { property: "og:url", content: url },
       {
         "script:ld+json": composeBreadcrumbsJsonLd([
           {

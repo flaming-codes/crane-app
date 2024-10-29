@@ -4,6 +4,7 @@ import { Header } from "../modules/header";
 import { mergeMeta } from "../modules/meta";
 import { Link } from "@remix-run/react";
 import { ArticlePreviewInfoCard } from "../modules/article";
+import { BASE_URL } from "../modules/app";
 
 export const handle = {
   hasFooter: true,
@@ -13,6 +14,13 @@ export const meta = mergeMeta(() => {
   return [
     { title: "Newsroom | CRAN/E" },
     { name: "description", content: "Latest news and updates of CRAN/E" },
+    { property: "og:title", content: "Newsroom | CRAN/E" },
+    { property: "og:url", content: `${BASE_URL}/press/news` },
+    {
+      property: "og:description",
+      content: "Latest news and updates of CRAN/E",
+    },
+    { property: "og:image", content: `${BASE_URL}/press/news/og` },
   ];
 });
 

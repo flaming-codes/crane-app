@@ -5,7 +5,7 @@ import { Tag } from "../modules/tag";
 import { findArticleMatch } from "../modules/article";
 import { AnchorLink, Anchors } from "../modules/anchors";
 
-export default function PrivacyPage() {
+export default function NewsArticlePage() {
   const matches = useMatches();
   const article = findArticleMatch(matches);
 

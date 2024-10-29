@@ -20,7 +20,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   const png = await composeAuthorOGImage({
-    name: parsedId.data,
+    name: encodeURIComponent(parsedId.data),
     requestUrl: origin,
   });
 

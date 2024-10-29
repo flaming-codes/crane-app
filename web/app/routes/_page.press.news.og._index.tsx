@@ -1,26 +1,16 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { composePackageOGImage } from "../modules/meta-og-image.server";
+import { composeNewsArticleOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { addDays, getSeconds } from "date-fns";
-import { packageSlugSchema } from "../data/package.shape";
 
 export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
-  const { packageId } = params;
 
-  const parsedId = packageSlugSchema.safeParse(packageId);
-  if (parsedId.error) {
-    throw new Response(null, {
-      status: 400,
-      statusText: "Valid package ID is required",
-    });
-  }
-
-  const png = await composePackageOGImage({
-    name: encodeURIComponent(parsedId.data),
+  const png = await composeNewsArticleOGImage({
+    headline: "CRAN/E Newsroom",
     requestUrl: origin,
   });
 
