@@ -58,6 +58,7 @@ export const meta = mergeMeta(
     return [
       { title: `${item.name} | CRAN/E` },
       { name: "description", content: item.title },
+      { property: "og:image", content: `${BASE_URL}/package/${item.name}/og` },
     ];
   },
   ({ data }) => {

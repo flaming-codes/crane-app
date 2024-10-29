@@ -35,6 +35,10 @@ export const meta = mergeMeta(
         name: "description",
         content: `All R packages created by ${data.authorId} for CRAN`,
       },
+      {
+        property: "og:image",
+        content: `${BASE_URL}/author/${data.authorId}/og`,
+      },
     ];
   },
   (params) => {
@@ -91,7 +95,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   if (!authorId) {
     throw new Response(null, {
       status: 400,
-      statusText: "Author ID is required",
+      statusText: "Valid author ID is required",
     });
   }
 

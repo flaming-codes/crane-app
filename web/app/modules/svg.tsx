@@ -1,13 +1,17 @@
+import { CSSProperties } from "react";
+
 type Props = {
   className?: string;
+  style?: CSSProperties;
 };
 
-export function SineLogo({ className }: Props) {
+export function SineLogo({ className, style }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 453.801 87.3"
       className={className}
+      style={style}
     >
       <path
         stroke="currentColor"
