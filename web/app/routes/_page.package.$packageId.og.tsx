@@ -17,7 +17,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   const png = await composePackageOGImage({
-    name: encodeURIComponent(parsedId.data),
+    name: parsedId.data,
     requestUrl: origin,
   });
 

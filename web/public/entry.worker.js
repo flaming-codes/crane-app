@@ -379,6 +379,7 @@ const assets = [
   "/manifest.webmanifest",
   "/robots.txt",
   "/fonts/Inter-Regular.ttf",
+  "/images/logo.jpeg",
   "/icons/apple-icon-180.png",
   "/icons/apple-splash-1125-2436.jpg",
   "/icons/apple-splash-1136-640.jpg",
@@ -420,18 +421,17 @@ const assets = [
   "/news/crane-v2-1.webp",
   "/news/crane-v2-2.webp",
   "/news/crane-v2-3.webp",
-  "/images/logo.jpeg",
   "/images/og/cover-01.jpg",
   "/images/og/cover-02.jpg",
+  "/images/we/lukas.webp",
+  "/images/we/tom.webp",
   "/images/screenshots/screenshot-portrait-0.jpg",
   "/images/screenshots/screenshot-portrait-1.jpg",
   "/images/screenshots/screenshot-portrait-2.jpg",
   "/images/screenshots/screenshot-wide-0.jpg",
   "/images/screenshots/screenshot-wide-1.jpg",
   "/images/screenshots/screenshot-wide-2.jpg",
-  "/images/screenshots/screenshot-wide-3.jpg",
-  "/images/we/lukas.webp",
-  "/images/we/tom.webp"
+  "/images/screenshots/screenshot-wide-3.jpg"
 ];
 const routes = {
   "root": {
