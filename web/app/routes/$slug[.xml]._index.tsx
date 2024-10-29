@@ -24,13 +24,15 @@ export async function loader(props: LoaderFunctionArgs) {
 
   const today = getTodayLastmod();
 
-  if (slug === "sitemap-common.xml") {
+  if (slug === "sitemap-common") {
     return new Response(
       `<?xml version="1.0" encoding="UTF-8" ?>
       <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
           ${composeUrlElement({ path: "", lastmod: today })}
-          ${composeUrlElement({ path: "/about", lastmod: "2022-08-20", changefreq: "monthly" })}
-          ${composeUrlElement({ path: "/how-to", lastmod: "2022-08-20", changefreq: "monthly" })}
+          ${composeUrlElement({ path: "/about", lastmod: "2024-10-29", changefreq: "yearly" })}
+          ${composeUrlElement({ path: "/privacy", lastmod: "2024-10-29", changefreq: "yearly" })}
+          ${composeUrlElement({ path: "/press/news", lastmod: "2024-10-29", changefreq: "monthly" })}
+          ${composeUrlElement({ path: "/press/news/crane-v2", lastmod: "2024-10-29", changefreq: "yearly" })}
       </urlset>`.trim(),
       {
         headers: {
@@ -41,7 +43,7 @@ export async function loader(props: LoaderFunctionArgs) {
     );
   }
 
-  if (slug === "sitemap-statistic.xml") {
+  if (slug === "sitemap-statistic") {
     return new Response(
       `<?xml version="1.0" encoding="UTF-8" ?>
       <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
