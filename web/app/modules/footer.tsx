@@ -3,7 +3,6 @@ import { ExternalLink } from "./external-link";
 import { cva, VariantProps } from "cva";
 import { ReactNode } from "react";
 import clsx from "clsx";
-import { RiGithubLine } from "@remixicon/react";
 
 const BASE_ITEMS: Array<{ label: string; href: string }> = [
   { label: "About", href: "/about" },
@@ -53,12 +52,11 @@ export function Footer(props: Props) {
             href="https://github.com/flaming-codes/crane-app"
             className="underline-offset-4 hover:brightness-75"
           >
-            <RiGithubLine size={16} />
-            <span className="sr-only">Github</span>
+            <span>Github</span>
           </ExternalLink>
         </li>
         {version && (
-          <li className="text-gray-dim font-mono text-xs opacity-70 hover:brightness-75">
+          <li className="text-gray-dim font-mono text-xs opacity-90 hover:brightness-75">
             <ExternalLink href="https://github.com/flaming-codes/crane-app">
               v{version}
             </ExternalLink>
