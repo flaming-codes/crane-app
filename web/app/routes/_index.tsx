@@ -1,4 +1,3 @@
-import type { MetaFunction } from "@remix-run/node";
 import { json, useLoaderData } from "@remix-run/react";
 import { SineLogo } from "../modules/svg";
 import NavigationPage from "../modules/nav";
@@ -7,22 +6,23 @@ import clsx from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
 import { usePrevious } from "@uidotdev/usehooks";
+import { addSeconds, getSeconds } from "date-fns";
 
 export const handle = {
   hasFooter: false,
 };
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "CRAN/E" },
-    { name: "description", content: "Welcome to CRAN/E" },
-  ];
-};
-
 export const loader = async () => {
   const meshIndex = randomInt(0, 27);
   const version = ENV.npm_package_version;
-  return json({ meshIndex, version });
+  return json(
+    { meshIndex, version },
+    {
+      headers: {
+        "Cache-Control": `public, max-age=0, s-maxage=${getSeconds(addSeconds(new Date(), 5))}`,
+      },
+    },
+  );
 };
 
 export default function Index() {
@@ -43,7 +43,7 @@ export default function Index() {
       >
         <div className="flex h-[90svh] flex-col justify-center gap-6">
           <div>
-            <SineLogo className="text-gray-normal w-[max(100px,60%)]" />
+            <SineLogo className="text-gray-normal w-[max(200px,65%)]" />
             <h1 className="sr-only">
               CRAN/E - The R Packages Search Engine, Enhanced
             </h1>

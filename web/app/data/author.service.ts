@@ -20,15 +20,13 @@ export class AuthorService {
   static async getAuthor(authorId: string) {
     authorSlugSchema.parse(authorId);
 
-    if (!this._allAuthors) {
-      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
-    }
+    const all = await this.getAllAuthors();
 
-    if (!this._allAuthors[authorId]) {
+    if (!all[authorId]) {
       throw new Error("Author not found");
     }
 
-    const authorPackageSlugs = this._allAuthors[authorId];
+    const authorPackageSlugs = all[authorId];
     const allPackages = await PackageService.getAllOverviewPackages();
 
     const authorPackages = authorPackageSlugs
@@ -54,6 +52,12 @@ export class AuthorService {
       activeEventType,
       description,
     };
+  }
+
+  static async checkAuthorExists(authorId: string) {
+    authorSlugSchema.parse(authorId);
+    const all = await this.getAllAuthors();
+    return Boolean(all[authorId]);
   }
 
   static async getAllAuthors() {

@@ -1,6 +1,7 @@
 // ./app/utils/createOGImage.server.tsx
 
 import { Resvg } from "@resvg/resvg-js";
+import { CSSProperties, ReactNode } from "react";
 import type { SatoriOptions } from "satori";
 import satori from "satori";
 
@@ -36,6 +37,52 @@ async function getBaseOptions(
   };
 }
 
+function OGImage({
+  children,
+  style,
+}: {
+  children: ReactNode;
+  style?: CSSProperties;
+}) {
+  return (
+    <div
+      style={{
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
+        color: "white",
+        fontFamily: "Inter",
+        fontSize: 90,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 60,
+        textAlign: "center",
+        padding: 40,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CategoryPill({ children }: { children: ReactNode }) {
+  return (
+    <div
+      style={{
+        textTransform: "uppercase",
+        border: "2px solid white",
+        borderRadius: 9999,
+        padding: "10px 20px",
+        fontSize: 25,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export async function composeAuthorOGImage(params: {
   name: string;
   requestUrl: string;
@@ -44,25 +91,12 @@ export async function composeAuthorOGImage(params: {
 
   // Design the image and generate an SVG with "satori"
   const svg = await satori(
-    <div
-      style={{
-        width: OG_IMAGE_WIDTH,
-        height: OG_IMAGE_HEIGHT,
-        background: "linear-gradient(to bottom left, #208368, #000)",
-        color: "white",
-        fontFamily: "Inter",
-        fontSize: 80,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 20,
-        textAlign: "center",
-        padding: 40,
-      }}
+    <OGImage
+      style={{ background: "linear-gradient(to bottom left, #208368, #000)" }}
     >
       {name}
-    </div>,
+      <CategoryPill>CRAN Author</CategoryPill>
+    </OGImage>,
     await getBaseOptions(requestUrl),
   );
 
@@ -77,25 +111,12 @@ export async function composePackageOGImage(params: {
 
   // Design the image and generate an SVG with "satori"
   const svg = await satori(
-    <div
-      style={{
-        width: OG_IMAGE_WIDTH,
-        height: OG_IMAGE_HEIGHT,
-        background: "linear-gradient(to bottom left, #5151cd, #000)",
-        color: "white",
-        fontFamily: "Inter",
-        fontSize: 80,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 20,
-        textAlign: "center",
-        padding: 40,
-      }}
+    <OGImage
+      style={{ background: "linear-gradient(to bottom left, #5151cd, #000)" }}
     >
       {name}
-    </div>,
+      <CategoryPill>CRAN Package</CategoryPill>
+    </OGImage>,
     await getBaseOptions(requestUrl),
   );
 
@@ -111,27 +132,16 @@ export async function composeNewsArticleOGImage(params: {
 
   // Design the image and generate an SVG with "satori"
   const svg = await satori(
-    <div
+    <OGImage
       style={{
-        width: OG_IMAGE_WIDTH,
-        height: OG_IMAGE_HEIGHT,
         background: "linear-gradient(to top left, #953ea3, #2f265f,#000 )",
-        color: "white",
-        fontFamily: "Inter",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 20,
-        textAlign: "center",
-        padding: 40,
       }}
     >
       <span style={{ fontSize: 80 }}>{headline}</span>
       {subline ? (
         <span style={{ fontSize: 60, opacity: 80 }}>{subline}</span>
       ) : null}
-    </div>,
+    </OGImage>,
     await getBaseOptions(requestUrl),
   );
 

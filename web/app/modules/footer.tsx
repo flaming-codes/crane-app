@@ -47,18 +47,19 @@ export function Footer(props: Props) {
             </Link>
           </li>
         ))}
-        <li>
-          <ExternalLink
-            href="https://github.com/flaming-codes/crane-app"
-            className="underline-offset-4 hover:brightness-75"
-          >
-            <span>Github</span>
-          </ExternalLink>
-        </li>
-        {version && (
+        {version ? (
           <li className="text-gray-dim font-mono text-xs opacity-90 hover:brightness-75">
             <ExternalLink href="https://github.com/flaming-codes/crane-app">
               v{version}
+            </ExternalLink>
+          </li>
+        ) : (
+          <li>
+            <ExternalLink
+              href="https://github.com/flaming-codes/crane-app"
+              className="underline-offset-4 hover:brightness-75"
+            >
+              <span>Github</span>
             </ExternalLink>
           </li>
         )}
