@@ -18,13 +18,28 @@ export type NewsArticleHandle = {
 
 export const composeArticleMeta = mergeMeta(({ matches }) => {
   const article = findArticleMatch(matches);
+  if (!article) {
+    throw new Error("No article found");
+  }
+
   return [
     { title: `${article?.title} | CRAN/E` },
-    { name: "description", content: article?.subline },
-    { property: "og:title", content: `${article?.title} | CRAN/E` },
-    { property: "og:url", content: `${BASE_URL}/press/news/${article?.slug}` },
-    { property: "og:description", content: article?.subline },
-    { property: "og:image", content: `${BASE_URL}/press/news/og` },
+    { name: "description", content: article.subline },
+    { property: "og:title", content: `${article.title} | CRAN/E` },
+    {
+      property: "og:url",
+      content: `${BASE_URL}/press/news/${encodeURIComponent(article.slug)}`,
+    },
+    { property: "og:description", content: article.subline },
+    {
+      property: "og:image",
+      content: `${BASE_URL}/press/news/${encodeURIComponent(article.slug)}/og?${new URLSearchParams(
+        Object.entries({
+          headline: article.title,
+          subline: article.subline || "",
+        }),
+      )}`,
+    },
   ];
 });
 
