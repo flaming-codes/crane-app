@@ -22,12 +22,12 @@ import { randomInt } from "es-toolkit";
 export const meta: MetaFunction = () => {
   return [
     { title: "CRAN/E" },
-    { name: "description", content: "A collection of R packages for CRAN" },
+    { name: "description", content: "The R package search engine, enhanced" },
     { property: "og:type", content: "website" },
     { property: "og:url", content: BASE_URL },
     {
       property: "og:image",
-      content: BASE_URL + `/images/og/cover-${randomInt(7) + 1}.jpg`,
+      content: BASE_URL + `/images/og/cover-${randomInt(9) + 1}.jpg`,
     },
   ];
 };
