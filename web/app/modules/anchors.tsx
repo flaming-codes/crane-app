@@ -63,6 +63,6 @@ export function composeAnchorItems(
 ): Array<{ name: string; slug: string }> {
   return anchors.map((anchor) => ({
     name: anchor,
-    slug: encodeURIComponent(anchor.toLowerCase()),
+    slug: encodeURIComponent(anchor.toLowerCase().replaceAll(" ", "-")),
   }));
 }

@@ -15,6 +15,7 @@ import { Separator } from "../modules/separator";
 import { Tag } from "../modules/tag";
 import { ClientOnly } from "remix-utils/client-only";
 import { hoursToSeconds } from "date-fns";
+import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
 
 const anchors = composeAnchorItems(["Top Downloads", "Trending Packages"]);
 
@@ -107,6 +108,7 @@ export default function StatisticPackagesPage() {
               ),
             )}
           </ul>
+          <DataProvidedByCRANLabel />
         </PageContentSection>
 
         <Separator />
@@ -135,6 +137,7 @@ export default function StatisticPackagesPage() {
               </li>
             ))}
           </ul>
+          <DataProvidedByCRANLabel />
         </PageContentSection>
       </PageContent>
       <Separator />
