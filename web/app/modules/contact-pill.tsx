@@ -56,13 +56,8 @@ export function ContactPill(props: Props) {
         {isMaintainer ? (
           <InfoPill
             size="sm"
-            label={
-              <RiVipCrown2Fill
-                size={16}
-                className="text-gold-1 dark:text-gold-2"
-              />
-            }
-            className="border-transparent text-gold-1 dark:bg-gold-12"
+            label={<RiVipCrown2Fill size={16} className="text-gold-2" />}
+            className="border-transparent bg-gold-12 text-gold-1"
           >
             Maintainer
           </InfoPill>
