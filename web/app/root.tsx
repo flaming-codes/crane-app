@@ -17,9 +17,15 @@ import "./tailwind.css";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { useEffect } from "react";
-import { randomInt } from "es-toolkit";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ location }) => {
+  // Pseudo-randomly select a cover image based on the length
+  // of the current path (= stable index per site) and add
+  //  the current day of the week as a seed so that the cover
+  //  changes daily.
+  const dayOfWeek = new Date().getDay();
+  const coverIndex = ((location.pathname.length + dayOfWeek) & 9) + 1;
+
   return [
     { title: "CRAN/E" },
     { name: "description", content: "The R package search engine, enhanced" },
@@ -27,7 +33,7 @@ export const meta: MetaFunction = () => {
     { property: "og:url", content: BASE_URL },
     {
       property: "og:image",
-      content: BASE_URL + `/images/og/cover-${randomInt(9) + 1}.jpg`,
+      content: BASE_URL + `/images/og/cover-${coverIndex}.jpg`,
     },
   ];
 };

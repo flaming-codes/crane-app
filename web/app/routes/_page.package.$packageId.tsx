@@ -32,7 +32,7 @@ import {
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
 import { uniq } from "es-toolkit";
-import { PackageInsightService } from "../data/package-insight-service.server";
+import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
 import clsx from "clsx";
 

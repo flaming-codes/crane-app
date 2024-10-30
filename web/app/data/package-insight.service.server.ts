@@ -2,10 +2,16 @@ import { format, sub } from "date-fns";
 import {
   CranDownloadsResponse,
   CranResponse,
+  CranTopDownloadedPackagesRes,
+  CranTrendingPackagesRes,
   PackageDownloadTrend,
 } from "./types";
+import { TopDownloadedPackagesRange } from "./package-insight.shape";
+import { slog } from "../modules/observability.server";
 
 export class PackageInsightService {
+  private static readonly CRAN_LOGS_URL = "https://cranlogs.r-pkg.org";
+
   /**
    * Get the downloads for a package in the last n days, starting
    * from today. The result is an array of objects with the number
@@ -80,6 +86,24 @@ export class PackageInsightService {
     return downloads;
   }
 
+  static async getTopDownloadedPackages(
+    period: TopDownloadedPackagesRange,
+    count: number,
+  ) {
+    return this.fetchFromCRAN<CranTopDownloadedPackagesRes>(
+      `/top/${period}/${count.toString()}`,
+    );
+  }
+
+  static async getTrendingPackages() {
+    // Only for last week.
+    const data = await this.fetchFromCRAN<CranTrendingPackagesRes>("/trending");
+    return data.map((item) => ({
+      ...item,
+      increase: `${new Number(item.increase).toFixed(0)}%`,
+    }));
+  }
+
   /*
    * Private.
    */
@@ -95,13 +119,26 @@ export class PackageInsightService {
     // the last day according to its point of reference (likely UTC).
     if (days === 1 && !from) {
       return this
-        .fetchFromCRAN<CranDownloadsResponse>`/downloads/total/last-day/${name}`;
+        .fetchLogsFromCRAN<CranDownloadsResponse>`/downloads/total/last-day/${name}`;
     }
 
     const validFrom = from || new Date();
     const past = sub(validFrom, { days });
     return this
-      .fetchFromCRAN<CranDownloadsResponse>`/downloads/total/${past}:${validFrom}/${name}`;
+      .fetchLogsFromCRAN<CranDownloadsResponse>`/downloads/total/${past}:${validFrom}/${name}`;
+  }
+
+  private static async fetchFromCRAN<R extends CranResponse = CranResponse>(
+    url: string,
+  ): Promise<R> {
+    return fetch(this.CRAN_LOGS_URL + url, {
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        slog.error("Failed to fetch CRAN statistics", error);
+        return undefined;
+      });
   }
 
   /**
@@ -112,18 +149,12 @@ export class PackageInsightService {
    * @param params
    * @returns
    */
-  private static async fetchFromCRAN<R extends CranResponse = CranResponse>(
+  private static async fetchLogsFromCRAN<R extends CranResponse = CranResponse>(
     template: TemplateStringsArray,
     ...params: (string | Date)[]
   ): Promise<R> {
     const url = this.getCRANLogsUrl(template, ...params);
-    return fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .catch(() => undefined);
+    return this.fetchFromCRAN<R>(url);
   }
 
   /**
@@ -152,7 +183,7 @@ export class PackageInsightService {
       return format(part, "yyyy-MM-dd");
     });
 
-    return "https://cranlogs.r-pkg.org" + stringified.join("");
+    return stringified.join("");
   }
 
   private static format1kDelimiter(total: number) {

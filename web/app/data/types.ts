@@ -120,7 +120,26 @@ export type CranDownloadsResponse = Array<{
   package: string;
 }>;
 
-export type CranResponse = CranDownloadsResponse;
+export type CranTopDownloadedPackagesRes = {
+  start: string; // e.g. "2015-05-01T00:00:00.000Z";
+  end: string; // e.g. "2015-05-01T00:00:00.000Z";
+  downloads: Array<{ package: string; downloads: number }>;
+};
+
+/**
+ * Trending packages are the ones that were downloaded at least 1000 times during last week,
+ * and that substantially increased their download counts, compared to the average weekly downloads in the previous 24 weeks.
+ * The percentage of increase is also shown in the output.
+ */
+export type CranTrendingPackagesRes = Array<{
+  package: string;
+  increase: number;
+}>;
+
+export type CranResponse =
+  | CranDownloadsResponse
+  | CranTopDownloadedPackagesRes
+  | CranTrendingPackagesRes;
 
 export type PackageDownloadTrend = {
   trend: string;
