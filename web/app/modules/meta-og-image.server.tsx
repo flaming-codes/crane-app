@@ -139,8 +139,9 @@ export async function composeNewsArticleOGImage(params: {
     >
       <span style={{ fontSize: 80 }}>{headline}</span>
       {subline ? (
-        <span style={{ fontSize: 60, opacity: 80 }}>{subline}</span>
+        <span style={{ fontSize: 50, color: "#b7b7b7" }}>{subline}</span>
       ) : null}
+      <CategoryPill>CRAN/E NEWS</CategoryPill>
     </OGImage>,
     await getBaseOptions(requestUrl),
   );

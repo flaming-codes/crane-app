@@ -9,7 +9,7 @@ import { Separator } from "../modules/separator";
 
 export const handle = {
   article: {
-    slug: "cran-v2",
+    slug: "crane-v2",
     title: "Announcing CRAN/E 2.0",
     subline: "A modernized search platform for the R community",
     createdAt: "2024-10-28",
