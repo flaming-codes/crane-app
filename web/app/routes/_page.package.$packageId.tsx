@@ -32,9 +32,10 @@ import {
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
 import { uniq } from "es-toolkit";
-import { PackageInsightService } from "../data/package-insight-service.server";
+import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
 import clsx from "clsx";
+import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -269,22 +270,26 @@ function AboveTheFoldSection(props: { item: Pkg; lastRelease: string }) {
               </ExternalLinkPill>
             </li>
           ) : null}
-          <li>
-            <ExternalLinkPill
-              href={item.cran_checks.link}
-              icon={<RiExternalLinkLine size={18} />}
-            >
-              {item.cran_checks.label}
-            </ExternalLinkPill>
-          </li>
-          <li>
-            <ExternalLinkPill
-              href={item.reference_manual.link}
-              icon={<RiFilePdf2Line size={18} />}
-            >
-              {item.reference_manual.label}
-            </ExternalLinkPill>
-          </li>
+          {item.cran_checks ? (
+            <li>
+              <ExternalLinkPill
+                href={item.cran_checks.link}
+                icon={<RiExternalLinkLine size={18} />}
+              >
+                {item.cran_checks.label}
+              </ExternalLinkPill>
+            </li>
+          ) : null}
+          {item.reference_manual ? (
+            <li>
+              <ExternalLinkPill
+                href={item.reference_manual.link}
+                icon={<RiFilePdf2Line size={18} />}
+              >
+                {item.reference_manual.label}
+              </ExternalLinkPill>
+            </li>
+          ) : null}
         </ul>
         <ul className="flex flex-wrap items-start gap-4">
           <li>
@@ -525,16 +530,7 @@ function InsightsPageContentSection(props: {
         <p className="text-gray-dim">No downloads available</p>
       )}
 
-      <p className="text-gray-dim mt-16 text-right text-xs">
-        Data provided by{" "}
-        <ExternalLink
-          href="https://github.com/r-hub/cranlogs.app"
-          className="inline-flex items-center gap-1 underline underline-offset-4"
-        >
-          cranlogs
-          <RiExternalLinkLine size={10} className="text-gray-dim" />
-        </ExternalLink>
-      </p>
+      <DataProvidedByCRANLabel />
     </PageContentSection>
   );
 }

@@ -52,6 +52,11 @@ export async function loader(props: LoaderFunctionArgs) {
             lastmod: today,
             changefreq: "daily",
           })}
+          ${composeUrlElement({
+            path: `/statistic/package`,
+            lastmod: today,
+            changefreq: "daily",
+          })}
       </urlset>`.trim(),
       {
         headers: {

@@ -57,3 +57,12 @@ export function AnchorLink(props: PropsWithChildren<{ fragment: string }>) {
 }
 
 AnchorLink.displayName = "AnchorLink";
+
+export function composeAnchorItems(
+  anchors: string[],
+): Array<{ name: string; slug: string }> {
+  return anchors.map((anchor) => ({
+    name: anchor,
+    slug: encodeURIComponent(anchor.toLowerCase().replaceAll(" ", "-")),
+  }));
+}
