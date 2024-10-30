@@ -25,6 +25,12 @@ export class PackageService {
     return Array.isArray(data) ? data[0] : data;
   }
 
+  static async checkPackageExists(packageId: string): Promise<boolean> {
+    packageSlugSchema.parse(packageId);
+    const sitemapPackages = await this.getAllSitemapPackages();
+    return sitemapPackages.some(([name]) => name === packageId);
+  }
+
   static async getAllOverviewPackages(): Promise<OverviewPkg[]> {
     if (this.allOverviewPackages.length === 0) {
       this.allOverviewPackages = await fetchData<OverviewPkg[]>(

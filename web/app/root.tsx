@@ -17,6 +17,7 @@ import "./tailwind.css";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { useEffect } from "react";
+import { randomInt } from "es-toolkit";
 
 export const meta: MetaFunction = () => {
   return [
@@ -24,7 +25,10 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "A collection of R packages for CRAN" },
     { property: "og:type", content: "website" },
     { property: "og:url", content: BASE_URL },
-    { property: "og:image", content: BASE_URL + "/images/og/cover-01.jpg" },
+    {
+      property: "og:image",
+      content: BASE_URL + `/images/og/cover-${randomInt(7) + 1}.jpg`,
+    },
   ];
 };
 

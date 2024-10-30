@@ -3,13 +3,16 @@ import { composePackageOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { addDays, getSeconds } from "date-fns";
 import { packageSlugSchema } from "../data/package.shape";
+import { PackageService } from "../data/package.service";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
   const { packageId } = params;
 
   const parsedId = packageSlugSchema.safeParse(packageId);
-  if (parsedId.error) {
+  const exists = await PackageService.checkPackageExists(parsedId.data || "");
+
+  if (parsedId.error || !exists) {
     throw new Response(null, {
       status: 400,
       statusText: "Valid package ID is required",

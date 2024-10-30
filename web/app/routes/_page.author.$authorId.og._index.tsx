@@ -3,13 +3,15 @@ import { composeAuthorOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { addDays, getSeconds } from "date-fns";
 import { authorSlugSchema } from "../data/author.shape";
+import { AuthorService } from "../data/author.service";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
   const { authorId } = params;
 
   const parsedId = authorSlugSchema.safeParse(authorId);
-  if (parsedId.error) {
+  const exists = await AuthorService.checkAuthorExists(parsedId.data || "");
+  if (parsedId.error || !exists) {
     throw new Response(null, {
       status: 400,
       statusText: "Valid author ID is required",
