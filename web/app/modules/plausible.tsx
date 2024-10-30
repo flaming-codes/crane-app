@@ -12,7 +12,10 @@ import { clog } from "./observability";
 export function sendEvent(
   ...params: Parameters<NonNullable<Window["plausible"]>>
 ) {
-  if (window.ENV.isPlausibleEnabled) {
+  if (
+    window.ENV.isPlausibleEnabled &&
+    localStorage.getItem("plausible_ignore") !== "true"
+  ) {
     try {
       window.plausible?.(...params);
     } catch (error) {
@@ -24,12 +27,12 @@ export function sendEvent(
 export function PlausibleChoicePillButton() {
   const [isEnabled, setIsEnabled] = useState(true);
   useEffect(() => {
-    setIsEnabled(localStorage.plausible_ignore !== "true");
+    setIsEnabled(localStorage.getItem("plausible_ignore") !== "true");
   }, []);
 
   const handleToggle = () => {
     const next = !isEnabled;
-    localStorage.plausible_ignore = next ? "false" : "true";
+    localStorage.setItem("plausible_ignore", next ? "" : "true");
     setIsEnabled(next);
   };
 

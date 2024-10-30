@@ -22,6 +22,7 @@ import { SearchResult } from "minisearch";
 import { Separator } from "./separator";
 import { InfoPill } from "./info-pill";
 import clsx from "clsx";
+import { sendEvent } from "./plausible";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -100,6 +101,11 @@ export function NavSearch(props: Props) {
     useCallback(() => {
       inputRef.current?.focus();
       setIsFocused(true);
+      sendEvent("focus-search-shortcut-used", {
+        props: {
+          origin: window.location.pathname,
+        },
+      });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
@@ -158,7 +164,7 @@ export function SearchResults(
   useLockBodyScroll();
 
   return (
-    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full overflow-y-auto bg-white/90 py-16 backdrop-blur-xl dark:bg-black/90">
+    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl dark:bg-black/90">
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-16">
@@ -174,6 +180,12 @@ export function SearchResults(
                             to={`/package/${item.slug}`}
                             onClick={() => {
                               onSelect(item);
+                              sendEvent("search-suggestion-selected", {
+                                props: {
+                                  category: "package",
+                                  suggestion: item.slug,
+                                },
+                              });
                             }}
                           >
                             <InfoPill
@@ -211,6 +223,12 @@ export function SearchResults(
                             to={`/author/${item.slug}`}
                             onClick={() => {
                               onSelect(item);
+                              sendEvent("search-suggestion-selected", {
+                                props: {
+                                  category: "author",
+                                  suggestion: item.slug,
+                                },
+                              });
                             }}
                           >
                             <InfoPill
