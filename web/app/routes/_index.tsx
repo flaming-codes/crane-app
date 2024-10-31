@@ -84,7 +84,7 @@ function GradientBackground({ meshIndex }: { meshIndex: null | number }) {
     <>
       <div
         className={clsx(
-          "fixed inset-x-0 top-0 -z-50 h-[60vh] transform-gpu animate-fade animate-duration-500",
+          "fixed inset-x-0 top-0 -z-50 h-[60vh] transform-gpu animate-fade duration-500",
           {
             "bg-mesh-1": meshIndex === 0,
             "bg-mesh-2": meshIndex === 1,

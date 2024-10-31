@@ -164,7 +164,7 @@ export function SearchResults(
   useLockBodyScroll();
 
   return (
-    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl animate-duration-200 dark:bg-black/90">
+    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl duration-200 animate-duration-150 dark:bg-black/90">
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-16">
@@ -300,5 +300,10 @@ function FlameOfFame(props: { score: number; threshold?: number }) {
     return null;
   }
 
-  return <RiFireFill size={16} className="animate-pulse text-ruby-9" />;
+  return (
+    <RiFireFill
+      size={16}
+      className="animate-pulse text-ruby-9 animate-duration-1000"
+    />
+  );
 }

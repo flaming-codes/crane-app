@@ -95,7 +95,7 @@ export default function StatisticPackagesPage() {
                         <h3 className="font-mono">{name}</h3>
                         <ClientOnly>
                           {() => (
-                            <p className="text-gray-dim animate-fade animate-duration-150">
+                            <p className="text-gray-dim animate-fade duration-150">
                               {nrFormatter.format(downloads)}{" "}
                               {downloads === 1 ? "download" : "Downloads"}
                             </p>
