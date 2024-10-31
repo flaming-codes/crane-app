@@ -1,9 +1,10 @@
-import { format, sub } from "date-fns";
+import { addHours, format, sub } from "date-fns";
 import {
   CranDownloadsResponse,
   CranResponse,
   CranTopDownloadedPackagesRes,
   CranTrendingPackagesRes,
+  ExpiringSearchIndex,
   PackageDownloadTrend,
 } from "./types";
 import { TopDownloadedPackagesRange } from "./package-insight.shape";
@@ -11,6 +12,17 @@ import { slog } from "../modules/observability.server";
 
 export class PackageInsightService {
   private static readonly CRAN_LOGS_URL = "https://cranlogs.r-pkg.org";
+
+  private static topDownloadedPackagesIndices: Record<
+    string,
+    ExpiringSearchIndex<CranTopDownloadedPackagesRes>
+  > = {};
+
+  private static trendingPackages: ExpiringSearchIndex<CranTrendingPackagesRes> =
+    {
+      index: [],
+      expiresAt: 0,
+    };
 
   /**
    * Get the downloads for a package in the last n days, starting
@@ -90,18 +102,43 @@ export class PackageInsightService {
     period: TopDownloadedPackagesRange,
     count: number,
   ) {
-    return this.fetchFromCRAN<CranTopDownloadedPackagesRes>(
-      `/top/${period}/${count.toString()}`,
-    );
+    const key = `${period}-${count}`;
+
+    if (
+      !this.topDownloadedPackagesIndices[key] ||
+      this.topDownloadedPackagesIndices[key].expiresAt < Date.now()
+    ) {
+      this.topDownloadedPackagesIndices[key] = {
+        index: await this.fetchFromCRAN<CranTopDownloadedPackagesRes>(
+          `/top/${period}/${count.toString()}`,
+        ),
+        expiresAt: addHours(new Date(), 6).getTime(),
+      };
+    }
+
+    return this.topDownloadedPackagesIndices[key].index;
   }
 
   static async getTrendingPackages() {
-    // Only for last week.
-    const data = await this.fetchFromCRAN<CranTrendingPackagesRes>("/trending");
-    return data.map((item) => ({
-      ...item,
-      increase: `${new Number(item.increase).toFixed(0)}%`,
-    }));
+    // Check if the index has expired.
+    if (this.trendingPackages.expiresAt < Date.now()) {
+      // Only for last week.
+      const data = await this.fetchFromCRAN<CranTrendingPackagesRes>(
+        "/trending",
+      ).then((data) => {
+        return data.map((item) => ({
+          ...item,
+          increase: `${new Number(item.increase).toFixed(0)}%`,
+        }));
+      });
+
+      this.trendingPackages = {
+        index: data,
+        expiresAt: addHours(new Date(), 6).getTime(),
+      };
+    }
+
+    return this.trendingPackages.index;
   }
 
   /*

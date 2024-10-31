@@ -133,7 +133,7 @@ export type CranTopDownloadedPackagesRes = {
  */
 export type CranTrendingPackagesRes = Array<{
   package: string;
-  increase: number;
+  increase: string;
 }>;
 
 export type CranResponse =

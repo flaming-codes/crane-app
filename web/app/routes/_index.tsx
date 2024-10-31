@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
 import { usePrevious } from "@uidotdev/usehooks";
-import { addSeconds, getSeconds } from "date-fns";
+import { secondsToMilliseconds } from "date-fns";
 
 export const handle = {
   hasFooter: false,
@@ -19,7 +19,7 @@ export const loader = async () => {
     { meshIndex, version },
     {
       headers: {
-        "Cache-Control": `public, max-age=0, s-maxage=${getSeconds(addSeconds(new Date(), 5))}`,
+        "Cache-Control": `public, max-age=0, s-maxage=${secondsToMilliseconds(10)}`,
       },
     },
   );
