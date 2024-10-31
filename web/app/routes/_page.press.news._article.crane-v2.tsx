@@ -62,7 +62,11 @@ export default function NewsArticleCraneV2() {
         </p>
         <ProminentArticleImage
           src="/news/crane-v2-0.webp"
-          caption="Screenshot of the CRAN/E 2.0 start page"
+          caption="Screenshot of the CRAN/E 2.0 start page in dark mode"
+        />
+        <ProminentArticleImage
+          src="/news/crane-v2-0-light.webp"
+          caption="Screenshot of the CRAN/E 2.0 start page in dark light"
         />
         <p>
           Additionally, we&apos;ve optimized contrast levels in both modes to
