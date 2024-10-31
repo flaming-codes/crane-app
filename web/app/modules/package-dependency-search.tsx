@@ -176,11 +176,13 @@ export function PackageDependencySearch(props: Props) {
             })
           ) : (
             <ul className="flex flex-col gap-4">
-              {groupedAll.map(([group, items]) => (
-                <li key={group}>
-                  <DependencyPills group={group} items={items} />
-                </li>
-              ))}
+              {groupedAll.map(([group, items]) =>
+                items.length > 0 ? (
+                  <li key={group}>
+                    <DependencyPills group={group} items={items} />
+                  </li>
+                ) : null,
+              )}
             </ul>
           )}
         </ul>
@@ -188,11 +190,13 @@ export function PackageDependencySearch(props: Props) {
 
       {input ? (
         <ul className="flex flex-col gap-4">
-          {Object.entries(groupedSearchResults).map(([group, items]) => (
-            <li key={group}>
-              <DependencyPills group={group} items={items} />
-            </li>
-          ))}
+          {Object.entries(groupedSearchResults).map(([group, items]) =>
+            items.length > 0 ? (
+              <li key={group}>
+                <DependencyPills group={group} items={items} />
+              </li>
+            ) : null,
+          )}
         </ul>
       ) : null}
     </>
