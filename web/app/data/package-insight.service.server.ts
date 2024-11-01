@@ -1,4 +1,4 @@
-import { addHours, format } from "date-fns";
+import { addHours, format, parseISO } from "date-fns";
 import { ExpiringSearchIndex } from "./types";
 import {
   CranDownloadsResponse,
@@ -52,9 +52,19 @@ export class PackageInsightService {
   static async getDailyDownloadsForPackage(
     name: string,
     range: TopDownloadedPackagesRange,
-  ) {
+  ): Promise<CranDownloadsResponse> {
     return this
       .fetchLogsFromCRAN<CranDownloadsResponse>`/downloads/daily/${range}/${name}`;
+
+    // return data.map((item) => ({
+    //   ...item,
+    //   start: parseISO(item.start).toISOString(),
+    //   end: parseISO(item.end).toISOString(),
+    //   downloads: item.downloads.map((d) => ({
+    //     ...d,
+    //     day: parseISO(d.day).toISOString(),
+    //   })),
+    // }));
   }
 
   /*

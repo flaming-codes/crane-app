@@ -36,6 +36,7 @@ import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
 import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
 import { CranDownloadsResponse } from "../data/package-insight.shape";
+import { Heatmap } from "../modules/heatmap";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -492,9 +493,15 @@ function InsightsPageContentSection(props: {
       // subline="Get the latest insights on this package"
       fragment="insights"
     >
-      <h3 className="text-lg">Downloads for...</h3>
+      <h3 className="text-lg">Daily downloads for last 30 days</h3>
 
-      <pre>{JSON.stringify(dailyDownloads, null, 2)}</pre>
+      <Heatmap
+        downloads={dailyDownloads[0].downloads}
+        start={dailyDownloads[0].start}
+        end={dailyDownloads[0].end}
+      />
+
+      <pre hidden>{JSON.stringify(dailyDownloads, null, 2)}</pre>
 
       <DataProvidedByCRANLabel />
     </PageContentSection>
