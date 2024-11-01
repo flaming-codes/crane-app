@@ -29,9 +29,22 @@ const getColor = (downloads: number, min: number, max: number) => {
   const intensity = Math.min(Math.max((downloads - min) / (max - min), 0), 1);
   const level = Math.ceil(intensity * 7) + 5;
 
+  // We have to spell the colors out, string interpolation
+  // doesn't work with Tailwind's JIT compiler.
   return clsx({
     "bg-gray-12": level === 0,
-    [`bg-iris-${level}`]: level > 0,
+    "bg-iris-1": level === 1,
+    "bg-iris-2": level === 2,
+    "bg-iris-3": level === 3,
+    "bg-iris-4": level === 4,
+    "bg-iris-5": level === 5,
+    "bg-iris-6": level === 6,
+    "bg-iris-7": level === 7,
+    "bg-iris-8": level === 8,
+    "bg-iris-9": level === 9,
+    "bg-iris-10": level === 10,
+    "bg-iris-11": level === 11,
+    "bg-iris-12": level === 12,
   });
 };
 
