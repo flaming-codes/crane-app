@@ -1,4 +1,4 @@
-import { addHours, format, parseISO } from "date-fns";
+import { addHours, format } from "date-fns";
 import { ExpiringSearchIndex } from "./types";
 import {
   CranDownloadsResponse,

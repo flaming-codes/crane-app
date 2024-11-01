@@ -115,7 +115,7 @@ export const Heatmap = memo(({ downloads, start, end }: HeatmapProps) => {
       {/* Heatmap Grid */}
       <div role="grid" aria-label="Download heatmap grid">
         {/* X-axis Labels (Days of the Week) */}
-        <div className="text-gray-700 mb-2 grid grid-cols-7 gap-1 text-center text-sm">
+        <div className="text-gray-normal mb-2 grid grid-cols-7 gap-1 text-center text-sm">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div key={day}>{day}</div>
           ))}
