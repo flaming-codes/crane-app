@@ -39,10 +39,7 @@ export function PlausibleChoicePillButton() {
   return (
     <ClientOnly>
       {() => (
-        <button
-          onClick={handleToggle}
-          className="animate-fade animate-duration-200"
-        >
+        <button onClick={handleToggle} className="animate-fade duration-200">
           <InfoPill
             label={<span className="text-gray-normal">Your choice</span>}
             variant="slate"

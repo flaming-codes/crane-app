@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { composeAuthorOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
-import { addDays, getSeconds } from "date-fns";
+import { hoursToSeconds } from "date-fns";
 import { authorSlugSchema } from "../data/author.shape";
 import { AuthorService } from "../data/author.service";
 
@@ -32,7 +32,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       // Tip: You might want to heavily cache the response in production
       "cache-control":
         ENV.NODE_ENV === "production"
-          ? `public, immutable, no-transform, max-age=${getSeconds(addDays(new Date(), 7))}`
+          ? `public, immutable, no-transform, max-age=${hoursToSeconds(24 * 7)}`
           : "no-cache",
     },
   });

@@ -4,7 +4,7 @@ import { AnchorLink, Anchors } from "../modules/anchors";
 import { PackageService } from "../data/package.service";
 import { useLoaderData } from "@remix-run/react";
 import { json, LoaderFunctionArgs, useLocation } from "react-router";
-import { PackageDownloadTrend, Pkg } from "../data/types";
+import { Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { PageContent } from "../modules/page-content";
@@ -34,8 +34,9 @@ import { BASE_URL } from "../modules/app";
 import { uniq } from "es-toolkit";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
-import clsx from "clsx";
 import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
+import { CranDownloadsResponse } from "../data/package-insight.shape";
+import { Heatmap } from "../modules/heatmap";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -128,12 +129,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   let item: Pkg | undefined = undefined;
-  let downloads: PackageDownloadTrend[] = [];
+  let dailyDownloads: CranDownloadsResponse | undefined = undefined;
 
   try {
-    const [_item, _downloads] = await Promise.all([
+    const [_item, _dailyDownloads] = await Promise.all([
       PackageService.getPackage(packageId),
-      PackageInsightService.getDownloadsWithTrends(packageId),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageId,
+        "last-month",
+      ),
     ]);
     if (!_item) {
       throw new Response(null, {
@@ -142,7 +146,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       });
     }
     item = _item;
-    downloads = _downloads;
+    dailyDownloads = _dailyDownloads;
   } catch (error) {
     slog.error(error);
     throw new Response(null, {
@@ -152,7 +156,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   return json(
-    { item, downloads, lastRelease: formatRelative(item.date, new Date()) },
+    {
+      item,
+      dailyDownloads,
+      lastRelease: formatRelative(item.date, new Date()),
+    },
     {
       headers: {
         "Cache-Control": `public, max-age=${minutesToSeconds(10)}`,
@@ -164,7 +172,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
-  const downloads = data.downloads as PackageDownloadTrend[];
+  const dailyDownloads = data.dailyDownloads as CranDownloadsResponse;
   const lastRelease = data.lastRelease as string;
 
   return (
@@ -202,7 +210,7 @@ export default function PackagePage() {
 
         <Separator />
 
-        <InsightsPageContentSection downloads={downloads} />
+        <InsightsPageContentSection dailyDownloads={dailyDownloads} />
 
         <Separator />
 
@@ -340,7 +348,7 @@ function AboveTheFoldSection(props: { item: Pkg; lastRelease: string }) {
           <li>
             <InfoPill
               label="Last release"
-              className="animate-fade animate-duration-200"
+              className="animate-fade duration-200"
             >
               {lastRelease}
             </InfoPill>
@@ -475,11 +483,9 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
 }
 
 function InsightsPageContentSection(props: {
-  downloads: PackageDownloadTrend[];
+  dailyDownloads: CranDownloadsResponse;
 }) {
-  const { downloads } = props;
-
-  const hasDownloads = downloads && downloads.length > 0;
+  const { dailyDownloads } = props;
 
   return (
     <PageContentSection
@@ -487,48 +493,15 @@ function InsightsPageContentSection(props: {
       // subline="Get the latest insights on this package"
       fragment="insights"
     >
-      <h3 className="text-lg">Downloads for...</h3>
+      <h3 className="text-lg">Daily downloads for last 30 days</h3>
 
-      {hasDownloads ? (
-        <ul
-          className={clsx(
-            "relative mb-3 flex items-end justify-center gap-4 sm:mx-8 md:mx-16",
-            "after:absolute after:inset-x-0 after:bottom-0 after:z-0 after:h-1 after:rounded-full after:content-['']",
-            "after:bg-gradient-to-l after:from-sand-6 after:from-90% after:dark:from-sand-10",
-            // "after:bg-sand-4 after:dark:bg-sand-10",
-          )}
-        >
-          {downloads.map((item) => (
-            <li
-              key={item.label}
-              className={clsx(
-                "relative flex flex-1 flex-col items-center gap-1 pb-6 text-center",
-                "after:absolute after:bottom-0 after:left-1/2 after:h-4 after:w-1 after:-translate-x-1/2 after:rounded-t-full after:bg-sand-6 after:content-[''] after:dark:bg-sand-10",
-              )}
-            >
-              <span className="text-gray-dim text-xs">{item.label}</span>
-              <span className="font-semibold">{item.value}</span>
-              <span
-                className={clsx(
-                  "absolute bottom-0 translate-y-full pt-3 font-mono text-sm font-semibold",
-                  {
-                    "text-green-10 dark:text-green-8":
-                      item.trend.startsWith("+"),
-                    "text-red-10 dark:text-red-8": item.trend.startsWith("-"),
-                    "text-gray-dim":
-                      !item.trend.startsWith("+") &&
-                      !item.trend.startsWith("-"),
-                  },
-                )}
-              >
-                {item.trend}
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-dim">No downloads available</p>
-      )}
+      <Heatmap
+        downloads={dailyDownloads[0].downloads}
+        start={dailyDownloads[0].start}
+        end={dailyDownloads[0].end}
+      />
+
+      <pre hidden>{JSON.stringify(dailyDownloads, null, 2)}</pre>
 
       <DataProvidedByCRANLabel />
     </PageContentSection>
