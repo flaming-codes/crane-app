@@ -1,4 +1,4 @@
-import { addHours, format } from "date-fns";
+import { addHours } from "date-fns";
 import { ExpiringSearchIndex } from "./types";
 import {
   CranDownloadsResponse,
@@ -51,10 +51,9 @@ export class PackageInsightService {
 
   static async getDailyDownloadsForPackage(
     name: string,
-    range: TopDownloadedPackagesRange,
+    range: TopDownloadedPackagesRange | (string & {}),
   ): Promise<CranDownloadsResponse> {
-    return this
-      .fetchLogsFromCRAN<CranDownloadsResponse>`/downloads/daily/${range}/${name}`;
+    return this.fetchFromCRAN(`/downloads/daily/${range}/${name}`);
   }
 
   /*
@@ -72,51 +71,6 @@ export class PackageInsightService {
         slog.error("Failed to fetch CRAN statistics", error);
         return undefined;
       });
-  }
-
-  /**
-   * Tagged template literal for the CRAN downloads endpoint that
-   * fetches the statistics for the provided url.
-   *
-   * @param template
-   * @param params
-   * @returns
-   */
-  private static async fetchLogsFromCRAN<R extends CranResponse = CranResponse>(
-    template: TemplateStringsArray,
-    ...params: (string | Date)[]
-  ): Promise<R> {
-    const url = this.getCRANLogsUrl(template, ...params);
-    return this.fetchFromCRAN<R>(url);
-  }
-
-  /**
-   * Tagged template literal for the CRAN statistics API
-   * that creates the correct url and turns any date into
-   * the correct format.
-   *
-   * @param template
-   * @param params
-   * @returns
-   */
-  private static getCRANLogsUrl(
-    template: TemplateStringsArray,
-    ...params: (string | Date)[]
-  ) {
-    // Zip template and params together and remove the last empty ''.
-    const zipped = template.slice(0, -1).reduce(
-      (acc, part, i) => {
-        return acc.concat(part, params[i]);
-      },
-      [] as (string | Date)[],
-    );
-    // Replace all dates with formatted dates.
-    const stringified = zipped.map((part) => {
-      if (typeof part === "string") return part;
-      return format(part, "yyyy-MM-dd");
-    });
-
-    return stringified.join("");
   }
 
   private static format1kDelimiter(total: number) {

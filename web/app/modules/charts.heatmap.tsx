@@ -48,7 +48,11 @@ const getColor = (downloads: number, min: number, max: number) => {
   return colorClasses[level] || "bg-gray-ui";
 };
 
-export const Heatmap = memo(({ downloads, start, end }: HeatmapProps) => {
+export const Heatmap = memo((props: HeatmapProps) => {
+  const { downloads, start, end } = props;
+
+  const nrFormat = new Intl.NumberFormat("en-US");
+
   const startDate = parseISO(start);
   const endDate = parseISO(end);
   // Calculate the number of days in the range
@@ -131,17 +135,21 @@ export const Heatmap = memo(({ downloads, start, end }: HeatmapProps) => {
                   <div
                     key={dayIndex}
                     role="gridcell"
-                    className={`${getColor(downloads, minDownloads, maxDownloads)} group flex aspect-square w-full flex-col items-center justify-center overflow-visible rounded-md`}
-                    aria-label={`${downloads} downloads on ${dateLabel}`}
-                    title={`${downloads} downloads on ${dateLabel}`}
+                    className={clsx(
+                      "group flex aspect-square w-full flex-col items-center justify-center overflow-visible rounded-md",
+                      getColor(downloads, minDownloads, maxDownloads),
+                    )}
+                    aria-label={`${nrFormat.format(downloads)} downloads on ${dateLabel}`}
+                    title={`${nrFormat.format(downloads)} downloads on ${dateLabel}`}
                   >
                     <span
                       className={clsx(
-                        "bg-gray-app text-gray-normal flex flex-col items-center rounded-full p-2 text-center opacity-0 transition-opacity group-hover:opacity-100 md:rounded-lg",
-                        "z-10 text-xs",
+                        "bg-gray-app text-gray-normal flex flex-col items-center rounded-full p-2 md:rounded-lg",
+                        "opacity-0 transition-opacity group-hover:opacity-100",
+                        "z-10 text-center text-xs",
                       )}
                     >
-                      <span>{downloads} downloads</span>
+                      <span>{nrFormat.format(downloads)} downloads</span>
                       <span>{dateLabel}</span>
                     </span>
                   </div>
@@ -155,15 +163,14 @@ export const Heatmap = memo(({ downloads, start, end }: HeatmapProps) => {
       {/* Legend */}
       <div className="mb-4 flex items-center gap-1">
         <div className="flex items-center gap-1 font-mono">
-          <div className="bg-gray-ui size-6 rounded-md" />
-          <span className="mx-2">{minDownloads}</span>
+          <span className="mx-2">{nrFormat.format(minDownloads)}</span>
           <div className="size-6 rounded-md bg-iris-7" />
           <div className="size-6 rounded-md bg-iris-8" />
           <div className="size-6 rounded-md bg-iris-9" />
           <div className="size-6 rounded-md bg-iris-10" />
           <div className="size-6 rounded-md bg-iris-11" />
           <div className="size-6 rounded-md bg-iris-12" />
-          <span className="ml-2">{maxDownloads}</span>
+          <span className="ml-2">{nrFormat.format(maxDownloads)}</span>
         </div>
       </div>
     </div>
