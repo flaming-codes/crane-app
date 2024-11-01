@@ -55,16 +55,6 @@ export class PackageInsightService {
   ): Promise<CranDownloadsResponse> {
     return this
       .fetchLogsFromCRAN<CranDownloadsResponse>`/downloads/daily/${range}/${name}`;
-
-    // return data.map((item) => ({
-    //   ...item,
-    //   start: parseISO(item.start).toISOString(),
-    //   end: parseISO(item.end).toISOString(),
-    //   downloads: item.downloads.map((d) => ({
-    //     ...d,
-    //     day: parseISO(d.day).toISOString(),
-    //   })),
-    // }));
   }
 
   /*
