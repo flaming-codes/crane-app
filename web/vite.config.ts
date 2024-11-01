@@ -17,4 +17,7 @@ export default defineConfig({
       registerSW: "script",
     }),
   ],
+  optimizeDeps: {
+    exclude: ["@ant-design/charts > d3-array"],
+  },
 });

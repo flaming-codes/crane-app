@@ -38,6 +38,7 @@ import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
 import { CranDownloadsResponse } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
+import { LineGraph } from "../modules/charts.line";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -509,23 +510,23 @@ function InsightsPageContentSection(props: {
 
   return (
     <PageContentSection headline="Insights" fragment="insights">
-      <h3 className="text-lg">
-        This package has been downloaded <strong>{total}</strong> times in the
-        last 30 days. The following heatmap shows the distribution of downloads
-        per day.
-        {yesterday ? (
-          <>
-            {" "}
-            Yesterday, it was downloaded <strong>
-              {yesterday.downloads}
-            </strong>{" "}
-            times.
-          </>
-        ) : (
-          ""
-        )}
-      </h3>
-
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Last 30 days</h3>
+        <p>
+          This package has been downloaded <strong>{total}</strong> times in the
+          last 30 days. The following heatmap shows the distribution of
+          downloads per day.
+          {yesterday ? (
+            <>
+              {" "}
+              Yesterday, it was downloaded{" "}
+              <strong>{yesterday.downloads}</strong> times.
+            </>
+          ) : (
+            ""
+          )}
+        </p>
+      </div>
       <ClientOnly
         fallback={
           <div className="grid grid-cols-7 gap-2">
@@ -546,6 +547,29 @@ function InsightsPageContentSection(props: {
           />
         )}
       </ClientOnly>
+
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Last 365 days</h3>
+        <p>
+          This package has been downloaded{" "}
+          <strong>
+            {dailyDownloads[0].downloads.reduce(
+              (acc, curr) => acc + curr.downloads,
+              0,
+            )}
+          </strong>{" "}
+          times in the last 365 days. The following line graph shows the
+          downloads per day. You can hover over the graph to see the exact
+          number of downloads per day.
+        </p>
+      </div>
+      <LineGraph
+        height={200}
+        data={dailyDownloads[0].downloads.map((d) => ({
+          date: d.day,
+          value: d.downloads,
+        }))}
+      />
 
       <DataProvidedByCRANLabel />
     </PageContentSection>
