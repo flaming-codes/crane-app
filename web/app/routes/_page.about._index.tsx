@@ -15,6 +15,7 @@ import {
 import { Header } from "../modules/header";
 import { PlausibleChoicePillButton } from "../modules/plausible";
 import { mergeMeta } from "../modules/meta";
+import { LicenseTable } from "../modules/licenses";
 
 const anchors = ["Mission", "Team", "Analytics", "Source Code", "Licenses"];
 
@@ -167,13 +168,15 @@ export default function PrivacyPage() {
           </div>
         </PageContentSection>
 
-        {/*
         <Separator />
-         <PageContentSection headline="Licenses" fragment="licenses">
-          The following list contains all package dependencies of external code
-          used by CRAN/E. Click each link to visit the respective source code
-          page.
-        </PageContentSection> */}
+        <PageContentSection headline="Licenses" fragment="licenses">
+          <p>
+            The following list contains all package dependencies of external
+            code used by CRAN/E. Click each link to visit the respective source
+            code page.
+          </p>
+          <LicenseTable />
+        </PageContentSection>
       </PageContent>
     </>
   );
