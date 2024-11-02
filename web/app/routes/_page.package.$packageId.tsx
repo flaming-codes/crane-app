@@ -39,6 +39,7 @@ import { CranDownloadsResponse } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
 import { LineGraph } from "../modules/charts.line";
+import { StackedBarsChart } from "../modules/charts.stacked-bars";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -503,7 +504,7 @@ function InsightsPageContentSection(props: {
   yearlyDailyDownloads: CranDownloadsResponse;
 }) {
   const { dailyDownloads, yearlyDailyDownloads } = props;
-  const total = dailyDownloads[0].downloads.reduce(
+  const totalMonth = dailyDownloads[0].downloads.reduce(
     (acc, curr) => acc + curr.downloads,
     0,
   );
@@ -514,6 +515,22 @@ function InsightsPageContentSection(props: {
   )[0] || { day: "", downloads: 0 };
   const peakYearlyDay = yearlyDailyDownloads[0].downloads.find(
     (d) => d.downloads === maxYearly.downloads,
+  );
+
+  const groupedByMonth = yearlyDailyDownloads[0].downloads.reduce(
+    (acc, curr) => {
+      const month = format(new Date(curr.day), "MMM");
+      if (!acc[month]) {
+        acc[month] = 0;
+      }
+      acc[month] += curr.downloads;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  const totalYear = Object.values(groupedByMonth).reduce(
+    (acc, curr) => acc + curr,
+    0,
   );
 
   const nrFormatter = new Intl.NumberFormat("en-US");
@@ -530,9 +547,9 @@ function InsightsPageContentSection(props: {
           {() => (
             <p>
               This package has been downloaded{" "}
-              <strong>{nrFormatter.format(total)}</strong> times in the last 30
-              days. The following heatmap shows the distribution of downloads
-              per day.
+              <strong>{nrFormatter.format(totalMonth)}</strong> times in the
+              last 30 days. The following heatmap shows the distribution of
+              downloads per day.
               {yesterday ? (
                 <>
                   {" "}
@@ -612,6 +629,19 @@ function InsightsPageContentSection(props: {
             data={yearlyDailyDownloads[0].downloads.map((d) => ({
               date: d.day,
               value: d.downloads,
+            }))}
+          />
+        )}
+      </ClientOnly>
+      <ClientOnly
+        fallback={<div className="h-200 bg-gray-ui animate-pulse rounded-md" />}
+      >
+        {() => (
+          <StackedBarsChart
+            total={totalYear}
+            data={Object.entries(groupedByMonth).map(([month, count]) => ({
+              label: month,
+              value: count,
             }))}
           />
         )}

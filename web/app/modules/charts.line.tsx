@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 
-interface DataPoint {
+type DataPoint = {
   date: string;
   value: number;
-}
+};
 
-interface LineGraphProps {
+type LineGraphProps = {
   data: DataPoint[];
   height?: number;
   padding?: number;
-}
+};
 
 export function LineGraph({
   data,
