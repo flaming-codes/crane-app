@@ -164,8 +164,8 @@ export function LineGraph({
                     maxDownloads,
                   ),
                   {
-                    "rounded-s-md": isFirst,
-                    "rounded-e-md": isLast,
+                    "rounded-s-full": isFirst,
+                    "rounded-e-full": isLast,
                   },
                 )}
               />
