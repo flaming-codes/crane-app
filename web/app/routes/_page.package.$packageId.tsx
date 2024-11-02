@@ -39,6 +39,7 @@ import { CranDownloadsResponse } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
 import { LineGraph } from "../modules/charts.line";
+import { getFunnyPeakDownloadComment } from "../modules/package.insights.server";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -165,12 +166,50 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     });
   }
 
+  const totalMonthDownloads = dailyDownloads[0].downloads.reduce(
+    (acc, curr) => acc + curr.downloads,
+    0,
+  );
+  const yesterdayDownloads = dailyDownloads[0]?.downloads.at(-1);
+
+  const maxYearlyDownloads = [
+    ...(yearlyDailyDownloads[0]?.downloads || []),
+  ].sort((a, b) => b.downloads - a.downloads)[0] || { day: "", downloads: 0 };
+  const peakYearlyDayDownloads = yearlyDailyDownloads[0].downloads.find(
+    (d) => d.downloads === maxYearlyDownloads.downloads,
+  );
+
+  const groupedByMonthDownloads = yearlyDailyDownloads[0].downloads.reduce(
+    (acc, curr) => {
+      const month = format(new Date(curr.day), "MMM");
+      if (!acc[month]) {
+        acc[month] = 0;
+      }
+      acc[month] += curr.downloads;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  const totalYearDownloads = Object.values(groupedByMonthDownloads).reduce(
+    (acc, curr) => acc + curr,
+    0,
+  );
+
   return json(
     {
       item,
       dailyDownloads,
       yearlyDailyDownloads,
       lastRelease: formatRelative(item.date, new Date()),
+      totalMonthDownloads,
+      yesterdayDownloads,
+      peakYearlyDayDownloads,
+      totalYearDownloads,
+      totalYearlyDownloadsComment:
+        getFunnyPeakDownloadComment(totalYearDownloads),
+      peakYearlyDownloadsComment: peakYearlyDayDownloads
+        ? getFunnyPeakDownloadComment(peakYearlyDayDownloads.downloads)
+        : undefined,
     },
     {
       headers: {
@@ -187,6 +226,20 @@ export default function PackagePage() {
   const yearlyDailyDownloads =
     data.yearlyDailyDownloads as CranDownloadsResponse;
   const lastRelease = data.lastRelease as string;
+  const totalMonthDownloads = data.totalMonthDownloads as number;
+  const yesterdayDownloads = data.yesterdayDownloads as {
+    day: string;
+    downloads: number;
+  };
+  const peakYearlyDay = data.peakYearlyDayDownloads as {
+    day: string;
+    downloads: number;
+  };
+  const totalYear = data.totalYearDownloads as number;
+  const totalYearlyDownloadsComment =
+    data.totalYearlyDownloadsComment as string;
+  const peakYearlyDayDownloadsComment =
+    data.peakYearlyDownloadsComment as string;
 
   return (
     <>
@@ -226,6 +279,12 @@ export default function PackagePage() {
         <InsightsPageContentSection
           dailyDownloads={dailyDownloads}
           yearlyDailyDownloads={yearlyDailyDownloads}
+          totalMonthDownloads={totalMonthDownloads}
+          yesterdayDownloads={yesterdayDownloads}
+          peakYearlyDay={peakYearlyDay}
+          totalYear={totalYear}
+          peakYearlyDayDownloadsComment={peakYearlyDayDownloadsComment}
+          totalYearlyDownloadsComment={totalYearlyDownloadsComment}
         />
 
         <Separator />
@@ -501,36 +560,23 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
 function InsightsPageContentSection(props: {
   dailyDownloads: CranDownloadsResponse;
   yearlyDailyDownloads: CranDownloadsResponse;
+  totalMonthDownloads: number;
+  yesterdayDownloads: { day: string; downloads: number } | undefined;
+  peakYearlyDay: { day: string; downloads: number } | undefined;
+  totalYear: number;
+  peakYearlyDayDownloadsComment: string;
+  totalYearlyDownloadsComment: string;
 }) {
-  const { dailyDownloads, yearlyDailyDownloads } = props;
-  const totalMonth = dailyDownloads[0].downloads.reduce(
-    (acc, curr) => acc + curr.downloads,
-    0,
-  );
-  const yesterday = dailyDownloads[0]?.downloads.at(-1);
-
-  const maxYearly = [...(yearlyDailyDownloads[0]?.downloads || [])].sort(
-    (a, b) => b.downloads - a.downloads,
-  )[0] || { day: "", downloads: 0 };
-  const peakYearlyDay = yearlyDailyDownloads[0].downloads.find(
-    (d) => d.downloads === maxYearly.downloads,
-  );
-
-  const groupedByMonth = yearlyDailyDownloads[0].downloads.reduce(
-    (acc, curr) => {
-      const month = format(new Date(curr.day), "MMM");
-      if (!acc[month]) {
-        acc[month] = 0;
-      }
-      acc[month] += curr.downloads;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-  const totalYear = Object.values(groupedByMonth).reduce(
-    (acc, curr) => acc + curr,
-    0,
-  );
+  const {
+    dailyDownloads,
+    yearlyDailyDownloads,
+    totalMonthDownloads,
+    yesterdayDownloads,
+    peakYearlyDay,
+    totalYear,
+    peakYearlyDayDownloadsComment,
+    totalYearlyDownloadsComment,
+  } = props;
 
   const nrFormatter = new Intl.NumberFormat("en-US");
 
@@ -546,15 +592,16 @@ function InsightsPageContentSection(props: {
           {() => (
             <p>
               This package has been downloaded{" "}
-              <strong>{nrFormatter.format(totalMonth)}</strong> times in the
-              last 30 days. The following heatmap shows the distribution of
-              downloads per day.
-              {yesterday ? (
+              <strong>{nrFormatter.format(totalMonthDownloads)}</strong>{" "}
+              {totalMonthDownloads === 1 ? "time" : "times"}
+              in the last 30 days. The following heatmap shows the distribution
+              of downloads per day.
+              {yesterdayDownloads ? (
                 <>
                   {" "}
                   Yesterday, it was downloaded{" "}
                   <strong>
-                    {nrFormatter.format(yesterday.downloads)}
+                    {nrFormatter.format(yesterdayDownloads.downloads)}
                   </strong>{" "}
                   times.
                 </>
@@ -594,23 +641,27 @@ function InsightsPageContentSection(props: {
           {() => (
             <p>
               This package has been downloaded{" "}
-              <strong>{nrFormatter.format(totalYear)}</strong> times in the last
-              365 days. The following line graph shows the downloads per day.
-              You can hover over the graph to see the exact number of downloads
-              per day.
+              <strong>{nrFormatter.format(totalYear)}</strong>{" "}
+              {totalYear === 1 ? "time" : "times"} in the last 365 days.{" "}
+              {totalYearlyDownloadsComment}{" "}
+              {peakYearlyDay ? (
+                <>
+                  The day with the most downloads was{" "}
+                  <strong>
+                    {format(new Date(peakYearlyDay.day), "MMM dd, yyyy")}
+                  </strong>{" "}
+                  with{" "}
+                  <strong>{nrFormatter.format(peakYearlyDay.downloads)}</strong>{" "}
+                  downloads. {peakYearlyDayDownloadsComment}
+                </>
+              ) : null}
             </p>
           )}
         </ClientOnly>
-        {peakYearlyDay ? (
-          <p>
-            The day with the most downloads was{" "}
-            <strong>
-              {format(new Date(peakYearlyDay.day), "MMM dd, yyyy")}
-            </strong>{" "}
-            with <strong>{nrFormatter.format(peakYearlyDay.downloads)}</strong>{" "}
-            downloads.
-          </p>
-        ) : null}
+        <p>
+          The following line graph shows the downloads per day. You can hover
+          over the graph to see the exact number of downloads per day.
+        </p>
       </div>
       <ClientOnly
         fallback={<div className="h-200 bg-gray-ui animate-pulse rounded-md" />}

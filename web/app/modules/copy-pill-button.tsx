@@ -32,7 +32,7 @@ export function CopyPillButton(props: Props) {
   return (
     <button
       className={clsx(
-        "group border-gray-dim flex cursor-copy items-center gap-4 rounded-full bg-gradient-to-tr px-4 py-2 text-sm transition-all hover:brightness-110",
+        "group border-gray-dim flex cursor-copy items-center gap-4 rounded-full bg-gradient-to-tr px-4 py-2 text-sm leading-none transition-all hover:brightness-110",
         "from-iris-6 dark:from-iris-11",
         className,
       )}
