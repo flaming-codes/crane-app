@@ -1,0 +1,38 @@
+[
+  {
+    "downloads": [
+      { "day": "2024-10-02", "downloads": 35 },
+      { "day": "2024-10-03", "downloads": 5 },
+      { "day": "2024-10-04", "downloads": 2 },
+      { "day": "2024-10-05", "downloads": 34 },
+      { "day": "2024-10-06", "downloads": 1 },
+      { "day": "2024-10-07", "downloads": 2 },
+      { "day": "2024-10-08", "downloads": 36 },
+      { "day": "2024-10-09", "downloads": 3 },
+      { "day": "2024-10-11", "downloads": 39 },
+      { "day": "2024-10-12", "downloads": 4 },
+      { "day": "2024-10-13", "downloads": 1 },
+      { "day": "2024-10-14", "downloads": 38 },
+      { "day": "2024-10-15", "downloads": 3 },
+      { "day": "2024-10-16", "downloads": 3 },
+      { "day": "2024-10-17", "downloads": 33 },
+      { "day": "2024-10-18", "downloads": 3 },
+      { "day": "2024-10-19", "downloads": 4 },
+      { "day": "2024-10-20", "downloads": 38 },
+      { "day": "2024-10-21", "downloads": 2 },
+      { "day": "2024-10-22", "downloads": 6 },
+      { "day": "2024-10-23", "downloads": 38 },
+      { "day": "2024-10-24", "downloads": 7 },
+      { "day": "2024-10-25", "downloads": 2 },
+      { "day": "2024-10-26", "downloads": 1 },
+      { "day": "2024-10-27", "downloads": 36 },
+      { "day": "2024-10-28", "downloads": 6 },
+      { "day": "2024-10-29", "downloads": 2 },
+      { "day": "2024-10-30", "downloads": 39 },
+      { "day": "2024-10-31", "downloads": 5 }
+    ],
+    "start": "2024-10-02",
+    "end": "2024-10-31",
+    "package": "xadmix"
+  }
+]

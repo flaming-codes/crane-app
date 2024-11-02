@@ -60,6 +60,8 @@ export function LineGraph({
     return `${path} C ${controlX1},${controlY1} ${controlX2},${controlY2} ${x},${y}`;
   }, "");
 
+  const nrFormatter = new Intl.NumberFormat("en-US");
+
   return (
     <div ref={containerRef} className="text-gray-normal relative w-full">
       <svg width={width} height={height} className="bg-transparent">
@@ -94,7 +96,7 @@ export function LineGraph({
             key={i}
             cx={xScale(i)}
             cy={yScale(d.value)}
-            r={4}
+            r={1}
             fill="currentColor"
             className="cursor-pointer"
             aria-hidden="true"
@@ -111,7 +113,9 @@ export function LineGraph({
             transform: "translate(-50%, -100%)",
           }}
         >
-          <div className="font-mono font-semibold">{hoveredPoint.value}</div>
+          <div className="font-mono font-semibold">
+            {nrFormatter.format(hoveredPoint.value)}
+          </div>
           <div>{format(new Date(hoveredPoint.date), "MMM dd, yyyy")}</div>
         </div>
       )}
