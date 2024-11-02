@@ -53,10 +53,10 @@ export function LicenseTable() {
                     href={license.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    tabIndex={-1}
                     aria-label={`More information about ${license.name}`}
                   >
                     <RiExternalLinkLine
-                      tabIndex={-1}
                       className="text-gray-dim inline-block opacity-0 transition-opacity group-hover/item:opacity-100"
                       size={16}
                     />
