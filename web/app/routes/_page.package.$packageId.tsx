@@ -8,7 +8,7 @@ import { Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { PageContent } from "../modules/page-content";
-import { formatRelative, minutesToSeconds } from "date-fns";
+import { format, formatRelative, minutesToSeconds, subDays } from "date-fns";
 import { ExternalLink } from "../modules/external-link";
 import {
   RiBug2Line,
@@ -38,6 +38,7 @@ import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
 import { CranDownloadsResponse } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
+import { LineGraph } from "../modules/charts.line";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -129,23 +130,24 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     });
   }
 
+  const now = new Date();
+
   let item: Pkg | undefined = undefined;
   let dailyDownloads: CranDownloadsResponse | undefined = undefined;
-  // let yearlyDailyDownloads: CranDownloadsResponse | undefined = undefined;
+  let yearlyDailyDownloads: CranDownloadsResponse | undefined = undefined;
 
   try {
-    const [_item, _dailyDownloads /*_yearlyDailyDownloads*/] =
-      await Promise.all([
-        PackageService.getPackage(packageId),
-        PackageInsightService.getDailyDownloadsForPackage(
-          packageId,
-          "last-month",
-        ),
-        // PackageInsightService.getDailyDownloadsForPackage(
-        //   packageId,
-        //   `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
-        // ),
-      ]);
+    const [_item, _dailyDownloads, _yearlyDailyDownloads] = await Promise.all([
+      PackageService.getPackage(packageId),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageId,
+        "last-month",
+      ),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageId,
+        `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
+      ),
+    ]);
     if (!_item) {
       throw new Response(null, {
         status: 404,
@@ -154,7 +156,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     }
     item = _item;
     dailyDownloads = _dailyDownloads;
-    // yearlyDailyDownloads = _yearlyDailyDownloads;
+    yearlyDailyDownloads = _yearlyDailyDownloads;
   } catch (error) {
     slog.error(error);
     throw new Response(null, {
@@ -167,7 +169,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     {
       item,
       dailyDownloads,
-      // yearlyDailyDownloads,
+      yearlyDailyDownloads,
       lastRelease: formatRelative(item.date, new Date()),
     },
     {
@@ -182,8 +184,8 @@ export default function PackagePage() {
   const data = useLoaderData<typeof loader>();
   const item = data.item as Pkg;
   const dailyDownloads = data.dailyDownloads as CranDownloadsResponse;
-  // const yearlyDailyDownloads =
-  //   data.yearlyDailyDownloads as CranDownloadsResponse;
+  const yearlyDailyDownloads =
+    data.yearlyDailyDownloads as CranDownloadsResponse;
   const lastRelease = data.lastRelease as string;
 
   return (
@@ -223,7 +225,7 @@ export default function PackagePage() {
 
         <InsightsPageContentSection
           dailyDownloads={dailyDownloads}
-          yearlyDailyDownloads={[]}
+          yearlyDailyDownloads={yearlyDailyDownloads}
         />
 
         <Separator />
@@ -500,32 +502,67 @@ function InsightsPageContentSection(props: {
   dailyDownloads: CranDownloadsResponse;
   yearlyDailyDownloads: CranDownloadsResponse;
 }) {
-  const { dailyDownloads } = props;
-  const total = dailyDownloads[0].downloads.reduce(
+  const { dailyDownloads, yearlyDailyDownloads } = props;
+  const totalMonth = dailyDownloads[0].downloads.reduce(
     (acc, curr) => acc + curr.downloads,
     0,
   );
   const yesterday = dailyDownloads[0]?.downloads.at(-1);
 
+  const maxYearly = [...(yearlyDailyDownloads[0]?.downloads || [])].sort(
+    (a, b) => b.downloads - a.downloads,
+  )[0] || { day: "", downloads: 0 };
+  const peakYearlyDay = yearlyDailyDownloads[0].downloads.find(
+    (d) => d.downloads === maxYearly.downloads,
+  );
+
+  const groupedByMonth = yearlyDailyDownloads[0].downloads.reduce(
+    (acc, curr) => {
+      const month = format(new Date(curr.day), "MMM");
+      if (!acc[month]) {
+        acc[month] = 0;
+      }
+      acc[month] += curr.downloads;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  const totalYear = Object.values(groupedByMonth).reduce(
+    (acc, curr) => acc + curr,
+    0,
+  );
+
+  const nrFormatter = new Intl.NumberFormat("en-US");
+
   return (
     <PageContentSection headline="Insights" fragment="insights">
-      <h3 className="text-lg">
-        This package has been downloaded <strong>{total}</strong> times in the
-        last 30 days. The following heatmap shows the distribution of downloads
-        per day.
-        {yesterday ? (
-          <>
-            {" "}
-            Yesterday, it was downloaded <strong>
-              {yesterday.downloads}
-            </strong>{" "}
-            times.
-          </>
-        ) : (
-          ""
-        )}
-      </h3>
-
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Last 30 days</h3>
+        <ClientOnly
+          fallback={
+            <div className="bg-gray-ui h-64 animate-pulse rounded-md" />
+          }
+        >
+          {() => (
+            <p>
+              This package has been downloaded{" "}
+              <strong>{nrFormatter.format(totalMonth)}</strong> times in the
+              last 30 days. The following heatmap shows the distribution of
+              downloads per day.
+              {yesterday ? (
+                <>
+                  {" "}
+                  Yesterday, it was downloaded{" "}
+                  <strong>
+                    {nrFormatter.format(yesterday.downloads)}
+                  </strong>{" "}
+                  times.
+                </>
+              ) : null}
+            </p>
+          )}
+        </ClientOnly>
+      </div>
       <ClientOnly
         fallback={
           <div className="grid grid-cols-7 gap-2">
@@ -543,6 +580,48 @@ function InsightsPageContentSection(props: {
             downloads={dailyDownloads[0].downloads}
             start={dailyDownloads[0].start}
             end={dailyDownloads[0].end}
+          />
+        )}
+      </ClientOnly>
+
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Last 365 days</h3>
+        <ClientOnly
+          fallback={
+            <div className="bg-gray-ui h-64 animate-pulse rounded-md" />
+          }
+        >
+          {() => (
+            <p>
+              This package has been downloaded{" "}
+              <strong>{nrFormatter.format(totalYear)}</strong> times in the last
+              365 days. The following line graph shows the downloads per day.
+              You can hover over the graph to see the exact number of downloads
+              per day.
+            </p>
+          )}
+        </ClientOnly>
+        {peakYearlyDay ? (
+          <p>
+            The day with the most downloads was{" "}
+            <strong>
+              {format(new Date(peakYearlyDay.day), "MMM dd, yyyy")}
+            </strong>{" "}
+            with <strong>{nrFormatter.format(peakYearlyDay.downloads)}</strong>{" "}
+            downloads.
+          </p>
+        ) : null}
+      </div>
+      <ClientOnly
+        fallback={<div className="h-200 bg-gray-ui animate-pulse rounded-md" />}
+      >
+        {() => (
+          <LineGraph
+            height={200}
+            data={yearlyDailyDownloads[0].downloads.map((d) => ({
+              date: d.day,
+              value: d.downloads,
+            }))}
           />
         )}
       </ClientOnly>
