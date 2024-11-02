@@ -65,9 +65,18 @@ export function LicenseTable() {
               </span>,
               license.licensePeriod,
               license.licenseType,
-              <span key="versions" className="flex flex-col gap-1 leading-none">
-                <span>Remote: {license.remoteVersion}</span>
-                <span>Installed: {license.installedVersion}</span>
+              <span
+                key="versions"
+                className="flex flex-col gap-1 font-mono leading-none"
+              >
+                {license.remoteVersion === license.installedVersion ? (
+                  license.remoteVersion
+                ) : (
+                  <>
+                    <span>Remote: {license.remoteVersion}</span>
+                    <span>Installed: {license.installedVersion}</span>
+                  </>
+                )}
               </span>,
             ];
 
