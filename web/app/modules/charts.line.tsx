@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
+import clsx from "clsx";
 
 type DataPoint = {
   date: string;
@@ -18,6 +19,7 @@ export function LineGraph({
   padding = 16,
 }: LineGraphProps) {
   const [hoveredPoint, setHoveredPoint] = useState<DataPoint | null>(null);
+  const [hoveredMonth, setHoveredMonth] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(800);
 
@@ -61,6 +63,20 @@ export function LineGraph({
   }, "");
 
   const nrFormatter = new Intl.NumberFormat("en-US");
+
+  // Calculate total downloads per month
+  const downloadsPerMonth = data.reduce(
+    (acc, d) => {
+      const month = format(new Date(d.date), "MMM yyyy");
+      acc[month] = (acc[month] || 0) + d.value;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  const months = Object.keys(downloadsPerMonth);
+  const minDownloads = Math.min(...Object.values(downloadsPerMonth));
+  const maxDownloads = Math.max(...Object.values(downloadsPerMonth));
 
   return (
     <div ref={containerRef} className="text-gray-normal relative w-full">
@@ -106,7 +122,7 @@ export function LineGraph({
       {/* Hover tooltip */}
       {hoveredPoint && (
         <div
-          className="absolute cursor-auto rounded-md p-2 text-center text-sm shadow backdrop-blur-sm"
+          className="text-gray-normal absolute cursor-auto rounded-md p-2 text-center text-sm shadow backdrop-blur-sm"
           style={{
             left: `${xScale(data.findIndex((d) => d === hoveredPoint))}px`,
             top: `${yScale(hoveredPoint.value) - 50}px`,
@@ -114,11 +130,92 @@ export function LineGraph({
           }}
         >
           <div className="font-mono font-semibold">
-            {nrFormatter.format(hoveredPoint.value)}
+            {nrFormatter.format(hoveredPoint.value)}{" "}
+            {hoveredPoint.value === 1 ? "download" : "downloads"}
           </div>
           <div>{format(new Date(hoveredPoint.date), "MMM dd, yyyy")}</div>
         </div>
       )}
+
+      {/* Monthly Downloads Distribution */}
+      <div className="mt-8 flex w-full">
+        {months.map((month, i) => {
+          // 'month' is e.g. 'Jan 2022', we only want the
+          // short month name to be 'Jan '22'.
+          const shortMonth = month.slice(0, 3);
+          const shortYear = month.slice(-2);
+          const isFirst = i === 0;
+          const isLast = i === months.length - 1;
+
+          return (
+            <div
+              key={month}
+              className={`text-gray-normal relative flex flex-col items-center justify-start gap-2 text-center text-xs first:rounded-s-md last:rounded-e-md`}
+              style={{ flex: downloadsPerMonth[month] }}
+              onMouseEnter={() => setHoveredMonth(month)}
+              onMouseLeave={() => setHoveredMonth(null)}
+            >
+              <div
+                className={clsx(
+                  "h-4 w-full",
+                  getColor(
+                    downloadsPerMonth[month],
+                    minDownloads,
+                    maxDownloads,
+                  ),
+                  {
+                    "rounded-s-md": isFirst,
+                    "rounded-e-md": isLast,
+                  },
+                )}
+              />
+              <span className="text-gray-dim hidden lg:inline-block">
+                {shortMonth}
+                <br />
+                &apos;{shortYear}
+              </span>
+
+              {hoveredMonth === month && (
+                <div className="text-gray-normal absolute bottom-full mb-2 w-max rounded-md p-2 text-center text-xs shadow-lg backdrop-blur-md">
+                  <div className="font-mono font-semibold">
+                    {nrFormatter.format(downloadsPerMonth[month])}{" "}
+                    {downloadsPerMonth[month] === 1 ? "download" : "downloads"}
+                  </div>
+                  <div>{month}</div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
+}
+
+const colorClasses = [
+  "bg-gray-12",
+  "bg-iris-1",
+  "bg-iris-2",
+  "bg-iris-3",
+  "bg-iris-4",
+  "bg-iris-5",
+  "bg-iris-6",
+  "bg-iris-7",
+  "bg-iris-8",
+  "bg-iris-9",
+  "bg-iris-10",
+  "bg-iris-11",
+  "bg-iris-12",
+];
+
+// Generate color based on min-max scaling
+function getColor(downloads: number, min: number, max: number) {
+  if (max === min || !downloads) {
+    return "bg-gray-ui";
+  }
+
+  const intensity = Math.min(Math.max((downloads - min) / (max - min), 0), 1);
+  const level = Math.ceil(intensity * 7) + 5;
+
+  return colorClasses[level] || "bg-gray-ui";
 }

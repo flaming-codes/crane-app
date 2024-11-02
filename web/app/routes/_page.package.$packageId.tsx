@@ -39,7 +39,6 @@ import { CranDownloadsResponse } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
 import { LineGraph } from "../modules/charts.line";
-import { StackedBarsChart } from "../modules/charts.stacked-bars";
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -595,17 +594,10 @@ function InsightsPageContentSection(props: {
           {() => (
             <p>
               This package has been downloaded{" "}
-              <strong>
-                {nrFormatter.format(
-                  yearlyDailyDownloads[0].downloads.reduce(
-                    (acc, curr) => acc + curr.downloads,
-                    0,
-                  ),
-                )}
-              </strong>{" "}
-              times in the last 365 days. The following line graph shows the
-              downloads per day. You can hover over the graph to see the exact
-              number of downloads per day.
+              <strong>{nrFormatter.format(totalYear)}</strong> times in the last
+              365 days. The following line graph shows the downloads per day.
+              You can hover over the graph to see the exact number of downloads
+              per day.
             </p>
           )}
         </ClientOnly>
@@ -629,19 +621,6 @@ function InsightsPageContentSection(props: {
             data={yearlyDailyDownloads[0].downloads.map((d) => ({
               date: d.day,
               value: d.downloads,
-            }))}
-          />
-        )}
-      </ClientOnly>
-      <ClientOnly
-        fallback={<div className="h-200 bg-gray-ui animate-pulse rounded-md" />}
-      >
-        {() => (
-          <StackedBarsChart
-            total={totalYear}
-            data={Object.entries(groupedByMonth).map(([month, count]) => ({
-              label: month,
-              value: count,
             }))}
           />
         )}
