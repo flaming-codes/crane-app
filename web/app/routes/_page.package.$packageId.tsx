@@ -2,7 +2,7 @@ import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
 import { PackageService } from "../data/package.service";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunctionArgs, useLocation } from "react-router";
 import { Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
@@ -11,6 +11,7 @@ import { PageContent } from "../modules/page-content";
 import { format, formatRelative, minutesToSeconds, subDays } from "date-fns";
 import { ExternalLink } from "../modules/external-link";
 import {
+  RiArrowRightSLine,
   RiBug2Line,
   RiExternalLinkLine,
   RiFilePdf2Line,
@@ -35,7 +36,10 @@ import { uniq } from "es-toolkit";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
 import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
-import { CranDownloadsResponse } from "../data/package-insight.shape";
+import {
+  CranDownloadsResponse,
+  CranTrendingPackagesRes,
+} from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
 import { LineGraph } from "../modules/charts.line";
@@ -121,6 +125,20 @@ export const meta = mergeMeta(
   },
 );
 
+type LoaderData = {
+  item: Pkg;
+  dailyDownloads: CranDownloadsResponse;
+  yearlyDailyDownloads: CranDownloadsResponse;
+  lastRelease: string;
+  totalMonthDownloads: number;
+  yesterdayDownloads: { day: string; downloads: number };
+  peakYearlyDayDownloads: { day: string; downloads: number };
+  peakYearlyDayDownloadsComment: string;
+  totalYearDownloads: number;
+  totalYearlyDownloadsComment: string;
+  indexOfTrendingItems: number;
+};
+
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { packageId } = params;
 
@@ -134,21 +152,24 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const now = new Date();
 
   let item: Pkg | undefined = undefined;
-  let dailyDownloads: CranDownloadsResponse | undefined = undefined;
-  let yearlyDailyDownloads: CranDownloadsResponse | undefined = undefined;
+  let dailyDownloads: CranDownloadsResponse = [];
+  let yearlyDailyDownloads: CranDownloadsResponse = [];
+  let trendingPackages: CranTrendingPackagesRes = [];
 
   try {
-    const [_item, _dailyDownloads, _yearlyDailyDownloads] = await Promise.all([
-      PackageService.getPackage(packageId),
-      PackageInsightService.getDailyDownloadsForPackage(
-        packageId,
-        "last-month",
-      ),
-      PackageInsightService.getDailyDownloadsForPackage(
-        packageId,
-        `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
-      ),
-    ]);
+    const [_item, _dailyDownloads, _yearlyDailyDownloads, _trendingPackages] =
+      await Promise.all([
+        PackageService.getPackage(packageId),
+        PackageInsightService.getDailyDownloadsForPackage(
+          packageId,
+          "last-month",
+        ),
+        PackageInsightService.getDailyDownloadsForPackage(
+          packageId,
+          `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
+        ),
+        PackageInsightService.getTrendingPackages(),
+      ]);
     if (!_item) {
       throw new Response(null, {
         status: 404,
@@ -158,6 +179,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     item = _item;
     dailyDownloads = _dailyDownloads;
     yearlyDailyDownloads = _yearlyDailyDownloads;
+    trendingPackages = _trendingPackages;
   } catch (error) {
     slog.error(error);
     throw new Response(null, {
@@ -195,6 +217,12 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     0,
   );
 
+  console.log(trendingPackages);
+
+  const indexOfTrendingItems = trendingPackages.findIndex(
+    (item) => item.package === packageId,
+  );
+
   return json(
     {
       item,
@@ -210,6 +238,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       peakYearlyDownloadsComment: peakYearlyDayDownloads
         ? getFunnyPeakDownloadComment(peakYearlyDayDownloads.downloads)
         : undefined,
+      indexOfTrendingItems,
     },
     {
       headers: {
@@ -220,26 +249,19 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 export default function PackagePage() {
-  const data = useLoaderData<typeof loader>();
-  const item = data.item as Pkg;
-  const dailyDownloads = data.dailyDownloads as CranDownloadsResponse;
-  const yearlyDailyDownloads =
-    data.yearlyDailyDownloads as CranDownloadsResponse;
-  const lastRelease = data.lastRelease as string;
-  const totalMonthDownloads = data.totalMonthDownloads as number;
-  const yesterdayDownloads = data.yesterdayDownloads as {
-    day: string;
-    downloads: number;
-  };
-  const peakYearlyDay = data.peakYearlyDayDownloads as {
-    day: string;
-    downloads: number;
-  };
-  const totalYear = data.totalYearDownloads as number;
-  const totalYearlyDownloadsComment =
-    data.totalYearlyDownloadsComment as string;
-  const peakYearlyDayDownloadsComment =
-    data.peakYearlyDownloadsComment as string;
+  const {
+    item,
+    dailyDownloads,
+    yearlyDailyDownloads,
+    lastRelease,
+    totalMonthDownloads,
+    yesterdayDownloads,
+    totalYearDownloads,
+    totalYearlyDownloadsComment,
+    peakYearlyDayDownloadsComment,
+    peakYearlyDayDownloads,
+    indexOfTrendingItems,
+  } = useLoaderData<LoaderData>();
 
   return (
     <>
@@ -259,7 +281,11 @@ export default function PackagePage() {
       </Anchors>
 
       <PageContent>
-        <AboveTheFoldSection item={item} lastRelease={lastRelease} />
+        <AboveTheFoldSection
+          item={item}
+          lastRelease={lastRelease}
+          indexOfTrendingItems={indexOfTrendingItems}
+        />
 
         <Separator />
 
@@ -281,8 +307,8 @@ export default function PackagePage() {
           yearlyDailyDownloads={yearlyDailyDownloads}
           totalMonthDownloads={totalMonthDownloads}
           yesterdayDownloads={yesterdayDownloads}
-          peakYearlyDay={peakYearlyDay}
-          totalYear={totalYear}
+          peakYearlyDay={peakYearlyDayDownloads}
+          totalYear={totalYearDownloads}
           peakYearlyDayDownloadsComment={peakYearlyDayDownloadsComment}
           totalYearlyDownloadsComment={totalYearlyDownloadsComment}
         />
@@ -314,9 +340,21 @@ export default function PackagePage() {
   );
 }
 
-function AboveTheFoldSection(props: { item: Pkg; lastRelease: string }) {
-  const { item, lastRelease } = props;
+function AboveTheFoldSection(props: {
+  item: Pkg;
+  lastRelease: string;
+  indexOfTrendingItems: number;
+}) {
+  const { item, lastRelease, indexOfTrendingItems } = props;
   const rVersion = item.depends?.find((d) => d.name === "R")?.version;
+
+  const getTrendingLabel = () => {
+    if (indexOfTrendingItems < 0) return null;
+    if (indexOfTrendingItems < 10) return "Top 10 trending package";
+    if (indexOfTrendingItems < 20) return "Top 20 trending package";
+    if (indexOfTrendingItems < 50) return "Top 50 Trending package";
+    return "Trending package";
+  };
 
   return (
     <PageContentSection>
@@ -336,6 +374,19 @@ function AboveTheFoldSection(props: { item: Pkg; lastRelease: string }) {
               install.packages(&apos;{item.name}&apos;)
             </CopyPillButton>
           </li>
+          {indexOfTrendingItems > -1 ? (
+            <li>
+              <Link
+                to="/statistic/packages"
+                aria-label="Show trending packages"
+              >
+                <InfoPill className="bg-gradient-to-bl from-gold-6 dark:from-gold-11">
+                  <span>{getTrendingLabel()}</span>
+                  <RiArrowRightSLine size={16} />
+                </InfoPill>
+              </Link>
+            </li>
+          ) : null}
           {item.link
             ? uniq(item.link.links).map((href, i) => (
                 <li key={href + i}>

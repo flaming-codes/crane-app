@@ -18,6 +18,7 @@
     "licenses.build": "license-report --output=json > ./app/licenses.json"
   },
   "dependencies": {
+    "@isaacs/ttlcache": "^1.4.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@remix-pwa/client": "^3.0.7",
     "@remix-pwa/sw": "^3.0.10",
@@ -35,7 +36,6 @@
     "es-toolkit": "^1.26.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "isbot": "^5.1.17",
-    "lru-ttl-cache": "^2.4.8",
     "minisearch": "^7.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
