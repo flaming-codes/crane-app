@@ -217,8 +217,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     0,
   );
 
-  console.log(trendingPackages);
-
   const indexOfTrendingItems = trendingPackages.findIndex(
     (item) => item.package === packageId,
   );

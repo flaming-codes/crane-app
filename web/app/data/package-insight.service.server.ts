@@ -18,7 +18,7 @@ export class PackageInsightService {
   private static readonly CRAN_LOGS_URL = "https://cranlogs.r-pkg.org";
 
   private static cache = new TTLCache<CacheKey, unknown>({
-    ttl: hoursToMilliseconds(24),
+    ttl: hoursToMilliseconds(6),
     max: 1_000,
   });
 
