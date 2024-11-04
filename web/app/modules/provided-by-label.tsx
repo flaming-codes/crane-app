@@ -1,17 +1,45 @@
 import { RiExternalLinkLine } from "@remixicon/react";
 import { ExternalLink } from "./external-link";
+import { ReactNode } from "react";
+import clsx from "clsx";
 
-export function DataProvidedByCRANLabel() {
+export function ProvidedByLabel(props: {
+  headline?: string;
+  source: string;
+  sourceUrl: string;
+  icon?: ReactNode;
+  className?: string;
+}) {
+  const {
+    headline = "Data provided by",
+    source,
+    sourceUrl,
+    icon,
+    className,
+  } = props;
+
   return (
-    <p className="text-gray-dim mt-16 text-right text-xs">
-      Data provided by{" "}
+    <p className={clsx("text-gray-dim mt-16 text-right text-xs", className)}>
+      {headline}{" "}
       <ExternalLink
-        href="https://github.com/r-hub/cranlogs.app"
+        href={sourceUrl}
         className="inline-flex items-center gap-1 underline underline-offset-4"
       >
-        cranlogs
-        <RiExternalLinkLine size={10} className="text-gray-dim" />
+        {source}
+        {icon || <RiExternalLinkLine size={10} className="text-gray-dim" />}
       </ExternalLink>
     </p>
+  );
+}
+
+export function DataProvidedByCRANLabel(props: { className?: string }) {
+  const { className } = props;
+
+  return (
+    <ProvidedByLabel
+      source="CRAN"
+      sourceUrl="https://cran.r-project.org/"
+      className={className}
+    />
   );
 }
