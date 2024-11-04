@@ -66,12 +66,24 @@ export default function StatisticsOverviewPage() {
         >
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             <li>
-              <Link prefetch="intent" to="/statistic/packages">
+              <Link prefetch="intent" to="/statistic/packages/downloads">
                 <InfoCard variant="bronze" icon="internal" className="min-h-60">
                   <div className="space-y-2">
                     <h3>Package downloads</h3>
                     <p className="text-gray-dim">
-                      See what packages are trending on CRAN/E.
+                      See what packages are most downloaded from CRAN.
+                    </p>
+                  </div>
+                </InfoCard>
+              </Link>
+            </li>
+            <li>
+              <Link prefetch="intent" to="/statistic/packages/trends">
+                <InfoCard variant="bronze" icon="internal" className="min-h-60">
+                  <div className="space-y-2">
+                    <h3>Package trends</h3>
+                    <p className="text-gray-dim">
+                      See what packages are trending on CRAN.
                     </p>
                   </div>
                 </InfoCard>
