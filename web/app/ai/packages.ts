@@ -12,8 +12,10 @@ export class AIPackageService {
     max: 100,
   });
 
-  static async generateTopDownloadsSummary(context: string) {
-    const cachedData = this.cache.get("trending-packages-summary");
+  static async generateTopDownloadsSummary(
+    contextComposer: () => Promise<string>,
+  ) {
+    const cachedData = this.cache.get("top-downloads-summary");
     if (cachedData) {
       return cachedData;
     }
@@ -28,6 +30,8 @@ export class AIPackageService {
       "Never use headings or lists.",
     ].join(" ");
 
+    const context = await contextComposer();
+
     const { text } = await generateText({
       model: google("gemini-1.5-flash"),
       prompt: `${prompt}\n---\n${context}`,
@@ -41,7 +45,7 @@ export class AIPackageService {
     return xss(text);
   }
 
-  static async generateTrendsSummary(context: string) {
+  static async generateTrendsSummary(contextComposer: () => Promise<string>) {
     const cachedData = this.cache.get("trending-packages-summary");
     if (cachedData) {
       return cachedData;
@@ -55,6 +59,8 @@ export class AIPackageService {
       "The goal is to get a birds-eye-view of the current trends. Respond with concise, to-the-point, well-written prose.",
       "You MUST respond in HTML-format. Never use headings or lists.",
     ].join(" ");
+
+    const context = await contextComposer();
 
     const { text } = await generateText({
       model: google("gemini-1.5-flash"),

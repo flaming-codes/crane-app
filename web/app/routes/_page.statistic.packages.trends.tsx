@@ -23,26 +23,29 @@ export async function loader() {
     PackageInsightService.getTrendingPackages(),
   ]);
 
-  // We slice to ensure no context window issues with the AI model,
-  // and to keep the response concise.
-  const packageSlugs = trends.slice(0, 20).map((trend) => trend.package);
-  const packageDetails = await Promise.allSettled(
-    packageSlugs.map((slug) => PackageService.getPackage(slug)),
-  ).then((res) => {
-    return res.map((r) => (r.status === "fulfilled" ? r.value : undefined));
-  });
-  const context = packageDetails
-    .filter(Boolean)
-    .map((pkg) =>
-      [
-        `# ${pkg?.name} (${trends.find((t) => t.package === pkg?.name)?.increase} increase)`,
-        pkg?.title,
-        pkg?.description,
-      ].join("\n"),
-    )
-    .join("\n\n");
+  const composeContext = async () => {
+    // We slice to ensure no context window issues with the AI model,
+    // and to keep the response concise.
+    const packageSlugs = trends.slice(0, 20).map((trend) => trend.package);
+    const packageDetails = await Promise.allSettled(
+      packageSlugs.map((slug) => PackageService.getPackage(slug)),
+    ).then((res) => {
+      return res.map((r) => (r.status === "fulfilled" ? r.value : undefined));
+    });
 
-  const summary = await AIPackageService.generateTrendsSummary(context);
+    return packageDetails
+      .filter(Boolean)
+      .map((pkg) =>
+        [
+          `# ${pkg?.name} (${trends.find((t) => t.package === pkg?.name)?.increase} increase)`,
+          pkg?.title,
+          pkg?.description,
+        ].join("\n"),
+      )
+      .join("\n\n");
+  };
+
+  const summary = await AIPackageService.generateTrendsSummary(composeContext);
 
   return json(
     {
@@ -64,8 +67,8 @@ export default function StatisticPackagesPage() {
     <>
       <Header
         gradient="bronze"
-        headline="CRAN Statistics"
-        subline="Top downloaded packages and trending packages"
+        headline="Trends"
+        subline="Top trending packages by downloads from CRAN"
         ornament={<Tag>Statistics</Tag>}
       />
 

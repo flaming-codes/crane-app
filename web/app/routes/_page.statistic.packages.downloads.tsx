@@ -48,24 +48,29 @@ export async function loader(params: LoaderFunctionArgs) {
     ),
   ]);
 
-  const packageSlugs = topDownloads.downloads.map((d) => d.package);
-  const packageDetails = await Promise.allSettled(
-    packageSlugs.map((slug) => PackageService.getPackage(slug)),
-  ).then((res) => {
-    return res.map((r) => (r.status === "fulfilled" ? r.value : undefined));
-  });
-  const context = packageDetails
-    .filter(Boolean)
-    .map((pkg) =>
-      [
-        `# ${pkg?.name} (${topDownloads.downloads.find((d) => d.package === pkg?.name)?.downloads} downloads)`,
-        pkg?.title,
-        pkg?.description,
-      ].join("\n"),
-    )
-    .join("\n\n");
+  const composeContext = async () => {
+    const packageSlugs = topDownloads.downloads.map((d) => d.package);
 
-  const summary = await AIPackageService.generateTopDownloadsSummary(context);
+    const packageDetails = await Promise.allSettled(
+      packageSlugs.map((slug) => PackageService.getPackage(slug)),
+    ).then((res) =>
+      res.map((r) => (r.status === "fulfilled" ? r.value : undefined)),
+    );
+
+    return packageDetails
+      .filter(Boolean)
+      .map((pkg) =>
+        [
+          `# ${pkg?.name} (${topDownloads.downloads.find((d) => d.package === pkg?.name)?.downloads} downloads)`,
+          pkg?.title,
+          pkg?.description,
+        ].join("\n"),
+      )
+      .join("\n\n");
+  };
+
+  const summary =
+    await AIPackageService.generateTopDownloadsSummary(composeContext);
 
   return json(
     {
@@ -89,8 +94,8 @@ export default function StatisticPackagesPage() {
     <>
       <Header
         gradient="bronze"
-        headline="CRAN Statistics"
-        subline="Top downloaded packages and trending packages"
+        headline="Most Downloaded"
+        subline="Top downloaded packages packages from CRAN"
         ornament={<Tag>Statistics</Tag>}
       />
 
