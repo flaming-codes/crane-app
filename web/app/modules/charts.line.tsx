@@ -193,19 +193,19 @@ export function LineGraph({
 }
 
 const colorClasses = [
-  "bg-gray-12",
-  "bg-iris-1",
-  "bg-iris-2",
-  "bg-iris-3",
-  "bg-iris-4",
-  "bg-iris-5",
-  "bg-iris-6",
-  "bg-iris-7",
-  "bg-iris-8",
-  "bg-iris-9",
-  "bg-iris-10",
-  "bg-iris-11",
-  "bg-iris-12",
+  "bg-gray-2 dark:bg-gray-12",
+  "bg-iris-1 dark:bg-iris-12",
+  "bg-iris-2 dark:bg-iris-11",
+  "bg-iris-3 dark:bg-iris-10",
+  "bg-iris-4 dark:bg-iris-9",
+  "bg-iris-5 dark:bg-iris-8",
+  "bg-iris-6 dark:bg-iris-12",
+  "bg-iris-7 dark:bg-iris-11",
+  "bg-iris-8 dark:bg-iris-10",
+  "bg-iris-9 dark:bg-iris-8",
+  "bg-iris-10 dark:bg-iris-6",
+  "bg-iris-11 dark:bg-iris-4",
+  "bg-iris-12 dark:bg-iris-2",
 ];
 
 // Generate color based on min-max scaling

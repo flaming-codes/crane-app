@@ -21,19 +21,19 @@ type HeatmapProps = {
 };
 
 const colorClasses = [
-  "bg-gray-12",
-  "bg-iris-1",
-  "bg-iris-2",
-  "bg-iris-3",
-  "bg-iris-4",
-  "bg-iris-5",
-  "bg-iris-6",
-  "bg-iris-7",
-  "bg-iris-8",
-  "bg-iris-9",
-  "bg-iris-10",
-  "bg-iris-11",
-  "bg-iris-12",
+  "bg-gray-2 dark:bg-gray-12",
+  "bg-iris-1 dark:bg-iris-12",
+  "bg-iris-2 dark:bg-iris-11",
+  "bg-iris-3 dark:bg-iris-10",
+  "bg-iris-4 dark:bg-iris-9",
+  "bg-iris-5 dark:bg-iris-8",
+  "bg-iris-6 dark:bg-iris-12",
+  "bg-iris-7 dark:bg-iris-11",
+  "bg-iris-8 dark:bg-iris-10",
+  "bg-iris-9 dark:bg-iris-8",
+  "bg-iris-10 dark:bg-iris-6",
+  "bg-iris-11 dark:bg-iris-4",
+  "bg-iris-12 dark:bg-iris-2",
 ];
 
 // Generate color based on min-max scaling
@@ -44,8 +44,9 @@ const getColor = (downloads: number, min: number, max: number) => {
 
   const intensity = Math.min(Math.max((downloads - min) / (max - min), 0), 1);
   const level = Math.ceil(intensity * 7) + 5;
+  const color = colorClasses[level];
 
-  return colorClasses[level] || "bg-gray-ui";
+  return color || "bg-gray-ui";
 };
 
 export const Heatmap = memo((props: HeatmapProps) => {
@@ -164,12 +165,12 @@ export const Heatmap = memo((props: HeatmapProps) => {
       <div className="mb-4 flex items-center gap-1">
         <div className="flex items-center gap-1 font-mono">
           <span className="mx-2">{nrFormat.format(minDownloads)}</span>
-          <div className="size-6 rounded-md bg-iris-7" />
-          <div className="size-6 rounded-md bg-iris-8" />
-          <div className="size-6 rounded-md bg-iris-9" />
-          <div className="size-6 rounded-md bg-iris-10" />
-          <div className="size-6 rounded-md bg-iris-11" />
-          <div className="size-6 rounded-md bg-iris-12" />
+          <div className="size-6 rounded-md bg-iris-7 dark:bg-iris-12" />
+          <div className="size-6 rounded-md bg-iris-8 dark:bg-iris-11" />
+          <div className="size-6 rounded-md bg-iris-9 dark:bg-iris-10" />
+          <div className="size-6 rounded-md bg-iris-10 dark:bg-iris-8" />
+          <div className="size-6 rounded-md bg-iris-11 dark:bg-iris-6" />
+          <div className="size-6 rounded-md bg-iris-12 dark:bg-iris-4" />
           <span className="ml-2">{nrFormat.format(maxDownloads)}</span>
         </div>
       </div>
