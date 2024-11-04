@@ -2,6 +2,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import TTLCache from "@isaacs/ttlcache";
 import { generateText } from "ai";
 import { hoursToMilliseconds } from "date-fns";
+import xss from "xss";
 
 type CacheKey = "trending-packages-summary" | "top-downloads-summary";
 
@@ -30,7 +31,6 @@ export class AIPackageService {
     const { text } = await generateText({
       model: google("gemini-1.5-flash"),
       prompt: `${prompt}\n---\n${context}`,
-      // messages: [{ role: "user", content: context }],
       // Just a safeguard to prevent excessive token usage.
       maxTokens: 8192,
       temperature: 0.3,
@@ -38,7 +38,7 @@ export class AIPackageService {
 
     this.cache.set("top-downloads-summary", text);
 
-    return text;
+    return xss(text);
   }
 
   static async generateTrendsSummary(context: string) {
@@ -59,13 +59,12 @@ export class AIPackageService {
     const { text } = await generateText({
       model: google("gemini-1.5-flash"),
       prompt: `${prompt}\n---\n${context}`,
-      // messages: [{ role: "user", content: context }],
       // Just a safeguard to prevent excessive token usage.
       maxTokens: 8192,
     });
 
     this.cache.set("trending-packages-summary", text);
 
-    return text;
+    return xss(text);
   }
 }

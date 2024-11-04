@@ -16,7 +16,7 @@ import {
 import { PackageService } from "../data/package.service";
 import { AIPackageService } from "../ai/packages";
 
-const anchors = composeAnchorItems(["Trending Packages"]);
+const anchors = composeAnchorItems(["Analysis", "Trending Packages"]);
 
 export async function loader() {
   const [trends] = await Promise.all([
