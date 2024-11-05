@@ -29,7 +29,7 @@ export async function loader(params: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(request.url.split("?")[1]);
 
   let topDownloadedRange: TopDownloadedPackagesRange = "last-day";
-  let topDownloadedCount = 20;
+  let topDownloadedCount = 50;
   const topDownloadedRangeRes = topDownloadedPackagesRangeSchema.safeParse(
     searchParams.get("range"),
   );

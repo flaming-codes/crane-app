@@ -38,6 +38,7 @@ import { slog } from "../modules/observability.server";
 import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
 import {
   CranDownloadsResponse,
+  CranTopDownloadedPackagesRes,
   CranTrendingPackagesRes,
 } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
@@ -133,10 +134,11 @@ type LoaderData = {
   totalMonthDownloads: number;
   yesterdayDownloads: { day: string; downloads: number };
   peakYearlyDayDownloads: { day: string; downloads: number };
-  peakYearlyDayDownloadsComment: string;
+  monthlyDayDownloadsComment: string;
   totalYearDownloads: number;
   totalYearlyDownloadsComment: string;
   indexOfTrendingItems: number;
+  indexOfTopDownloads: number;
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -155,21 +157,28 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   let dailyDownloads: CranDownloadsResponse = [];
   let yearlyDailyDownloads: CranDownloadsResponse = [];
   let trendingPackages: CranTrendingPackagesRes = [];
+  let topDownloads: CranTopDownloadedPackagesRes |undefined = undefined;
 
   try {
-    const [_item, _dailyDownloads, _yearlyDailyDownloads, _trendingPackages] =
-      await Promise.all([
-        PackageService.getPackage(packageId),
-        PackageInsightService.getDailyDownloadsForPackage(
-          packageId,
-          "last-month",
-        ),
-        PackageInsightService.getDailyDownloadsForPackage(
-          packageId,
-          `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
-        ),
-        PackageInsightService.getTrendingPackages(),
-      ]);
+    const [
+      _item,
+      _dailyDownloads,
+      _yearlyDailyDownloads,
+      _trendingPackages,
+      _topDownloads,
+    ] = await Promise.all([
+      PackageService.getPackage(packageId),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageId,
+        "last-month",
+      ),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageId,
+        `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
+      ),
+      PackageInsightService.getTrendingPackages(),
+      PackageInsightService.getTopDownloadedPackages("last-day", 50),
+    ]);
     if (!_item) {
       throw new Response(null, {
         status: 404,
@@ -180,6 +189,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     dailyDownloads = _dailyDownloads;
     yearlyDailyDownloads = _yearlyDailyDownloads;
     trendingPackages = _trendingPackages;
+    topDownloads = _topDownloads;
   } catch (error) {
     slog.error(error);
     throw new Response(null, {
@@ -220,6 +230,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const indexOfTrendingItems = trendingPackages.findIndex(
     (item) => item.package === packageId,
   );
+  const indexOfTopDownloads = topDownloads?.downloads.findIndex(
+    (item) => item.package === packageId,
+  );
 
   return json(
     {
@@ -233,10 +246,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       totalYearDownloads,
       totalYearlyDownloadsComment:
         getFunnyPeakDownloadComment(totalYearDownloads),
-      peakYearlyDownloadsComment: peakYearlyDayDownloads
-        ? getFunnyPeakDownloadComment(peakYearlyDayDownloads.downloads)
-        : undefined,
+      monthlyDayDownloadsComment:
+        getFunnyPeakDownloadComment(totalMonthDownloads),
       indexOfTrendingItems,
+      indexOfTopDownloads,
     },
     {
       headers: {
@@ -256,9 +269,10 @@ export default function PackagePage() {
     yesterdayDownloads,
     totalYearDownloads,
     totalYearlyDownloadsComment,
-    peakYearlyDayDownloadsComment,
+    monthlyDayDownloadsComment,
     peakYearlyDayDownloads,
     indexOfTrendingItems,
+    indexOfTopDownloads
   } = useLoaderData<LoaderData>();
 
   return (
@@ -283,6 +297,7 @@ export default function PackagePage() {
           item={item}
           lastRelease={lastRelease}
           indexOfTrendingItems={indexOfTrendingItems}
+          indexOfTopDownloads={indexOfTopDownloads}
         />
 
         <Separator />
@@ -307,7 +322,7 @@ export default function PackagePage() {
           yesterdayDownloads={yesterdayDownloads}
           peakYearlyDay={peakYearlyDayDownloads}
           totalYear={totalYearDownloads}
-          peakYearlyDayDownloadsComment={peakYearlyDayDownloadsComment}
+          monthlyDayDownloadsComment={monthlyDayDownloadsComment}
           totalYearlyDownloadsComment={totalYearlyDownloadsComment}
         />
 
@@ -342,8 +357,9 @@ function AboveTheFoldSection(props: {
   item: Pkg;
   lastRelease: string;
   indexOfTrendingItems: number;
+  indexOfTopDownloads: number;
 }) {
-  const { item, lastRelease, indexOfTrendingItems } = props;
+  const { item, lastRelease, indexOfTrendingItems, indexOfTopDownloads } = props;
   const rVersion = item.depends?.find((d) => d.name === "R")?.version;
 
   const getTrendingLabel = () => {
@@ -353,6 +369,14 @@ function AboveTheFoldSection(props: {
     if (indexOfTrendingItems < 50) return "Top 50 Trending package";
     return "Trending package";
   };
+
+  const getTopDownloadsLabel = () => {
+    if (indexOfTopDownloads < 0) return null;
+    if (indexOfTopDownloads < 10) return "Top 10 downloaded package";
+    if (indexOfTopDownloads < 20) return "Top 20 downloaded package";
+    if (indexOfTopDownloads < 50) return "Top 50 downloaded package";
+    return "Top downloaded package";
+  }
 
   return (
     <PageContentSection>
@@ -375,11 +399,24 @@ function AboveTheFoldSection(props: {
           {indexOfTrendingItems > -1 ? (
             <li>
               <Link
-                to="/statistic/packages"
+                to="/statistic/packages/trends"
                 aria-label="Show trending packages"
               >
                 <InfoPill className="bg-gradient-to-bl from-gold-6 dark:from-gold-11">
                   <span>{getTrendingLabel()}</span>
+                  <RiArrowRightSLine size={16} />
+                </InfoPill>
+              </Link>
+            </li>
+          ) : null}
+          {indexOfTopDownloads > -1 ? (
+            <li>
+              <Link
+                to="/statistic/packages/downloads"
+                aria-label="Show top downloaded packages"
+              >
+                <InfoPill className="bg-gradient-to-bl from-gold-6 dark:from-gold-11">
+                  <span>{getTopDownloadsLabel()}</span>
                   <RiArrowRightSLine size={16} />
                 </InfoPill>
               </Link>
@@ -613,7 +650,7 @@ function InsightsPageContentSection(props: {
   yesterdayDownloads: { day: string; downloads: number } | undefined;
   peakYearlyDay: { day: string; downloads: number } | undefined;
   totalYear: number;
-  peakYearlyDayDownloadsComment: string;
+  monthlyDayDownloadsComment: string;
   totalYearlyDownloadsComment: string;
 }) {
   const {
@@ -623,7 +660,7 @@ function InsightsPageContentSection(props: {
     yesterdayDownloads,
     peakYearlyDay,
     totalYear,
-    peakYearlyDayDownloadsComment,
+    monthlyDayDownloadsComment,
     totalYearlyDownloadsComment,
   } = props;
 
@@ -642,9 +679,9 @@ function InsightsPageContentSection(props: {
             <p>
               This package has been downloaded{" "}
               <strong>{nrFormatter.format(totalMonthDownloads)}</strong>{" "}
-              {totalMonthDownloads === 1 ? "time" : "times"}
-              in the last 30 days. The following heatmap shows the distribution
-              of downloads per day.
+              {totalMonthDownloads === 1 ? "time" : "times"} in the last 30
+              days. {monthlyDayDownloadsComment} The following heatmap shows the
+              distribution of downloads per day.
               {yesterdayDownloads ? (
                 <>
                   {" "}
@@ -701,7 +738,7 @@ function InsightsPageContentSection(props: {
                   </strong>{" "}
                   with{" "}
                   <strong>{nrFormatter.format(peakYearlyDay.downloads)}</strong>{" "}
-                  downloads. {peakYearlyDayDownloadsComment}
+                  downloads.
                 </>
               ) : null}
             </p>

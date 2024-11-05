@@ -450,6 +450,11 @@ const assets = [
   "/robots.txt",
   "/fonts/Inter-Regular.ttf",
   "/images/logo.jpeg",
+  "/news/crane-v2-0-light.webp",
+  "/news/crane-v2-0.webp",
+  "/news/crane-v2-1.webp",
+  "/news/crane-v2-2.webp",
+  "/news/crane-v2-3.webp",
   "/icons/apple-icon-180.png",
   "/icons/apple-splash-1125-2436.jpg",
   "/icons/apple-splash-1136-640.jpg",
@@ -487,11 +492,6 @@ const assets = [
   "/icons/manifest-icon-192.maskable.png",
   "/icons/manifest-icon-512.maskable.png",
   "/icons/safari-pinned-tab.svg",
-  "/news/crane-v2-0-light.webp",
-  "/news/crane-v2-0.webp",
-  "/news/crane-v2-1.webp",
-  "/news/crane-v2-2.webp",
-  "/news/crane-v2-3.webp",
   "/images/screenshots/screenshot-portrait-0.jpg",
   "/images/screenshots/screenshot-portrait-1.jpg",
   "/images/screenshots/screenshot-portrait-2.jpg",
@@ -499,8 +499,6 @@ const assets = [
   "/images/screenshots/screenshot-wide-1.jpg",
   "/images/screenshots/screenshot-wide-2.jpg",
   "/images/screenshots/screenshot-wide-3.jpg",
-  "/images/we/lukas.webp",
-  "/images/we/tom.webp",
   "/images/og/cover-1.jpg",
   "/images/og/cover-2.jpg",
   "/images/og/cover-3.jpg",
@@ -509,7 +507,9 @@ const assets = [
   "/images/og/cover-6.jpg",
   "/images/og/cover-7.jpg",
   "/images/og/cover-8.jpg",
-  "/images/og/cover-9.jpg"
+  "/images/og/cover-9.jpg",
+  "/images/we/lukas.webp",
+  "/images/we/tom.webp"
 ];
 const routes = {
   "root": {
