@@ -283,7 +283,8 @@ export default function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="msapplication-TileColor" content="#111111" />
-        <meta name="theme-color" content="#000" />
+        <meta name="theme-color" content="#fff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#000" media="(prefers-color-scheme: dark)" />
         <meta name="mobile-web-app-capable" content="yes" />
         <Meta />
         <Links />
