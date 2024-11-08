@@ -29,7 +29,7 @@ export function Header(props: Props) {
 
   return (
     <div className={twBase({ gradient, className })}>
-      <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between">
+      <div className="flex flex-col items-center justify-center gap-4 md:gap-6 md:flex-row md:justify-between">
         <div className="flex flex-col items-center justify-center gap-1 text-center md:items-start md:text-start">
           <h1 className="text-4xl font-light">{headline}</h1>
           {subline ? <p className="text-gray-dim text-xl">{subline}</p> : null}
