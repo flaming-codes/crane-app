@@ -5,7 +5,7 @@ import { randomInt } from "es-toolkit";
 import clsx from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
-import { secondsToMilliseconds } from "date-fns";
+import { ClientOnly } from "remix-utils/client-only";
 
 export const handle = {
   hasFooter: false,
@@ -18,7 +18,7 @@ export const loader = async () => {
     { meshIndex, version },
     {
       headers: {
-        "Cache-Control": `public, max-age=0, s-maxage=${secondsToMilliseconds(10)}`,
+        "Cache-Control": `public, s-maxage=10`,
       },
     },
   );
@@ -51,13 +51,17 @@ export default function Index() {
             </p>
             <p className="animate-fade animate-delay-150">
               Or press{" "}
-              <kbd className="font-mono font-bold">
-                {navigator?.platform?.toLowerCase().includes("mac")
-                  ? "⌘"
-                  : "Ctrl"}
-              </kbd>{" "}
-              + <kbd className="font-mono font-bold">K</kbd> to open search from
-              anywhere
+              <ClientOnly fallback={<kbd>⌘ + K</kbd>}>
+                {() => (
+                  <kbd className="font-mono font-bold tracking-[-0.1rem] px-2">
+                    {navigator?.platform?.toLowerCase().includes("mac")
+                      ? "⌘"
+                      : "Ctrl"}
+                    {" + K"}
+                  </kbd>
+                )}
+              </ClientOnly>{" "}
+              to open search from anywhere
             </p>
           </div>
         </div>
