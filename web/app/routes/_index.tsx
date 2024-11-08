@@ -1,5 +1,5 @@
 import { json, useLoaderData } from "@remix-run/react";
-import { SineLogo } from "../modules/svg";
+import { SyneLogo } from "../modules/svg";
 import NavigationPage from "../modules/nav";
 import { randomInt } from "es-toolkit";
 import clsx from "clsx";
@@ -37,7 +37,7 @@ export default function Index() {
       >
         <div className="flex h-[90svh] flex-col justify-center gap-6">
           <div>
-            <SineLogo className="text-gray-normal w-[max(200px,65%)]" />
+            <SyneLogo className="text-gray-normal w-[max(200px,65%)]" />
             <h1 className="sr-only">
               CRAN/E - The R Packages Search Engine, Enhanced
             </h1>
