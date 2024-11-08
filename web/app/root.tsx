@@ -15,10 +15,11 @@ import { ENV } from "./data/env";
 import { useEffect } from "react";
 import { unregisterServiceWorker } from "@remix-pwa/sw";
 import { rootLinks, rootMeta } from "./route.meta";
+import { clog } from "./modules/observability";
 
-export const meta = rootMeta
+export const meta = rootMeta;
 
-export const links = rootLinks
+export const links = rootLinks;
 
 export const loader = async () => {
   return json({
@@ -40,7 +41,9 @@ export default function App() {
   });
 
   useEffect(() => {
-    unregisterServiceWorker();
+    unregisterServiceWorker().catch(error => {
+      clog.error("Failed to unregister service worker", error);
+    });
   }, []);
 
   return (
