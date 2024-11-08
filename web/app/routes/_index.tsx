@@ -5,7 +5,6 @@ import { randomInt } from "es-toolkit";
 import clsx from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
-import { usePrevious } from "@uidotdev/usehooks";
 import { secondsToMilliseconds } from "date-fns";
 
 export const handle = {
@@ -28,14 +27,9 @@ export const loader = async () => {
 export default function Index() {
   const { meshIndex, version } = useLoaderData<typeof loader>();
 
-  // TODO: Remove once "useRevalidator" has been removed as well.
-  // This is only for a few days for legacy support of the old SW,
-  // as Remix PWA can't init itself on initial page load.
-  const prevMeshIndex = usePrevious(meshIndex);
-
   return (
     <>
-      <GradientBackground meshIndex={prevMeshIndex} />
+      <GradientBackground meshIndex={meshIndex} />
 
       <NavigationPage
         hasSubtleBackground

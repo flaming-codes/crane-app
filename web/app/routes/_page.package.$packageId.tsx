@@ -157,7 +157,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   let dailyDownloads: CranDownloadsResponse = [];
   let yearlyDailyDownloads: CranDownloadsResponse = [];
   let trendingPackages: CranTrendingPackagesRes = [];
-  let topDownloads: CranTopDownloadedPackagesRes |undefined = undefined;
+  let topDownloads: CranTopDownloadedPackagesRes | undefined = undefined;
 
   try {
     const [
@@ -272,7 +272,7 @@ export default function PackagePage() {
     monthlyDayDownloadsComment,
     peakYearlyDayDownloads,
     indexOfTrendingItems,
-    indexOfTopDownloads
+    indexOfTopDownloads,
   } = useLoaderData<LoaderData>();
 
   return (
@@ -359,7 +359,8 @@ function AboveTheFoldSection(props: {
   indexOfTrendingItems: number;
   indexOfTopDownloads: number;
 }) {
-  const { item, lastRelease, indexOfTrendingItems, indexOfTopDownloads } = props;
+  const { item, lastRelease, indexOfTrendingItems, indexOfTopDownloads } =
+    props;
   const rVersion = item.depends?.find((d) => d.name === "R")?.version;
 
   const getTrendingLabel = () => {
@@ -376,7 +377,7 @@ function AboveTheFoldSection(props: {
     if (indexOfTopDownloads < 20) return "Top 20 downloaded package";
     if (indexOfTopDownloads < 50) return "Top 50 downloaded package";
     return "Top downloaded package";
-  }
+  };
 
   return (
     <PageContentSection>
