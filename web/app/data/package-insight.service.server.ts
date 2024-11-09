@@ -12,7 +12,8 @@ import TTLCache from "@isaacs/ttlcache";
 type CacheKey =
   | "/trending"
   | `/downloads/daily/${TopDownloadedPackagesRange | (string & {})}/${string}`
-  | `/top/${TopDownloadedPackagesRange}/${string}`;
+  | `/top/${TopDownloadedPackagesRange}/${string}`
+  | "r-releases-html";
 
 export class PackageInsightService {
   private static readonly CRAN_LOGS_URL = "https://cranlogs.r-pkg.org";
@@ -78,6 +79,32 @@ export class PackageInsightService {
     );
 
     this.cache.set(`/downloads/daily/${range}/${name}`, data);
+    return data;
+  }
+
+  static async getReleasesHTML() {
+    const cachedData = this.cache.get<string>("r-releases-html");
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const sources = [
+      "https://cran.r-project.org/bin/windows/base/",
+      "https://cran.r-project.org/bin/macosx/",
+    ];
+
+    const [windows, macos] = await Promise.allSettled(
+      sources.map((source) =>
+        fetch(source).then((response) => response.text()),
+      ),
+    );
+
+    const data = [
+      windows.status === "fulfilled" ? windows.value : "",
+      macos.status === "fulfilled" ? macos.value : "",
+    ].join("");
+
+    this.cache.set("r-releases-html", data);
     return data;
   }
 

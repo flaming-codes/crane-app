@@ -53,7 +53,7 @@ export default function Index() {
               Or press{" "}
               <ClientOnly fallback={<kbd>⌘ + K</kbd>}>
                 {() => (
-                  <kbd className="font-mono font-bold tracking-[-0.1rem] px-2">
+                  <kbd className="px-2 font-mono font-bold tracking-[-0.1rem]">
                     {navigator?.platform?.toLowerCase().includes("mac")
                       ? "⌘"
                       : "Ctrl"}
