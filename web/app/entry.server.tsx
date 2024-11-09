@@ -12,6 +12,7 @@ import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { server } from "./mocks/node.server";
 import { slog } from "./modules/observability.server";
+import ip3country from "ip3country";
 
 const ABORT_DELAY = 5_000;
 
@@ -22,6 +23,8 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
+ip3country.init();
+
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -30,17 +33,17 @@ export default function handleRequest(
 ) {
   return isbot(request.headers.get("user-agent") || "")
     ? handleBotRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext,
-      )
+      request,
+      responseStatusCode,
+      responseHeaders,
+      remixContext,
+    )
     : handleBrowserRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext,
-      );
+      request,
+      responseStatusCode,
+      responseHeaders,
+      remixContext,
+    );
 }
 
 function handleBotRequest(

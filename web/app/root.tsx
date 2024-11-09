@@ -17,6 +17,9 @@ import { useEffect } from "react";
 import { unregisterServiceWorker } from "@remix-pwa/sw";
 import { clog } from "./modules/observability";
 import { BASE_URL } from "./modules/app";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { getClientIPAddress } from "remix-utils/get-client-ip-address";
+import ip3country from "ip3country";
 
 export const meta: MetaFunction = ({ location }) => {
   // Pseudo-randomly select a cover image based on the length
@@ -38,7 +41,15 @@ export const meta: MetaFunction = ({ location }) => {
   ];
 };
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const ipAddress = getClientIPAddress(request);
+  if (ipAddress) {
+    const country = ip3country.lookupStr(ipAddress)?.toLowerCase();
+    // Fail if country is Singapore
+    if (country === "sg") {
+      throw new Response("Access denied", { status: 403 });
+    }
+  }
   return json({
     isProduction: ENV.NODE_ENV === "production",
     domain: ENV.VITE_PLAUSIBLE_SITE_ID,
