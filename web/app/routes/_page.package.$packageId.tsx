@@ -425,10 +425,10 @@ function AboveTheFoldSection(props: {
           ) : null}
           {item.link
             ? uniq(item.link.links).map((href, i) => (
-              <li key={href + i}>
-                <ItemExternalGeneralLinkPill href={href} />
-              </li>
-            ))
+                <li key={href + i}>
+                  <ItemExternalGeneralLinkPill href={href} />
+                </li>
+              ))
             : null}
           {item.bugreports ? (
             <li>
@@ -470,15 +470,15 @@ function AboveTheFoldSection(props: {
           </li>
           {item.license && item.license.length > 0
             ? item.license.map((license) => (
-              <li key={license.link}>
-                <ExternalLink href={license.link}>
-                  <InfoPill label="License">
-                    {license.name}
-                    <RiExternalLinkLine size={12} className="text-gray-dim" />
-                  </InfoPill>
-                </ExternalLink>
-              </li>
-            ))
+                <li key={license.link}>
+                  <ExternalLink href={license.link}>
+                    <InfoPill label="License">
+                      {license.name}
+                      <RiExternalLinkLine size={12} className="text-gray-dim" />
+                    </InfoPill>
+                  </ExternalLink>
+                </li>
+              ))
             : null}
           <li>
             <InfoPill label="Needs compilation?">
@@ -496,16 +496,16 @@ function AboveTheFoldSection(props: {
             </li>
           ) : null}
           {item.citation &&
-            item.citation.link &&
-            Array.isArray(item.citation.link) &&
-            item.citation.link.length > 0
+          item.citation.link &&
+          Array.isArray(item.citation.link) &&
+          item.citation.link.length > 0
             ? item.citation.link.map((href) => (
-              <li key={href}>
-                <ExternalLinkPill href={href}>
-                  {item.citation?.label || href}
-                </ExternalLinkPill>
-              </li>
-            ))
+                <li key={href}>
+                  <ExternalLinkPill href={href}>
+                    {item.citation?.label || href}
+                  </ExternalLinkPill>
+                </li>
+              ))
             : null}
           <li>
             <InfoPill
@@ -630,14 +630,14 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
         ) : null}
         {hasOtherAuthors
           ? otherAuthors?.map((author) => (
-            <li key={author.name}>
-              <ContactPill
-                name={author.name}
-                roles={author.roles || []}
-                link={author.link}
-              />
-            </li>
-          ))
+              <li key={author.name}>
+                <ContactPill
+                  name={author.name}
+                  roles={author.roles || []}
+                  link={author.link}
+                />
+              </li>
+            ))
           : null}
       </ul>
     </PageContentSection>

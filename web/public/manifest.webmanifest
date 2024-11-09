@@ -2,25 +2,15 @@
   "theme_color": "#000000",
   "background_color": "#000000",
   "display": "standalone",
-  "display_override": [
-    "standalone"
-  ],
+  "display_override": ["standalone"],
   "scope": "/",
   "start_url": "/",
   "name": "CRAN/E",
   "short_name": "CRAN/E",
   "description": "A modern variant of the CRAN R-packages hosting solution",
   "orientation": "natural",
-  "categories": [
-    "utilities",
-    "education",
-    "productivity"
-  ],
-  "features": [
-    "r packages",
-    "r package authors",
-    "search"
-  ],
+  "categories": ["utilities", "education", "productivity"],
+  "features": ["r packages", "r package authors", "search"],
   "lang": "en",
   "dir": "auto",
   "related_applications": [],

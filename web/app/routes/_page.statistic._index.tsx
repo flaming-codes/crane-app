@@ -89,6 +89,18 @@ export default function StatisticsOverviewPage() {
                 </InfoCard>
               </Link>
             </li>
+            <li>
+              <Link prefetch="intent" to="/statistic/r-releases">
+                <InfoCard variant="bronze" icon="internal" className="min-h-60">
+                  <div className="space-y-2">
+                    <h3>R Releases</h3>
+                    <p className="text-gray-dim">
+                      Detailed description of R versions on CRAN/E.
+                    </p>
+                  </div>
+                </InfoCard>
+              </Link>
+            </li>
           </ul>
         </PageContentSection>
       </PageContent>
