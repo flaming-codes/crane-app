@@ -18,7 +18,8 @@ import { unregisterServiceWorker } from "@remix-pwa/sw";
 import { clog } from "./modules/observability";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet/react";
-import { createSecureHeaders } from "@mcansh/http-helmet";
+
+const isServer = typeof window === "undefined";
 
 export const meta: MetaFunction = ({ location }) => {
   // Pseudo-randomly select a cover image based on the length
@@ -42,24 +43,13 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async () => {
   const nonce = createNonce();
-  const headers = createSecureHeaders({
-    "Content-Security-Policy": {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", `'nonce-${nonce}'`],
-    },
-  });
 
-  return json(
-    {
-      isProduction: ENV.NODE_ENV === "production",
-      domain: ENV.VITE_PLAUSIBLE_SITE_ID,
-      version: ENV.npm_package_version,
-      nonce
-    },
-    {
-      headers,
-    },
-  );
+  return json({
+    isProduction: ENV.NODE_ENV === "production",
+    domain: ENV.VITE_PLAUSIBLE_SITE_ID,
+    version: ENV.npm_package_version,
+    nonce,
+  });
 };
 
 export default function App() {
@@ -117,7 +107,7 @@ export default function App() {
       </head>
       <body>
         <script
-          nonce={nonce}
+          nonce={isServer ? nonce : ""}
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify({
               isPlausibleEnabled,
@@ -128,11 +118,11 @@ export default function App() {
           <>
             <script
               defer
-              nonce={nonce}
+              nonce={isServer ? nonce : ""}
               data-domain="cran-e.com"
               src="https://plausible.io/js/script.outbound-links.js"
             />
-            <script nonce={nonce}>
+            <script nonce={isServer ? nonce : ""}>
               {`
                 window.plausible = window.plausible || function()
                 {(window.plausible.q = window.plausible.q || []).push(arguments)}
@@ -157,8 +147,8 @@ export default function App() {
             }
           />
         ) : null}
-        <ScrollRestoration nonce={nonce} />
-        <Scripts />
+        <ScrollRestoration nonce={isServer ? nonce : ""} />
+        <Scripts nonce={isServer ? nonce : ""} />
       </body>
     </html>
   );

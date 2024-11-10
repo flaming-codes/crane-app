@@ -12,6 +12,7 @@ import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { server } from "./mocks/node.server";
 import { slog } from "./modules/observability.server";
+import { createSecureHeaders } from "@mcansh/http-helmet";
 
 const ABORT_DELAY = 5_000;
 
@@ -40,19 +41,31 @@ export default function handleRequest(
     "max-age=31536000; includeSubDomains; preload",
   );
 
+  const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
+  createSecureHeaders({
+    "Content-Security-Policy": {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", `'nonce-${nonce}'`, "https: plausible.io"],
+      connectSrc: ["'self'", "https: plausible.io"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+    },
+  }).forEach((value, key) => {
+    responseHeaders.set(key, value);
+  });
+
   return isbot(request.headers.get("user-agent") || "")
     ? handleBotRequest(
-      request,
-      responseStatusCode,
-      responseHeaders,
-      remixContext,
-    )
+        request,
+        responseStatusCode,
+        responseHeaders,
+        remixContext,
+      )
     : handleBrowserRequest(
-      request,
-      responseStatusCode,
-      responseHeaders,
-      remixContext,
-    );
+        request,
+        responseStatusCode,
+        responseHeaders,
+        remixContext,
+      );
 }
 
 function handleBotRequest(
