@@ -99,6 +99,7 @@ export default function App() {
           href="/icons/favicon-96x96.png"
           sizes="96x96"
         />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
         <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
         <link rel="shortcut icon" href="/icons/favicon.ico" />
         <link
