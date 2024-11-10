@@ -34,7 +34,7 @@ export default function handleRequest(
   responseHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
   responseHeaders.set(
     "Feature-Policy",
-    "geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'",
+    "geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; fullscreen 'self'; payment 'none'",
   );
   responseHeaders.set(
     "Strict-Transport-Security",
@@ -48,6 +48,7 @@ export default function handleRequest(
       scriptSrc: ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"],
       connectSrc: ["'self'", "https://plausible.io"],
       styleSrc: ["'self'", "'unsafe-inline'"],
+      baseUri: ["'self'"],
     },
   }).forEach((value, key) => {
     responseHeaders.set(key, value);
