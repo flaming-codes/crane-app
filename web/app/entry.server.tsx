@@ -106,6 +106,10 @@ function handleBrowserRequest(
     "Feature-Policy",
     "geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'",
   );
+  responseHeaders.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains; preload",
+  );
 
   return new Promise((resolve, reject) => {
     let shellRendered = false;
