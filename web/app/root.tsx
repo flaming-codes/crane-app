@@ -49,8 +49,6 @@ export const loader = async () => {
     },
   });
 
-
-
   return json(
     {
       isProduction: ENV.NODE_ENV === "production",
