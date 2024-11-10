@@ -20,6 +20,7 @@
   "dependencies": {
     "@ai-sdk/google": "^0.0.55",
     "@isaacs/ttlcache": "^1.4.1",
+    "@mcansh/http-helmet": "^0.11.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@remix-pwa/client": "^3.0.7",
     "@remix-pwa/sw": "^3.0.10",
@@ -37,7 +38,6 @@
     "date-fns": "^4.1.0",
     "es-toolkit": "^1.26.1",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "ip3country": "^5.0.0",
     "is-ip": "^5.0.1",
     "isbot": "^5.1.17",
     "minisearch": "^7.1.0",

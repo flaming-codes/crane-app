@@ -116,7 +116,7 @@ export function NavSearch(props: Props) {
         <input
           ref={inputRef}
           type="search"
-          autoCapitalize="off"
+          autoCapitalize="none"
           autoCorrect="off"
           autoComplete="off"
           spellCheck="false"

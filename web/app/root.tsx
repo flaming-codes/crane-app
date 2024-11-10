@@ -17,10 +17,8 @@ import { useEffect } from "react";
 import { unregisterServiceWorker } from "@remix-pwa/sw";
 import { clog } from "./modules/observability";
 import { BASE_URL } from "./modules/app";
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { getClientIPAddress } from "remix-utils/get-client-ip-address";
-import ip3country from "ip3country";
-import { slog } from "./modules/observability.server";
+import { createNonce } from "@mcansh/http-helmet/react";
+import { createSecureHeaders } from "@mcansh/http-helmet";
 
 export const meta: MetaFunction = ({ location }) => {
   // Pseudo-randomly select a cover image based on the length
@@ -42,25 +40,37 @@ export const meta: MetaFunction = ({ location }) => {
   ];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const ipAddress = getClientIPAddress(request);
-  if (ipAddress) {
-    const country = ip3country.lookupStr(ipAddress)?.toLowerCase();
-    slog.info("Country", { country, ipAddress });
-    // Fail if country is Singapore
-    if (country === "sg") {
-      throw new Response("Access denied", { status: 403 });
-    }
-  }
-  return json({
-    isProduction: ENV.NODE_ENV === "production",
-    domain: ENV.VITE_PLAUSIBLE_SITE_ID,
-    version: ENV.npm_package_version,
+export const loader = async () => {
+  const nonce = createNonce();
+  const headers = createSecureHeaders({
+    "Content-Security-Policy": {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", `'nonce-${nonce}'`],
+    },
   });
+
+  headers.set("X-Frame-Options", "DENY");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("Feature-Policy", "geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'");
+
+
+  return json(
+    {
+      isProduction: ENV.NODE_ENV === "production",
+      domain: ENV.VITE_PLAUSIBLE_SITE_ID,
+      version: ENV.npm_package_version,
+      nonce
+    },
+    {
+      headers,
+    },
+  );
 };
 
 export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
+  const nonce = data?.nonce;
 
   const isPlausibleEnabled = data?.isProduction && data?.domain;
 
@@ -99,7 +109,6 @@ export default function App() {
           href="/icons/favicon-96x96.png"
           sizes="96x96"
         />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
         <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
         <link rel="shortcut icon" href="/icons/favicon.ico" />
         <link
@@ -114,6 +123,7 @@ export default function App() {
       </head>
       <body>
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify({
               isPlausibleEnabled,
@@ -124,10 +134,11 @@ export default function App() {
           <>
             <script
               defer
+              nonce={nonce}
               data-domain="cran-e.com"
               src="https://plausible.io/js/script.outbound-links.js"
             />
-            <script>
+            <script nonce={nonce}>
               {`
                 window.plausible = window.plausible || function()
                 {(window.plausible.q = window.plausible.q || []).push(arguments)}
@@ -152,7 +163,7 @@ export default function App() {
             }
           />
         ) : null}
-        <ScrollRestoration />
+        <ScrollRestoration nonce={nonce} />
         <Scripts />
       </body>
     </html>
