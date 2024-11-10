@@ -16,7 +16,7 @@ import { ENV } from "./data/env";
 import { useEffect } from "react";
 import { unregisterServiceWorker } from "@remix-pwa/sw";
 import { clog } from "./modules/observability";
-import { BASE_URL, IS_SERVER } from "./modules/app";
+import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet/react";
 import { createSecureHeaders } from "@mcansh/http-helmet";
 
@@ -42,12 +42,18 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async () => {
   const nonce = createNonce();
-  const cspHeaders = createSecureHeaders({
+  const headers = createSecureHeaders({
     "Content-Security-Policy": {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", `'nonce-${nonce}'`],
     },
   });
+
+  headers.set("X-Frame-Options", "DENY");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("Feature-Policy", "geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'");
+
 
   return json(
     {
@@ -57,7 +63,7 @@ export const loader = async () => {
       nonce
     },
     {
-      headers: cspHeaders,
+      headers,
     },
   );
 };
@@ -103,7 +109,6 @@ export default function App() {
           href="/icons/favicon-96x96.png"
           sizes="96x96"
         />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
         <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
         <link rel="shortcut icon" href="/icons/favicon.ico" />
         <link
@@ -118,7 +123,7 @@ export default function App() {
       </head>
       <body>
         <script
-          nonce={IS_SERVER ? nonce : ""}
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify({
               isPlausibleEnabled,
@@ -129,11 +134,11 @@ export default function App() {
           <>
             <script
               defer
-              nonce={IS_SERVER ? nonce : ""}
+              nonce={nonce}
               data-domain="cran-e.com"
               src="https://plausible.io/js/script.outbound-links.js"
             />
-            <script nonce={IS_SERVER ? nonce : ""}>
+            <script nonce={nonce}>
               {`
                 window.plausible = window.plausible || function()
                 {(window.plausible.q = window.plausible.q || []).push(arguments)}
@@ -158,7 +163,7 @@ export default function App() {
             }
           />
         ) : null}
-        <ScrollRestoration nonce={IS_SERVER ? nonce : ""} />
+        <ScrollRestoration nonce={nonce} />
         <Scripts />
       </body>
     </html>

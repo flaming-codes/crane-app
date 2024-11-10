@@ -2,8 +2,6 @@ import { useEffect } from "react";
 
 export const BASE_URL = "https://cran-e.com";
 
-export const IS_SERVER = typeof window === "undefined";
-
 export function useKeyboardEvent(
   key: string,
   callback: (event: KeyboardEvent) => void,
