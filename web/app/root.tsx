@@ -16,11 +16,9 @@ import { ENV } from "./data/env";
 import { useEffect } from "react";
 import { unregisterServiceWorker } from "@remix-pwa/sw";
 import { clog } from "./modules/observability";
-import { BASE_URL } from "./modules/app";
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { getClientIPAddress } from "remix-utils/get-client-ip-address";
-import ip3country from "ip3country";
-import { slog } from "./modules/observability.server";
+import { BASE_URL, IS_SERVER } from "./modules/app";
+import { createNonce } from "@mcansh/http-helmet/react";
+import { createSecureHeaders } from "@mcansh/http-helmet";
 
 export const meta: MetaFunction = ({ location }) => {
   // Pseudo-randomly select a cover image based on the length
@@ -42,25 +40,31 @@ export const meta: MetaFunction = ({ location }) => {
   ];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const ipAddress = getClientIPAddress(request);
-  if (ipAddress) {
-    const country = ip3country.lookupStr(ipAddress)?.toLowerCase();
-    slog.info("Country", { country, ipAddress });
-    // Fail if country is Singapore
-    if (country === "sg") {
-      throw new Response("Access denied", { status: 403 });
-    }
-  }
-  return json({
-    isProduction: ENV.NODE_ENV === "production",
-    domain: ENV.VITE_PLAUSIBLE_SITE_ID,
-    version: ENV.npm_package_version,
+export const loader = async () => {
+  const nonce = createNonce();
+  const cspHeaders = createSecureHeaders({
+    "Content-Security-Policy": {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", `'nonce-${nonce}'`],
+    },
   });
+
+  return json(
+    {
+      isProduction: ENV.NODE_ENV === "production",
+      domain: ENV.VITE_PLAUSIBLE_SITE_ID,
+      version: ENV.npm_package_version,
+      nonce
+    },
+    {
+      headers: cspHeaders,
+    },
+  );
 };
 
 export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
+  const nonce = data?.nonce;
 
   const isPlausibleEnabled = data?.isProduction && data?.domain;
 
@@ -114,6 +118,7 @@ export default function App() {
       </head>
       <body>
         <script
+          nonce={IS_SERVER ? nonce : ""}
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify({
               isPlausibleEnabled,
@@ -124,10 +129,11 @@ export default function App() {
           <>
             <script
               defer
+              nonce={IS_SERVER ? nonce : ""}
               data-domain="cran-e.com"
               src="https://plausible.io/js/script.outbound-links.js"
             />
-            <script>
+            <script nonce={IS_SERVER ? nonce : ""}>
               {`
                 window.plausible = window.plausible || function()
                 {(window.plausible.q = window.plausible.q || []).push(arguments)}
@@ -152,7 +158,7 @@ export default function App() {
             }
           />
         ) : null}
-        <ScrollRestoration />
+        <ScrollRestoration nonce={IS_SERVER ? nonce : ""} />
         <Scripts />
       </body>
     </html>
