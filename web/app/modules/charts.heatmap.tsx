@@ -36,17 +36,22 @@ const colorClasses = [
   "bg-iris-12 dark:bg-iris-2",
 ];
 
-// Generate color based on min-max scaling
-const getColor = (downloads: number, min: number, max: number) => {
+const getColorLevel = (downloads: number, min: number, max: number) => {
   if (max === min || !downloads) {
-    return "bg-gray-ui";
+    return -1;
   }
 
   const intensity = Math.min(Math.max((downloads - min) / (max - min), 0), 1);
-  const level = Math.ceil(intensity * 7) + 5;
-  const color = colorClasses[level];
+  return Math.ceil(intensity * 7) + 5;
+};
 
-  return color || "bg-gray-ui";
+// Generate color based on min-max scaling
+const getColor = (level: number) => {
+  if (level === -1) {
+    return "bg-gray-ui";
+  }
+
+  return colorClasses[level] || "bg-gray-ui";
 };
 
 export const Heatmap = memo((props: HeatmapProps) => {
@@ -127,18 +132,22 @@ export const Heatmap = memo((props: HeatmapProps) => {
         </div>
 
         {/* Weeks */}
-        <div className="grid grid-rows-5 gap-1">
+        <div className="grid grid-rows-5 gap-1" id="weeks">
           {weeks.map((week, weekIndex) => (
             <div key={weekIndex} className="grid grid-cols-7 gap-1">
               {week.map(({ downloads, dateObj }, dayIndex) => {
                 const dateLabel = format(dateObj, "MMM d, yyyy");
+                // Determine group color based on download count
+                const level = getColorLevel(downloads, minDownloads, maxDownloads)
                 return (
                   <div
                     key={dayIndex}
                     role="gridcell"
+                    data-level={level}
                     className={clsx(
                       "group flex aspect-square w-full flex-col items-center justify-center overflow-visible rounded-md",
-                      getColor(downloads, minDownloads, maxDownloads),
+                      "transition-opacity duration-500 ease-in-out",
+                      getColor(level),
                     )}
                     aria-label={`${nrFormat.format(downloads)} downloads on ${dateLabel}`}
                     title={`${nrFormat.format(downloads)} downloads on ${dateLabel}`}
@@ -165,17 +174,49 @@ export const Heatmap = memo((props: HeatmapProps) => {
       <div className="mb-4 flex items-center gap-1">
         <div className="flex items-center gap-1 font-mono">
           <span className="mx-2">{nrFormat.format(minDownloads)}</span>
-          <div className="size-6 rounded-md bg-iris-7 dark:bg-iris-12" />
-          <div className="size-6 rounded-md bg-iris-8 dark:bg-iris-11" />
-          <div className="size-6 rounded-md bg-iris-9 dark:bg-iris-10" />
-          <div className="size-6 rounded-md bg-iris-10 dark:bg-iris-8" />
-          <div className="size-6 rounded-md bg-iris-11 dark:bg-iris-6" />
-          <div className="size-6 rounded-md bg-iris-12 dark:bg-iris-4" />
+          {/* Color Legend */}
+          <div role="region" aria-label="Color legend for download heatmap" className="flex gap-1">
+            <HeatmapLegendColor index={6} label="Low" />
+            <HeatmapLegendColor index={7} label="Slightly higher" />
+            <HeatmapLegendColor index={8} label="Higher" />
+            <HeatmapLegendColor index={9} label="Even higher" />
+            <HeatmapLegendColor index={10} label="Very high" />
+            <HeatmapLegendColor index={11} label="Extremely high" />
+            <HeatmapLegendColor index={12} label="Highest" />
+          </div>
           <span className="ml-2">{nrFormat.format(maxDownloads)}</span>
         </div>
       </div>
     </div>
   );
 });
+
+function HeatmapLegendColor(props: { index: number; label: string }) {
+  const { index, label } = props;
+
+  return (
+    <div
+      className={clsx("size-6 md:size-7 rounded-md", colorClasses[index])}
+      role="listitem"
+      aria-label={`${label} download range`}
+      onMouseEnter={() => {
+        // Find all elements that are not 'data-section="4"' within id=weeks and apply opacity
+        const elements = document.querySelectorAll(
+          `#weeks > div > div:not([data-level="${index}"])`,
+        );
+        elements.forEach((element) => {
+          element.classList.add("opacity-5");
+        });
+      }}
+      onMouseLeave={() => {
+        // Remove opacity from all elements within id=weeks
+        const elements = document.querySelectorAll("#weeks > div > div");
+        elements.forEach((element) => {
+          element.classList.remove("opacity-5");
+        });
+      }}
+    />
+  );
+}
 
 Heatmap.displayName = "Heatmap";
