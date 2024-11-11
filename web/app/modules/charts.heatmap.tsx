@@ -175,13 +175,15 @@ export const Heatmap = memo((props: HeatmapProps) => {
         <div className="flex items-center gap-1 font-mono">
           <span className="mx-2">{nrFormat.format(minDownloads)}</span>
           {/* Color Legend */}
-          <HeatmapLegendColor index={6} />
-          <HeatmapLegendColor index={7} />
-          <HeatmapLegendColor index={8} />
-          <HeatmapLegendColor index={9} />
-          <HeatmapLegendColor index={10} />
-          <HeatmapLegendColor index={11} />
-          <HeatmapLegendColor index={12} />
+          <div role="region" aria-label="Color legend for download heatmap" className="flex gap-1">
+            <HeatmapLegendColor index={6} label="Low" />
+            <HeatmapLegendColor index={7} label="Slightly higher" />
+            <HeatmapLegendColor index={8} label="Higher" />
+            <HeatmapLegendColor index={9} label="Even higher" />
+            <HeatmapLegendColor index={10} label="Very high" />
+            <HeatmapLegendColor index={11} label="Extremely high" />
+            <HeatmapLegendColor index={12} label="Highest" />
+          </div>
           <span className="ml-2">{nrFormat.format(maxDownloads)}</span>
         </div>
       </div>
@@ -189,12 +191,14 @@ export const Heatmap = memo((props: HeatmapProps) => {
   );
 });
 
-function HeatmapLegendColor(props: { index: number }) {
-  const { index } = props;
+function HeatmapLegendColor(props: { index: number; label: string }) {
+  const { index, label } = props;
 
   return (
     <div
       className={clsx("size-6 md:size-7 rounded-md", colorClasses[index])}
+      role="listitem"
+      aria-label={`${label} download range`}
       onMouseEnter={() => {
         // Find all elements that are not 'data-section="4"' within id=weeks and apply opacity
         const elements = document.querySelectorAll(
