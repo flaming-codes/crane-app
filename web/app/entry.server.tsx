@@ -10,17 +10,16 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import { server } from "./mocks/node.server";
 import { slog } from "./modules/observability.server";
 import { createSecureHeaders } from "@mcansh/http-helmet";
 
 const ABORT_DELAY = 5_000;
 
 if (process.env.NODE_ENV === "development") {
-  server.listen();
-  server.events.on("request:start", ({ request }) => {
-    slog.debug("MSW intercepted:", request.method, request.url);
-  });
+  // server.listen();
+  // server.events.on("request:start", ({ request }) => {
+  //   slog.debug("MSW intercepted:", request.method, request.url);
+  // });
 }
 
 export default function handleRequest(
@@ -56,17 +55,17 @@ export default function handleRequest(
 
   return isbot(request.headers.get("user-agent") || "")
     ? handleBotRequest(
-      request,
-      responseStatusCode,
-      responseHeaders,
-      remixContext,
-    )
+        request,
+        responseStatusCode,
+        responseHeaders,
+        remixContext,
+      )
     : handleBrowserRequest(
-      request,
-      responseStatusCode,
-      responseHeaders,
-      remixContext,
-    );
+        request,
+        responseStatusCode,
+        responseHeaders,
+        remixContext,
+      );
 }
 
 function handleBotRequest(

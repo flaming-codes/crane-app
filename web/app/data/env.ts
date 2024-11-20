@@ -13,6 +13,16 @@ export const envSchema = z.object({
     .url()
     .describe("Packages for overview URL"),
   VITE_SITEMAP_PKGS_URL: z.string().url().describe("Packages for sitemap URL"),
+  /*
+   * AI
+   */
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
+  /*
+   * Supabase
+   */
+  SUPABASE_URL: z.string().url().describe("URL of remote Supabase instance"),
+  SUPABASE_ANON_KEY: z.string().describe("Supabase anonymous key"),
+
   // NPM provides the package version as a string
   // when running `npm run start`.
   npm_package_version: z

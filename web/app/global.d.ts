@@ -7,6 +7,7 @@ declare interface Window {
     },
   ) => void;
 
+  /** Client-only env vars injected into window. */
   ENV: {
     isPlausibleEnabled: boolean;
   };

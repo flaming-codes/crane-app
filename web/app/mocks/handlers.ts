@@ -6,6 +6,7 @@ import xadmixDailiesYear from "./fixtures/packge.xadmix.daily-downloads-year.jso
 import GaussSuppression from "./fixtures/package.gauss-surpression.json";
 import allAuthors from "./fixtures/author.all.json";
 import allPackages from "./fixtures/package.all.json";
+
 export const handlers = [
   http.get(
     `${ENV.VITE_SELECT_PKG_URL.replace("{{id}}", "GaussSuppression")}`,

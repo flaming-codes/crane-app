@@ -12,6 +12,7 @@
     "revalidator",
     "sonner",
     "subline",
+    "supabase",
     "tailwindcss"
   ],
   "tailwindCSS.experimental.classRegex": [
