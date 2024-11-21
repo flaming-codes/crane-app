@@ -30,9 +30,8 @@ export class AIPackageService {
       "You're a world-class summarizer of scientific code packages written in R.",
       "Given the currently most downloaded packages on CRAN and their descriptions below, summarize a concise analysis of the trending TOPICS of those packages.",
       "The goal is to get a birds-eye-view of the current trends. Respond with highly concise, to-the-point, well-written prose.",
-      "You MUST respond in HTML-format.",
+      "Respond in HTML, but don't include 'html' or 'body' tags.",
       "Never use headings or lists.",
-      "Never contain <html> or <body> tags.",
     ].join(" ");
 
     const context = await contextComposer();
@@ -45,9 +44,11 @@ export class AIPackageService {
       temperature: 0.3,
     });
 
-    this.cache.set("top-downloads-summary", text);
+    const answer = this.sanitizeHTMLPartial(text);
 
-    return xss(text);
+    this.cache.set("top-downloads-summary", answer);
+
+    return xss(answer);
   }
 
   static async generateTrendsSummary(contextComposer: () => Promise<string>) {
@@ -62,8 +63,8 @@ export class AIPackageService {
       "You're a world-class summarizer of scientific code packages written in R.",
       "Given the currently trending packages and their descriptions below, summarize a highly concise analysis of the trending TOPICS of those packages.",
       "The goal is to get a birds-eye-view of the current trends. Respond with concise, to-the-point, well-written prose.",
-      "You MUST respond in HTML-format. Never use headings or lists.",
-      "Never contain <html> or <body> tags.",
+      "Respond in HTML, but don't include 'html' or 'body' tags.",
+      "Never use headings or lists.",
     ].join(" ");
 
     const context = await contextComposer();
@@ -75,9 +76,11 @@ export class AIPackageService {
       maxTokens: 8192,
     });
 
-    this.cache.set("trending-packages-summary", text);
+    const answer = this.sanitizeHTMLPartial(text);
 
-    return xss(text);
+    this.cache.set("trending-packages-summary", answer);
+
+    return xss(answer);
   }
 
   static async generateRVersionsSummary(
@@ -128,5 +131,18 @@ export class AIPackageService {
 
     this.cache.set("r-releases-summary", JSON.stringify(json.object));
     return json.object;
+  }
+
+  /*
+   * Private methods.
+   */
+
+  private static sanitizeHTMLPartial(html: string) {
+    let result = xss(html);
+
+    if (result.startsWith("```html")) result = result.slice(7);
+    if (result.endsWith("```")) result = result.slice(0, -3);
+
+    return result;
   }
 }
