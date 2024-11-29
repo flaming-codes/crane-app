@@ -19,7 +19,7 @@ import {
   DataProvidedByCRANLabel,
   ProvidedByLabel,
 } from "../modules/provided-by-label";
-import { AIPackageService } from "../ai/packages";
+import { AIPackageService } from "../ai/packages.service.server";
 import { PackageService } from "../data/package.service";
 
 const anchors = composeAnchorItems(["Analysis", "Top Downloads"]);
@@ -52,7 +52,7 @@ export async function loader(params: LoaderFunctionArgs) {
     const packageSlugs = topDownloads.downloads.map((d) => d.package);
 
     const packageDetails = await Promise.allSettled(
-      packageSlugs.map((slug) => PackageService.getPackage(slug)),
+      packageSlugs.map((slug) => PackageService.getPackageByName(slug)),
     ).then((res) =>
       res.map((r) => (r.status === "fulfilled" ? r.value : undefined)),
     );

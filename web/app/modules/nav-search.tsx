@@ -18,7 +18,6 @@ import { createPortal } from "react-dom";
 import { ClientOnly } from "remix-utils/client-only";
 import { useKeyboardEvent, useKeyboardShortcut } from "./app";
 import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
-import { SearchResult } from "minisearch";
 import { Separator } from "./separator";
 import { InfoPill } from "./info-pill";
 import clsx from "clsx";
@@ -33,13 +32,11 @@ type Props = {
   inputClassName?: string;
 };
 
+type SearchHit = { id: number; name: string };
+
 type SearchResults = {
-  authors: {
-    hits: SearchResult[];
-  };
-  packages: {
-    hits: SearchResult[];
-  };
+  authors: { hits: SearchHit[] };
+  packages: { hits: SearchHit[] };
 };
 
 const fallbackSearchResults: SearchResults = {
@@ -155,7 +152,7 @@ export function SearchResults(
   props: PropsWithChildren<{
     data: SearchResults;
     isDataExpected?: boolean;
-    onSelect: (item?: SearchResult) => void;
+    onSelect: (item?: SearchHit) => void;
   }>,
 ) {
   const { data, isDataExpected, onSelect, children } = props;
@@ -164,7 +161,7 @@ export function SearchResults(
   useLockBodyScroll();
 
   return (
-    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl duration-200 animate-duration-150 dark:bg-black/90">
+    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl animate-duration-150 dark:bg-black/90">
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-16">
@@ -174,29 +171,25 @@ export function SearchResults(
                   <h3 className="pb-6 text-lg">Packages</h3>
                   {packages.hits.length > 0 ? (
                     <ul className="flex flex-wrap gap-2">
-                      {packages.hits.map((item) => (
+                      {packages.hits.map((item, i) => (
                         <li key={item.id}>
                           <Link
-                            to={`/package/${item.slug}`}
+                            to={`/package/${item.name}`}
                             onClick={() => {
                               onSelect(item);
                               sendEvent("search-suggestion-selected", {
                                 props: {
                                   category: "package",
-                                  suggestion: item.slug,
+                                  suggestion: item.name,
                                 },
                               });
                             }}
                           >
                             <InfoPill
                               variant="iris"
-                              label={<FlameOfFame score={item.score} />}
+                              label={<FlameOfFame score={i < 3 ? 12 : 0} />}
                             >
                               <span className="shrink-0">{item.name}</span>{" "}
-                              <span className="text-gray-dim text-xs">
-                                by{" "}
-                                {sliceNamesWithEllipsis(item.author_names, 3)}
-                              </span>
                               <RiArrowRightSLine
                                 size={14}
                                 className="text-gray-dim"
@@ -217,23 +210,23 @@ export function SearchResults(
                   <h3 className="pb-6 text-lg">Authors</h3>
                   {authors.hits.length > 0 ? (
                     <ul className="flex flex-wrap gap-2">
-                      {authors.hits.map((item) => (
+                      {authors.hits.map((item, i) => (
                         <li key={item.id}>
                           <Link
-                            to={`/author/${item.slug}`}
+                            to={`/author/${item.name}`}
                             onClick={() => {
                               onSelect(item);
                               sendEvent("search-suggestion-selected", {
                                 props: {
                                   category: "author",
-                                  suggestion: item.slug,
+                                  suggestion: item.name,
                                 },
                               });
                             }}
                           >
                             <InfoPill
                               variant="jade"
-                              label={<FlameOfFame score={item.score} />}
+                              label={<FlameOfFame score={i <= 3 ? 12 : 0} />}
                             >
                               {item.name}
                             </InfoPill>
@@ -252,7 +245,7 @@ export function SearchResults(
                   Ready when you are{" "}
                   <RiGlassesFill
                     size={32}
-                    className="mb-2 ml-2 inline animate-wiggle animate-infinite"
+                    className="mb-2 ml-2 inline animate-wiggle animate-duration-700 animate-infinite"
                   />
                 </p>
                 <div className="text-gray-dim mt-28 space-y-1 text-center text-sm">
@@ -287,10 +280,6 @@ export function SearchResults(
       </div>
     </div>
   );
-}
-
-function sliceNamesWithEllipsis(names: string[], limit: number) {
-  return names.length > limit ? names.slice(0, limit).concat("...") : names;
 }
 
 function FlameOfFame(props: { score: number; threshold?: number }) {

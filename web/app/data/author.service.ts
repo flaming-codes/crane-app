@@ -1,98 +1,256 @@
-import { addHours, differenceInCalendarDays } from "date-fns";
-import { authorSlugSchema } from "./author.shape";
-import { ENV } from "./env";
-import { fetchData } from "./fetch";
+import { authorNameSchema } from "./author.shape";
+import { SitemapItem } from "./types";
+import { supabase } from "./supabase.server";
+import { packageIdSchema } from "./package.shape";
+import { slog } from "../modules/observability.server";
 import { PackageService } from "./package.service";
-import { AllAuthorsMap, ExpiringSearchIndex, SearchableAuthor } from "./types";
-import MiniSearch from "minisearch";
-import { encodeSitemapSymbols } from "../modules/sitemap";
+import { uniqBy } from "es-toolkit";
+import { Tables } from "./supabase.types.generated";
+import TTLCache from "@isaacs/ttlcache";
+import { format, hoursToMilliseconds } from "date-fns";
+
+type CacheKey = "sitemap-items";
+
+type CacheValue = SitemapItem[];
 
 export class AuthorService {
-  private static _allAuthors: AllAuthorsMap | undefined = undefined;
+  private static cache = new TTLCache<CacheKey, CacheValue>({
+    ttl: hoursToMilliseconds(6),
+  });
 
-  private static _authorsSearchIndex: ExpiringSearchIndex<
-    MiniSearch<SearchableAuthor>
-  > = {
-    index: new MiniSearch({ fields: ["ignore"] }),
-    expiresAt: 0,
-  };
+  private static readonly sitemapDivisor = 1000;
 
-  static async getAuthor(authorId: string) {
-    authorSlugSchema.parse(authorId);
+  /**
+   *
+   * @param authorName
+   * @returns
+   */
+  static async getAuthorDetailsByName(authorName: string) {
+    authorNameSchema.parse(authorName);
 
-    const all = await this.getAllAuthors();
+    const author = await supabase
+      .from("authors")
+      .select("*")
+      .eq("name", authorName)
+      .maybeSingle();
 
-    if (!all[authorId]) {
-      throw new Error("Author not found");
+    if (author.error || !author.data) {
+      return null;
     }
 
-    const authorPackageSlugs = all[authorId];
-    const allPackages = await PackageService.getAllOverviewPackages();
+    const authorPackages = (
+      (await PackageService.getPackagesByAuthorId(author.data.id)) || []
+    )
+      .map((pkg) => ({
+        package: pkg.package as unknown as {
+          id: number;
+          name: string;
+          title: string;
+          description: string;
+        },
+        roles: pkg.roles,
+      }))
+      // Deduplicate packages by ID
+      .filter(
+        (pkg, index, self) =>
+          index ===
+          self.findIndex((other) => other.package.id === pkg.package.id),
+      );
 
-    const authorPackages = authorPackageSlugs
-      .map((name) => allPackages.find((p) => p.name === name)!)
-      .filter(Boolean);
+    const packageIds = uniqBy(
+      authorPackages.map((pkg) => pkg.package.id),
+      (id) => id,
+    );
 
-    const otherAuthors = authorPackages
-      .map((p) => p.author_names)
-      .flat()
-      .filter((name, i, arr) => name !== authorId && arr.indexOf(name) === i);
-
-    const activeEventType = this.getEventForAuthor(authorId);
+    const otherAuthors = await Promise.all(
+      packageIds.map((id) =>
+        this.getAuthorsByPackageId(id).then((authors) =>
+          authors
+            ?.filter(
+              ({ author: otherAuthor }) => author.data!.id !== otherAuthor.id,
+            )
+            .map(({ author }) => author),
+        ),
+      ),
+    ).then((authors) =>
+      uniqBy(authors.flat(), (author) => author).filter(
+        (author, index, self) =>
+          author &&
+          index === self.findIndex((other) => other?.id === author.id),
+      ),
+    );
     const description = this.generateAuthorDescription(
-      authorId,
-      authorPackageSlugs,
-      otherAuthors,
+      authorName,
+      authorPackages.map((pkg) => pkg.package.name),
+      otherAuthors.map((author) => author?.name || "").filter(Boolean),
     );
 
     return {
-      authorId,
+      authorName,
       packages: authorPackages,
       otherAuthors,
-      activeEventType,
       description,
     };
   }
 
-  static async checkAuthorExists(authorId: string) {
-    authorSlugSchema.parse(authorId);
-    const all = await this.getAllAuthors();
-    return Boolean(all[authorId]);
-  }
+  /**
+   *
+   * @param packageId
+   * @returns
+   */
+  static async getAuthorsByPackageId(packageId: number) {
+    packageIdSchema.parse(packageId);
 
-  static async getAllAuthors() {
-    if (!this._allAuthors) {
-      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+    const { data, error } = await supabase
+      .from("author_cran_package")
+      .select(
+        `
+        author:author_id (*),
+        roles,
+        package_id
+        `,
+      )
+      .eq("package_id", packageId);
+
+    if (error) {
+      slog.error("Error in getAuthorsByPackageId", error);
+      return null;
     }
-    return this._allAuthors;
-  }
 
-  static async getAllSitemapAuthors(): Promise<
-    Array<[slug: string, lastMod: undefined]>
-  > {
-    if (!this._allAuthors) {
-      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+    if (!data) {
+      return [];
     }
-    return Object.keys(this._allAuthors).map((name) => [
-      this.sanitizeSitemapName(name),
-      undefined,
-    ]);
+
+    return data as unknown as Array<{
+      roles: string[] | null;
+      package_id: number;
+      author: Tables<"authors">;
+    }>;
   }
 
+  /**
+   *
+   * @param authorId
+   * @returns
+   */
+  static async checkAuthorExistsByName(authorName: string) {
+    authorNameSchema.parse(authorName);
+
+    const { count, error } = await supabase
+      .from("authors")
+      .select("id", { count: "exact", head: true })
+      .eq("name", authorName);
+
+    if (error) {
+      slog.error("Error in checkAuthorExistsByName", error);
+      return false;
+    }
+
+    return count === 1;
+  }
+
+  /**
+   *
+   * @returns
+   */
+  static async getAllSitemapAuthors(): Promise<SitemapItem[]> {
+    const cached = this.cache.get("sitemap-items");
+    if (cached) {
+      return cached;
+    }
+
+    const countRes = await supabase
+      .from("authors")
+      .select("id,name", { count: "exact", head: true });
+
+    if (countRes.error) {
+      slog.error("Error in getAllSitemapAuthors", countRes.error);
+      return [];
+    }
+
+    const chunks = Math.ceil((countRes.count ?? 0) / this.sitemapDivisor);
+
+    const sitemapItems: SitemapItem[] = [];
+    // Sequentially fetch all the chunks to avoid hitting the rate limit,
+    // and no Promise.all to not stress the server too much.
+    for (let i = 0; i < chunks; i++) {
+      const { data, error } = await supabase
+        .from("authors")
+        .select("name,_last_scraped_at")
+        .range(i * this.sitemapDivisor, (i + 1) * this.sitemapDivisor - 1);
+
+      if (error) {
+        slog.error("Error in getAllSitemapAuthors", error);
+        return [];
+      }
+
+      data.forEach((item) => {
+        sitemapItems.push([
+          this.sanitizeSitemapName(item.name),
+          format(new Date(item._last_scraped_at), "yyyy-MM-dd"),
+        ]);
+      });
+    }
+
+    this.cache.set("sitemap-items", sitemapItems);
+    return sitemapItems;
+  }
+
+  /**
+   *
+   * @param query
+   * @param options
+   * @returns
+   */
   static async searchAuthors(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    if (this._authorsSearchIndex.expiresAt < Date.now()) {
-      await this.initSearchableAuthorsIndex();
-    }
+    // We combine different search strategies to get the best results.
+    const baseQueryTemplate = query.trim().split(" ");
 
-    const hits = this._authorsSearchIndex.index
-      .search(query, { fuzzy: 0.3, prefix: true })
-      .slice(0, limit);
+    const matchAnyTermQuery = baseQueryTemplate
+      .map((q) => `'${q.trim()}'`)
+      .join(" | ");
 
-    return hits || [];
+    const matchAllTermsQuery = baseQueryTemplate
+      .map((q) => `${q.trim()}`)
+      .join(" & ");
+
+    const results = await Promise.all([
+      supabase
+        .from("authors")
+        .select("id,name")
+        .textSearch("name", matchAllTermsQuery)
+        .limit(limit)
+        .then((res) => {
+          if (res.error) {
+            slog.error("Error in searchAuthors", res.error);
+            return [];
+          }
+          return res.data || [];
+        }),
+      supabase
+        .from("authors")
+        .select("id,name")
+        .textSearch("name", matchAnyTermQuery)
+        .limit(limit)
+        .then((res) => {
+          if (res.error) {
+            slog.error("Error in searchAuthors", res.error);
+            return [];
+          }
+          return res.data || [];
+        }),
+    ]);
+
+    return uniqBy(results.flat(), (author) => author.id);
   }
 
+  /**
+   *
+   * @param name
+   * @returns
+   */
   private static sanitizeSitemapName(name: string) {
     let next = name.trim();
     if (next.startsWith(`"`)) next = next.slice(1);
@@ -101,51 +259,6 @@ export class AuthorService {
     if (next.endsWith("'")) next = next.slice(0, -1);
     if (next.endsWith(",")) next = next.slice(0, -1);
     return next.trim();
-  }
-
-  private static async initSearchableAuthorsIndex() {
-    this._authorsSearchIndex = {
-      expiresAt: addHours(Date.now(), 12).getTime(),
-      index: new MiniSearch({
-        idField: "name",
-        fields: ["name"],
-        storeFields: ["name", "slug", "totalPackages"],
-      }),
-    };
-
-    const authors = await this.getAllAuthors();
-    const searchableAuthors: SearchableAuthor[] = Object.entries(authors).map(
-      ([name, packageNames]) => ({
-        name,
-        slug: encodeSitemapSymbols(encodeURIComponent(name)),
-        totalPackages: Array.isArray(packageNames)
-          ? packageNames.length
-          : undefined,
-      }),
-    );
-
-    this._authorsSearchIndex.index.addAll(searchableAuthors);
-  }
-
-  private static getEventForAuthor(authorId: string) {
-    // TODO: move to data-generation.
-    const events: Record<
-      string,
-      [{ day: string; month: string; type: string }]
-    > = {
-      "Lukas Schönmann": [{ day: "04", month: "11", type: "birthday" }],
-    };
-    // TODO: Fatal flaw: this will use the server-time as the current time.
-    const now = new Date();
-    return events[authorId]?.find(
-      ({ day, month }) =>
-        Math.abs(
-          differenceInCalendarDays(
-            now,
-            new Date(`${now.getFullYear()}-${month}-${day}`),
-          ),
-        ) <= 2,
-    )?.type;
   }
 
   private static generateAuthorDescription(

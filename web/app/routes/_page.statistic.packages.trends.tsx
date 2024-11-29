@@ -14,7 +14,7 @@ import {
   ProvidedByLabel,
 } from "../modules/provided-by-label";
 import { PackageService } from "../data/package.service";
-import { AIPackageService } from "../ai/packages";
+import { AIPackageService } from "../ai/packages.service.server";
 
 const anchors = composeAnchorItems(["Analysis", "Trending Packages"]);
 
@@ -28,7 +28,7 @@ export async function loader() {
     // and to keep the response concise.
     const packageSlugs = trends.slice(0, 20).map((trend) => trend.package);
     const packageDetails = await Promise.allSettled(
-      packageSlugs.map((slug) => PackageService.getPackage(slug)),
+      packageSlugs.map((slug) => PackageService.getPackageByName(slug)),
     ).then((res) => {
       return res.map((r) => (r.status === "fulfilled" ? r.value : undefined));
     });

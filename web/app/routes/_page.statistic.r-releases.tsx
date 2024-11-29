@@ -6,7 +6,7 @@ import { InfoCard } from "../modules/info-card";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { mergeMeta } from "../modules/meta";
-import { AIPackageService } from "../ai/packages";
+import { AIPackageService } from "../ai/packages.service.server";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import {
   DataProvidedByCRANLabel,

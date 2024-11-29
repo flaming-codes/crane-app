@@ -1,3 +1,4 @@
+import { IS_DEV } from "../modules/app.server";
 import {
   mapDomainToSitemapData,
   SITEMAP_FILE_CHUNK_SIZE,
@@ -40,7 +41,7 @@ export async function loader() {
     {
       headers: {
         "Content-Type": "application/xml",
-        "Cache-Control": "max-age=3600, s-maxage=3600",
+        "Cache-Control": IS_DEV ? "max-age=0" : "max-age=3600, s-maxage=3600",
       },
     },
   );
