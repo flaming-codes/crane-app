@@ -6,6 +6,7 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
+import { shuffle, uniqBy } from "es-toolkit";
 
 type Package = Tables<"cran_packages">;
 
@@ -130,21 +131,36 @@ export class PackageService {
     return this.allSitemapPackages;
   }
 
-  static async searchPackages(query: string, options?: { limit?: number }) {
-    const { limit = 20 } = options || {};
+  static async searchPackages(
+    query: string,
+    options?: { limit?: number; permutations?: number },
+  ) {
+    const { limit = 20, permutations = 3 } = options || {};
 
-    const { data, error } = await supabase
-      .from("cran_packages")
-      .select("id,name")
-      .textSearch("name, title, description", query, { config: "english" })
-      .limit(limit);
+    const randomQueries = Array.from({ length: permutations }, () => {
+      return shuffle(query.split(" ")).join(" ");
+    });
 
-    if (error) {
-      slog.error("Error in searchPackages", error);
-      return [];
-    }
+    const allQueries = [query, ...randomQueries];
 
-    return data;
+    const nestedHits = await Promise.all(
+      allQueries.map(async (query) => {
+        const { data, error } = await supabase
+          .from("cran_packages")
+          .select("id,name")
+          .textSearch("name, title, description", query, { config: "english" })
+          .limit(limit);
+
+        if (error) {
+          slog.error("Error in searchPackages", error);
+          return [];
+        }
+
+        return data;
+      }),
+    );
+
+    return uniqBy(nestedHits.flat(), (item) => item.id);
   }
 
   private static sanitizeSitemapName(name: string) {
