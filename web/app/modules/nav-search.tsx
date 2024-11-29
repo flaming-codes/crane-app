@@ -161,7 +161,7 @@ export function SearchResults(
   useLockBodyScroll();
 
   return (
-    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl duration-200 animate-duration-150 dark:bg-black/90">
+    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl animate-duration-150 dark:bg-black/90">
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-16">
@@ -245,7 +245,7 @@ export function SearchResults(
                   Ready when you are{" "}
                   <RiGlassesFill
                     size={32}
-                    className="mb-2 ml-2 inline animate-wiggle animate-infinite"
+                    className="mb-2 ml-2 inline animate-wiggle animate-duration-700 animate-infinite"
                   />
                 </p>
                 <div className="text-gray-dim mt-28 space-y-1 text-center text-sm">
