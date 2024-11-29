@@ -1,11 +1,14 @@
 import { addHours, differenceInCalendarDays } from "date-fns";
-import { authorSlugSchema } from "./author.shape";
+import { authorNameSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { PackageService } from "./package.service";
 import { AllAuthorsMap, ExpiringSearchIndex, SearchableAuthor } from "./types";
 import MiniSearch from "minisearch";
 import { encodeSitemapSymbols } from "../modules/sitemap";
+import { supabase } from "./supabase.server";
+import { packageIdSchema } from "./package.shape";
+import { slog } from "../modules/observability.server";
 
 export class AuthorService {
   private static _allAuthors: AllAuthorsMap | undefined = undefined;
@@ -17,45 +20,59 @@ export class AuthorService {
     expiresAt: 0,
   };
 
-  static async getAuthor(authorId: string) {
-    authorSlugSchema.parse(authorId);
+  static async getAuthorDetailsByName(authorName: string) {
+    authorNameSchema.parse(authorName);
 
-    const all = await this.getAllAuthors();
-
-    if (!all[authorId]) {
-      throw new Error("Author not found");
+    const author = await supabase
+      .from("authors")
+      .select("*")
+      .eq("name", authorName)
+      .maybeSingle();
+    if (author.error) {
+      return null;
     }
 
-    const authorPackageSlugs = all[authorId];
-    const allPackages = await PackageService.getAllOverviewPackages();
+    const authorPackages: any[] = [];
+    const otherAuthors: any[] = [];
 
-    const authorPackages = authorPackageSlugs
-      .map((name) => allPackages.find((p) => p.name === name)!)
-      .filter(Boolean);
-
-    const otherAuthors = authorPackages
-      .map((p) => p.author_names)
-      .flat()
-      .filter((name, i, arr) => name !== authorId && arr.indexOf(name) === i);
-
-    const activeEventType = this.getEventForAuthor(authorId);
     const description = this.generateAuthorDescription(
-      authorId,
-      authorPackageSlugs,
+      authorName,
+      [], // package slugs
       otherAuthors,
     );
 
     return {
-      authorId,
+      authorName,
       packages: authorPackages,
       otherAuthors,
-      activeEventType,
       description,
     };
   }
 
+  static async getAuthorsByPackageId(packageId: number) {
+    packageIdSchema.parse(packageId);
+
+    const { data, error } = await supabase
+      .from("author_cran_package")
+      .select(
+        `
+        author:author_id (*),
+        roles,
+        package_id
+        `,
+      )
+      .eq("package_id", packageId);
+
+    if (error) {
+      slog.error("Error in getAuthorsByPackageId", error);
+      return null;
+    }
+
+    return data;
+  }
+
   static async checkAuthorExists(authorId: string) {
-    authorSlugSchema.parse(authorId);
+    authorNameSchema.parse(authorId);
     const all = await this.getAllAuthors();
     return Boolean(all[authorId]);
   }

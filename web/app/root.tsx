@@ -13,9 +13,6 @@ import {
 import { Footer } from "./modules/footer";
 import "./tailwind.css";
 import { ENV } from "./data/env";
-import { useEffect } from "react";
-import { unregisterServiceWorker } from "@remix-pwa/sw";
-import { clog } from "./modules/observability";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet/react";
 
@@ -63,12 +60,6 @@ export default function App() {
     const handle = match.handle as { hasFooter?: boolean } | undefined;
     return handle?.hasFooter;
   });
-
-  useEffect(() => {
-    unregisterServiceWorker().catch((error) => {
-      clog.error("Failed to unregister service worker", error);
-    });
-  }, []);
 
   return (
     <html lang="en">

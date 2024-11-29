@@ -2,14 +2,14 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { composeAuthorOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { hoursToSeconds } from "date-fns";
-import { authorSlugSchema } from "../data/author.shape";
+import { authorNameSchema } from "../data/author.shape";
 import { AuthorService } from "../data/author.service";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
-  const { authorId } = params;
+  const { authorName } = params;
 
-  const parsedId = authorSlugSchema.safeParse(authorId);
+  const parsedId = authorNameSchema.safeParse(authorName);
   const exists = await AuthorService.checkAuthorExists(parsedId.data || "");
   if (parsedId.error || !exists) {
     throw new Response(null, {

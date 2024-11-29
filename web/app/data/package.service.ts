@@ -1,10 +1,16 @@
 import { uniqBy } from "es-toolkit";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
-import { packageSlugSchema } from "./package.shape";
-import { ExpiringSearchIndex, OverviewPkg, Pkg, SitemapPackage } from "./types";
+import { packageIdSchema, packageNameSchema } from "./package.shape";
+import { ExpiringSearchIndex, OverviewPkg, SitemapPackage } from "./types";
 import MiniSearch from "minisearch";
 import { addHours } from "date-fns";
+import { Tables } from "./supabase.types.generated";
+import { supabase } from "./supabase.server";
+import { slog } from "../modules/observability.server";
+import { authorIdSchema } from "./author.shape";
+
+type Package = Tables<"cran_packages">;
 
 export class PackageService {
   private static allOverviewPackages: OverviewPkg[] = [];
@@ -18,17 +24,98 @@ export class PackageService {
     expiresAt: 0,
   };
 
-  static async getPackage(packageId: string): Promise<Pkg | undefined> {
-    packageSlugSchema.parse(packageId);
-    const url = ENV.VITE_SELECT_PKG_URL.replace("{{id}}", packageId);
-    const data = await fetchData<Pkg>(url);
-    return Array.isArray(data) ? data[0] : data;
+  static async getPackageByName(packageName: string): Promise<Package | null> {
+    packageNameSchema.parse(packageName);
+
+    const { data, error } = await supabase
+      .from("cran_packages")
+      .select("*")
+      .eq("name", packageName)
+      .maybeSingle();
+
+    if (error) {
+      slog.error("Error in getPackageByName", error);
+      return null;
+    }
+
+    return data;
   }
 
-  static async checkPackageExists(packageId: string): Promise<boolean> {
-    packageSlugSchema.parse(packageId);
-    const sitemapPackages = await this.getAllSitemapPackages();
-    return sitemapPackages.some(([name]) => name === packageId);
+  static async getPackageIdByName(packageName: string): Promise<number | null> {
+    packageNameSchema.parse(packageName);
+
+    const { data, error } = await supabase
+      .from("cran_packages")
+      .select("id")
+      .eq("name", packageName)
+      .maybeSingle();
+
+    if (error) {
+      slog.error("Error in getPackageIdByName", error);
+      return null;
+    }
+
+    return data?.id || null;
+  }
+
+  static async getPackageRelationsByPackageId(packageId: number) {
+    packageIdSchema.parse(packageId);
+
+    const { data, error } = await supabase
+      .from("cran_package_relationship")
+      .select(
+        `
+        relationship_type,
+        version,
+        related_package:related_package_id (id,name)
+        `,
+      )
+      .eq("package_id", packageId);
+
+    if (error) {
+      slog.error("Error in getPackageRelationsByPackageName", error);
+      return null;
+    }
+
+    return data;
+  }
+
+  static async getPackagesByAuthorId(authorId: number) {
+    authorIdSchema.parse(authorId);
+
+    const { data, error } = await supabase
+      .from("author_cran_package")
+      .select(
+        `
+        author:author_id (id,name),
+        package_id,
+        roles
+        `,
+      )
+      .eq("author_id", authorId);
+
+    if (error) {
+      slog.error("Error in getPackagesByAuthorId", error);
+      return null;
+    }
+
+    return data;
+  }
+
+  static async checkPackageExistsByName(packageName: string): Promise<boolean> {
+    packageNameSchema.parse(packageName);
+
+    const { count, error } = await supabase
+      .from("cran_packages")
+      .select("*", { count: "exact", head: true })
+      .eq("name", packageName);
+
+    if (error) {
+      slog.error("Error in checkPackageExistsByName", error);
+      return false;
+    }
+
+    return count === 1;
   }
 
   static async getAllOverviewPackages(): Promise<OverviewPkg[]> {

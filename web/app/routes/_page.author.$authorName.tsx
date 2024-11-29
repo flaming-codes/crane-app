@@ -20,36 +20,48 @@ import {
 import { BASE_URL } from "../modules/app";
 import { hoursToSeconds } from "date-fns";
 import { slog } from "../modules/observability.server";
+import { IS_DEV } from "../modules/app.server";
 
-type AuthorRes = Awaited<ReturnType<typeof AuthorService.getAuthor>>;
+type AuthorRes = Awaited<
+  ReturnType<typeof AuthorService.getAuthorDetailsByName>
+>;
 
 const anchors = ["Synopsis", "Packages", "Team"] as const;
 
 export const meta = mergeMeta(
   (params) => {
     const data = params.data as AuthorRes;
-    const url = BASE_URL + `/author/${encodeURIComponent(data.authorId)}`;
+
+    if (!data) {
+      return [];
+    }
+
+    const url = BASE_URL + `/author/${encodeURIComponent(data.authorName)}`;
 
     return [
-      { title: `${data.authorId} | CRAN/E` },
+      { title: `${data.authorName} | CRAN/E` },
       {
         name: "description",
-        content: `All R packages created by ${data.authorId} for CRAN`,
+        content: `All R packages created by ${data.authorName} for CRAN`,
       },
       {
         property: "og:image",
         content: `${url}/og`,
       },
-      { property: "og:title", content: `${data.authorId} | CRAN/E` },
+      { property: "og:title", content: `${data.authorName} | CRAN/E` },
       {
         property: "og:description",
-        content: `All R packages created by ${data.authorId} for CRAN`,
+        content: `All R packages created by ${data.authorName} for CRAN`,
       },
       { property: "og:url", content: url },
     ];
   },
   (params) => {
     const data = params.data as AuthorRes;
+
+    if (!data) {
+      return [];
+    }
 
     return [
       {
@@ -59,27 +71,27 @@ export const meta = mergeMeta(
             href: "/author",
           },
           {
-            name: data.authorId,
-            href: `/author/${data.authorId}`,
+            name: data.authorName,
+            href: `/author/${data.authorName}`,
           },
         ]),
       },
       {
         "script:ld+json": composeFAQJsonLd([
           {
-            q: `Who is ${data.authorId}?`,
-            a: `${data.authorId} is the author of ${data.packages.length} CRAN packages.`,
+            q: `Who is ${data.authorName}?`,
+            a: `${data.authorName} is the author of ${data.packages.length} CRAN packages.`,
           },
           {
-            q: `What packages has ${data.authorId} created?`,
-            a: `${data.authorId} has created the following CRAN packages: ${data.packages
+            q: `What packages has ${data.authorName} created?`,
+            a: `${data.authorName} has created the following CRAN packages: ${data.packages
               .slice(5)
               .map((pkg) => pkg.name)
               .join(", ")}`,
           },
           {
-            q: `Who else has worked with ${data.authorId}?`,
-            a: `${data.authorId} has worked with the following authors: ${data.otherAuthors
+            q: `Who else has worked with ${data.authorName}?`,
+            a: `${data.authorName} has worked with the following authors: ${data.otherAuthors
               .slice(5)
               .join(", ")}`,
           },
@@ -90,9 +102,9 @@ export const meta = mergeMeta(
 );
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const { authorId } = params;
+  const { authorName } = params;
 
-  if (!authorId) {
+  if (!authorName) {
     throw new Response(null, {
       status: 400,
       statusText: "Valid author ID is required",
@@ -102,9 +114,9 @@ export const loader: LoaderFunction = async ({ params }) => {
   let item: AuthorRes;
 
   try {
-    item = await AuthorService.getAuthor(authorId);
+    item = await AuthorService.getAuthorDetailsByName(authorName);
     if (!item) {
-      throw new Error(`Author '${authorId}' not found`);
+      throw new Error(`Author '${authorName}' not found`);
     }
     item.packages = uniqBy(item.packages, (pkg) => pkg.name);
     item.otherAuthors = uniqBy(item.otherAuthors, (author) => author);
@@ -112,20 +124,23 @@ export const loader: LoaderFunction = async ({ params }) => {
     slog.error(error);
     throw new Response(null, {
       status: 404,
-      statusText: `Author '${authorId}' not found`,
+      statusText: `Author '${authorName}' not found`,
     });
   }
 
   return json(item, {
     headers: {
-      "Cache-Control": `public, max-age=${hoursToSeconds(12)}`,
+      "Cache-Control": IS_DEV
+        ? "max-age=0, s-maxage=0"
+        : `public, max-age=${hoursToSeconds(12)}`,
     },
   });
 };
 
 export default function AuthorPage() {
-  const data = useLoaderData() as AuthorRes;
-  const { authorId, otherAuthors, packages, description } = data;
+  const data = useLoaderData() as NonNullable<AuthorRes>;
+
+  const { authorName, otherAuthors, packages, description } = data;
 
   const countPackages = packages.length;
   const hasOtherAuthors = otherAuthors.length > 0;
@@ -134,7 +149,7 @@ export default function AuthorPage() {
     <>
       <Header
         gradient="jade"
-        headline={authorId}
+        headline={authorName}
         subline={`Author of ${countPackages} CRAN ${countPackages === 1 ? "package" : "packages"}`}
         ornament={<Tag>CRAN Author</Tag>}
       />
@@ -167,7 +182,7 @@ export default function AuthorPage() {
   );
 }
 
-function SynopsisSection(props: Pick<AuthorRes, "description">) {
+function SynopsisSection(props: Pick<NonNullable<AuthorRes>, "description">) {
   const { description } = props;
 
   return (
@@ -179,7 +194,7 @@ function SynopsisSection(props: Pick<AuthorRes, "description">) {
   );
 }
 
-function PackagesSection(props: Pick<AuthorRes, "packages">) {
+function PackagesSection(props: Pick<NonNullable<AuthorRes>, "packages">) {
   const { packages } = props;
   const count = packages.length;
 
@@ -206,7 +221,7 @@ function PackagesSection(props: Pick<AuthorRes, "packages">) {
   );
 }
 
-function TeamSection(props: Pick<AuthorRes, "otherAuthors">) {
+function TeamSection(props: Pick<NonNullable<AuthorRes>, "otherAuthors">) {
   const { otherAuthors } = props;
 
   return (

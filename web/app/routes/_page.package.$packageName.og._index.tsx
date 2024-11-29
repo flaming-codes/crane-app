@@ -2,15 +2,17 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { composePackageOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { hoursToSeconds } from "date-fns";
-import { packageSlugSchema } from "../data/package.shape";
+import { packageNameSchema } from "../data/package.shape";
 import { PackageService } from "../data/package.service";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
-  const { packageId } = params;
+  const { packageName } = params;
 
-  const parsedId = packageSlugSchema.safeParse(packageId);
-  const exists = await PackageService.checkPackageExists(parsedId.data || "");
+  const parsedId = packageNameSchema.safeParse(packageName);
+  const exists = await PackageService.checkPackageExistsByName(
+    parsedId.data || "",
+  );
 
   if (parsedId.error || !exists) {
     throw new Response(null, {

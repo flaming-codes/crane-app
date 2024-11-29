@@ -4,7 +4,6 @@ import { AnchorLink, Anchors } from "../modules/anchors";
 import { PackageService } from "../data/package.service";
 import { Link, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunctionArgs, useLocation } from "react-router";
-import { Pkg } from "../data/types";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { PageContent } from "../modules/page-content";
@@ -32,19 +31,41 @@ import {
   mergeMeta,
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
-import { uniq } from "es-toolkit";
+import { groupBy, uniq } from "es-toolkit";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
 import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
-import {
-  CranDownloadsResponse,
-  CranTopDownloadedPackagesRes,
-  CranTrendingPackagesRes,
-} from "../data/package-insight.shape";
+import { CranDownloadsResponse } from "../data/package-insight.shape";
 import { Heatmap } from "../modules/charts.heatmap";
 import { ClientOnly } from "remix-utils/client-only";
 import { LineGraph } from "../modules/charts.line";
 import { getFunnyPeakDownloadComment } from "../modules/package.insights.server";
+import { IS_DEV } from "../modules/app.server";
+import { AuthorService } from "../data/author.service";
+import { Tables } from "../data/supabase.types.generated";
+import { PackageDependency, PackageRelationshipType } from "../data/types";
+
+type Pkg = Tables<"cran_packages">;
+
+type Author = Tables<"authors"> & { roles: string[] };
+
+type LoaderData = {
+  item: Pkg;
+  relations: Partial<Record<PackageRelationshipType, PackageDependency[]>>;
+  authors: Author[];
+  maintainer: Author;
+  dailyDownloads: CranDownloadsResponse;
+  yearlyDailyDownloads: CranDownloadsResponse;
+  lastRelease: string;
+  totalMonthDownloads: number;
+  yesterdayDownloads: { day: string; downloads: number };
+  peakYearlyDayDownloads?: { day: string; downloads: number };
+  monthlyDayDownloadsComment: string;
+  totalYearDownloads: number;
+  totalYearlyDownloadsComment: string;
+  indexOfTrendingItems: number;
+  indexOfTopDownloads: number;
+};
 
 const PackageDependencySearch = lazy(() =>
   import("../modules/package-dependency-search").then((mod) => ({
@@ -63,7 +84,7 @@ const sections = [
 
 export const meta = mergeMeta(
   ({ data }) => {
-    const { item } = data as { item: Pkg };
+    const { item } = data as LoaderData;
     const url = BASE_URL + `/package/${encodeURIComponent(item.name)}`;
 
     return [
@@ -76,7 +97,7 @@ export const meta = mergeMeta(
     ];
   },
   ({ data }) => {
-    const { item } = data as { item: Pkg };
+    const { item, maintainer, authors, lastRelease } = data as LoaderData;
 
     return [
       {
@@ -99,11 +120,11 @@ export const meta = mergeMeta(
           },
           {
             q: `Who maintains ${item.name}?`,
-            a: item.maintainer?.name || "Unknown",
+            a: maintainer?.name || "Unknown",
           },
           {
             q: `Who authored ${item.name}?`,
-            a: item.author?.map((a) => a.name).join(", ") || "Unknown",
+            a: authors?.map((a) => a.name).join(", ") || "Unknown",
           },
           {
             q: `What is the current version of ${item.name}?`,
@@ -111,10 +132,7 @@ export const meta = mergeMeta(
           },
           {
             q: `When was the last release of ${item.name}?`,
-            a: `The last release of the R-package '${item.version}' was ${formatRelative(
-              item.date,
-              new Date(),
-            )}`,
+            a: `The last release of the R-package '${item.version}' was ${lastRelease}`,
           },
           {
             q: `Where can I search for the R-package '${item.name}'?`,
@@ -126,25 +144,10 @@ export const meta = mergeMeta(
   },
 );
 
-type LoaderData = {
-  item: Pkg;
-  dailyDownloads: CranDownloadsResponse;
-  yearlyDailyDownloads: CranDownloadsResponse;
-  lastRelease: string;
-  totalMonthDownloads: number;
-  yesterdayDownloads: { day: string; downloads: number };
-  peakYearlyDayDownloads: { day: string; downloads: number };
-  monthlyDayDownloadsComment: string;
-  totalYearDownloads: number;
-  totalYearlyDownloadsComment: string;
-  indexOfTrendingItems: number;
-  indexOfTopDownloads: number;
-};
-
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { packageId } = params;
+  const { packageName } = params;
 
-  if (!packageId) {
+  if (!packageName) {
     throw new Response(null, {
       status: 404,
       statusText: `No package ID provided`,
@@ -153,115 +156,156 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   const now = new Date();
 
-  let item: Pkg | undefined = undefined;
-  let dailyDownloads: CranDownloadsResponse = [];
-  let yearlyDailyDownloads: CranDownloadsResponse = [];
-  let trendingPackages: CranTrendingPackagesRes = [];
-  let topDownloads: CranTopDownloadedPackagesRes | undefined = undefined;
+  const data: Partial<LoaderData> = {
+    item: undefined,
+    relations: {},
+    authors: [],
+    maintainer: undefined,
+    dailyDownloads: [],
+    yearlyDailyDownloads: [],
+    lastRelease: "",
+    totalMonthDownloads: 0,
+    yesterdayDownloads: undefined,
+    peakYearlyDayDownloads: undefined,
+    monthlyDayDownloadsComment: "",
+    totalYearDownloads: 0,
+    totalYearlyDownloadsComment: "",
+    indexOfTrendingItems: -1,
+    indexOfTopDownloads: -1,
+  };
 
   try {
+    const _item = await PackageService.getPackageByName(packageName);
+    if (!_item) {
+      throw new Response(null, {
+        status: 404,
+        statusText: `Package '${packageName}' not found`,
+      });
+    }
+
+    data.item = _item;
+
+    // Fetch additional data.
     const [
-      _item,
+      _relations,
+      _authors,
       _dailyDownloads,
       _yearlyDailyDownloads,
       _trendingPackages,
       _topDownloads,
     ] = await Promise.all([
-      PackageService.getPackage(packageId),
+      PackageService.getPackageRelationsByPackageId(_item.id),
+      AuthorService.getAuthorsByPackageId(_item.id),
       PackageInsightService.getDailyDownloadsForPackage(
-        packageId,
+        packageName,
         "last-month",
       ),
       PackageInsightService.getDailyDownloadsForPackage(
-        packageId,
+        packageName,
         `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
       ),
       PackageInsightService.getTrendingPackages(),
       PackageInsightService.getTopDownloadedPackages("last-day", 50),
     ]);
-    if (!_item) {
-      throw new Response(null, {
-        status: 404,
-        statusText: `Package '${packageId}' not found`,
-      });
-    }
-    item = _item;
-    dailyDownloads = _dailyDownloads;
-    yearlyDailyDownloads = _yearlyDailyDownloads;
-    trendingPackages = _trendingPackages;
-    topDownloads = _topDownloads;
+
+    // Assign the fetched data.
+    data.relations = groupBy(
+      _relations || [],
+      (item) => item.relationship_type,
+    ) as unknown as LoaderData["relations"];
+
+    data.authors = (_authors || [])
+      .map(({ author, roles }) => ({
+        ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
+        roles: roles || [],
+      }))
+      .filter((a) => !a.roles.includes("mnt"));
+
+    data.maintainer = (_authors || [])
+      .map(({ author, roles }) => ({
+        ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
+        roles: roles || [],
+      }))
+      .filter((a) => a.roles.includes("mnt"))
+      .at(0);
+
+    data.dailyDownloads = _dailyDownloads;
+
+    data.yearlyDailyDownloads = _yearlyDailyDownloads;
+
+    data.totalMonthDownloads = _dailyDownloads
+      .at(0)
+      ?.downloads.reduce((acc, curr) => acc + curr.downloads, 0);
+
+    data.yesterdayDownloads = _dailyDownloads.at(0)?.downloads.at(-1);
+
+    const maxYearlyDownloads = [
+      ...(_yearlyDailyDownloads[0]?.downloads || []),
+    ].sort((a, b) => b.downloads - a.downloads)[0] || { day: "", downloads: 0 };
+
+    data.peakYearlyDayDownloads = _yearlyDailyDownloads[0].downloads.find(
+      (d) => d.downloads === maxYearlyDownloads.downloads,
+    );
+
+    const groupedByMonthDownloads = _yearlyDailyDownloads
+      .at(0)
+      ?.downloads.reduce(
+        (acc, curr) => {
+          const month = format(new Date(curr.day), "MMM");
+          if (!acc[month]) {
+            acc[month] = 0;
+          }
+          acc[month] += curr.downloads;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+
+    data.totalYearDownloads = Object.values(
+      groupedByMonthDownloads || {},
+    ).reduce((acc, curr) => acc + curr, 0);
+
+    data.lastRelease = formatRelative(_item.last_released_at, new Date());
+
+    data.totalYearlyDownloadsComment = getFunnyPeakDownloadComment(
+      data.totalYearDownloads,
+    );
+
+    data.monthlyDayDownloadsComment = getFunnyPeakDownloadComment(
+      data.totalMonthDownloads ?? 0,
+    );
+
+    data.indexOfTrendingItems = _trendingPackages.findIndex(
+      (item) => item.package === packageName,
+    );
+
+    data.indexOfTopDownloads = _topDownloads?.downloads.findIndex(
+      (item) => item.package === packageName,
+    );
   } catch (error) {
     slog.error(error);
     throw new Response(null, {
       status: 404,
-      statusText: `Package '${packageId}' not found`,
+      statusText: `Package '${packageName}' not found`,
     });
   }
 
-  const totalMonthDownloads = dailyDownloads[0].downloads.reduce(
-    (acc, curr) => acc + curr.downloads,
-    0,
-  );
-  const yesterdayDownloads = dailyDownloads[0]?.downloads.at(-1);
-
-  const maxYearlyDownloads = [
-    ...(yearlyDailyDownloads[0]?.downloads || []),
-  ].sort((a, b) => b.downloads - a.downloads)[0] || { day: "", downloads: 0 };
-  const peakYearlyDayDownloads = yearlyDailyDownloads[0].downloads.find(
-    (d) => d.downloads === maxYearlyDownloads.downloads,
-  );
-
-  const groupedByMonthDownloads = yearlyDailyDownloads[0].downloads.reduce(
-    (acc, curr) => {
-      const month = format(new Date(curr.day), "MMM");
-      if (!acc[month]) {
-        acc[month] = 0;
-      }
-      acc[month] += curr.downloads;
-      return acc;
+  return json(data, {
+    headers: {
+      "Cache-Control": IS_DEV
+        ? "max-age=0, s-maxage=0"
+        : `public, max-age=${minutesToSeconds(10)}`,
     },
-    {} as Record<string, number>,
-  );
-  const totalYearDownloads = Object.values(groupedByMonthDownloads).reduce(
-    (acc, curr) => acc + curr,
-    0,
-  );
-
-  const indexOfTrendingItems = trendingPackages.findIndex(
-    (item) => item.package === packageId,
-  );
-  const indexOfTopDownloads = topDownloads?.downloads.findIndex(
-    (item) => item.package === packageId,
-  );
-
-  return json(
-    {
-      item,
-      dailyDownloads,
-      yearlyDailyDownloads,
-      lastRelease: formatRelative(item.date, new Date()),
-      totalMonthDownloads,
-      yesterdayDownloads,
-      peakYearlyDayDownloads,
-      totalYearDownloads,
-      totalYearlyDownloadsComment:
-        getFunnyPeakDownloadComment(totalYearDownloads),
-      monthlyDayDownloadsComment:
-        getFunnyPeakDownloadComment(totalMonthDownloads),
-      indexOfTrendingItems,
-      indexOfTopDownloads,
-    },
-    {
-      headers: {
-        "Cache-Control": `public, max-age=${minutesToSeconds(10)}`,
-      },
-    },
-  );
+  });
 };
 
 export default function PackagePage() {
+  const data = useLoaderData<LoaderData>();
   const {
     item,
+    relations,
+    maintainer,
+    authors,
     dailyDownloads,
     yearlyDailyDownloads,
     lastRelease,
@@ -273,7 +317,7 @@ export default function PackagePage() {
     peakYearlyDayDownloads,
     indexOfTrendingItems,
     indexOfTopDownloads,
-  } = useLoaderData<LoaderData>();
+  } = data;
 
   return (
     <>
@@ -305,13 +349,10 @@ export default function PackagePage() {
         <DocumentationPageContentSection
           vignettes={item.vignettes}
           materials={item.materials}
-          inviews={item.inviews}
+          in_views={item.in_views}
         />
 
-        <TeamPageContentSection
-          maintainer={item.maintainer}
-          author={item.author}
-        />
+        <TeamPageContentSection maintainer={maintainer} authors={authors} />
 
         <Separator />
 
@@ -336,32 +377,22 @@ export default function PackagePage() {
 
         <Separator />
 
-        <DependenciesPageContentSection
-          depends={item.depends}
-          imports={item.imports}
-          enhances={item.enhances}
-          suggests={item.suggests}
-          linkingto={item.linkingto}
-          reverse_depends={item.reverse_depends}
-          reverse_imports={item.reverse_imports}
-          reverse_suggests={item.reverse_suggests}
-          reverse_enhances={item.reverse_enhances}
-          reverse_linkingto={item.reverse_linkingto}
-        />
+        <DependenciesPageContentSection relations={relations} />
       </PageContent>
     </>
   );
 }
 
-function AboveTheFoldSection(props: {
-  item: Pkg;
-  lastRelease: string;
-  indexOfTrendingItems: number;
-  indexOfTopDownloads: number;
-}) {
+function AboveTheFoldSection(
+  props: Pick<
+    LoaderData,
+    "item" | "lastRelease" | "indexOfTopDownloads" | "indexOfTrendingItems"
+  >,
+) {
   const { item, lastRelease, indexOfTrendingItems, indexOfTopDownloads } =
     props;
-  const rVersion = item.depends?.find((d) => d.name === "R")?.version;
+
+  const rVersion = item.r_version || "unknown";
 
   const getTrendingLabel = () => {
     if (indexOfTrendingItems < 0) return null;
@@ -424,16 +455,18 @@ function AboveTheFoldSection(props: {
             </li>
           ) : null}
           {item.link
-            ? uniq(item.link.links).map((href, i) => (
-                <li key={href + i}>
-                  <ItemExternalGeneralLinkPill href={href} />
-                </li>
-              ))
+            ? uniq((item.link as Record<string, string[]>).links).map(
+                (href, i) => (
+                  <li key={href + i}>
+                    <ItemExternalGeneralLinkPill href={href} />
+                  </li>
+                ),
+              )
             : null}
-          {item.bugreports ? (
+          {item.bug_reports ? (
             <li>
               <ExternalLinkPill
-                href={item.bugreports}
+                href={item.bug_reports}
                 icon={<RiBug2Line size={18} />}
               >
                 File a bug report
@@ -443,20 +476,20 @@ function AboveTheFoldSection(props: {
           {item.cran_checks ? (
             <li>
               <ExternalLinkPill
-                href={item.cran_checks.link}
+                href={(item.cran_checks as Record<string, string>).link}
                 icon={<RiExternalLinkLine size={18} />}
               >
-                {item.cran_checks.label}
+                {(item.cran_checks as Record<string, string>).label}
               </ExternalLinkPill>
             </li>
           ) : null}
           {item.reference_manual ? (
             <li>
               <ExternalLinkPill
-                href={item.reference_manual.link}
+                href={(item.reference_manual as Record<string, string>).link}
                 icon={<RiFilePdf2Line size={18} />}
               >
-                {item.reference_manual.label}
+                {(item.reference_manual as Record<string, string>).label}
               </ExternalLinkPill>
             </li>
           ) : null}
@@ -468,8 +501,8 @@ function AboveTheFoldSection(props: {
           <li>
             <InfoPill label="R version">{rVersion || "unknown"}</InfoPill>
           </li>
-          {item.license && item.license.length > 0
-            ? item.license.map((license) => (
+          {item.licenses
+            ? (item.licenses as Record<string, string>[]).map((license) => (
                 <li key={license.link}>
                   <ExternalLink href={license.link}>
                     <InfoPill label="License">
@@ -482,7 +515,7 @@ function AboveTheFoldSection(props: {
             : null}
           <li>
             <InfoPill label="Needs compilation?">
-              {item.needscompilation === "no" ? "No" : "Yes"}
+              {item.needs_compilation ? "Yes" : "No"}
             </InfoPill>
           </li>
           {item.language ? (
@@ -496,16 +529,17 @@ function AboveTheFoldSection(props: {
             </li>
           ) : null}
           {item.citation &&
-          item.citation.link &&
-          Array.isArray(item.citation.link) &&
-          item.citation.link.length > 0
-            ? item.citation.link.map((href) => (
-                <li key={href}>
-                  <ExternalLinkPill href={href}>
-                    {item.citation?.label || href}
-                  </ExternalLinkPill>
-                </li>
-              ))
+          (item.citation as Record<string, string>[]) &&
+          (item.citation as Record<string, string>[]).length > 0
+            ? (item.citation as Record<string, string>[]).map(
+                ({ link, label }) => (
+                  <li key={link}>
+                    <ExternalLinkPill href={link}>
+                      {label || link}
+                    </ExternalLinkPill>
+                  </li>
+                ),
+              )
             : null}
           <li>
             <InfoPill
@@ -552,47 +586,51 @@ function BinariesPageContentSection(
       fragment="binaries"
     >
       <ul className="grid grid-cols-2 items-start gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {macos_binaries?.map((item, i) => (
-          <li key={item.link + i}>
-            <BinaryDownloadLink
-              variant="iris"
-              href={item.link}
-              os="macOS"
-              headline={item.label.split(" ")?.[0]?.replace(":", "")}
-              arch={
-                item.label
-                  .split(" ")?.[1]
-                  ?.replace(":", "")
-                  .replace("(", "")
-                  .replace(")", "") || "x86_64"
-              }
-            />
-          </li>
-        )) || null}
-        {windows_binaries?.map((item, i) => (
-          <li key={item.link + i}>
-            <BinaryDownloadLink
-              variant="iris"
-              href={item.link}
-              os="Windows"
-              headline={item.label.split(" ")?.[0]?.replace(":", "")}
-              arch={
-                item.label
-                  .split(" ")?.[1]
-                  ?.replace(":", "")
-                  .replace("(", "")
-                  .replace(")", "") || "x86_64"
-              }
-            />
-          </li>
-        )) || null}
+        {(macos_binaries as Record<"link" | "label", string>[])?.map(
+          (item, i) => (
+            <li key={item.link + i}>
+              <BinaryDownloadLink
+                variant="iris"
+                href={item.link}
+                os="macOS"
+                headline={item.label.split(" ")?.[0]?.replace(":", "")}
+                arch={
+                  item.label
+                    .split(" ")?.[1]
+                    ?.replace(":", "")
+                    .replace("(", "")
+                    .replace(")", "") || "x86_64"
+                }
+              />
+            </li>
+          ),
+        ) || null}
+        {(windows_binaries as Record<"link" | "label", string>[])?.map(
+          (item, i) => (
+            <li key={item.link + i}>
+              <BinaryDownloadLink
+                variant="iris"
+                href={item.link}
+                os="Windows"
+                headline={item.label.split(" ")?.[0]?.replace(":", "")}
+                arch={
+                  item.label
+                    .split(" ")?.[1]
+                    ?.replace(":", "")
+                    .replace("(", "")
+                    .replace(")", "") || "x86_64"
+                }
+              />
+            </li>
+          ),
+        ) || null}
         {old_sources ? (
-          <li key={old_sources.link}>
+          <li key={(old_sources as Record<"link" | "label", string>).link}>
             <BinaryDownloadLink
               variant="iris"
-              href={old_sources.link}
+              href={(old_sources as Record<"link" | "label", string>).link}
               os="Old Source"
-              headline={old_sources.label}
+              headline={(old_sources as Record<"link" | "label", string>).label}
             />
           </li>
         ) : null}
@@ -601,11 +639,13 @@ function BinariesPageContentSection(
   );
 }
 
-function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
-  const { maintainer, author } = props;
+function TeamPageContentSection(
+  props: Pick<LoaderData, "maintainer" | "authors">,
+) {
+  const { maintainer, authors } = props;
 
-  const otherAuthors = author?.filter((a) => a.name !== maintainer?.name);
-  const maintainerRoles = author?.find(
+  const otherAuthors = authors?.filter((a) => a.name !== maintainer?.name);
+  const maintainerRoles = authors?.find(
     (a) => a.name === maintainer?.name,
   )?.roles;
 
@@ -624,7 +664,7 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
               isMaintainer
               name={maintainer.name}
               roles={maintainerRoles || []}
-              link={maintainer.email}
+              link={maintainer.email || ""}
             />
           </li>
         ) : null}
@@ -634,7 +674,13 @@ function TeamPageContentSection(props: Pick<Pkg, "maintainer" | "author">) {
                 <ContactPill
                   name={author.name}
                   roles={author.roles || []}
-                  link={author.link}
+                  link={
+                    author.orc_link ||
+                    author.linkedin_link ||
+                    author.github_link ||
+                    author.unknown_link ||
+                    ""
+                  }
                 />
               </li>
             ))
@@ -770,9 +816,11 @@ function InsightsPageContentSection(props: {
 }
 
 function DocumentationPageContentSection(
-  props: Pick<Pkg, "vignettes" | "materials" | "inviews">,
+  props: Pick<Pkg, "in_views" | "vignettes" | "materials">,
 ) {
-  const { vignettes, materials, inviews } = props;
+  const vignettes = props.vignettes as Record<string, string>[];
+  const materials = props.materials as Record<string, string>[];
+  const inviews = props.in_views as Record<string, string>[];
 
   const hasVignettes = vignettes && vignettes.length > 0;
   const hasMaterials = materials && materials.length > 0;
@@ -837,47 +885,12 @@ function DocumentationPageContentSection(
   );
 }
 
-function DependenciesPageContentSection(
-  props: Pick<
-    Pkg,
-    | "depends"
-    | "imports"
-    | "enhances"
-    | "suggests"
-    | "linkingto"
-    | "reverse_depends"
-    | "reverse_imports"
-    | "reverse_suggests"
-    | "reverse_enhances"
-    | "reverse_linkingto"
-  >,
-) {
-  const {
-    depends,
-    imports,
-    enhances,
-    suggests,
-    linkingto,
-    reverse_depends,
-    reverse_imports,
-    reverse_suggests,
-    reverse_enhances,
-    reverse_linkingto,
-  } = props;
+function DependenciesPageContentSection(props: Pick<LoaderData, "relations">) {
+  const { relations } = props;
 
   const location = useLocation();
 
-  const hasAny =
-    depends?.length ||
-    imports?.length ||
-    enhances?.length ||
-    suggests?.length ||
-    linkingto?.length ||
-    reverse_depends?.length ||
-    reverse_imports?.length ||
-    reverse_suggests?.length ||
-    reverse_enhances?.length ||
-    reverse_linkingto?.length;
+  const hasAny = Object.values(relations).some((v) => v?.length > 0);
 
   if (!hasAny) {
     return null;
@@ -890,7 +903,10 @@ function DependenciesPageContentSection(
       className="min-h-96"
     >
       <Suspense>
-        <PackageDependencySearch key={location.pathname} {...props} />
+        <PackageDependencySearch
+          key={location.pathname}
+          relations={relations}
+        />
       </Suspense>
     </PageContentSection>
   );
