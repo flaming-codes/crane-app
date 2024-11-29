@@ -36,7 +36,9 @@ export class PackageInsightService {
 
     const data = await this.fetchFromCRAN<CranTopDownloadedPackagesRes>(
       `/top/${period}/${count.toString()}`,
-    );
+    ).then((data) => {
+      return data || [];
+    });
 
     this.cache.set(`/top/${period}/${count.toString()}`, data);
     return data;
@@ -53,10 +55,12 @@ export class PackageInsightService {
     const data = await this.fetchFromCRAN<CranTrendingPackagesRes>(
       "/trending",
     ).then((data) => {
-      return data.map((item) => ({
-        ...item,
-        increase: `${new Number(item.increase).toFixed(0)}%`,
-      }));
+      return (
+        data?.map((item) => ({
+          ...item,
+          increase: `${new Number(item.increase).toFixed(0)}%`,
+        })) || []
+      );
     });
 
     this.cache.set("/trending", data);
@@ -76,7 +80,9 @@ export class PackageInsightService {
 
     const data = await this.fetchFromCRAN<CranDownloadsResponse>(
       `/downloads/daily/${range}/${name}`,
-    );
+    ).then((data) => {
+      return data || [];
+    });
 
     this.cache.set(`/downloads/daily/${range}/${name}`, data);
     return data;
