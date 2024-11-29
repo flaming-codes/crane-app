@@ -205,20 +205,45 @@ export class AuthorService {
   static async searchAuthors(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    const usableQuery = query.trim();
+    // We combine different search strategies to get the best results.
+    const baseQueryTemplate = query.trim().split(" ");
 
-    const { data, error } = await supabase
-      .from("authors")
-      .select("id,name")
-      .textSearch("name", usableQuery, { type: "phrase" })
-      .limit(limit);
+    const matchAnyTermQuery = baseQueryTemplate
+      .map((q) => `'${q.trim()}'`)
+      .join(" | ");
 
-    if (error) {
-      slog.error("Error in searchAuthors", error);
-      return [];
-    }
+    const matchAllTermsQuery = baseQueryTemplate
+      .map((q) => `${q.trim()}`)
+      .join(" & ");
 
-    return data || [];
+    const results = await Promise.all([
+      supabase
+        .from("authors")
+        .select("id,name")
+        .textSearch("name", matchAllTermsQuery)
+        .limit(limit)
+        .then((res) => {
+          if (res.error) {
+            slog.error("Error in searchAuthors", res.error);
+            return [];
+          }
+          return res.data || [];
+        }),
+      supabase
+        .from("authors")
+        .select("id,name")
+        .textSearch("name", matchAnyTermQuery)
+        .limit(limit)
+        .then((res) => {
+          if (res.error) {
+            slog.error("Error in searchAuthors", res.error);
+            return [];
+          }
+          return res.data || [];
+        }),
+    ]);
+
+    return uniqBy(results.flat(), (author) => author.id);
   }
 
   /**
