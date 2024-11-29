@@ -15,11 +15,11 @@ export async function action({ request }: ActionFunctionArgs) {
       ]);
 
       return json({
-        authors: {
-          hits: authorHits,
-        },
         packages: {
           hits: packageHits,
+        },
+        authors: {
+          hits: authorHits,
         },
       });
     },

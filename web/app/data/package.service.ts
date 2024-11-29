@@ -1,10 +1,7 @@
-import { uniqBy } from "es-toolkit";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { packageIdSchema, packageNameSchema } from "./package.shape";
-import { ExpiringSearchIndex, OverviewPkg, SitemapPackage } from "./types";
-import MiniSearch from "minisearch";
-import { addHours } from "date-fns";
+import { OverviewPkg, SitemapPackage } from "./types";
 import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
@@ -16,13 +13,6 @@ export class PackageService {
   private static allOverviewPackages: OverviewPkg[] = [];
 
   private static allSitemapPackages: SitemapPackage[] = [];
-
-  private static _packagesSearchIndex: ExpiringSearchIndex<
-    MiniSearch<OverviewPkg>
-  > = {
-    index: new MiniSearch<OverviewPkg>({ fields: ["ignore"] }),
-    expiresAt: 0,
-  };
 
   static async getPackageByName(packageName: string): Promise<Package | null> {
     packageNameSchema.parse(packageName);
@@ -143,15 +133,18 @@ export class PackageService {
   static async searchPackages(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    if (this._packagesSearchIndex.expiresAt < Date.now()) {
-      await this.initSearchablePackagesIndex();
+    const { data, error } = await supabase
+      .from("cran_packages")
+      .select("id,name")
+      .textSearch("name, title, description", query, { config: "english" })
+      .limit(limit);
+
+    if (error) {
+      slog.error("Error in searchPackages", error);
+      return [];
     }
 
-    const hits = this._packagesSearchIndex.index
-      .search(query, { fuzzy: 0.3, prefix: true })
-      .slice(0, limit);
-
-    return hits || [];
+    return data;
   }
 
   private static sanitizeSitemapName(name: string) {
@@ -160,29 +153,5 @@ export class PackageService {
     if (next.endsWith(`"`)) next = next.slice(0, -1);
     if (next.endsWith(",")) next = next.slice(0, -1);
     return next.trim();
-  }
-
-  private static async initSearchablePackagesIndex() {
-    this._packagesSearchIndex = {
-      expiresAt: addHours(Date.now(), 12).getTime(),
-      index: new MiniSearch({
-        idField: "name",
-        fields: ["name", "title"],
-        storeFields: ["name", "slug", "description", "author_names"],
-      }),
-    };
-
-    const packages = await this.getAllOverviewPackages().then((pkgs) =>
-      uniqBy(pkgs, (pkg) => pkg.name),
-    );
-
-    const searchablePackages: OverviewPkg[] = packages.map((pkg) => ({
-      name: pkg.name,
-      slug: pkg.slug,
-      title: pkg.title,
-      author_names: pkg.author_names,
-    }));
-
-    this._packagesSearchIndex.index.addAll(searchablePackages);
   }
 }

@@ -1,10 +1,8 @@
-import { addHours, differenceInCalendarDays } from "date-fns";
+import { differenceInCalendarDays } from "date-fns";
 import { authorNameSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
-import { AllAuthorsMap, ExpiringSearchIndex, SearchableAuthor } from "./types";
-import MiniSearch from "minisearch";
-import { encodeSitemapSymbols } from "../modules/sitemap";
+import { AllAuthorsMap } from "./types";
 import { supabase } from "./supabase.server";
 import { packageIdSchema } from "./package.shape";
 import { slog } from "../modules/observability.server";
@@ -15,13 +13,11 @@ import { Tables } from "./supabase.types.generated";
 export class AuthorService {
   private static _allAuthors: AllAuthorsMap | undefined = undefined;
 
-  private static _authorsSearchIndex: ExpiringSearchIndex<
-    MiniSearch<SearchableAuthor>
-  > = {
-    index: new MiniSearch({ fields: ["ignore"] }),
-    expiresAt: 0,
-  };
-
+  /**
+   *
+   * @param authorName
+   * @returns
+   */
   static async getAuthorDetailsByName(authorName: string) {
     authorNameSchema.parse(authorName);
 
@@ -90,6 +86,11 @@ export class AuthorService {
     };
   }
 
+  /**
+   *
+   * @param packageId
+   * @returns
+   */
   static async getAuthorsByPackageId(packageId: number) {
     packageIdSchema.parse(packageId);
 
@@ -120,12 +121,21 @@ export class AuthorService {
     }>;
   }
 
+  /**
+   *
+   * @param authorId
+   * @returns
+   */
   static async checkAuthorExists(authorId: string) {
     authorNameSchema.parse(authorId);
     const all = await this.getAllAuthors();
     return Boolean(all[authorId]);
   }
 
+  /**
+   *
+   * @returns
+   */
   static async getAllAuthors() {
     if (!this._allAuthors) {
       this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
@@ -133,6 +143,10 @@ export class AuthorService {
     return this._allAuthors;
   }
 
+  /**
+   *
+   * @returns
+   */
   static async getAllSitemapAuthors(): Promise<
     Array<[slug: string, lastMod: undefined]>
   > {
@@ -145,20 +159,36 @@ export class AuthorService {
     ]);
   }
 
+  /**
+   *
+   * @param query
+   * @param options
+   * @returns
+   */
   static async searchAuthors(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    if (this._authorsSearchIndex.expiresAt < Date.now()) {
-      await this.initSearchableAuthorsIndex();
+    const usableQuery = query.trim();
+
+    const { data, error } = await supabase
+      .from("authors")
+      .select("id,name")
+      .textSearch("name", usableQuery, { type: "phrase" })
+      .limit(limit);
+
+    if (error) {
+      slog.error("Error in searchAuthors", error);
+      return [];
     }
 
-    const hits = this._authorsSearchIndex.index
-      .search(query, { fuzzy: 0.3, prefix: true })
-      .slice(0, limit);
-
-    return hits || [];
+    return data || [];
   }
 
+  /**
+   *
+   * @param name
+   * @returns
+   */
   private static sanitizeSitemapName(name: string) {
     let next = name.trim();
     if (next.startsWith(`"`)) next = next.slice(1);
@@ -167,30 +197,6 @@ export class AuthorService {
     if (next.endsWith("'")) next = next.slice(0, -1);
     if (next.endsWith(",")) next = next.slice(0, -1);
     return next.trim();
-  }
-
-  private static async initSearchableAuthorsIndex() {
-    this._authorsSearchIndex = {
-      expiresAt: addHours(Date.now(), 12).getTime(),
-      index: new MiniSearch({
-        idField: "name",
-        fields: ["name"],
-        storeFields: ["name", "slug", "totalPackages"],
-      }),
-    };
-
-    const authors = await this.getAllAuthors();
-    const searchableAuthors: SearchableAuthor[] = Object.entries(authors).map(
-      ([name, packageNames]) => ({
-        name,
-        slug: encodeSitemapSymbols(encodeURIComponent(name)),
-        totalPackages: Array.isArray(packageNames)
-          ? packageNames.length
-          : undefined,
-      }),
-    );
-
-    this._authorsSearchIndex.index.addAll(searchableAuthors);
   }
 
   private static getEventForAuthor(authorId: string) {
