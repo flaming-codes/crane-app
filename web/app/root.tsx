@@ -85,7 +85,6 @@ export default function App() {
           sizes="96x96"
         />
         <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
-        <link rel="shortcut icon" href="/icons/favicon.ico" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
