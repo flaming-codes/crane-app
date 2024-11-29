@@ -2,13 +2,15 @@ import { addHours, differenceInCalendarDays } from "date-fns";
 import { authorNameSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
-import { PackageService } from "./package.service";
 import { AllAuthorsMap, ExpiringSearchIndex, SearchableAuthor } from "./types";
 import MiniSearch from "minisearch";
 import { encodeSitemapSymbols } from "../modules/sitemap";
 import { supabase } from "./supabase.server";
 import { packageIdSchema } from "./package.shape";
 import { slog } from "../modules/observability.server";
+import { PackageService } from "./package.service";
+import { uniqBy } from "es-toolkit";
+import { Tables } from "./supabase.types.generated";
 
 export class AuthorService {
   private static _allAuthors: AllAuthorsMap | undefined = undefined;
@@ -28,17 +30,56 @@ export class AuthorService {
       .select("*")
       .eq("name", authorName)
       .maybeSingle();
-    if (author.error) {
+
+    if (author.error || !author.data) {
       return null;
     }
 
-    const authorPackages: any[] = [];
-    const otherAuthors: any[] = [];
+    const authorPackages = (
+      (await PackageService.getPackagesByAuthorId(author.data.id)) || []
+    )
+      .map((pkg) => ({
+        package: pkg.package as unknown as {
+          id: number;
+          name: string;
+          title: string;
+          description: string;
+        },
+        roles: pkg.roles,
+      }))
+      // Deduplicate packages by ID
+      .filter(
+        (pkg, index, self) =>
+          index ===
+          self.findIndex((other) => other.package.id === pkg.package.id),
+      );
 
+    const packageIds = uniqBy(
+      authorPackages.map((pkg) => pkg.package.id),
+      (id) => id,
+    );
+
+    const otherAuthors = await Promise.all(
+      packageIds.map((id) =>
+        this.getAuthorsByPackageId(id).then((authors) =>
+          authors
+            ?.filter(
+              ({ author: otherAuthor }) => author.data!.id !== otherAuthor.id,
+            )
+            .map(({ author }) => author),
+        ),
+      ),
+    ).then((authors) =>
+      uniqBy(authors.flat(), (author) => author).filter(
+        (author, index, self) =>
+          author &&
+          index === self.findIndex((other) => other?.id === author.id),
+      ),
+    );
     const description = this.generateAuthorDescription(
       authorName,
-      [], // package slugs
-      otherAuthors,
+      authorPackages.map((pkg) => pkg.package.name),
+      otherAuthors.map((author) => author?.name || "").filter(Boolean),
     );
 
     return {
@@ -68,7 +109,15 @@ export class AuthorService {
       return null;
     }
 
-    return data;
+    if (!data) {
+      return [];
+    }
+
+    return data as unknown as Array<{
+      roles: string[] | null;
+      package_id: number;
+      author: Tables<"authors">;
+    }>;
   }
 
   static async checkAuthorExists(authorId: string) {

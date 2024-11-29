@@ -88,7 +88,7 @@ export class PackageService {
       .select(
         `
         author:author_id (id,name),
-        package_id,
+        package:package_id (id,name,title,description),
         roles
         `,
       )
