@@ -29,9 +29,9 @@ export class AIPackageService {
     const prompt = [
       "You're a world-class summarizer of scientific code packages written in R.",
       "Given the currently most downloaded packages on CRAN and their descriptions below, summarize a concise analysis of the trending TOPICS of those packages.",
-      "The goal is to get a birds-eye-view of the current trends. Respond with highly concise, to-the-point, well-written prose.",
+      "The goal is to get a birds-eye-view of the current trends. Respond with highly concise, to-the-point briefings.",
       "Respond in HTML, but don't include 'html' or 'body' tags.",
-      "Never use headings or lists.",
+      "Never use headings or lists. Split your response into 3 (three) paragraphs with a <br/> after each.",
     ].join(" ");
 
     const context = await contextComposer();
@@ -62,9 +62,9 @@ export class AIPackageService {
     const prompt = [
       "You're a world-class summarizer of scientific code packages written in R.",
       "Given the currently trending packages and their descriptions below, summarize a highly concise analysis of the trending TOPICS of those packages.",
-      "The goal is to get a birds-eye-view of the current trends. Respond with concise, to-the-point, well-written prose.",
+      "The goal is to get a birds-eye-view of the current trends. Respond with highly concise, to-the-point briefings.",
       "Respond in HTML, but don't include 'html' or 'body' tags.",
-      "Never use headings or lists.",
+      "Never use headings or lists. Split your response into 3 (three) paragraphs with a <br/> after each.",
     ].join(" ");
 
     const context = await contextComposer();
