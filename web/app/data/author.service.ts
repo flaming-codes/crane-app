@@ -1,17 +1,26 @@
-import { differenceInCalendarDays } from "date-fns";
 import { authorNameSchema } from "./author.shape";
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
-import { AllAuthorsMap } from "./types";
+import { AllAuthorsMap, SitemapItem } from "./types";
 import { supabase } from "./supabase.server";
 import { packageIdSchema } from "./package.shape";
 import { slog } from "../modules/observability.server";
 import { PackageService } from "./package.service";
 import { uniqBy } from "es-toolkit";
 import { Tables } from "./supabase.types.generated";
+import TTLCache from "@isaacs/ttlcache";
+import { format, hoursToMilliseconds } from "date-fns";
+
+type CacheKey = "sitemap-items";
+
+type CacheValue = SitemapItem[];
 
 export class AuthorService {
   private static _allAuthors: AllAuthorsMap | undefined = undefined;
+
+  private static cache = new TTLCache<CacheKey, CacheValue>({
+    ttl: hoursToMilliseconds(6),
+  });
 
   /**
    *
@@ -147,16 +156,48 @@ export class AuthorService {
    *
    * @returns
    */
-  static async getAllSitemapAuthors(): Promise<
-    Array<[slug: string, lastMod: undefined]>
-  > {
-    if (!this._allAuthors) {
-      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+  static async getAllSitemapAuthors(): Promise<SitemapItem[]> {
+    const cached = this.cache.get("sitemap-items");
+    if (cached) {
+      return cached;
     }
-    return Object.keys(this._allAuthors).map((name) => [
-      this.sanitizeSitemapName(name),
-      undefined,
-    ]);
+
+    const countRes = await supabase
+      .from("authors")
+      .select("id,name", { count: "exact", head: true });
+
+    if (countRes.error) {
+      slog.error("Error in getAllSitemapAuthors", countRes.error);
+      return [];
+    }
+
+    const divisor = 1_000;
+    const chunks = Math.ceil((countRes.count ?? 0) / divisor);
+
+    const sitemapItems: SitemapItem[] = [];
+    // Sequentially fetch all the chunks to avoid hitting the rate limit,
+    // and no Promise.all to not stress the server too much.
+    for (let i = 0; i < chunks; i++) {
+      const { data, error } = await supabase
+        .from("authors")
+        .select("name,_last_scraped_at")
+        .range(i * divisor, (i + 1) * divisor - 1);
+
+      if (error) {
+        slog.error("Error in getAllSitemapAuthors", error);
+        return [];
+      }
+
+      data.forEach((item) => {
+        sitemapItems.push([
+          this.sanitizeSitemapName(item.name),
+          format(new Date(item._last_scraped_at), "yyyy-MM-dd"),
+        ]);
+      });
+    }
+
+    this.cache.set("sitemap-items", sitemapItems);
+    return sitemapItems;
   }
 
   /**
@@ -197,27 +238,6 @@ export class AuthorService {
     if (next.endsWith("'")) next = next.slice(0, -1);
     if (next.endsWith(",")) next = next.slice(0, -1);
     return next.trim();
-  }
-
-  private static getEventForAuthor(authorId: string) {
-    // TODO: move to data-generation.
-    const events: Record<
-      string,
-      [{ day: string; month: string; type: string }]
-    > = {
-      "Lukas Schönmann": [{ day: "04", month: "11", type: "birthday" }],
-    };
-    // TODO: Fatal flaw: this will use the server-time as the current time.
-    const now = new Date();
-    return events[authorId]?.find(
-      ({ day, month }) =>
-        Math.abs(
-          differenceInCalendarDays(
-            now,
-            new Date(`${now.getFullYear()}-${month}-${day}`),
-          ),
-        ) <= 2,
-    )?.type;
   }
 
   private static generateAuthorDescription(

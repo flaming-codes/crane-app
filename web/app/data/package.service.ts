@@ -1,19 +1,27 @@
 import { ENV } from "./env";
 import { fetchData } from "./fetch";
 import { packageIdSchema, packageNameSchema } from "./package.shape";
-import { OverviewPkg, SitemapPackage } from "./types";
+import { OverviewPkg, SitemapItem } from "./types";
 import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
 import { shuffle, uniqBy } from "es-toolkit";
+import TTLCache from "@isaacs/ttlcache";
+import { format, hoursToMilliseconds } from "date-fns";
 
 type Package = Tables<"cran_packages">;
+
+type CacheKey = "sitemap-items";
+
+type CacheValue = SitemapItem[];
 
 export class PackageService {
   private static allOverviewPackages: OverviewPkg[] = [];
 
-  private static allSitemapPackages: SitemapPackage[] = [];
+  private static cache = new TTLCache<CacheKey, CacheValue>({
+    ttl: hoursToMilliseconds(6),
+  });
 
   static async getPackageByName(packageName: string): Promise<Package | null> {
     packageNameSchema.parse(packageName);
@@ -118,17 +126,48 @@ export class PackageService {
     return this.allOverviewPackages;
   }
 
-  static async getAllSitemapPackages(): Promise<SitemapPackage[]> {
-    if (this.allSitemapPackages.length === 0) {
-      const items = await fetchData<SitemapPackage[]>(
-        ENV.VITE_SITEMAP_PKGS_URL,
-      );
-      this.allSitemapPackages = items.map(([name, lastMod]) => [
-        this.sanitizeSitemapName(name),
-        lastMod,
-      ]);
+  static async getAllSitemapPackages(): Promise<SitemapItem[]> {
+    const cached = this.cache.get("sitemap-items");
+    if (cached) {
+      return cached;
     }
-    return this.allSitemapPackages;
+
+    const countRes = await supabase
+      .from("cran_packages")
+      .select("id,name", { count: "exact", head: true });
+
+    if (countRes.error) {
+      slog.error("Error in getAllSitemapPackages", countRes.error);
+      return [];
+    }
+
+    const divisor = 1_000;
+    const chunks = Math.ceil((countRes.count ?? 0) / divisor);
+
+    const sitemapItems: SitemapItem[] = [];
+    // Sequentially fetch all the chunks to avoid hitting the rate limit,
+    // and no Promise.all to not stress the server too much.
+    for (let i = 0; i < chunks; i++) {
+      const { data, error } = await supabase
+        .from("cran_packages")
+        .select("name,last_released_at")
+        .range(i * divisor, (i + 1) * divisor - 1);
+
+      if (error) {
+        slog.error("Error in getAllSitemapPackages", error);
+        return [];
+      }
+
+      data.forEach((item) => {
+        sitemapItems.push([
+          this.sanitizeSitemapName(item.name),
+          format(new Date(item.last_released_at), "yyyy-MM-dd"),
+        ]);
+      });
+    }
+
+    this.cache.set("sitemap-items", sitemapItems);
+    return sitemapItems;
   }
 
   static async searchPackages(

@@ -14,7 +14,7 @@ import {
   ProvidedByLabel,
 } from "../modules/provided-by-label";
 import { PackageService } from "../data/package.service";
-import { AIPackageService } from "../ai/packages";
+import { AIPackageService } from "../ai/packages.service.server";
 
 const anchors = composeAnchorItems(["Analysis", "Trending Packages"]);
 

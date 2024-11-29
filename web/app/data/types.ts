@@ -23,7 +23,7 @@ export type OverviewPkg = {
   author_names: string[];
 };
 
-export type SitemapPackage = [slug: string, lastMod: string];
+export type SitemapItem = [name: string, lastModAt: string];
 
 export type AllAuthorsMap = Record<string, string[]>;
 
