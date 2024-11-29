@@ -1,71 +1,76 @@
-import { addHours } from "date-fns";
+import { hoursToMilliseconds } from "date-fns";
 import { ENV } from "./env";
-import { ExpiringSearchIndex } from "./types";
+import TTLCache from "@isaacs/ttlcache";
 
-type PlausibleDataPoint = { page: string; visitors: number };
+type TopPagesCacheKey = "authors" | "packages" | "start" | "about";
 
-type TopPageDomain = "authors" | "packages" | "start" | "about";
-type TopPagesIndex = Record<TopPageDomain, Array<PlausibleDataPoint>>;
+type TopPagesCacheValue = { page: string; visitors: number };
 
 export class PageInsightService {
   private static plausibleBaseUrl = "https://plausible.io/api/v1/stats";
 
-  private static topPages: ExpiringSearchIndex<TopPagesIndex> = {
-    index: {
+  private static topPagesCache = new TTLCache<
+    TopPagesCacheKey,
+    TopPagesCacheValue[]
+  >({
+    ttl: hoursToMilliseconds(1),
+  });
+
+  static async getTopPages() {
+    const keys: TopPagesCacheKey[] = ["authors", "packages", "start", "about"];
+    const topPages: Record<TopPagesCacheKey, TopPagesCacheValue[]> = {
       authors: [],
       packages: [],
       start: [],
       about: [],
-    },
-    expiresAt: 0,
-  };
+    };
 
-  static async getTopPages() {
-    if (this.topPages.expiresAt < Date.now()) {
-      const res = await this.composePlausibleRequest(
-        `${this.plausibleBaseUrl}/breakdown`,
-        {
-          site_id: ENV.VITE_PLAUSIBLE_SITE_ID,
-          period: "day",
-          property: "event:page",
-        },
-      );
+    const allCachedValues = keys.map((key) => {
+      return this.topPagesCache.get(key);
+    });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch top pages");
+    if (allCachedValues.every((value) => value !== undefined)) {
+      for (const key of keys) {
+        topPages[key] = this.topPagesCache.get(key) || [];
       }
-
-      const { results } = await res.json();
-
-      const grouped: TopPagesIndex = {
-        authors: [],
-        packages: [],
-        start: [],
-        about: [],
-      };
-
-      results.forEach((item: PlausibleDataPoint) => {
-        const getDomain = (): TopPageDomain => {
-          if (item.page === "/") return "start";
-          if (item.page === "/about") return "about";
-          if (item.page.startsWith("/author/")) return "authors";
-          return "packages";
-        };
-
-        const domain = getDomain();
-
-        if (!grouped[domain]) {
-          grouped[domain] = [];
-        }
-        grouped[domain].push(item);
-      });
-
-      this.topPages.index = grouped;
-      this.topPages.expiresAt = addHours(Date.now(), 1).getTime();
+      return topPages;
     }
 
-    return this.topPages.index;
+    const res = await this.composePlausibleRequest(
+      `${this.plausibleBaseUrl}/breakdown`,
+      {
+        site_id: ENV.VITE_PLAUSIBLE_SITE_ID,
+        period: "day",
+        property: "event:page",
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch top pages");
+    }
+
+    const { results } = await res.json();
+
+    results.forEach((item: TopPagesCacheValue) => {
+      const getDomain = (): TopPagesCacheKey => {
+        if (item.page === "/") return "start";
+        if (item.page === "/about") return "about";
+        if (item.page.startsWith("/author/")) return "authors";
+        return "packages";
+      };
+      topPages[getDomain()].push(item);
+    });
+
+    for (const key of keys) {
+      this.topPagesCache.set(key, topPages[key]);
+    }
+
+    return topPages;
   }
+
+  /*
+   * Private methods.
+   */
 
   private static composePlausibleRequest(
     url: string,

@@ -138,7 +138,11 @@ export const Heatmap = memo((props: HeatmapProps) => {
               {week.map(({ downloads, dateObj }, dayIndex) => {
                 const dateLabel = format(dateObj, "MMM d, yyyy");
                 // Determine group color based on download count
-                const level = getColorLevel(downloads, minDownloads, maxDownloads)
+                const level = getColorLevel(
+                  downloads,
+                  minDownloads,
+                  maxDownloads,
+                );
                 return (
                   <div
                     key={dayIndex}
@@ -175,7 +179,11 @@ export const Heatmap = memo((props: HeatmapProps) => {
         <div className="flex items-center gap-1 font-mono">
           <span className="mx-2">{nrFormat.format(minDownloads)}</span>
           {/* Color Legend */}
-          <div role="region" aria-label="Color legend for download heatmap" className="flex gap-1">
+          <div
+            role="region"
+            aria-label="Color legend for download heatmap"
+            className="flex gap-1"
+          >
             <HeatmapLegendColor index={6} label="Low" />
             <HeatmapLegendColor index={7} label="Slightly higher" />
             <HeatmapLegendColor index={8} label="Higher" />
@@ -196,7 +204,7 @@ function HeatmapLegendColor(props: { index: number; label: string }) {
 
   return (
     <div
-      className={clsx("size-6 md:size-7 rounded-md", colorClasses[index])}
+      className={clsx("size-6 rounded-md md:size-7", colorClasses[index])}
       role="listitem"
       aria-label={`${label} download range`}
       onMouseEnter={() => {
