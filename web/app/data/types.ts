@@ -16,13 +16,6 @@ export type PackageDependency = {
   related_package: { id: number; name: string };
 };
 
-export type OverviewPkg = {
-  name: string;
-  title: string;
-  slug: string;
-  author_names: string[];
-};
-
 export type SitemapItem = [name: string, lastModAt: string];
 
 export type AllAuthorsMap = Record<string, string[]>;

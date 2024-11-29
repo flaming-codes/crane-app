@@ -2,16 +2,14 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { composeAuthorOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { hoursToSeconds } from "date-fns";
-import { authorNameSchema } from "../data/author.shape";
 import { AuthorService } from "../data/author.service";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
-  const { authorName } = params;
+  const { authorName = "" } = params;
 
-  const parsedId = authorNameSchema.safeParse(authorName);
-  const exists = await AuthorService.checkAuthorExists(parsedId.data || "");
-  if (parsedId.error || !exists) {
+  const exists = await AuthorService.checkAuthorExistsByName(authorName);
+  if (!exists) {
     throw new Response(null, {
       status: 400,
       statusText: "Valid author ID is required",
@@ -19,7 +17,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   const png = await composeAuthorOGImage({
-    name: parsedId.data,
+    name: authorName,
     requestUrl: origin,
   });
 

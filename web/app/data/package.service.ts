@@ -1,7 +1,5 @@
-import { ENV } from "./env";
-import { fetchData } from "./fetch";
 import { packageIdSchema, packageNameSchema } from "./package.shape";
-import { OverviewPkg, SitemapItem } from "./types";
+import { SitemapItem } from "./types";
 import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
@@ -17,11 +15,11 @@ type CacheKey = "sitemap-items";
 type CacheValue = SitemapItem[];
 
 export class PackageService {
-  private static allOverviewPackages: OverviewPkg[] = [];
-
   private static cache = new TTLCache<CacheKey, CacheValue>({
     ttl: hoursToMilliseconds(6),
   });
+
+  private static readonly sitemapDivisor = 1000;
 
   static async getPackageByName(packageName: string): Promise<Package | null> {
     packageNameSchema.parse(packageName);
@@ -117,15 +115,6 @@ export class PackageService {
     return count === 1;
   }
 
-  static async getAllOverviewPackages(): Promise<OverviewPkg[]> {
-    if (this.allOverviewPackages.length === 0) {
-      this.allOverviewPackages = await fetchData<OverviewPkg[]>(
-        ENV.VITE_OVERVIEW_PKGS_URL,
-      );
-    }
-    return this.allOverviewPackages;
-  }
-
   static async getAllSitemapPackages(): Promise<SitemapItem[]> {
     const cached = this.cache.get("sitemap-items");
     if (cached) {
@@ -141,8 +130,7 @@ export class PackageService {
       return [];
     }
 
-    const divisor = 1_000;
-    const chunks = Math.ceil((countRes.count ?? 0) / divisor);
+    const chunks = Math.ceil((countRes.count ?? 0) / this.sitemapDivisor);
 
     const sitemapItems: SitemapItem[] = [];
     // Sequentially fetch all the chunks to avoid hitting the rate limit,
@@ -151,7 +139,7 @@ export class PackageService {
       const { data, error } = await supabase
         .from("cran_packages")
         .select("name,last_released_at")
-        .range(i * divisor, (i + 1) * divisor - 1);
+        .range(i * this.sitemapDivisor, (i + 1) * this.sitemapDivisor - 1);
 
       if (error) {
         slog.error("Error in getAllSitemapPackages", error);

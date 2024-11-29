@@ -1,7 +1,5 @@
 import { authorNameSchema } from "./author.shape";
-import { ENV } from "./env";
-import { fetchData } from "./fetch";
-import { AllAuthorsMap, SitemapItem } from "./types";
+import { SitemapItem } from "./types";
 import { supabase } from "./supabase.server";
 import { packageIdSchema } from "./package.shape";
 import { slog } from "../modules/observability.server";
@@ -16,11 +14,11 @@ type CacheKey = "sitemap-items";
 type CacheValue = SitemapItem[];
 
 export class AuthorService {
-  private static _allAuthors: AllAuthorsMap | undefined = undefined;
-
   private static cache = new TTLCache<CacheKey, CacheValue>({
     ttl: hoursToMilliseconds(6),
   });
+
+  private static readonly sitemapDivisor = 1000;
 
   /**
    *
@@ -135,21 +133,20 @@ export class AuthorService {
    * @param authorId
    * @returns
    */
-  static async checkAuthorExists(authorId: string) {
-    authorNameSchema.parse(authorId);
-    const all = await this.getAllAuthors();
-    return Boolean(all[authorId]);
-  }
+  static async checkAuthorExistsByName(authorName: string) {
+    authorNameSchema.parse(authorName);
 
-  /**
-   *
-   * @returns
-   */
-  static async getAllAuthors() {
-    if (!this._allAuthors) {
-      this._allAuthors = await fetchData<AllAuthorsMap>(ENV.VITE_AP_PKGS_URL);
+    const { count, error } = await supabase
+      .from("authors")
+      .select("id", { count: "exact", head: true })
+      .eq("name", authorName);
+
+    if (error) {
+      slog.error("Error in checkAuthorExistsByName", error);
+      return false;
     }
-    return this._allAuthors;
+
+    return count === 1;
   }
 
   /**
@@ -171,8 +168,7 @@ export class AuthorService {
       return [];
     }
 
-    const divisor = 1_000;
-    const chunks = Math.ceil((countRes.count ?? 0) / divisor);
+    const chunks = Math.ceil((countRes.count ?? 0) / this.sitemapDivisor);
 
     const sitemapItems: SitemapItem[] = [];
     // Sequentially fetch all the chunks to avoid hitting the rate limit,
@@ -181,7 +177,7 @@ export class AuthorService {
       const { data, error } = await supabase
         .from("authors")
         .select("name,_last_scraped_at")
-        .range(i * divisor, (i + 1) * divisor - 1);
+        .range(i * this.sitemapDivisor, (i + 1) * this.sitemapDivisor - 1);
 
       if (error) {
         slog.error("Error in getAllSitemapAuthors", error);
