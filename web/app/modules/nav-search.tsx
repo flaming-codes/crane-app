@@ -66,7 +66,7 @@ export function NavSearch(props: Props) {
     data.set("q", e.target.value);
     data.set("action", "all");
     fetcher.submit(data, {
-      debounceTimeout: 200,
+      debounceTimeout: 100,
       method: "POST",
       action: "/api/search?index",
     });
