@@ -300,7 +300,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 export default function PackagePage() {
-  const data = useLoaderData<LoaderData>();
   const {
     item,
     relations,
@@ -317,7 +316,7 @@ export default function PackagePage() {
     peakYearlyDayDownloads,
     indexOfTrendingItems,
     indexOfTopDownloads,
-  } = data;
+  } = useLoaderData<LoaderData>();
 
   return (
     <>
@@ -408,10 +407,17 @@ function AboveTheFoldSection(
     return "Top downloaded package";
   };
 
+  // Description contains links in Markdown-format,
+  // we convert them to HTML.
+  const enhancedDescription = item.description.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" rel="noopener noreferrer" target="_blank" class="rounded-full text-xs inline-block mx-1 px-2 py-1 border translate-y-[-2px]">$1</a>',
+  );
+
   return (
     <PageContentSection>
       <div className="space-y-6">
-        <Prose html={item.description} />
+        <Prose html={enhancedDescription} />
       </div>
 
       <div className="flex flex-col gap-6 overflow-x-hidden">

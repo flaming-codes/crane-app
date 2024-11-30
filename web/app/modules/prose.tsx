@@ -7,7 +7,10 @@ type Props = PropsWithChildren<{
 }>;
 
 const twBase = cva({
-  base: "text-xl font-light leading-normal",
+  base: [
+    "text-xl font-light leading-normal",
+    // "[&>a]:underline [&>a]:underline-offset-4",
+  ],
 });
 
 export function Prose(props: Props) {
