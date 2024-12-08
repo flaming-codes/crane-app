@@ -1,4 +1,4 @@
-import { json, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { Anchors, AnchorLink } from "../modules/anchors";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
@@ -27,7 +27,7 @@ export async function loader() {
   const items = await AIPackageService.generateRVersionsSummary(async () =>
     PackageInsightService.getReleasesHTML(),
   );
-  return json({ items });
+  return { items };
 }
 
 export default function StatisticsCranPageVisitTrendsPage() {

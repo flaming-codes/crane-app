@@ -45,7 +45,7 @@ export default function handleRequest(
   createSecureHeaders({
     "Content-Security-Policy": {
       "default-src": ["'self'"],
-      "script-src": ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"],
+      "script-src": ["'self'", `'nonce-${nonce}'`],
       "connect-src": ["'self'", "https://plausible.io"],
       "style-src": ["'self'", "'unsafe-inline'"],
       "base-uri": ["'self'"],
@@ -77,13 +77,16 @@ function handleBotRequest(
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
+    const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
     const { pipe, abort } = renderToPipeableStream(
       <RemixServer
         context={remixContext}
+        nonce={nonce}
         url={request.url}
         abortDelay={ABORT_DELAY}
       />,
       {
+        nonce,
         onAllReady() {
           shellRendered = true;
           const body = new PassThrough();
@@ -127,13 +130,16 @@ function handleBrowserRequest(
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
+    const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
     const { pipe, abort } = renderToPipeableStream(
       <RemixServer
         context={remixContext}
+        nonce={nonce}
         url={request.url}
         abortDelay={ABORT_DELAY}
       />,
       {
+        nonce,
         onShellReady() {
           shellRendered = true;
           const body = new PassThrough();

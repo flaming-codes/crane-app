@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { data, LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import {
@@ -23,6 +23,13 @@ import { AIPackageService } from "../ai/packages.service.server";
 import { PackageService } from "../data/package.service";
 
 const anchors = composeAnchorItems(["Analysis", "Top Downloads"]);
+
+type LoaderData = {
+  topDownloads: Awaited<
+    ReturnType<typeof PackageInsightService.getTopDownloadedPackages>
+  >["downloads"];
+  summary: string;
+};
 
 export async function loader(params: LoaderFunctionArgs) {
   const { request } = params;
@@ -72,21 +79,20 @@ export async function loader(params: LoaderFunctionArgs) {
   const summary =
     await AIPackageService.generateTopDownloadsSummary(composeContext);
 
-  return json(
-    {
-      topDownloads: topDownloads || [],
-      summary,
+  const loaderData: LoaderData = {
+    topDownloads: topDownloads.downloads || [],
+    summary,
+  };
+
+  return data(loaderData, {
+    headers: {
+      "Cache-Control": `public, s-maxage=${hoursToSeconds(6)}`,
     },
-    {
-      headers: {
-        "Cache-Control": `public, s-maxage=${hoursToSeconds(6)}`,
-      },
-    },
-  );
+  });
 }
 
 export default function StatisticPackagesPage() {
-  const { topDownloads, summary } = useLoaderData<typeof loader>();
+  const { summary, topDownloads } = useLoaderData<LoaderData>();
 
   const nrFormatter = Intl.NumberFormat();
 
@@ -130,27 +136,25 @@ export default function StatisticPackagesPage() {
             during the last day.
           </p>
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {topDownloads.downloads.map(
-              ({ package: name, downloads }, index) => (
-                <li key={index}>
-                  <Link to={`/package/${encodeURIComponent(name)}`}>
-                    <InfoCard variant="sand" icon="internal">
-                      <div className="space-y-2">
-                        <h3 className="font-mono">{name}</h3>
-                        <ClientOnly>
-                          {() => (
-                            <p className="text-gray-dim animate-fade duration-150">
-                              {nrFormatter.format(downloads)}{" "}
-                              {downloads === 1 ? "download" : "Downloads"}
-                            </p>
-                          )}
-                        </ClientOnly>
-                      </div>
-                    </InfoCard>
-                  </Link>
-                </li>
-              ),
-            )}
+            {topDownloads.map(({ package: name, downloads }, index) => (
+              <li key={index}>
+                <Link to={`/package/${encodeURIComponent(name)}`}>
+                  <InfoCard variant="sand" icon="internal">
+                    <div className="space-y-2">
+                      <h3 className="font-mono">{name}</h3>
+                      <ClientOnly>
+                        {() => (
+                          <p className="text-gray-dim animate-fade duration-150">
+                            {nrFormatter.format(downloads)}{" "}
+                            {downloads === 1 ? "download" : "Downloads"}
+                          </p>
+                        )}
+                      </ClientOnly>
+                    </div>
+                  </InfoCard>
+                </Link>
+              </li>
+            ))}
           </ul>
           <DataProvidedByCRANLabel />
         </PageContentSection>

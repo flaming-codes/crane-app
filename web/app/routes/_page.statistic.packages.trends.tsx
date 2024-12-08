@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import { Header } from "../modules/header";
@@ -18,7 +18,15 @@ import { AIPackageService } from "../ai/packages.service.server";
 
 const anchors = composeAnchorItems(["Analysis", "Trending Packages"]);
 
-export async function loader() {
+type LoaderData = {
+  trends: {
+    package: string;
+    increase: string;
+  }[];
+  summary: string;
+};
+
+export const loader = async () => {
   const [trends] = await Promise.all([
     PackageInsightService.getTrendingPackages(),
   ]);
@@ -47,21 +55,20 @@ export async function loader() {
 
   const summary = await AIPackageService.generateTrendsSummary(composeContext);
 
-  return json(
-    {
-      trends: trends || [],
-      summary,
+  const loaderData: LoaderData = {
+    trends: trends || [],
+    summary,
+  };
+
+  return data(loaderData, {
+    headers: {
+      "Cache-Control": `public, s-maxage=${hoursToSeconds(6)}`,
     },
-    {
-      headers: {
-        "Cache-Control": `public, s-maxage=${hoursToSeconds(6)}`,
-      },
-    },
-  );
-}
+  });
+};
 
 export default function StatisticPackagesPage() {
-  const { trends, summary } = useLoaderData<typeof loader>();
+  const { trends, summary } = useLoaderData<LoaderData>();
 
   return (
     <>

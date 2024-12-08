@@ -3,7 +3,8 @@ import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
 import { PackageService } from "../data/package.service";
 import { Link, useLoaderData } from "@remix-run/react";
-import { json, LoaderFunctionArgs, useLocation } from "react-router";
+import { useLocation } from "react-router";
+import { data, type LoaderFunction } from "@remix-run/node";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { PageContent } from "../modules/page-content";
@@ -144,7 +145,7 @@ export const meta = mergeMeta(
   },
 );
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader: LoaderFunction = async ({ params }) => {
   const { packageName } = params;
 
   if (!packageName) {
@@ -156,7 +157,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   const now = new Date();
 
-  const data: Partial<LoaderData> = {
+  const loaderData: Partial<LoaderData> = {
     item: undefined,
     relations: {},
     authors: [],
@@ -183,7 +184,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       });
     }
 
-    data.item = _item;
+    loaderData.item = _item;
 
     // Fetch additional data.
     const [
@@ -209,19 +210,19 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     ]);
 
     // Assign the fetched data.
-    data.relations = groupBy(
+    loaderData.relations = groupBy(
       _relations || [],
       (item) => item.relationship_type,
     ) as unknown as LoaderData["relations"];
 
-    data.authors = (_authors || [])
+    loaderData.authors = (_authors || [])
       .map(({ author, roles }) => ({
         ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
         roles: roles || [],
       }))
       .filter((a) => !a.roles.includes("mnt"));
 
-    data.maintainer = (_authors || [])
+    loaderData.maintainer = (_authors || [])
       .map(({ author, roles }) => ({
         ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
         roles: roles || [],
@@ -229,23 +230,24 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       .filter((a) => a.roles.includes("mnt"))
       .at(0);
 
-    data.dailyDownloads = _dailyDownloads;
+    loaderData.dailyDownloads = _dailyDownloads;
 
-    data.yearlyDailyDownloads = _yearlyDailyDownloads;
+    loaderData.yearlyDailyDownloads = _yearlyDailyDownloads;
 
-    data.totalMonthDownloads = _dailyDownloads
+    loaderData.totalMonthDownloads = _dailyDownloads
       .at(0)
       ?.downloads?.reduce((acc, curr) => acc + curr.downloads, 0);
 
-    data.yesterdayDownloads = _dailyDownloads.at(0)?.downloads?.at(-1);
+    loaderData.yesterdayDownloads = _dailyDownloads.at(0)?.downloads?.at(-1);
 
     const maxYearlyDownloads = [
       ...(_yearlyDailyDownloads[0]?.downloads || []),
     ].sort((a, b) => b.downloads - a.downloads)[0] || { day: "", downloads: 0 };
 
-    data.peakYearlyDayDownloads = _yearlyDailyDownloads[0]?.downloads?.find(
-      (d) => d.downloads === maxYearlyDownloads.downloads,
-    );
+    loaderData.peakYearlyDayDownloads =
+      _yearlyDailyDownloads[0]?.downloads?.find(
+        (d) => d.downloads === maxYearlyDownloads.downloads,
+      );
 
     const groupedByMonthDownloads = _yearlyDailyDownloads
       ?.at(0)
@@ -261,25 +263,25 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
         {} as Record<string, number>,
       );
 
-    data.totalYearDownloads = Object.values(
+    loaderData.totalYearDownloads = Object.values(
       groupedByMonthDownloads || {},
     )?.reduce((acc, curr) => acc + curr, 0);
 
-    data.lastRelease = formatRelative(_item.last_released_at, new Date());
+    loaderData.lastRelease = formatRelative(_item.last_released_at, new Date());
 
-    data.totalYearlyDownloadsComment = getFunnyPeakDownloadComment(
-      data.totalYearDownloads,
+    loaderData.totalYearlyDownloadsComment = getFunnyPeakDownloadComment(
+      loaderData.totalYearDownloads,
     );
 
-    data.monthlyDayDownloadsComment = getFunnyPeakDownloadComment(
-      data.totalMonthDownloads ?? 0,
+    loaderData.monthlyDayDownloadsComment = getFunnyPeakDownloadComment(
+      loaderData.totalMonthDownloads ?? 0,
     );
 
-    data.indexOfTrendingItems = _trendingPackages.findIndex(
+    loaderData.indexOfTrendingItems = _trendingPackages.findIndex(
       (item) => item.package === packageName,
     );
 
-    data.indexOfTopDownloads = _topDownloads?.downloads.findIndex(
+    loaderData.indexOfTopDownloads = _topDownloads?.downloads.findIndex(
       (item) => item.package === packageName,
     );
   } catch (error) {
@@ -290,7 +292,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     });
   }
 
-  return json(data, {
+  return data(loaderData, {
     headers: {
       "Cache-Control": IS_DEV
         ? "max-age=0, s-maxage=0"

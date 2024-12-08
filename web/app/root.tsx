@@ -1,5 +1,4 @@
 import {
-  json,
   Link,
   Links,
   Meta,
@@ -15,6 +14,7 @@ import "./tailwind.css";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet";
+import { LoaderFunction } from "@remix-run/node";
 
 const isServer = typeof window === "undefined";
 
@@ -38,19 +38,19 @@ export const meta: MetaFunction = ({ location }) => {
   ];
 };
 
-export const loader = async () => {
+export const loader: LoaderFunction = async () => {
   const nonce = createNonce();
-
-  return json({
+  return {
     isProduction: ENV.NODE_ENV === "production",
     domain: ENV.VITE_PLAUSIBLE_SITE_ID,
     version: ENV.npm_package_version,
     nonce,
-  });
+  };
 };
 
 export default function App() {
   const data = useRouteLoaderData<typeof loader>("root");
+
   const nonce = data?.nonce;
 
   const isPlausibleEnabled = data?.isProduction && data?.domain;
