@@ -1,4 +1,4 @@
-import { json, type LoaderFunction } from "@remix-run/node";
+import { data, type LoaderFunction } from "@remix-run/node";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
@@ -125,7 +125,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  return json(item, {
+  return data(item, {
     headers: {
       "Cache-Control": IS_DEV
         ? "max-age=0, s-maxage=0"

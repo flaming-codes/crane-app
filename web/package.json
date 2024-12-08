@@ -25,7 +25,6 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@remix-pwa/client": "^3.0.7",
     "@remix-pwa/sw": "^3.0.10",
-    "@remix-pwa/worker-runtime": "^2.1.4",
     "@remix-run/node": "^2.15.0",
     "@remix-run/react": "^2.15.0",
     "@remix-run/serve": "^2.15.0",
@@ -56,6 +55,8 @@
   "devDependencies": {
     "@remix-pwa/dev": "^3.1.0",
     "@remix-run/dev": "^2.15.0",
+    "@remix-run/fs-routes": "^2.15.0",
+    "@remix-run/route-config": "^2.15.0",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
