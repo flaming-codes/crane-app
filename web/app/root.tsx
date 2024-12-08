@@ -14,7 +14,7 @@ import { Footer } from "./modules/footer";
 import "./tailwind.css";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
-import { createNonce } from "@mcansh/http-helmet/react";
+import { createNonce } from "@mcansh/http-helmet";
 
 const isServer = typeof window === "undefined";
 

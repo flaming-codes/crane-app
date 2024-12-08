@@ -44,11 +44,11 @@ export default function handleRequest(
   const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
   createSecureHeaders({
     "Content-Security-Policy": {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"],
-      connectSrc: ["'self'", "https://plausible.io"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      baseUri: ["'self'"],
+      "default-src": ["'self'"],
+      "script-src": ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"],
+      "connect-src": ["'self'", "https://plausible.io"],
+      "style-src": ["'self'", "'unsafe-inline'"],
+      "base-uri": ["'self'"],
     },
   }).forEach((value, key) => {
     responseHeaders.set(key, value);
