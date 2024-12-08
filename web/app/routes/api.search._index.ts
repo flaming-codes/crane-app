@@ -2,7 +2,6 @@ import { ActionFunction } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 import { AuthorService } from "../data/author.service";
 import { PackageService } from "../data/package.service";
-import { json } from "@remix-pwa/sw";
 
 export const action: ActionFunction = async ({ request }) => {
   return namedAction(request, {
@@ -15,7 +14,7 @@ export const action: ActionFunction = async ({ request }) => {
         AuthorService.searchAuthors(query),
       ]);
 
-      return json({
+      return Response.json({
         packages: {
           hits: packageHits,
         },

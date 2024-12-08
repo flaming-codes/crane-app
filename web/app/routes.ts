@@ -1,3 +1,3 @@
-import type { RouteConfig } from "@remix-run/route-config";
+import { flatRoutes } from "@remix-run/fs-routes";
 
-export default [] satisfies RouteConfig;
+export default flatRoutes();
