@@ -10,11 +10,11 @@ import {
   useRouteLoaderData,
 } from "@remix-run/react";
 import { Footer } from "./modules/footer";
-import "./tailwind.css";
+import stylesheet from "./tailwind.css?url";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet";
-import { LoaderFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunction } from "@remix-run/node";
 
 const isServer = typeof window === "undefined";
 
@@ -37,6 +37,10 @@ export const meta: MetaFunction = ({ location }) => {
     },
   ];
 };
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: stylesheet },
+];
 
 export const loader: LoaderFunction = async () => {
   const nonce = createNonce();
@@ -139,6 +143,45 @@ export default function App() {
         ) : null}
         <ScrollRestoration nonce={isServer ? nonce : ""} />
         <Scripts nonce={isServer ? nonce : ""} />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary() {
+  // const error = useRouteError() as Error | unknown;
+
+  return (
+    <html lang="en">
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="flex min-h-full flex-col bg-black">
+        {/* add the UI you want your users to see */}
+
+        <main className="flex h-full flex-1 flex-col justify-center">
+          <div className="mx-auto max-w-5xl px-2">
+            <h1 className="font-serif text-7xl italic">Oh no!</h1>
+            <p>
+              Something went wrong.
+              <br />
+              Please try in a few minutes again.
+            </p>
+          </div>
+        </main>
+
+        <Footer
+          variant="page"
+          start={
+            <li>
+              <Link to="/" className="underline-offset-4 hover:underline">
+                Home
+              </Link>
+            </li>
+          }
+        />
       </body>
     </html>
   );
