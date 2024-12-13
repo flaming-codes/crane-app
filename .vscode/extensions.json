@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "fabiospampinato.vscode-terminals",
-    "svelte.svelte-vscode"
-  ]
+  "recommendations": ["fabiospampinato.vscode-terminals"]
 }
