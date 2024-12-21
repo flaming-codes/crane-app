@@ -88,11 +88,13 @@ export const meta = mergeMeta(
     const { item } = data as LoaderData;
     const url = BASE_URL + `/package/${encodeURIComponent(item.name)}`;
 
+    const title = `${item.name}: ${item.title} | CRAN/E`;
+
     return [
-      { title: `${item.name} | CRAN/E` },
-      { name: "description", content: item.title },
-      { property: "og:title", content: `${item.name} | CRAN/E` },
-      { property: "og:description", content: item.title },
+      { title },
+      { name: "description", content: item.description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: item.description },
       { property: "og:url", content: url },
       { property: "og:image", content: `${url}/og` },
     ];
@@ -117,7 +119,7 @@ export const meta = mergeMeta(
         "script:ld+json": composeFAQJsonLd([
           {
             q: `What does the R-package '${item.name}' do?`,
-            a: item.title,
+            a: `${item.title}. ${item.description}`,
           },
           {
             q: `Who maintains ${item.name}?`,
