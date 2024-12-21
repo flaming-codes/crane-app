@@ -1,4 +1,4 @@
-import { Outlet } from "@remix-run/react";
+import { Outlet } from "react-router";
 import NavigationPage from "../modules/nav";
 import { Toaster } from "sonner";
 import { cva } from "cva";

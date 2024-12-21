@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { NavSearch } from "../modules/nav-search";
 import { PropsWithChildren, useRef, useState } from "react";
 import clsx from "clsx";

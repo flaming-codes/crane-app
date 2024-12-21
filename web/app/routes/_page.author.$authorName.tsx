@@ -1,9 +1,9 @@
-import { data, type LoaderFunction } from "@remix-run/node";
+import { data, type LoaderFunction } from "react-router";
 import { Header } from "../modules/header";
 import { Tag } from "../modules/tag";
 import { AnchorLink, Anchors } from "../modules/anchors";
 import { AuthorService } from "../data/author.service";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { Prose } from "../modules/prose";

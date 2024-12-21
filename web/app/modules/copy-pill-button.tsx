@@ -2,7 +2,6 @@ import { RiFileCopyLine } from "@remixicon/react";
 import clsx from "clsx";
 import { PropsWithChildren, useRef } from "react";
 import { toast } from "sonner";
-import { copyTextToClipboard } from "@remix-pwa/client";
 import { clog } from "./observability";
 
 type Props = PropsWithChildren<{
@@ -45,4 +44,8 @@ export function CopyPillButton(props: Props) {
       <code className="text-sm">{children}</code>
     </button>
   );
+}
+
+function copyTextToClipboard(text: string) {
+  return navigator.clipboard.writeText(text);
 }

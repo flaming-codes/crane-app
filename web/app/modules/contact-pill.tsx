@@ -6,7 +6,7 @@ import {
 } from "@remixicon/react";
 import clsx from "clsx";
 import { InfoPill } from "./info-pill";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { z } from "zod";
 
 type Props = {

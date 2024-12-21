@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useFetcher } from "react-router";
 import {
   RiArrowRightSLine,
   RiCloseFill,
@@ -12,16 +12,17 @@ import {
   ReactNode,
   RefObject,
   useCallback,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { ClientOnly } from "remix-utils/client-only";
 import { useKeyboardEvent, useKeyboardShortcut } from "./app";
-import { useDebounceFetcher } from "remix-utils/use-debounce-fetcher";
 import { Separator } from "./separator";
 import { InfoPill } from "./info-pill";
 import clsx from "clsx";
 import { sendEvent } from "./plausible";
+import { debounce } from "es-toolkit";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -55,22 +56,28 @@ export function NavSearch(props: Props) {
   } = props;
 
   const [input, setInput] = useState("");
-  const fetcher = useDebounceFetcher();
+  const fetcher = useFetcher();
   const actionData =
     (fetcher.data as SearchResults | undefined) || fallbackSearchResults;
+
+  const debouncedFetcher = useRef(
+    debounce((data: FormData) => {
+      fetcher.submit(data, {
+        method: "POST",
+        action: "/api/search?index",
+      });
+    }, 100),
+  );
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
 
     const data = new FormData();
     data.set("q", e.target.value);
-    data.set("action", "all");
-    fetcher.submit(data, {
-      debounceTimeout: 100,
-      method: "POST",
-      action: "/api/search?index",
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    data.set("intent", "all");
+
+    debouncedFetcher.current.cancel();
+    debouncedFetcher.current(data);
   }, []);
 
   const onSelect = useCallback(() => {

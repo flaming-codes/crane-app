@@ -2,7 +2,7 @@ import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { Header } from "../modules/header";
 import { mergeMeta } from "../modules/meta";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { ArticlePreviewInfoCard } from "../modules/article";
 import { BASE_URL } from "../modules/app";
 

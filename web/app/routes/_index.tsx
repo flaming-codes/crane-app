@@ -1,4 +1,4 @@
-import { data, useLoaderData } from "@remix-run/react";
+import { data, useLoaderData } from "react-router";
 import { SyneLogo } from "../modules/svg";
 import NavigationPage from "../modules/nav";
 import { randomInt } from "es-toolkit";
@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
 import { ClientOnly } from "remix-utils/client-only";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction } from "react-router";
 
 export const handle = {
   hasFooter: false,
