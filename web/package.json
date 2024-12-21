@@ -48,6 +48,7 @@
     "schema-dts": "^1.1.2",
     "sonner": "^1.7.1",
     "tailwindcss-animated": "^1.1.2",
+    "winston": "^3.17.0",
     "xss": "^1.0.15",
     "zod": "^3.24.1"
   },

@@ -17,7 +17,7 @@ import { createSecureHeaders } from "@mcansh/http-helmet";
 const ABORT_DELAY = 5_000;
 
 if (process.env.NODE_ENV === "development") {
-  server.listen();
+  server.listen({ onUnhandledRequest: "bypass" });
   server.events.on("request:start", ({ request }) => {
     slog.debug("MSW intercepted:", request.method, request.url);
   });

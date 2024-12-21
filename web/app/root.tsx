@@ -1,6 +1,8 @@
 import {
   Link,
   Links,
+  LinksFunction,
+  LoaderFunction,
   Meta,
   MetaFunction,
   Outlet,
@@ -14,7 +16,6 @@ import stylesheet from "./tailwind.css?url";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet";
-import { LinksFunction, LoaderFunction } from "react-router";
 
 const isServer = typeof window === "undefined";
 
@@ -42,7 +43,14 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
-export const loader: LoaderFunction = async () => {
+type LoaderData = {
+  isProduction: boolean;
+  domain: string;
+  version: string;
+  nonce: string;
+};
+
+export const loader: LoaderFunction = async (): Promise<LoaderData> => {
   const nonce = createNonce();
   return {
     isProduction: ENV.NODE_ENV === "production",
@@ -53,7 +61,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function App() {
-  const data = useRouteLoaderData<typeof loader>("root");
+  const data = useRouteLoaderData<LoaderData>("root");
 
   const nonce = data?.nonce;
 

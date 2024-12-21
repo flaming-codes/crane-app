@@ -1,23 +1,18 @@
-/* eslint-disable no-console */
+import { createLogger, format, transports } from "winston";
 
-const PREFIX = "[SERVER]";
+export const slog = createLogger({
+  format: format.combine(
+    format.timestamp(),
+    format.printf(({ timestamp, label, level, message }) => {
+      return `${timestamp} ${label} ${level}: ${message}`;
+    }),
+  ),
+});
 
-const slog = {
-  log: (...message: unknown[]) => {
-    console.log(PREFIX, ...message);
-  },
-  warn: (...message: unknown[]) => {
-    console.warn(PREFIX, ...message);
-  },
-  info: (...message: unknown[]) => {
-    console.info(PREFIX, ...message);
-  },
-  error: (...message: unknown[]) => {
-    console.error(PREFIX, ...message);
-  },
-  debug: (...message: unknown[]) => {
-    console.debug(PREFIX, ...message);
-  },
-};
-
-export { slog };
+if (process.env.NODE_ENV === "production") {
+  slog.add(new transports.Console({ format: format.json() }));
+} else if (process.env.NODE_ENV === "test") {
+  slog.add(new transports.Console({ format: format.errors() }));
+} else {
+  slog.add(new transports.Console({ format: format.simple() }));
+}
