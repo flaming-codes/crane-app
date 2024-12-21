@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 const PREFIX = "[SERVER]";
 
 const slog = {

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 const PREFIX = "[CLIENT]";
 
 const clog = {

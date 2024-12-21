@@ -84,7 +84,6 @@ function handleBotRequest(
         context={reactRouterContext}
         nonce={nonce}
         url={request.url}
-        abortDelay={ABORT_DELAY}
       />,
       {
         nonce,
@@ -138,7 +137,6 @@ function handleBrowserRequest(
         context={reactRouterContext}
         nonce={nonce}
         url={request.url}
-        abortDelay={ABORT_DELAY}
       />,
       {
         nonce,
