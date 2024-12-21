@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { ExternalLink } from "./external-link";
 import { cva, VariantProps } from "cva";
 import { ReactNode } from "react";

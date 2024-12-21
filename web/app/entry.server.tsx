@@ -5,9 +5,9 @@
  */
 
 import { PassThrough } from "node:stream";
-import type { EntryContext } from "@remix-run/node";
-import { createReadableStreamFromReadable } from "@remix-run/node";
-import { RemixServer } from "@remix-run/react";
+import type { EntryContext } from "react-router";
+import { createReadableStreamFromReadable } from "@react-router/node";
+import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { server } from "./mocks/node.server";
@@ -27,7 +27,7 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
 ) {
   responseHeaders.set("X-Frame-Options", "DENY");
   responseHeaders.set("X-Content-Type-Options", "nosniff");
@@ -41,7 +41,7 @@ export default function handleRequest(
     "max-age=31536000; includeSubDomains; preload",
   );
 
-  const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
+  const nonce = reactRouterContext.staticHandlerContext.loaderData.root?.nonce;
   createSecureHeaders({
     "Content-Security-Policy": {
       "default-src": ["'self'"],
@@ -59,13 +59,13 @@ export default function handleRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext,
+        reactRouterContext,
       )
     : handleBrowserRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext,
+        reactRouterContext,
       );
 }
 
@@ -73,14 +73,15 @@ function handleBotRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
-    const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
+    const nonce =
+      reactRouterContext.staticHandlerContext.loaderData.root?.nonce;
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
+      <ServerRouter
+        context={reactRouterContext}
         nonce={nonce}
         url={request.url}
         abortDelay={ABORT_DELAY}
@@ -126,14 +127,15 @@ function handleBrowserRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
-    const nonce = remixContext.staticHandlerContext.loaderData.root?.nonce;
+    const nonce =
+      reactRouterContext.staticHandlerContext.loaderData.root?.nonce;
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
+      <ServerRouter
+        context={reactRouterContext}
         nonce={nonce}
         url={request.url}
         abortDelay={ABORT_DELAY}

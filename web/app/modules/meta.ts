@@ -1,6 +1,6 @@
 import type { BreadcrumbList, FAQPage, WithContext } from "schema-dts";
 import { BASE_URL } from "./app";
-import type { MetaDescriptor, MetaFunction } from "@remix-run/node";
+import type { MetaDescriptor, MetaFunction } from "react-router";
 
 export const mergeMeta = (
   overrideFn: MetaFunction,

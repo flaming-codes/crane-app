@@ -1,5 +1,5 @@
-import { data, LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { data, LoaderFunctionArgs } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import {
   TopDownloadedPackagesRange,

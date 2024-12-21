@@ -8,13 +8,13 @@ import {
   ScrollRestoration,
   useMatches,
   useRouteLoaderData,
-} from "@remix-run/react";
+} from "react-router";
 import { Footer } from "./modules/footer";
 import stylesheet from "./tailwind.css?url";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet";
-import { LinksFunction, LoaderFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunction } from "react-router";
 
 const isServer = typeof window === "undefined";
 
