@@ -6,13 +6,12 @@ import clsx from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
 import { ClientOnly } from "remix-utils/client-only";
-import { LoaderFunction } from "react-router";
 
 export const handle = {
   hasFooter: false,
 };
 
-export const loader: LoaderFunction = async () => {
+export const loader = async () => {
   const meshIndex = randomInt(0, 27);
   const version = ENV.npm_package_version;
   return data(

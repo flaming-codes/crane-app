@@ -19,7 +19,7 @@
     "db.types": "npx supabase gen types typescript --local > app/data/db.types.generated.ts"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.0.11",
+    "@ai-sdk/google": "^1.0.12",
     "@isaacs/ttlcache": "^1.4.1",
     "@mcansh/http-helmet": "^0.12.0",
     "@radix-ui/react-slot": "^1.1.1",
@@ -31,7 +31,7 @@
     "@splinetool/react-spline": "^4.0.0",
     "@supabase/supabase-js": "^2.47.10",
     "@uidotdev/usehooks": "^2.4.1",
-    "ai": "^4.0.21",
+    "ai": "^4.0.22",
     "clsx": "^2.1.1",
     "cva": "^1.0.0-beta.1",
     "date-fns": "^4.1.0",
@@ -79,7 +79,7 @@
     "tailwindcss-bg-patterns": "^0.3.0",
     "tailwindcss-radix-colors": "^1.4.1",
     "typescript": "^5.7.2",
-    "vite": "^5.4.9",
+    "vite": "^6.0.5",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {

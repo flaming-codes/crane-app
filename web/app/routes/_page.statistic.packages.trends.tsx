@@ -1,5 +1,4 @@
-import { data } from "react-router";
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, data } from "react-router";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import { Header } from "../modules/header";
 import { AnchorLink, Anchors, composeAnchorItems } from "../modules/anchors";

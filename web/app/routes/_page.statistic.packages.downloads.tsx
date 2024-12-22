@@ -1,5 +1,4 @@
-import { data, LoaderFunctionArgs } from "react-router";
-import { Link, useLoaderData } from "react-router";
+import { data, LoaderFunctionArgs, Link, useLoaderData } from "react-router";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import {
   TopDownloadedPackagesRange,
