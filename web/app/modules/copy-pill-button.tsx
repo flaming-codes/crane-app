@@ -1,5 +1,5 @@
 import { RiFileCopyLine } from "@remixicon/react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { PropsWithChildren, useRef } from "react";
 import { toast } from "sonner";
 import { clog } from "./observability";

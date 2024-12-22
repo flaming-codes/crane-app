@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { PropsWithChildren, ReactNode } from "react";
 
 type Props = PropsWithChildren<{

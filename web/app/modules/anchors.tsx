@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { cva } from "cva";
 import { PropsWithChildren } from "react";
 import { useHydrated } from "remix-utils/use-hydrated";

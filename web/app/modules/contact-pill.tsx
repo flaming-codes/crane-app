@@ -4,7 +4,7 @@ import {
   RiUserFill,
   RiVipCrown2Fill,
 } from "@remixicon/react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { InfoPill } from "./info-pill";
 import { Link } from "react-router";
 import { z } from "zod";

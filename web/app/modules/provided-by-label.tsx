@@ -1,8 +1,7 @@
 import { RiExternalLinkLine } from "@remixicon/react";
 import { ExternalLink } from "./external-link";
 import { ReactNode } from "react";
-import clsx from "clsx";
-
+import { clsx } from "clsx";
 export function ProvidedByLabel(props: {
   headline?: string;
   source: string;

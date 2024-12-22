@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
-import clsx from "clsx";
-
+import { clsx } from "clsx";
 type DataPoint = {
   date: string;
   value: number;

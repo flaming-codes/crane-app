@@ -2,8 +2,7 @@ import { Link } from "react-router";
 import { ExternalLink } from "./external-link";
 import { cva, VariantProps } from "cva";
 import { ReactNode } from "react";
-import clsx from "clsx";
-
+import { clsx } from "clsx";
 const BASE_ITEMS: Array<{ label: string; href: string }> = [
   { label: "About", href: "/about" },
   { label: "Privacy", href: "/privacy" },

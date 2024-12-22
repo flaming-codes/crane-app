@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { NavSearch } from "../modules/nav-search";
 import { PropsWithChildren, useRef, useState } from "react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { RiHomeFill } from "@remixicon/react";
 
 type Props = PropsWithChildren<{

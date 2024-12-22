@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { InfoPill } from "./info-pill";
 import { ClientOnly } from "remix-utils/client-only";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { clog } from "./observability";
 
 /**

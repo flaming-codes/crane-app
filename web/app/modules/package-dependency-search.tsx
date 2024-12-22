@@ -5,7 +5,7 @@ import {
   RiExpandVerticalLine,
 } from "@remixicon/react";
 import { useDebounce } from "@uidotdev/usehooks";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import MiniSearch from "minisearch";
 import { useState, useEffect } from "react";
 import { PackageDependency, PackageRelationshipType } from "../data/types";

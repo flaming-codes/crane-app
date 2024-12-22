@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { mergeMeta } from "./meta";
 import { InfoPill } from "./info-pill";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { InfoCard } from "./info-card";
 import { BASE_URL } from "./app";
 

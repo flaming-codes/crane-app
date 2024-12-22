@@ -20,7 +20,7 @@ import { ClientOnly } from "remix-utils/client-only";
 import { useKeyboardEvent, useKeyboardShortcut } from "./app";
 import { Separator } from "./separator";
 import { InfoPill } from "./info-pill";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { sendEvent } from "./plausible";
 import { debounce } from "es-toolkit";
 

@@ -1,7 +1,6 @@
 import { PropsWithChildren, ReactNode } from "react";
 import { ExternalLink } from "./external-link";
-import clsx from "clsx";
-
+import { clsx } from "clsx";
 type Props = PropsWithChildren<{
   href: string;
   children: ReactNode;
