@@ -13,6 +13,9 @@ import { renderToPipeableStream } from "react-dom/server";
 import { server } from "./mocks/node.server";
 import { slog } from "./modules/observability.server";
 import { createSecureHeaders } from "@mcansh/http-helmet";
+// Import the instrumentation server module,
+// which will initialize the OpenTelemetry SDK.
+import "./modules/instrumentation.server";
 
 const ABORT_DELAY = 5_000;
 
