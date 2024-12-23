@@ -6,7 +6,10 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { Resource } from "@opentelemetry/resources";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
-if (process.env.NODE_ENV === "production" && process.env.OTEL_TRACE_URL) {
+if (
+  process.env.VITE_RELEASE_CHANNEL === "production" &&
+  process.env.OTEL_TRACE_URL
+) {
   const exporterOptions = {
     url: process.env.OTEL_TRACE_URL,
   };
@@ -34,5 +37,5 @@ if (process.env.NODE_ENV === "production" && process.env.OTEL_TRACE_URL) {
       .finally(() => process.exit(0));
   });
 } else {
-  console.log("Instrumentation server skipped in development mode");
+  console.log("Instrumentation server skipped");
 }
