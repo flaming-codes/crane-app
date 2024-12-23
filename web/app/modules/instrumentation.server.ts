@@ -28,6 +28,8 @@ if (
   // this enables the API to record telemetry
   sdk.start();
 
+  console.log("Instrumentation server initialized");
+
   // gracefully shut down the SDK on process exit
   process.on("SIGTERM", () => {
     sdk
