@@ -4,7 +4,7 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
-import { shuffle, uniqBy } from "es-toolkit";
+import { uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
 
@@ -162,32 +162,19 @@ export class PackageService {
     query: string,
     options?: { limit?: number; permutations?: number },
   ) {
-    const { limit = 20, permutations = 3 } = options || {};
+    const { limit = 20 } = options || {};
 
-    const randomQueries = Array.from({ length: permutations }, () => {
-      return shuffle(query.split(" ")).join(" ");
+    const { error, data } = await supabase.rpc("find_closest_packages", {
+      search_term: query,
+      result_limit: limit,
     });
 
-    const allQueries = [query, ...randomQueries];
+    if (error) {
+      slog.error("Error in searchPackages", error);
+      return [];
+    }
 
-    const nestedHits = await Promise.all(
-      allQueries.map(async (query) => {
-        const { data, error } = await supabase
-          .from("cran_packages")
-          .select("id,name")
-          .textSearch("name, title, description", query, { config: "english" })
-          .limit(limit);
-
-        if (error) {
-          slog.error("Error in searchPackages", error);
-          return [];
-        }
-
-        return data;
-      }),
-    );
-
-    return uniqBy(nestedHits.flat(), (item) => item.id);
+    return uniqBy(data, (item) => item.id);
   }
 
   private static sanitizeSitemapName(name: string) {

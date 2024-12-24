@@ -13,7 +13,8 @@
     "sonner",
     "subline",
     "supabase",
-    "tailwindcss"
+    "tailwindcss",
+    "ttlcache"
   ],
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
