@@ -11,39 +11,43 @@ import {
 import { ENV } from "../data/env";
 import { RemixInstrumentation } from "opentelemetry-instrumentation-remix";
 
-if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
-  const exporterOptions = {
-    url: ENV.OTEL_TRACE_URL,
-  };
+export function initOTEL() {
+  console.log("Initializing instrumentation server");
 
-  const traceExporter = new OTLPTraceExporter(exporterOptions);
+  if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
+    const exporterOptions = {
+      url: ENV.OTEL_TRACE_URL,
+    };
 
-  const sdk = new NodeSDK({
-    traceExporter,
-    instrumentations: [
-      getNodeAutoInstrumentations(),
-      new RemixInstrumentation(),
-    ],
-    resource: new Resource({
-      [ATTR_SERVICE_NAME]: ENV.OTEL_NAME,
-      [ATTR_SERVICE_VERSION]: ENV.npm_package_version,
-    }),
-  });
+    const traceExporter = new OTLPTraceExporter(exporterOptions);
 
-  // initialize the SDK and register with the OpenTelemetry API
-  // this enables the API to record telemetry
-  sdk.start();
+    const sdk = new NodeSDK({
+      traceExporter,
+      instrumentations: [
+        getNodeAutoInstrumentations(),
+        new RemixInstrumentation(),
+      ],
+      resource: new Resource({
+        [ATTR_SERVICE_NAME]: ENV.OTEL_NAME,
+        [ATTR_SERVICE_VERSION]: ENV.npm_package_version,
+      }),
+    });
 
-  console.log("Instrumentation server initialized");
+    // initialize the SDK and register with the OpenTelemetry API
+    // this enables the API to record telemetry
+    sdk.start();
 
-  // gracefully shut down the SDK on process exit
-  process.on("SIGTERM", () => {
-    sdk
-      .shutdown()
-      .then(() => console.log("Tracing terminated"))
-      .catch((error) => console.log("Error terminating tracing", error))
-      .finally(() => process.exit(0));
-  });
-} else {
-  console.log("Instrumentation server skipped");
+    console.log("Instrumentation server initialized");
+
+    // gracefully shut down the SDK on process exit
+    process.on("SIGTERM", () => {
+      sdk
+        .shutdown()
+        .then(() => console.log("Tracing terminated"))
+        .catch((error) => console.log("Error terminating tracing", error))
+        .finally(() => process.exit(0));
+    });
+  } else {
+    console.log("Instrumentation server skipped");
+  }
 }
