@@ -386,6 +386,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      find_closest_authors: {
+        Args: {
+          search_term: string;
+          result_limit: number;
+        };
+        Returns: {
+          id: number;
+          name: string;
+          levenshtein_distance: number;
+        }[];
+      };
       find_closest_packages: {
         Args: {
           search_term: string;
