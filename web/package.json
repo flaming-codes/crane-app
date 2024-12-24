@@ -43,6 +43,7 @@
     "is-ip": "^5.0.1",
     "isbot": "^5.1.18",
     "minisearch": "^7.1.1",
+    "opentelemetry-instrumentation-remix": "^0.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^7.0.0",

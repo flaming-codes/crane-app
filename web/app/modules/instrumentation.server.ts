@@ -9,10 +9,7 @@ import {
   ATTR_SERVICE_VERSION,
 } from "@opentelemetry/semantic-conventions";
 import { ENV } from "../data/env";
-
-console.log("OTEL_ENABLED", ENV.OTEL_ENABLED);
-console.log("OTEL_TRACE_URL", ENV.OTEL_TRACE_URL);
-console.log("OTEL_NAME", ENV.OTEL_NAME);
+import { RemixInstrumentation } from "opentelemetry-instrumentation-remix";
 
 if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
   const exporterOptions = {
@@ -23,7 +20,10 @@ if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
 
   const sdk = new NodeSDK({
     traceExporter,
-    instrumentations: [getNodeAutoInstrumentations()],
+    instrumentations: [
+      getNodeAutoInstrumentations(),
+      new RemixInstrumentation(),
+    ],
     resource: new Resource({
       [ATTR_SERVICE_NAME]: ENV.OTEL_NAME,
       [ATTR_SERVICE_VERSION]: ENV.npm_package_version,
