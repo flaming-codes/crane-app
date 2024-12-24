@@ -15,11 +15,9 @@ export function initOTEL() {
   console.log("Initializing instrumentation server");
 
   if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
-    const exporterOptions = {
+    const traceExporter = new OTLPTraceExporter({
       url: ENV.OTEL_TRACE_URL,
-    };
-
-    const traceExporter = new OTLPTraceExporter(exporterOptions);
+    });
 
     const sdk = new NodeSDK({
       traceExporter,
