@@ -10,6 +10,10 @@ import {
 } from "@opentelemetry/semantic-conventions";
 import { ENV } from "../data/env";
 
+console.log("OTEL_ENABLED", ENV.OTEL_ENABLED);
+console.log("OTEL_TRACE_URL", ENV.OTEL_TRACE_URL);
+console.log("OTEL_NAME", ENV.OTEL_NAME);
+
 if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
   const exporterOptions = {
     url: ENV.OTEL_TRACE_URL,
