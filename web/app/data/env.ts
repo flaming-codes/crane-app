@@ -19,6 +19,9 @@ export const envSchema = z.object({
     .transform((v) => {
       return v || "x.y.z";
     }),
+  OTEL_ENABLED: z.string().optional(),
+  OTEL_NAME: z.string().optional(),
+  OTEL_TRACE_URL: z.string().optional(),
 });
 
 export const ENV = envSchema.parse(process.env);

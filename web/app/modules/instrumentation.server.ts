@@ -4,14 +4,15 @@ import { NodeSDK } from "@opentelemetry/sdk-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { Resource } from "@opentelemetry/resources";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from "@opentelemetry/semantic-conventions";
+import { ENV } from "../data/env";
 
-if (
-  process.env.VITE_RELEASE_CHANNEL === "production" &&
-  process.env.OTEL_TRACE_URL
-) {
+if (ENV.OTEL_ENABLED === "true" && ENV.OTEL_TRACE_URL && ENV.OTEL_NAME) {
   const exporterOptions = {
-    url: process.env.OTEL_TRACE_URL,
+    url: ENV.OTEL_TRACE_URL,
   };
 
   const traceExporter = new OTLPTraceExporter(exporterOptions);
@@ -20,7 +21,8 @@ if (
     traceExporter,
     instrumentations: [getNodeAutoInstrumentations()],
     resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: "crane_app",
+      [ATTR_SERVICE_NAME]: ENV.OTEL_NAME,
+      [ATTR_SERVICE_VERSION]: ENV.npm_package_version,
     }),
   });
 
