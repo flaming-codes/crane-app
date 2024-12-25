@@ -215,7 +215,7 @@ function DependencyPills(props: {
     <ul className="flex flex-wrap gap-2">
       {items.map((item) => (
         <li key={item.name}>
-          <Link to={item.link}>
+          <Link viewTransition to={item.link}>
             <InfoPill label={group} className="bg-gray-ghost transition-colors">
               {item.name}{" "}
               <RiArrowRightLine

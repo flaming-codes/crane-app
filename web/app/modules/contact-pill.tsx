@@ -67,7 +67,7 @@ export function ContactPill(props: Props) {
             Maintainer
           </InfoPill>
         ) : null}
-        <Link to={`/author/${name}`}>
+        <Link viewTransition to={`/author/${name}`}>
           <InfoPill size="sm" label={<RiUserFill size={16} />} variant="jade">
             Show author details{" "}
             <RiArrowRightSLine size={16} className="text-gray-dim" />

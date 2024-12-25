@@ -54,7 +54,7 @@ export default function StatisticsCranPageVisitTrendsPage() {
               <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {[...start, ...about].map((item, index) => (
                   <li key={index}>
-                    <Link to={item.page}>
+                    <Link viewTransition to={item.page}>
                       <InfoCard variant="sand" icon="internal">
                         <div className="space-y-2">
                           <h3 className="font-mono">
@@ -80,7 +80,7 @@ export default function StatisticsCranPageVisitTrendsPage() {
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {packages.map((item, index) => (
               <li key={index}>
-                <Link to={item.page}>
+                <Link viewTransition to={item.page}>
                   <InfoCard variant="iris" icon="internal">
                     <div className="space-y-2">
                       <h3>{item.page.replace("/package/", "")}</h3>
@@ -102,7 +102,7 @@ export default function StatisticsCranPageVisitTrendsPage() {
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {authors.map((item, index) => (
               <li key={index}>
-                <Link to={item.page}>
+                <Link viewTransition to={item.page}>
                   <InfoCard variant="jade" icon="internal">
                     <div className="space-y-2">
                       <h3>{item.page.replace("/author/", "")}</h3>

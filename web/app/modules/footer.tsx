@@ -41,7 +41,11 @@ export function Footer(props: Props) {
 
         {BASE_ITEMS.map(({ label, href }) => (
           <li key={label}>
-            <Link to={href} className="underline-offset-4 hover:underline">
+            <Link
+              viewTransition
+              to={href}
+              className="underline-offset-4 hover:underline"
+            >
               {label}
             </Link>
           </li>

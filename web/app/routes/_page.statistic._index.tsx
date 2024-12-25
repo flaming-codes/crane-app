@@ -43,7 +43,11 @@ export default function StatisticsOverviewPage() {
         >
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             <li>
-              <Link prefetch="intent" to="/statistic/crane/page-visits">
+              <Link
+                viewTransition
+                prefetch="intent"
+                to="/statistic/crane/page-visits"
+              >
                 <InfoCard variant="bronze" icon="internal" className="min-h-60">
                   <div className="space-y-2">
                     <h3>Page trends</h3>
@@ -66,7 +70,11 @@ export default function StatisticsOverviewPage() {
         >
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             <li>
-              <Link prefetch="intent" to="/statistic/packages/downloads">
+              <Link
+                viewTransition
+                prefetch="intent"
+                to="/statistic/packages/downloads"
+              >
                 <InfoCard variant="bronze" icon="internal" className="min-h-60">
                   <div className="space-y-2">
                     <h3>Package downloads</h3>
@@ -78,7 +86,11 @@ export default function StatisticsOverviewPage() {
               </Link>
             </li>
             <li>
-              <Link prefetch="intent" to="/statistic/packages/trends">
+              <Link
+                viewTransition
+                prefetch="intent"
+                to="/statistic/packages/trends"
+              >
                 <InfoCard variant="bronze" icon="internal" className="min-h-60">
                   <div className="space-y-2">
                     <h3>Package trends</h3>
@@ -90,7 +102,7 @@ export default function StatisticsOverviewPage() {
               </Link>
             </li>
             <li>
-              <Link prefetch="intent" to="/statistic/r-releases">
+              <Link viewTransition prefetch="intent" to="/statistic/r-releases">
                 <InfoCard variant="bronze" icon="internal" className="min-h-60">
                   <div className="space-y-2">
                     <h3>R Releases</h3>

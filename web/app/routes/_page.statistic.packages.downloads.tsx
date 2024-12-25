@@ -137,7 +137,10 @@ export default function StatisticPackagesPage() {
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {topDownloads.map(({ package: name, downloads }, index) => (
               <li key={index}>
-                <Link to={`/package/${encodeURIComponent(name)}`}>
+                <Link
+                  viewTransition
+                  to={`/package/${encodeURIComponent(name)}`}
+                >
                   <InfoCard variant="sand" icon="internal">
                     <div className="space-y-2">
                       <h3 className="font-mono">{name}</h3>

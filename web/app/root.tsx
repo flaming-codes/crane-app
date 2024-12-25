@@ -142,7 +142,11 @@ export default function App() {
             version={data?.version}
             start={
               <li>
-                <Link to="/" className="underline-offset-4 hover:underline">
+                <Link
+                  viewTransition
+                  to="/"
+                  className="underline-offset-4 hover:underline"
+                >
                   Home
                 </Link>
               </li>
@@ -184,7 +188,11 @@ export function ErrorBoundary() {
           variant="page"
           start={
             <li>
-              <Link to="/" className="underline-offset-4 hover:underline">
+              <Link
+                viewTransition
+                to="/"
+                className="underline-offset-4 hover:underline"
+              >
                 Home
               </Link>
             </li>

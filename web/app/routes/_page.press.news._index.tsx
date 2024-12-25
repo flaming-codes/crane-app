@@ -36,7 +36,7 @@ export default function PrivacyPage() {
       <PageContent>
         <PageContentSection headline="Latest articles">
           <ul className="grid grid-cols-1">
-            <Link to="crane-v2">
+            <Link viewTransition to="crane-v2">
               <ArticlePreviewInfoCard
                 headline="Announcing CRAN/E 2.0"
                 subline="A modernized search platform for the R community"

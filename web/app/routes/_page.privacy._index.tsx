@@ -83,7 +83,7 @@ export default function PrivacyPage() {
                 <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
               </InfoPill>
             </ExternalLink>
-            <Link to="/privacy">
+            <Link viewTransition to="/privacy">
               <InfoPill label="Visit" variant="sand">
                 Privacy policy
                 <RiArrowRightSLine size={16} className="text-gray-dim ml-2" />

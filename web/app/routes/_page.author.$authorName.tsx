@@ -203,7 +203,7 @@ function PackagesSection(props: Pick<NonNullable<AuthorRes>, "packages">) {
       <ul className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4">
         {packages.map(({ package: item }) => (
           <li key={item.name}>
-            <Link to={`/package/${item.name}`}>
+            <Link viewTransition to={`/package/${item.name}`}>
               <InfoCard variant="iris" icon="internal" className="min-h-48">
                 <span className="flex flex-col gap-2">
                   <span className="text-gray-dim text-xs">{item.name}</span>
@@ -226,7 +226,7 @@ function TeamSection(props: Pick<NonNullable<AuthorRes>, "otherAuthors">) {
       <ul className="flex flex-wrap items-start gap-2">
         {otherAuthors.map((author) => (
           <li key={author?.name}>
-            <Link to={`/author/${author?.name}`}>
+            <Link viewTransition to={`/author/${author?.name}`}>
               <InfoPill variant="jade">
                 {author?.name}{" "}
                 <RiArrowRightSLine size={16} className="text-gray-dim" />
