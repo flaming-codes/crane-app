@@ -1,13 +1,15 @@
 import { hoursToMilliseconds } from "date-fns";
 import { ENV } from "./env";
 import TTLCache from "@isaacs/ttlcache";
+import { slog } from "../modules/observability.server";
 
 type TopPagesCacheKey = "authors" | "packages" | "start" | "about";
 
 type TopPagesCacheValue = { page: string; visitors: number };
 
 export class PageInsightService {
-  private static plausibleBaseUrl = "https://plausible.io/api/v1/stats";
+  private static plausibleBaseUrl =
+    "https://plausible.flaming.codes/api/v1/stats";
 
   private static topPagesCache = new TTLCache<
     TopPagesCacheKey,
@@ -46,6 +48,10 @@ export class PageInsightService {
     );
 
     if (!res.ok) {
+      slog.error("Failed to fetch top pages", {
+        status: res.status,
+        statusText: res.statusText,
+      });
       throw new Error("Failed to fetch top pages");
     }
 

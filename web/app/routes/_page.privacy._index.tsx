@@ -62,19 +62,20 @@ export default function PrivacyPage() {
 
         <PageContentSection headline="Plausible" fragment="plausible">
           <p>
-            CRAN/E uses plausible.io for a privacy-friendly, non-invasive way to
-            collect some basic usage data of this PWA. This analytics service is
-            hosted in the EU and doesn&apos;t collect any personal identifiable
-            data. This is also the reason why you don&apos;t see a cookie-banner
-            - we simply don&apos;t need consent for data we never collect in the
-            first place. You can opt-out of those basic analytics by clicking
-            the button below. Please note that we only collect anonymous core
-            web vitals data and no personal identifiable data. This means that
-            we can&apos;t identify you in any way. Your opt-out will be stored
-            in your browser&apos;s local storage.
+            CRAN/E uses plausible.flaming.codes for a privacy-friendly,
+            non-invasive way to collect some basic usage data of this PWA. This
+            analytics service is hosted in the EU and doesn&apos;t collect any
+            personal identifiable data. This is also the reason why you
+            don&apos;t see a cookie-banner - we simply don&apos;t need consent
+            for data we never collect in the first place. You can opt-out of
+            those basic analytics by clicking the button below. Please note that
+            we only collect anonymous core web vitals data and no personal
+            identifiable data. This means that we can&apos;t identify you in any
+            way. Your opt-out will be stored in your browser&apos;s local
+            storage.
           </p>
           <div className="flex flex-wrap gap-4">
-            <ExternalLink href="https://plausible.io">
+            <ExternalLink href="https://plausible.flaming.codes">
               <InfoPill
                 label={<RiPieChart2Fill size={20} className="-ml-2" />}
                 variant="slate"

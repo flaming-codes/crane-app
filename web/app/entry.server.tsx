@@ -49,7 +49,7 @@ export default function handleRequest(
     "Content-Security-Policy": {
       "default-src": ["'self'"],
       "script-src": ["'self'", `'nonce-${nonce}'`],
-      "connect-src": ["'self'", "https://plausible.io"],
+      "connect-src": ["'self'", "https://plausible.flaming.codes"],
       "style-src": ["'self'", "'unsafe-inline'"],
       "base-uri": ["'self'"],
     },

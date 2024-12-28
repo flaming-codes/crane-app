@@ -122,7 +122,7 @@ export default function App() {
               defer
               nonce={isServer ? nonce : ""}
               data-domain="cran-e.com"
-              src="https://plausible.io/js/script.outbound-links.js"
+              src="https://plausible.flaming.codes/js/script.outbound-links.js"
             />
             <script nonce={isServer ? nonce : ""}>
               {`
