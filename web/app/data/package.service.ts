@@ -36,7 +36,6 @@ export class PackageService {
     }
 
     // TODO: Fix entries in DB.
-    // TODO: Only handles references, no 'views' etc.
     if (data?.materials && Array.isArray(data.materials)) {
       data.materials = data.materials.map((m) => {
         // @ts-expect-error - JSON-type overly verbose.
@@ -51,6 +50,38 @@ export class PackageService {
               m.link
             : // @ts-expect-error - JSON-type overly verbose.
               `https://cran.r-project.org/web/packages/${packageName}${m.link.startsWith("/") ? "" : "/"}${m.link}`,
+        };
+      });
+    }
+
+    // TODO: Fix entries in DB.
+    if (data?.in_views && Array.isArray(data.in_views)) {
+      data.in_views = data.in_views.map((v) => {
+        // @ts-expect-error - JSON-type overly verbose.
+        if (!isJSONObject(v) || !v.link) {
+          return v;
+        }
+
+        // @ts-expect-error - JSON-type overly verbose.
+        if (v.link.startsWith("https://cran.r-project.org/views")) {
+          return {
+            ...v,
+            // @ts-expect-error - JSON-type overly verbose.
+            link: v.link.replace(
+              "https://cran.r-project.org/views",
+              "https://cran.r-project.org/web/views",
+            ),
+          };
+        }
+
+        return {
+          ...v,
+          // @ts-expect-error - JSON-type overly verbose.
+          link: v.link.startsWith("https://")
+            ? // @ts-expect-error - JSON-type overly verbose.
+              v.link
+            : // @ts-expect-error - JSON-type overly verbose.
+              `https://cran.r-project.org/web/views/${v.link.startsWith("/") ? "" : "/"}${v.link}`,
         };
       });
     }
