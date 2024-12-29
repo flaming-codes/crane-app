@@ -86,6 +86,44 @@ export class PackageService {
       });
     }
 
+    // TODO: Fix entries in DB.
+    if (data?.vignettes && Array.isArray(data.vignettes)) {
+      data.vignettes = data.vignettes.map((v) => {
+        if (
+          !isJSONObject(v) ||
+          // @ts-expect-error - JSON-type overly verbose.
+          !v.link ||
+          // @ts-expect-error - JSON-type overly verbose.
+          v.link.startsWith("https://cran.r-project.org/web/packages")
+        ) {
+          return v;
+        }
+
+        return {
+          ...v,
+          // @ts-expect-error - JSON-type overly verbose.
+          link: v.link.startsWith("https://")
+            ? // @ts-expect-error - JSON-type overly verbose.
+              v.link
+            : // @ts-expect-error - JSON-type overly verbose.
+              `https://cran.r-project.org/web/packages/${packageName}/vignettes/${v.link.startsWith("/") ? "" : "/"}${v.link}`,
+        };
+      });
+    }
+
+    // https://cran.r-project.org/web/checks/check_results_ggplot2.html
+    // TODO: Fix entries in DB.
+    if (
+      data?.cran_checks &&
+      // @ts-expect-error - JSON-type overly verbose.
+      (data?.cran_checks.link.startsWith("/") ||
+        // @ts-expect-error - JSON-type overly verbose.
+        data?.cran_checks.link.startsWith(".."))
+    ) {
+      // @ts-expect-error - JSON-type overly verbose.
+      data.cran_checks.link = `https://cran.r-project.org/web/checks/check_results_${packageName}.html`;
+    }
+
     return data;
   }
 
