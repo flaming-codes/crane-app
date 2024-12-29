@@ -184,17 +184,37 @@ export class PackageService {
   ) {
     const { limit = 20 } = options || {};
 
-    const { error, data } = await supabase.rpc("find_closest_packages", {
-      search_term: query,
-      result_limit: limit,
-    });
+    const [fts, exact] = await Promise.all([
+      supabase.rpc("find_closest_packages", {
+        search_term: query,
+        result_limit: limit,
+      }),
+      // ! ilike is expense, but we want to make sure we get the exact match w/o case sensitivity.
+      supabase
+        .from("cran_packages")
+        .select("id,name")
+        .ilike("name", query)
+        .maybeSingle(),
+    ]);
 
-    if (error) {
-      slog.error("Error in searchPackages", error);
+    if (fts.error) {
+      slog.error("Error in searchPackages", fts.error);
       return [];
     }
 
-    return uniqBy(data, (item) => item.id);
+    if (exact.error) {
+      slog.error("Error in searchPackages", exact.error);
+      return [];
+    }
+
+    if (exact.data) {
+      fts.data.unshift({
+        ...exact.data,
+        levenshtein_distance: 0,
+      });
+    }
+
+    return uniqBy(fts.data, (item) => item.id);
   }
 
   private static sanitizeSitemapName(name: string) {

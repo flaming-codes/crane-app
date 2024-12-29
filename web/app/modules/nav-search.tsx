@@ -61,12 +61,18 @@ export function NavSearch(props: Props) {
     (fetcher.data as SearchResults | undefined) || fallbackSearchResults;
 
   const debouncedFetcher = useRef(
-    debounce((data: FormData) => {
-      fetcher.submit(data, {
-        method: "POST",
-        action: "/api/search?index",
-      });
-    }, 100),
+    debounce(
+      (data: FormData) => {
+        fetcher.submit(data, {
+          method: "POST",
+          action: "/api/search?index",
+        });
+      },
+      100,
+      {
+        edges: ["leading", "trailing"],
+      },
+    ),
   );
 
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +82,6 @@ export function NavSearch(props: Props) {
     data.set("q", e.target.value);
     data.set("intent", "all");
 
-    debouncedFetcher.current.cancel();
     debouncedFetcher.current(data);
   }, []);
 
