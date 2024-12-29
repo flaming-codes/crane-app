@@ -16,6 +16,8 @@
 
 You can use CRAN/E directly in any modern browser. CRAN/E can also be installed as a PWA locally in Chromium-based browsers as well as the latest Safari. For more information regarding PWAs, please visit [this great guide](https://web.dev/progressive-web-apps/).
 
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=fd7f0da41296&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
 ## [Raycast Extension](https://www.raycast.com/flaming-codes/cran-e-search)
 
 You can directly use the typeahead search of CRAN/E in Raycast. We published an extension on the Raycast Store to search for packages and authors. All CRAN/E Raycast extensions are developed as FOSS as well at [flaming-codes/crane-raycast](https://github.com/flaming-codes/crane-raycast).

@@ -51,6 +51,7 @@ export default function handleRequest(
       "script-src": ["'self'", `'nonce-${nonce}'`],
       "connect-src": ["'self'", "https://plausible.flaming.codes"],
       "style-src": ["'self'", "'unsafe-inline'"],
+      "img-src": ["'self'", "*.digitaloceanspaces.com"],
       "base-uri": ["'self'"],
     },
   }).forEach((value, key) => {
