@@ -4,7 +4,7 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
-import { uniqBy } from "es-toolkit";
+import { isJSONObject, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
 
@@ -33,6 +33,26 @@ export class PackageService {
     if (error) {
       slog.error("Error in getPackageByName", error);
       return null;
+    }
+
+    // TODO: Fix entries in DB.
+    // TODO: Only handles references, no 'views' etc.
+    if (data?.materials && Array.isArray(data.materials)) {
+      data.materials = data.materials.map((m) => {
+        // @ts-expect-error - JSON-type overly verbose.
+        if (!isJSONObject(m) || !m.link) {
+          return m;
+        }
+        return {
+          ...m,
+          // @ts-expect-error - JSON-type overly verbose.
+          link: m.link.startsWith("https://")
+            ? // @ts-expect-error - JSON-type overly verbose.
+              m.link
+            : // @ts-expect-error - JSON-type overly verbose.
+              `https://cran.r-project.org/web/packages/${packageName}${m.link.startsWith("/") ? "" : "/"}${m.link}`,
+        };
+      });
     }
 
     return data;
