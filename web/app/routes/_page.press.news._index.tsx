@@ -3,7 +3,7 @@ import { PageContentSection } from "../modules/page-content-section";
 import { Header } from "../modules/header";
 import { mergeMeta } from "../modules/meta";
 import { Link } from "react-router";
-import { ArticlePreviewInfoCard } from "../modules/article";
+import { ArticlePreviewInfoCard } from "../modules/press";
 import { BASE_URL } from "../modules/app";
 
 export const handle = {

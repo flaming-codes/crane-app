@@ -5,21 +5,48 @@ import { clsx } from "clsx";
 import { InfoCard } from "./info-card";
 import { BASE_URL } from "./app";
 
-export type NewsArticleHandle = {
+export type PressArticleHandle = {
   slug: string;
   title: string;
   subline?: string;
   createdAt: string;
   updatedAt?: string;
   authors: string[];
+  type: "news" | "magazine";
   categories: Array<"general" | "announcement">;
-  sections: Array<{ name: string; fragment: string }>;
+  synopsisHTML: string;
+  sections: PressArticleContentSection[];
 };
 
-export const composeArticleMeta = mergeMeta(({ matches }) => {
+type PressArticleContentSection = {
+  headline: string;
+  fragment: string;
+  body: PressArticleContentBody;
+};
+
+type PressArticleContentBody = Array<
+  | {
+      type: "html";
+      value: PressArticleContentBodyHTML;
+    }
+  | {
+      type: "image";
+      value: PressArticleContentBodyImage;
+    }
+>;
+
+type PressArticleContentBodyHTML = string;
+
+type PressArticleContentBodyImage = {
+  src: string;
+  caption: string;
+};
+
+export const composePressMeta = mergeMeta(({ matches }) => {
   const article = findArticleMatch(matches);
   if (!article) {
-    throw new Error("No article found");
+    //throw new Error("No article found");
+    return [];
   }
 
   return [
@@ -45,14 +72,14 @@ export const composeArticleMeta = mergeMeta(({ matches }) => {
 
 export function findArticleMatch(
   matches: Array<{ handle?: unknown }>,
-): NewsArticleHandle | undefined {
+): PressArticleHandle | undefined {
   const match = matches.find(
     (match) =>
       match.handle &&
-      (match.handle as { article?: NewsArticleHandle })?.article,
+      (match.handle as { article?: PressArticleHandle })?.article,
   );
 
-  return (match?.handle as { article?: NewsArticleHandle })?.article;
+  return (match?.handle as { article?: PressArticleHandle })?.article;
 }
 
 export function ArticleSynopsis(
@@ -66,14 +93,14 @@ export function ArticleSynopsis(
 
   return (
     <section className="space-y-12">
-      <p
+      <div
         className={clsx(
           "inline-block bg-gradient-to-tl from-violet-9 to-purple-11 bg-clip-text font-semibold text-transparent dark:from-violet-10 dark:to-purple-7",
           "text-gray-dim mt-8 w-3/4 text-xl leading-relaxed md:w-2/3",
         )}
       >
         {children}
-      </p>
+      </div>
       <footer className="flex gap-2">
         <InfoPill size="sm" label="Publication">
           <time dateTime={createdAt}>{createdAt}</time>
