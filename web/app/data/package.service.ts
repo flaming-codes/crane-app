@@ -4,7 +4,7 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
-import { isJSONObject, uniqBy } from "es-toolkit";
+import { uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
 
@@ -33,95 +33,6 @@ export class PackageService {
     if (error) {
       slog.error("Error in getPackageByName", error);
       return null;
-    }
-
-    // TODO: Fix entries in DB.
-    if (data?.materials && Array.isArray(data.materials)) {
-      data.materials = data.materials.map((m) => {
-        // @ts-expect-error - JSON-type overly verbose.
-        if (!isJSONObject(m) || !m.link) {
-          return m;
-        }
-        return {
-          ...m,
-          // @ts-expect-error - JSON-type overly verbose.
-          link: m.link.startsWith("https://")
-            ? // @ts-expect-error - JSON-type overly verbose.
-              m.link
-            : // @ts-expect-error - JSON-type overly verbose.
-              `https://cran.r-project.org/web/packages/${packageName}${m.link.startsWith("/") ? "" : "/"}${m.link}`,
-        };
-      });
-    }
-
-    // TODO: Fix entries in DB.
-    if (data?.in_views && Array.isArray(data.in_views)) {
-      data.in_views = data.in_views.map((v) => {
-        // @ts-expect-error - JSON-type overly verbose.
-        if (!isJSONObject(v) || !v.link) {
-          return v;
-        }
-
-        // @ts-expect-error - JSON-type overly verbose.
-        if (v.link.startsWith("https://cran.r-project.org/views")) {
-          return {
-            ...v,
-            // @ts-expect-error - JSON-type overly verbose.
-            link: v.link.replace(
-              "https://cran.r-project.org/views",
-              "https://cran.r-project.org/web/views",
-            ),
-          };
-        }
-
-        return {
-          ...v,
-          // @ts-expect-error - JSON-type overly verbose.
-          link: v.link.startsWith("https://")
-            ? // @ts-expect-error - JSON-type overly verbose.
-              v.link
-            : // @ts-expect-error - JSON-type overly verbose.
-              `https://cran.r-project.org/web/views/${v.link.startsWith("/") ? "" : "/"}${v.link}`,
-        };
-      });
-    }
-
-    // TODO: Fix entries in DB.
-    if (data?.vignettes && Array.isArray(data.vignettes)) {
-      data.vignettes = data.vignettes.map((v) => {
-        if (
-          !isJSONObject(v) ||
-          // @ts-expect-error - JSON-type overly verbose.
-          !v.link ||
-          // @ts-expect-error - JSON-type overly verbose.
-          v.link.startsWith("https://cran.r-project.org/web/packages")
-        ) {
-          return v;
-        }
-
-        return {
-          ...v,
-          // @ts-expect-error - JSON-type overly verbose.
-          link: v.link.startsWith("https://")
-            ? // @ts-expect-error - JSON-type overly verbose.
-              v.link
-            : // @ts-expect-error - JSON-type overly verbose.
-              `https://cran.r-project.org/web/packages/${packageName}/vignettes/${v.link.startsWith("/") ? "" : "/"}${v.link}`,
-        };
-      });
-    }
-
-    // https://cran.r-project.org/web/checks/check_results_ggplot2.html
-    // TODO: Fix entries in DB.
-    if (
-      data?.cran_checks &&
-      // @ts-expect-error - JSON-type overly verbose.
-      (data?.cran_checks.link.startsWith("/") ||
-        // @ts-expect-error - JSON-type overly verbose.
-        data?.cran_checks.link.startsWith(".."))
-    ) {
-      // @ts-expect-error - JSON-type overly verbose.
-      data.cran_checks.link = `https://cran.r-project.org/web/checks/check_results_${packageName}.html`;
     }
 
     return data;
@@ -258,7 +169,7 @@ export class PackageService {
         search_term: query,
         result_limit: limit,
       }),
-      // ! ilike is expense, but we want to make sure we get the exact match w/o case sensitivity.
+      // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
       supabase
         .from("cran_packages")
         .select("id,name")

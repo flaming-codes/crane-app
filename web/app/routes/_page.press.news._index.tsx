@@ -24,7 +24,7 @@ export const meta = mergeMeta(() => {
   ];
 });
 
-export default function PrivacyPage() {
+export default function NewsIndexPage() {
   return (
     <>
       <Header
