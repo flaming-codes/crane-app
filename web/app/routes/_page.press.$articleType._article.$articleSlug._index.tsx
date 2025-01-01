@@ -9,8 +9,9 @@ import { Tag } from "../modules/tag";
 import { ArticleService } from "../data/article.service.server";
 import { mergeMeta } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
-import { format } from "date-fns";
+import { format, hoursToSeconds } from "date-fns";
 import { ClientOnly } from "remix-utils/client-only";
+import { IS_DEV } from "../modules/app.server";
 
 type LoaderData = {
   article: NonNullable<
@@ -38,9 +39,18 @@ export const loader = async (args: LoaderFunctionArgs) => {
     throw new Response("Not found", { status: 404 });
   }
 
-  return data({
-    article,
-  });
+  return data(
+    {
+      article,
+    },
+    IS_DEV
+      ? undefined
+      : {
+          headers: {
+            "Cache-Control": `public, max-age=${hoursToSeconds(12)}, s-maxage=${hoursToSeconds(72)}`,
+          },
+        },
+  );
 };
 
 export const meta = mergeMeta((params) => {
