@@ -116,21 +116,3 @@ export default function NewsIndexPage() {
     </>
   );
 }
-
-/*
- <Link viewTransition to="crane-v2">
-              <ArticlePreviewInfoCard
-                headline="Announcing CRAN/E 2.0"
-                subline="A modernized search platform for the R community"
-                createdAt="2024-10-28"
-              >
-                CRAN/E, the{" "}
-                <strong>Comprehensive R Archive Network / Enhanced</strong>, has
-                officially launched version 2.0 today. This major release
-                introduces a modernized design, significant usability
-                enhancements, and an optimized site structure to facilitate
-                easier searches, improved information retrieval, and an overall
-                more intuitive experience.
-              </ArticlePreviewInfoCard>
-            </Link>
-*/
