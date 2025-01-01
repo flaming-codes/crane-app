@@ -381,11 +381,102 @@ export type Database = {
           },
         ];
       };
+      press_article_authors: {
+        Row: {
+          author_slug: string;
+          press_article_slug: string;
+        };
+        Insert: {
+          author_slug: string;
+          press_article_slug: string;
+        };
+        Update: {
+          author_slug?: string;
+          press_article_slug?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "press_article_authors_author_slug_fkey";
+            columns: ["author_slug"];
+            referencedRelation: "press_authors";
+            referencedColumns: ["slug"];
+          },
+          {
+            foreignKeyName: "press_article_authors_press_article_slug_fkey";
+            columns: ["press_article_slug"];
+            referencedRelation: "press_articles";
+            referencedColumns: ["slug"];
+          },
+        ];
+      };
+      press_articles: {
+        Row: {
+          categories: Database["public"]["Enums"]["press_article_category"][];
+          created_at: string;
+          sections: Json;
+          slug: string;
+          subline: string | null;
+          synopsis_html: string;
+          title: string;
+          type: Database["public"]["Enums"]["press_article_type"];
+          updated_at: string | null;
+        };
+        Insert: {
+          categories: Database["public"]["Enums"]["press_article_category"][];
+          created_at: string;
+          sections: Json;
+          slug: string;
+          subline?: string | null;
+          synopsis_html: string;
+          title: string;
+          type: Database["public"]["Enums"]["press_article_type"];
+          updated_at?: string | null;
+        };
+        Update: {
+          categories?: Database["public"]["Enums"]["press_article_category"][];
+          created_at?: string;
+          sections?: Json;
+          slug?: string;
+          subline?: string | null;
+          synopsis_html?: string;
+          title?: string;
+          type?: Database["public"]["Enums"]["press_article_type"];
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+      press_authors: {
+        Row: {
+          name: string;
+          slug: string;
+        };
+        Insert: {
+          name: string;
+          slug: string;
+        };
+        Update: {
+          name?: string;
+          slug?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      dmetaphone: {
+        Args: {
+          "": string;
+        };
+        Returns: string;
+      };
+      dmetaphone_alt: {
+        Args: {
+          "": string;
+        };
+        Returns: string;
+      };
       find_closest_authors: {
         Args: {
           search_term: string;
@@ -408,6 +499,64 @@ export type Database = {
           levenshtein_distance: number;
         }[];
       };
+      gtrgm_compress: {
+        Args: {
+          "": unknown;
+        };
+        Returns: unknown;
+      };
+      gtrgm_decompress: {
+        Args: {
+          "": unknown;
+        };
+        Returns: unknown;
+      };
+      gtrgm_in: {
+        Args: {
+          "": unknown;
+        };
+        Returns: unknown;
+      };
+      gtrgm_options: {
+        Args: {
+          "": unknown;
+        };
+        Returns: undefined;
+      };
+      gtrgm_out: {
+        Args: {
+          "": unknown;
+        };
+        Returns: unknown;
+      };
+      set_limit: {
+        Args: {
+          "": number;
+        };
+        Returns: number;
+      };
+      show_limit: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
+      show_trgm: {
+        Args: {
+          "": string;
+        };
+        Returns: string[];
+      };
+      soundex: {
+        Args: {
+          "": string;
+        };
+        Returns: string;
+      };
+      text_soundex: {
+        Args: {
+          "": string;
+        };
+        Returns: string;
+      };
     };
     Enums: {
       ai_model_modality:
@@ -429,6 +578,8 @@ export type Database = {
         | "reverse_suggests"
         | "reverse_enhances"
         | "reverse_linking_to";
+      press_article_category: "general" | "announcement";
+      press_article_type: "news" | "magazine";
     };
     CompositeTypes: {
       [_ in never]: never;

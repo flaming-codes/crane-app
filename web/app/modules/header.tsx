@@ -20,6 +20,8 @@ const twBase = cva({
       sand: "bg-gradient-to-br from-sand-8 via-gold-6 dark:from-sand-11 dark:via-gold-12/60",
       amethyst:
         "bg-gradient-to-tl from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
+      opal: "bg-gradient-to-tl from-iris-11 via-sky-4 dark:from-iris-10 dark:via-sky-12 ",
+      wood: "bg-gradient-to-tl from-brown-5 via-amber-4 dark:from-brown-10 dark:via-amber-11",
     },
   },
 });
