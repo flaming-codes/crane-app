@@ -23,13 +23,20 @@ export const handle = {
 };
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { articleSlug } = args.params;
+  const { articleSlug, articleType } = args.params;
 
-  if (!articleSlug) {
+  if (!articleSlug || !articleType) {
     throw new Response("Not found", { status: 404 });
   }
 
-  const article = await ArticleService.getArticleBySlug(articleSlug);
+  const article = await ArticleService.getArticleBySlug(
+    articleSlug,
+    articleType,
+  );
+
+  if (!article) {
+    throw new Response("Not found", { status: 404 });
+  }
 
   return data({
     article,
@@ -72,7 +79,7 @@ export default function NewsArticleCraneV2() {
   return (
     <>
       <Header
-        gradient="amethyst"
+        gradient={article.type === "news" ? "amethyst" : "opal"}
         headline={article.title}
         subline={article.subline}
         ornament={<Tag>{article.type}</Tag>}
@@ -90,6 +97,7 @@ export default function NewsArticleCraneV2() {
 
       <PageContent>
         <ArticleSynopsis
+          type={article.type}
           createdAt={format(article.created_at, "dd-MM-yyyy")}
           updatedAt={
             article.updated_at
@@ -142,7 +150,7 @@ export default function NewsArticleCraneV2() {
           {() => (
             <p className="text-gray-dim mt-16 text-center text-sm lg:mt-32">
               Published on {format(article.created_at, "dd-MM-yyyy")} by{" "}
-              {article.authors.join(", ")}
+              {article.authors.map((a) => a.name).join(", ")}
             </p>
           )}
         </ClientOnly>

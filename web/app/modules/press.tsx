@@ -3,22 +3,30 @@ import { InfoPill } from "./info-pill";
 import { clsx } from "clsx";
 import { InfoCard } from "./info-card";
 import { ClientOnly } from "remix-utils/client-only";
+import { Enums } from "../data/supabase.types.generated";
 
 export function ArticleSynopsis(
   props: PropsWithChildren<{
     createdAt: string;
     updatedAt?: string;
     authors: string[];
+    type: Enums<"press_article_type">;
   }>,
 ) {
-  const { createdAt, updatedAt, authors, children } = props;
+  const { createdAt, updatedAt, authors, type, children } = props;
 
   return (
     <section className="space-y-12">
       <div
         className={clsx(
-          "inline-block bg-gradient-to-tl from-violet-9 to-purple-11 bg-clip-text font-semibold text-transparent dark:from-violet-10 dark:to-purple-7",
+          "inline-block bg-gradient-to-tl bg-clip-text font-semibold text-transparent",
           "text-gray-dim mt-8 w-3/4 text-xl leading-relaxed md:w-2/3",
+          {
+            "from-violet-9 to-purple-11 dark:from-violet-10 dark:to-purple-7":
+              type === "news",
+            "from-iris-6 to-sky-4 dark:from-iris-10 dark:to-sky-10":
+              type === "magazine",
+          },
         )}
       >
         {children}
@@ -67,17 +75,22 @@ export function ArticlePreviewInfoCard(
     headline: string;
     subline: string;
     createdAt: string;
+    variant: "amethyst" | "opal";
   }>,
 ) {
-  const { headline, subline, createdAt, children } = props;
+  const { headline, subline, createdAt, variant, children } = props;
 
   return (
     <InfoCard variant="none" className="relative isolate">
       <div className="grid gap-4 sm:min-h-60 sm:grid-cols-2">
         <div
           className={clsx(
-            "absolute inset-0 bg-gradient-to-br from-violet-6 dark:from-violet-12",
+            "absolute inset-0 bg-gradient-to-br",
             "opacity-0 transition-opacity duration-500 group-hover/card:opacity-100",
+            {
+              "from-violet-6 dark:from-violet-12": variant === "amethyst",
+              "from-sky-4 dark:from-skya-12": variant === "opal",
+            },
           )}
         />
         <div className="z-10 space-y-1">

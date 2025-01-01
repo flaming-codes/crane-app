@@ -38,8 +38,7 @@ export class ArticleService {
     const query = supabase
       .from("press_articles")
       .select("*, authors:press_authors!inner(*)")
-      .eq("slug", articleSlug)
-      .eq("type", "news");
+      .eq("slug", articleSlug);
 
     if (articleType) {
       query.eq("type", articleType);

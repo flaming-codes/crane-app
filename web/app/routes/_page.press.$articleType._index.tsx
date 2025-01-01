@@ -11,6 +11,7 @@ import { format } from "date-fns";
 
 type LoaderDaa = {
   articles: Awaited<ReturnType<typeof ArticleService.getAllArticlePreviews>>;
+  articleType: Enums<"press_article_type"> | (string & {});
 };
 
 export const handle = {
@@ -19,10 +20,13 @@ export const handle = {
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { params } = args;
-  const { articleType = "" } = params;
+
+  const articleType = params.articleType as
+    | Enums<"press_article_type">
+    | (string & {});
 
   const articles = await ArticleService.getAllArticlePreviews(articleType);
-  return data({ articles });
+  return data({ articles, articleType });
 };
 
 export const meta = mergeMeta(({ params }) => {
@@ -64,16 +68,20 @@ export const meta = mergeMeta(({ params }) => {
 });
 
 export default function NewsIndexPage() {
-  const { articles } = useLoaderData<LoaderDaa>();
+  const { articles, articleType } = useLoaderData<LoaderDaa>();
 
   const hasArticles = articles.length > 0;
 
   return (
     <>
       <Header
-        gradient="amethyst"
-        headline="Newsroom"
-        subline="Learn more about our latest news and updates"
+        gradient={articleType === "news" ? "amethyst" : "opal"}
+        headline={articleType === "news" ? "Newsroom" : "Magazine"}
+        subline={
+          articleType === "news"
+            ? "Latest news and updates of CRAN/E"
+            : "General & technical articles about CRAN/E"
+        }
       />
 
       <PageContent>
@@ -93,6 +101,7 @@ export default function NewsIndexPage() {
                 <ArticlePreviewInfoCard
                   headline={article.title}
                   subline={article.subline || ""}
+                  variant={articleType === "news" ? "amethyst" : "opal"}
                   createdAt={format(article.created_at, "dd-MM-yyyy")}
                 >
                   <p
