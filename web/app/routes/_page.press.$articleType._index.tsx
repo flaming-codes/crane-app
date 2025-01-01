@@ -86,7 +86,7 @@ export default function NewsIndexPage() {
 
       <PageContent>
         <PageContentSection headline="Latest articles">
-          <ul className="grid grid-cols-1">
+          <ul className="grid grid-cols-1 gap-8">
             {!hasArticles && (
               <li>
                 <p>No articles found.</p>
