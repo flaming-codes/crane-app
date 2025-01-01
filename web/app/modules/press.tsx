@@ -1,86 +1,8 @@
 import { PropsWithChildren } from "react";
-import { mergeMeta } from "./meta";
 import { InfoPill } from "./info-pill";
 import { clsx } from "clsx";
 import { InfoCard } from "./info-card";
-import { BASE_URL } from "./app";
-
-export type PressArticleHandle = {
-  slug: string;
-  title: string;
-  subline?: string;
-  createdAt: string;
-  updatedAt?: string;
-  authors: string[];
-  type: "news" | "magazine";
-  categories: Array<"general" | "announcement">;
-  synopsisHTML: string;
-  sections: PressArticleContentSection[];
-};
-
-type PressArticleContentSection = {
-  headline: string;
-  fragment: string;
-  body: PressArticleContentBody;
-};
-
-type PressArticleContentBody = Array<
-  | {
-      type: "html";
-      value: PressArticleContentBodyHTML;
-    }
-  | {
-      type: "image";
-      value: PressArticleContentBodyImage;
-    }
->;
-
-type PressArticleContentBodyHTML = string;
-
-type PressArticleContentBodyImage = {
-  src: string;
-  caption: string;
-};
-
-export const composePressMeta = mergeMeta(({ matches }) => {
-  const article = findArticleMatch(matches);
-  if (!article) {
-    //throw new Error("No article found");
-    return [];
-  }
-
-  return [
-    { title: `${article?.title} | CRAN/E` },
-    { name: "description", content: article.subline },
-    { property: "og:title", content: `${article.title} | CRAN/E` },
-    {
-      property: "og:url",
-      content: `${BASE_URL}/press/news/${encodeURIComponent(article.slug)}`,
-    },
-    { property: "og:description", content: article.subline },
-    {
-      property: "og:image",
-      content: `${BASE_URL}/press/news/${encodeURIComponent(article.slug)}/og?${new URLSearchParams(
-        Object.entries({
-          headline: article.title,
-          subline: article.subline || "",
-        }),
-      )}`,
-    },
-  ];
-});
-
-export function findArticleMatch(
-  matches: Array<{ handle?: unknown }>,
-): PressArticleHandle | undefined {
-  const match = matches.find(
-    (match) =>
-      match.handle &&
-      (match.handle as { article?: PressArticleHandle })?.article,
-  );
-
-  return (match?.handle as { article?: PressArticleHandle })?.article;
-}
+import { ClientOnly } from "remix-utils/client-only";
 
 export function ArticleSynopsis(
   props: PropsWithChildren<{
@@ -102,15 +24,19 @@ export function ArticleSynopsis(
         {children}
       </div>
       <footer className="flex gap-2">
-        <InfoPill size="sm" label="Publication">
-          <time dateTime={createdAt}>{createdAt}</time>
-          {updatedAt && (
-            <>
-              {" "}
-              (updated <time dateTime={updatedAt}>{updatedAt}</time>)
-            </>
+        <ClientOnly>
+          {() => (
+            <InfoPill size="sm" label="Publication">
+              <time dateTime={createdAt}>{createdAt}</time>
+              {updatedAt && (
+                <>
+                  {" "}
+                  (updated <time dateTime={updatedAt}>{updatedAt}</time>)
+                </>
+              )}
+            </InfoPill>
           )}
-        </InfoPill>
+        </ClientOnly>
         <InfoPill size="sm" label="Authors">
           {authors.join(", ")}
         </InfoPill>
@@ -155,7 +81,13 @@ export function ArticlePreviewInfoCard(
           )}
         />
         <div className="z-10 space-y-1">
-          <span className="text-gray-dim font-mono text-xs">{createdAt}</span>
+          <ClientOnly>
+            {() => (
+              <span className="text-gray-dim font-mono text-xs">
+                {createdAt}
+              </span>
+            )}
+          </ClientOnly>
           <h3 className="text-lg">{headline}</h3>
           <p className="text-gray-dim pt-2">{subline}</p>
         </div>

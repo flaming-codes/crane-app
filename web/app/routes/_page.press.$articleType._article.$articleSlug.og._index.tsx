@@ -7,13 +7,14 @@ import { ArticleService } from "../data/article.service.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin, searchParams } = new URL(request.url);
-  const { articleSlug } = params;
+  const { articleSlug, articleType } = params;
 
   const parsedId = articleSlugSchema.safeParse(articleSlug);
   const exists = await ArticleService.checkNewsArticleExists(
     parsedId.data || "",
-    origin,
+    articleType,
   );
+
   if (parsedId.error || !exists) {
     throw new Response(null, {
       status: 400,
