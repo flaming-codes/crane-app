@@ -32,7 +32,7 @@ export async function loader(props: LoaderFunctionArgs) {
           ${composeUrlElement({ path: "/about", lastmod: "2024-10-29", changefreq: "yearly" })}
           ${composeUrlElement({ path: "/privacy", lastmod: "2024-10-29", changefreq: "yearly" })}
           ${composeUrlElement({ path: "/press/news", lastmod: "2024-10-29", changefreq: "monthly" })}
-          ${composeUrlElement({ path: "/press/news/crane-v2", lastmod: "2024-10-29", changefreq: "yearly" })}
+          ${composeUrlElement({ path: "/press/magazine", lastmod: "2024-12-29", changefreq: "monthly" })}
       </urlset>`.trim(),
       {
         headers: {
