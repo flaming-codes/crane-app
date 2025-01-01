@@ -8,6 +8,7 @@ const BASE_ITEMS: Array<{ label: string; href: string }> = [
   { label: "Privacy", href: "/privacy" },
   { label: "Statistics", href: "/statistic" },
   { label: "Newsroom", href: "/press/news" },
+  { label: "Magazine", href: "/press/magazine" },
 ];
 
 const twBase = cva({

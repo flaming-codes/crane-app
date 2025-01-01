@@ -71,6 +71,7 @@ function CategoryPill({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
+        display: "flex",
         textTransform: "uppercase",
         border: "2px solid white",
         borderRadius: 9999,
@@ -92,7 +93,9 @@ export async function composeAuthorOGImage(params: {
   // Design the image and generate an SVG with "satori"
   const svg = await satori(
     <OGImage
-      style={{ background: "linear-gradient(to bottom left, #208368, #000)" }}
+      style={{
+        background: "linear-gradient(to bottom left, #208368, #000)",
+      }}
     >
       {name}
       <CategoryPill>CRAN Author</CategoryPill>
@@ -112,7 +115,9 @@ export async function composePackageOGImage(params: {
   // Design the image and generate an SVG with "satori"
   const svg = await satori(
     <OGImage
-      style={{ background: "linear-gradient(to bottom left, #5151cd, #000)" }}
+      style={{
+        background: "linear-gradient(to bottom left, #5151cd, #000)",
+      }}
     >
       {name}
       <CategoryPill>CRAN Package</CategoryPill>
@@ -123,25 +128,29 @@ export async function composePackageOGImage(params: {
   return new Resvg(svg).render().asPng();
 }
 
-export async function composeNewsArticleOGImage(params: {
+export async function composePressArticleOGImage(params: {
   headline: string;
   subline?: string;
   requestUrl: string;
+  articleType: string;
 }) {
-  const { headline, subline, requestUrl } = params;
+  const { headline, subline, requestUrl, articleType } = params;
 
   // Design the image and generate an SVG with "satori"
   const svg = await satori(
     <OGImage
       style={{
-        background: "linear-gradient(to top left, #953ea3, #2f265f,#000 )",
+        background:
+          articleType === "news"
+            ? "linear-gradient(to top left, #953ea3, #2f265f,#000 )"
+            : "linear-gradient(to bottom left, #000, #090979, #00d4ff)",
       }}
     >
       <span style={{ fontSize: 80 }}>{headline}</span>
       {subline ? (
         <span style={{ fontSize: 50, color: "#b7b7b7" }}>{subline}</span>
       ) : null}
-      <CategoryPill>CRAN/E NEWS</CategoryPill>
+      <CategoryPill>CRAN/E {articleType}</CategoryPill>
     </OGImage>,
     await getBaseOptions(requestUrl),
   );

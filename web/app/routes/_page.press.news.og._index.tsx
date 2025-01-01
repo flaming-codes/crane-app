@@ -1,12 +1,12 @@
 import { LoaderFunctionArgs } from "react-router";
-import { composeNewsArticleOGImage } from "../modules/meta-og-image.server";
+import { composePressArticleOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { hoursToSeconds } from "date-fns";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
 
-  const png = await composeNewsArticleOGImage({
+  const png = await composePressArticleOGImage({
     headline: "CRAN/E Newsroom",
     requestUrl: origin,
   });

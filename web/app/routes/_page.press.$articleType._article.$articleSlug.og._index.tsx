@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "react-router";
-import { composeNewsArticleOGImage } from "../modules/meta-og-image.server";
+import { composePressArticleOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { hoursToSeconds } from "date-fns";
 import { articleSlugSchema } from "../data/article.shape";
@@ -7,7 +7,7 @@ import { ArticleService } from "../data/article.service.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin, searchParams } = new URL(request.url);
-  const { articleSlug, articleType } = params;
+  const { articleSlug, articleType = "" } = params;
 
   const parsedId = articleSlugSchema.safeParse(articleSlug);
   const exists = await ArticleService.checkNewsArticleExists(
@@ -31,10 +31,11 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     });
   }
 
-  const png = await composeNewsArticleOGImage({
+  const png = await composePressArticleOGImage({
     headline,
     subline,
     requestUrl: origin,
+    articleType,
   });
 
   // Respond with the PNG buffer
