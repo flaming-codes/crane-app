@@ -47,7 +47,11 @@ export class ArticleService {
     const { data, error } = await query.maybeSingle();
 
     if (error || !data) {
-      slog.error("Error getting news article by slug", { error });
+      slog.error("Error getting news article by slug", {
+        articleSlug,
+        articleType,
+        error,
+      });
       return null;
     }
 
