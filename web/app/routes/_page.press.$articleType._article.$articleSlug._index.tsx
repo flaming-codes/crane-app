@@ -99,7 +99,7 @@ export default function NewsArticleCraneV2() {
         <Anchors>
           {article.sections.map((section) => (
             <AnchorLink key={section.fragment} fragment={section.fragment}>
-              {section.headline}
+              {section.fragmentHeadline || section.headline}
             </AnchorLink>
           ))}
         </Anchors>

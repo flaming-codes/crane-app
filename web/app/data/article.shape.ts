@@ -5,6 +5,7 @@ export const articleSlugSchema = z.string().min(1).max(255);
 export type PressArticleContentSection = {
   headline: string;
   fragment: string;
+  fragmentHeadline?: string;
   body: PressArticleContentBody;
 };
 
