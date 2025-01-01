@@ -381,6 +381,73 @@ export type Database = {
           },
         ];
       };
+      package_embeddings: {
+        Row: {
+          _embedded_by_model: string;
+          cran_package_id: number;
+          created_at: string;
+          embedding: string | null;
+          fts_content: unknown | null;
+          package_type: string;
+          source_content_hash: string;
+          source_mime_type: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_name: string | null;
+          source_og_content: string | null;
+          source_path: string | null;
+          source_text_only_content: string | null;
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          _embedded_by_model: string;
+          cran_package_id: number;
+          created_at?: string;
+          embedding?: string | null;
+          fts_content?: unknown | null;
+          package_type?: string;
+          source_content_hash: string;
+          source_mime_type?: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_name?: string | null;
+          source_og_content?: string | null;
+          source_path?: string | null;
+          source_text_only_content?: string | null;
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          _embedded_by_model?: string;
+          cran_package_id?: number;
+          created_at?: string;
+          embedding?: string | null;
+          fts_content?: unknown | null;
+          package_type?: string;
+          source_content_hash?: string;
+          source_mime_type?: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_name?: string | null;
+          source_og_content?: string | null;
+          source_path?: string | null;
+          source_text_only_content?: string | null;
+          source_type?: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "package_embeddings__embedded_by_model_fkey";
+            columns: ["_embedded_by_model"];
+            referencedRelation: "ai_models";
+            referencedColumns: ["slug"];
+          },
+          {
+            foreignKeyName: "package_embeddings_package_id_fkey";
+            columns: ["cran_package_id"];
+            referencedRelation: "cran_packages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       press_article_authors: {
         Row: {
           author_slug: string;
@@ -529,6 +596,27 @@ export type Database = {
         };
         Returns: unknown;
       };
+      match_package_embeddings: {
+        Args: {
+          query_embedding: string;
+          match_threshold: number;
+          match_count: number;
+        };
+        Returns: {
+          cran_package_id: number;
+          package_type: string;
+          created_at: string;
+          updated_at: string;
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url: string;
+          source_path: string;
+          source_name: string;
+          source_mime_type: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_og_content: string;
+          _embedded_by_model: string;
+          similarity: number;
+        }[];
+      };
       set_limit: {
         Args: {
           "": number;
@@ -567,6 +655,15 @@ export type Database = {
         | "time_series"
         | "other";
       ai_model_type: "embedding" | "generation";
+      package_embedding_source_mime_type:
+        | "pkg/synopsis"
+        | "text/plain"
+        | "text/html"
+        | "text/markdown"
+        | "text/code"
+        | "application/json"
+        | "application/pdf";
+      package_embedding_source_type: "remote" | "internal";
       package_relationship_type:
         | "depends"
         | "imports"
