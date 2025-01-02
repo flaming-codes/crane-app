@@ -40,7 +40,7 @@
     "@resvg/resvg-js": "^2.6.2",
     "@supabase/supabase-js": "^2.47.10",
     "@uidotdev/usehooks": "^2.4.1",
-    "ai": "^4.0.22",
+    "ai": "^4.0.23",
     "clsx": "^2.1.1",
     "cva": "^1.0.0-beta.1",
     "date-fns": "^4.1.0",
@@ -94,7 +94,7 @@
     "tailwindcss-bg-patterns": "^0.3.0",
     "tailwindcss-radix-colors": "^1.4.1",
     "typescript": "^5.7.2",
-    "vite": "^6.0.5",
+    "vite": "^6.0.7",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {
