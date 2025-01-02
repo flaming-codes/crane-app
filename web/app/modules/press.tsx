@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { InfoPill } from "./info-pill";
 import { clsx } from "clsx";
 import { InfoCard } from "./info-card";
@@ -11,9 +11,10 @@ export function ArticleSynopsis(
     updatedAt?: string;
     authors: string[];
     type: Enums<"press_article_type">;
+    footer?: ReactNode;
   }>,
 ) {
-  const { createdAt, updatedAt, authors, type, children } = props;
+  const { createdAt, updatedAt, authors, type, children, footer } = props;
 
   return (
     <section className="space-y-12">
@@ -48,6 +49,7 @@ export function ArticleSynopsis(
         <InfoPill size="sm" label="Authors">
           {authors.join(", ")}
         </InfoPill>
+        {footer}
       </footer>
     </section>
   );

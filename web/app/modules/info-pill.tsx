@@ -6,6 +6,7 @@ type Props = PropsWithChildren<
     VariantProps<typeof twGradient> & {
       label?: ReactNode;
       className?: string;
+      gradientClassname?: string;
     }
 >;
 
@@ -33,12 +34,16 @@ const twGradient = cva({
       jade: "from-jade-5 dark:from-jade-11",
       slate: "from-slate-5 dark:from-slate-11",
       sand: "from-sand-5 via-gold-5 dark:from-sand-11 dark:via-gold-12",
+      amethyst: "from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
+      opal: "from-iris-11 via-sky-4 dark:from-iris-10 dark:via-sky-12",
+      wood: "from-brown-5 via-amber-4 dark:from-brown-10 dark:via-amber-11",
     },
   },
 });
 
 export function InfoPill(props: Props) {
-  const { size, label, children, variant, className } = props;
+  const { size, label, children, variant, className, gradientClassname } =
+    props;
 
   return (
     <div className={twBase({ className, size })}>
@@ -46,7 +51,7 @@ export function InfoPill(props: Props) {
         <span className="text-gray-dim whitespace-nowrap text-sm">{label}</span>
       ) : null}
       {children}
-      <span className={twGradient({ variant })} />
+      <span className={twGradient({ variant, class: gradientClassname })} />
     </div>
   );
 }

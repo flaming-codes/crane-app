@@ -1,7 +1,7 @@
 import { ArticleSynopsis, ProminentArticleImage } from "../modules/press";
 import { PageContentSection } from "../modules/page-content-section";
 import { Separator } from "../modules/separator";
-import { data, LoaderFunctionArgs, useLoaderData } from "react-router";
+import { data, Link, LoaderFunctionArgs, useLoaderData } from "react-router";
 import { PageContent } from "../modules/page-content";
 import { Header } from "../modules/header";
 import { Anchors, AnchorLink } from "../modules/anchors";
@@ -12,6 +12,7 @@ import { BASE_URL } from "../modules/app";
 import { format, hoursToSeconds } from "date-fns";
 import { ClientOnly } from "remix-utils/client-only";
 import { IS_DEV } from "../modules/app.server";
+import { InfoPill } from "../modules/info-pill";
 
 type LoaderData = {
   article: NonNullable<
@@ -42,7 +43,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return data(
     {
       article,
-    },
+    } satisfies LoaderData,
     IS_DEV
       ? undefined
       : {
@@ -81,7 +82,7 @@ export const meta = mergeMeta((params) => {
   ];
 });
 
-export default function NewsArticleCraneV2() {
+export default function PressArticle() {
   const { article } = useLoaderData<LoaderData>();
 
   const hasSections = article && article.sections.length > 0;
@@ -99,7 +100,7 @@ export default function NewsArticleCraneV2() {
         <Anchors>
           {article.sections.map((section) => (
             <AnchorLink key={section.fragment} fragment={section.fragment}>
-              {section.headline}
+              {section.fragmentHeadline || section.headline}
             </AnchorLink>
           ))}
         </Anchors>
@@ -115,6 +116,16 @@ export default function NewsArticleCraneV2() {
               : undefined
           }
           authors={article.authors.map((a) => a.name)}
+          footer={
+            <Link to={`/press/${article.type}`}>
+              <InfoPill
+                variant={article.type === "news" ? "amethyst" : "opal"}
+                gradientClassname="opacity-80"
+              >
+                All articles
+              </InfoPill>
+            </Link>
+          }
         >
           <p
             dangerouslySetInnerHTML={{
