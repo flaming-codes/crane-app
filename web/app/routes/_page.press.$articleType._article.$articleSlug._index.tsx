@@ -127,16 +127,11 @@ export default function PressArticle() {
             </Link>
           }
         >
-          <ClientOnly fallback={<div className="h-40" />}>
-            {() => (
-              <p
-                className="animate-fade animate-duration-150"
-                dangerouslySetInnerHTML={{
-                  __html: article.synopsis_html,
-                }}
-              />
-            )}
-          </ClientOnly>
+          <p
+            dangerouslySetInnerHTML={{
+              __html: article.synopsis_html,
+            }}
+          />
         </ArticleSynopsis>
 
         <Separator className="my-8" />
