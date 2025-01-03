@@ -23,6 +23,7 @@ import { InfoPill } from "./info-pill";
 import { clsx } from "clsx";
 import { sendEvent } from "./plausible";
 import { debounce } from "es-toolkit";
+import { PackageSemanticSearchHit } from "../data/package.shape";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -37,12 +38,17 @@ type SearchHit = { id: number; name: string };
 
 type SearchResults = {
   authors: { hits: SearchHit[] };
-  packages: { hits: SearchHit[] };
+  packages: {
+    hits: {
+      lexical: SearchHit[];
+      semantic: PackageSemanticSearchHit[];
+    };
+  };
 };
 
 const fallbackSearchResults: SearchResults = {
   authors: { hits: [] },
-  packages: { hits: [] },
+  packages: { hits: { lexical: [], semantic: [] } },
 };
 
 export function NavSearch(props: Props) {
@@ -164,11 +170,14 @@ export function SearchResults(
   props: PropsWithChildren<{
     data: SearchResults;
     isDataExpected?: boolean;
-    onSelect: (item?: SearchHit) => void;
+    onSelect: (item?: SearchHit | PackageSemanticSearchHit) => void;
   }>,
 ) {
   const { data, isDataExpected, onSelect, children } = props;
   const { authors, packages } = data;
+
+  const hasLexicalHits = packages.hits.lexical.length > 0;
+  const hasSemanticHits = packages.hits.semantic.length > 0;
 
   useLockBodyScroll();
 
@@ -181,39 +190,74 @@ export function SearchResults(
               <>
                 <section>
                   <h3 className="pb-6 text-lg">Packages</h3>
-                  {packages.hits.length > 0 ? (
-                    <ul className="flex flex-wrap gap-2">
-                      {packages.hits.map((item, i) => (
-                        <li key={item.id}>
-                          <Link
-                            to={`/package/${item.name}`}
-                            onClick={() => {
-                              onSelect(item);
-                              sendEvent("search-suggestion-selected", {
-                                props: {
-                                  category: "package",
-                                  suggestion: item.name,
-                                },
-                              });
-                            }}
-                          >
-                            <InfoPill
-                              variant="iris"
-                              label={<FlameOfFame score={i < 3 ? 12 : 0} />}
+                  <div className="space-y-4">
+                    {hasSemanticHits ? (
+                      <ul className="flex flex-wrap gap-2">
+                        {packages.hits.semantic.map((item, i) => (
+                          <li key={item.packageId}>
+                            <Link
+                              to={`/package/${item.packageId}`}
+                              onClick={() => {
+                                onSelect(item);
+                                sendEvent("search-suggestion-selected", {
+                                  props: {
+                                    category: "package",
+                                    suggestion: item.packageId.toString(),
+                                  },
+                                });
+                              }}
                             >
-                              <span className="shrink-0">{item.name}</span>{" "}
-                              <RiArrowRightSLine
-                                size={14}
-                                className="text-gray-dim"
-                              />
-                            </InfoPill>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-dim">No packages found</p>
-                  )}
+                              <InfoPill
+                                variant="iris"
+                                label={<FlameOfFame score={i < 3 ? 12 : 0} />}
+                              >
+                                <span className="shrink-0">
+                                  {item.packageId}
+                                </span>{" "}
+                                <RiArrowRightSLine
+                                  size={14}
+                                  className="text-gray-dim"
+                                />
+                              </InfoPill>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {hasLexicalHits ? (
+                      <ul className="flex flex-wrap gap-2">
+                        {packages.hits.lexical.map((item, i) => (
+                          <li key={item.id}>
+                            <Link
+                              to={`/package/${item.name}`}
+                              onClick={() => {
+                                onSelect(item);
+                                sendEvent("search-suggestion-selected", {
+                                  props: {
+                                    category: "package",
+                                    suggestion: item.name,
+                                  },
+                                });
+                              }}
+                            >
+                              <InfoPill
+                                variant="iris"
+                                label={<FlameOfFame score={i < 3 ? 12 : 0} />}
+                              >
+                                <span className="shrink-0">{item.name}</span>{" "}
+                                <RiArrowRightSLine
+                                  size={14}
+                                  className="text-gray-dim"
+                                />
+                              </InfoPill>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-dim">No packages found</p>
+                    )}
+                  </div>
                 </section>
 
                 <Separator />

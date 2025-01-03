@@ -4,9 +4,11 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
-import { uniqBy } from "es-toolkit";
+import { groupBy, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
+import { embed } from "ai";
+import { google } from "@ai-sdk/google";
 
 type Package = Tables<"cran_packages">;
 
@@ -164,17 +166,33 @@ export class PackageService {
   ) {
     const { limit = 20 } = options || {};
 
-    const [fts, exact] = await Promise.all([
+    const normalizedQuery = query.trim();
+
+    // Check if at least one space and at least 8 characters
+    const isSimilaritySearchEnabled =
+      normalizedQuery.includes(" ") && normalizedQuery.length >= 8;
+
+    const [fts, exact, similarity] = await Promise.all([
       supabase.rpc("find_closest_packages", {
-        search_term: query,
+        search_term: normalizedQuery,
         result_limit: limit,
       }),
       // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
       supabase
         .from("cran_packages")
         .select("id,name")
-        .ilike("name", query)
+        .ilike("name", normalizedQuery)
         .maybeSingle(),
+      isSimilaritySearchEnabled
+        ? supabase.rpc("match_package_embeddings", {
+            query_embedding: await embed({
+              value: normalizedQuery,
+              model: google.textEmbeddingModel("text-embedding-004"),
+            }).then((res) => res.embedding as unknown as string),
+            match_threshold: 0.5,
+            match_count: 3,
+          })
+        : null,
     ]);
 
     if (fts.error) {
@@ -194,7 +212,32 @@ export class PackageService {
       });
     }
 
-    return uniqBy(fts.data, (item) => item.id);
+    if (similarity) {
+      if (similarity.error) {
+        slog.error("Error in searchPackages", similarity.error);
+      }
+    }
+
+    const sources = similarity?.data || [];
+    const lexical = uniqBy(fts.data, (item) => item.id).filter((item) => {
+      return !sources.some((s) => s.cran_package_id === item.id);
+    });
+
+    // Group sources by package id and source name, so that multiple hits per source & package
+    // can be grouped together. `Object.values` is used to convert the object back to an array.
+    const sourcesByPackage = groupBy(sources, (item) => item.cran_package_id);
+    const groupedSourcesByPackage = Object.entries(sourcesByPackage).map(
+      ([packageId, sources]) => ({
+        packageId,
+        sources: groupBy(sources, (item) => item.source_name),
+      }),
+    );
+
+    return {
+      lexical,
+      semantic: groupedSourcesByPackage,
+      isSemanticPreferred: isSimilaritySearchEnabled && sources.length > 0,
+    };
   }
 
   private static sanitizeSitemapName(name: string) {
