@@ -9,6 +9,7 @@ export type PackageSlug = z.infer<typeof packageNameSchema>;
 
 export type PackageSemanticSearchHit = {
   packageId: string;
+  packageName: string;
   sources: Record<
     /* source name */
     string,

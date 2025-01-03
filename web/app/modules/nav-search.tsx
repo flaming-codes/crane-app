@@ -194,15 +194,15 @@ export function SearchResults(
                     {hasSemanticHits ? (
                       <ul className="flex flex-wrap gap-2">
                         {packages.hits.semantic.map((item, i) => (
-                          <li key={item.packageId}>
+                          <li key={item.packageName}>
                             <Link
-                              to={`/package/${item.packageId}`}
+                              to={`/package/${item.packageName}`}
                               onClick={() => {
                                 onSelect(item);
                                 sendEvent("search-suggestion-selected", {
                                   props: {
                                     category: "package",
-                                    suggestion: item.packageId.toString(),
+                                    suggestion: item.packageName,
                                   },
                                 });
                               }}
@@ -212,7 +212,7 @@ export function SearchResults(
                                 label={<FlameOfFame score={i < 3 ? 12 : 0} />}
                               >
                                 <span className="shrink-0">
-                                  {item.packageId}
+                                  {item.packageName} (semantic)
                                 </span>{" "}
                                 <RiArrowRightSLine
                                   size={14}

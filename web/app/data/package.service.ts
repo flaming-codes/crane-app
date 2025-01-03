@@ -169,8 +169,7 @@ export class PackageService {
     const normalizedQuery = query.trim();
 
     // Check if at least one space and at least 8 characters
-    const isSimilaritySearchEnabled =
-      normalizedQuery.includes(" ") && normalizedQuery.length >= 8;
+    const isSimilaritySearchEnabled = normalizedQuery.length >= 6;
 
     const [fts, exact, similarity] = await Promise.all([
       supabase.rpc("find_closest_packages", {
@@ -189,8 +188,8 @@ export class PackageService {
               value: normalizedQuery,
               model: google.textEmbeddingModel("text-embedding-004"),
             }).then((res) => res.embedding as unknown as string),
-            match_threshold: 0.5,
-            match_count: 3,
+            match_threshold: 0,
+            match_count: limit,
           })
         : null,
     ]);
@@ -208,7 +207,7 @@ export class PackageService {
     if (exact.data) {
       fts.data.unshift({
         ...exact.data,
-        levenshtein_distance: 0,
+        levenshtein_distance: 0.4,
       });
     }
 
@@ -226,10 +225,33 @@ export class PackageService {
     // Group sources by package id and source name, so that multiple hits per source & package
     // can be grouped together. `Object.values` is used to convert the object back to an array.
     const sourcesByPackage = groupBy(sources, (item) => item.cran_package_id);
-    const groupedSourcesByPackage = Object.entries(sourcesByPackage).map(
+    const groupedSourcesByPackageIds = Object.entries(sourcesByPackage).map(
       ([packageId, sources]) => ({
         packageId,
         sources: groupBy(sources, (item) => item.source_name),
+      }),
+    );
+
+    // Fetch the package name for each package id.
+    // This is not done inside the RPC call as we could
+    // potentially have different package families (CRAN, Bioconductor, etc.).
+    const groupedSourcesByPackage = await Promise.all(
+      groupedSourcesByPackageIds.map(async (item) => {
+        const { data, error } = await supabase
+          .from("cran_packages")
+          .select("name")
+          .eq("id", item.packageId)
+          .maybeSingle();
+
+        if (error || !data) {
+          slog.error("Error in searchPackages", error);
+          return null;
+        }
+
+        return {
+          ...item,
+          packageName: data.name,
+        };
       }),
     );
 
