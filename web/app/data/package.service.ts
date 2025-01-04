@@ -179,7 +179,7 @@ export class PackageService {
       // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
       supabase
         .from("cran_packages")
-        .select("id,name")
+        .select("id,name,synopsis")
         .ilike("name", normalizedQuery)
         .maybeSingle(),
       isSimilaritySearchEnabled
@@ -239,7 +239,7 @@ export class PackageService {
       groupedSourcesByPackageIds.map(async (item) => {
         const { data, error } = await supabase
           .from("cran_packages")
-          .select("name")
+          .select("name,synopsis")
           .eq("id", item.packageId)
           .maybeSingle();
 
@@ -251,6 +251,7 @@ export class PackageService {
         return {
           ...item,
           packageName: data.name,
+          synopsis: data.synopsis,
         };
       }),
     );

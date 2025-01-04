@@ -1,10 +1,4 @@
 import { Link, useFetcher } from "react-router";
-import {
-  RiArrowRightSLine,
-  RiCloseFill,
-  RiFireFill,
-  RiGlassesFill,
-} from "@remixicon/react";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 import {
   ChangeEvent,
@@ -24,6 +18,9 @@ import { clsx } from "clsx";
 import { sendEvent } from "./plausible";
 import { debounce } from "es-toolkit";
 import { PackageSemanticSearchHit } from "../data/package.shape";
+import { SearchIdlePlaceholder } from "./search.idle-placeholder";
+import { FlameOfFame } from "./search.flame";
+import { SearchHit, SearchHitsResults, SemanticHit } from "./search.hit";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -34,19 +31,7 @@ type Props = {
   inputClassName?: string;
 };
 
-type SearchHit = { id: number; name: string };
-
-type SearchResults = {
-  authors: { hits: SearchHit[] };
-  packages: {
-    hits: {
-      lexical: SearchHit[];
-      semantic: PackageSemanticSearchHit[];
-    };
-  };
-};
-
-const fallbackSearchResults: SearchResults = {
+const fallbackSearchResults: SearchHitsResults = {
   authors: { hits: [] },
   packages: { hits: { lexical: [], semantic: [] } },
 };
@@ -64,7 +49,7 @@ export function NavSearch(props: Props) {
   const [input, setInput] = useState("");
   const fetcher = useFetcher();
   const actionData =
-    (fetcher.data as SearchResults | undefined) || fallbackSearchResults;
+    (fetcher.data as SearchHitsResults | undefined) || fallbackSearchResults;
 
   const debouncedFetcher = useRef(
     debounce(
@@ -139,7 +124,8 @@ export function NavSearch(props: Props) {
             isFocused ? "Type to search for packages and authors" : "Search..."
           }
           className={clsx(
-            "h-full flex-1 bg-transparent focus:outline-none",
+            "h-full flex-1 bg-transparent outline-none focus:placeholder:opacity-30",
+            "transition-all",
             inputClassName,
           )}
           value={input}
@@ -153,6 +139,7 @@ export function NavSearch(props: Props) {
           {() =>
             createPortal(
               <SearchResults
+                state={fetcher.state}
                 data={actionData}
                 isDataExpected={input.length > 0}
                 onSelect={onSelect}
@@ -168,16 +155,19 @@ export function NavSearch(props: Props) {
 
 export function SearchResults(
   props: PropsWithChildren<{
-    data: SearchResults;
+    state: "idle" | "loading" | "submitting";
+    data: SearchHitsResults;
     isDataExpected?: boolean;
     onSelect: (item?: SearchHit | PackageSemanticSearchHit) => void;
   }>,
 ) {
-  const { data, isDataExpected, onSelect, children } = props;
+  const { state, data, isDataExpected, onSelect, children } = props;
   const { authors, packages } = data;
 
+  const hasAuthors = authors.hits.length > 0;
   const hasLexicalHits = packages.hits.lexical.length > 0;
   const hasSemanticHits = packages.hits.semantic.length > 0;
+  const hasAnyHits = hasAuthors || hasLexicalHits || hasSemanticHits;
 
   useLockBodyScroll();
 
@@ -189,80 +179,39 @@ export function SearchResults(
             {isDataExpected ? (
               <>
                 <section>
-                  <h3 className="pb-6 text-lg">Packages</h3>
-                  <div className="space-y-4">
-                    {hasSemanticHits ? (
+                  {hasAnyHits ? (
+                    <div className="space-y-4">
                       <ul className="flex flex-wrap gap-2">
-                        {packages.hits.semantic.map((item, i) => (
-                          <li key={item.packageName}>
-                            <Link
-                              to={`/package/${item.packageName}`}
-                              onClick={() => {
-                                onSelect(item);
-                                sendEvent("search-suggestion-selected", {
-                                  props: {
-                                    category: "package",
-                                    suggestion: item.packageName,
-                                  },
-                                });
-                              }}
-                            >
-                              <InfoPill
-                                variant="iris"
-                                label={<FlameOfFame score={i < 3 ? 12 : 0} />}
-                              >
-                                <span className="shrink-0">
-                                  {item.packageName} (semantic)
-                                </span>{" "}
-                                <RiArrowRightSLine
-                                  size={14}
-                                  className="text-gray-dim"
+                        {hasSemanticHits
+                          ? packages.hits.semantic.map((item) => (
+                              <li key={item.packageName}>
+                                <SemanticHit
+                                  item={item}
+                                  onClick={() => {
+                                    onSelect(item);
+                                    sendEvent("search-suggestion-selected", {
+                                      props: {
+                                        category: "package",
+                                        suggestion: item.packageName,
+                                      },
+                                    });
+                                  }}
                                 />
-                              </InfoPill>
-                            </Link>
-                          </li>
-                        ))}
+                              </li>
+                            ))
+                          : null}
                       </ul>
-                    ) : null}
-                    {hasLexicalHits ? (
-                      <ul className="flex flex-wrap gap-2">
-                        {packages.hits.lexical.map((item, i) => (
-                          <li key={item.id}>
-                            <Link
-                              to={`/package/${item.name}`}
-                              onClick={() => {
-                                onSelect(item);
-                                sendEvent("search-suggestion-selected", {
-                                  props: {
-                                    category: "package",
-                                    suggestion: item.name,
-                                  },
-                                });
-                              }}
-                            >
-                              <InfoPill
-                                variant="iris"
-                                label={<FlameOfFame score={i < 3 ? 12 : 0} />}
-                              >
-                                <span className="shrink-0">{item.name}</span>{" "}
-                                <RiArrowRightSLine
-                                  size={14}
-                                  className="text-gray-dim"
-                                />
-                              </InfoPill>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-gray-dim">No packages found</p>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    state === "idle" && (
+                      <p className="text-gray-dim">No results found</p>
+                    )
+                  )}
                 </section>
 
                 <Separator />
 
-                <section>
+                <section hidden>
                   <h3 className="pb-6 text-lg">Authors</h3>
                   {authors.hits.length > 0 ? (
                     <ul className="flex flex-wrap gap-2">
@@ -296,38 +245,7 @@ export function SearchResults(
                 </section>
               </>
             ) : (
-              <section className="flex flex-col items-center gap-6">
-                <p className="text-md text-center">
-                  Ready when you are{" "}
-                  <RiGlassesFill
-                    size={32}
-                    className="mb-2 ml-2 inline animate-wiggle animate-duration-700 animate-infinite"
-                  />
-                </p>
-                <div className="text-gray-dim mt-28 space-y-1 text-center text-sm">
-                  <p>
-                    Press{" "}
-                    <kbd className="font-mono font-bold">
-                      {navigator?.platform?.toLowerCase().includes("mac")
-                        ? "⌘"
-                        : "Ctrl"}
-                    </kbd>{" "}
-                    + <kbd className="font-mono font-bold">K</kbd> to open
-                    search from anywhere
-                  </p>
-                  <p>
-                    Use <kbd className="font-mono font-bold">Esc</kbd> to close
-                    it
-                  </p>
-                </div>
-                <button
-                  className="bg-gray-ghost border-gray-dim text-gray-dim flex items-center gap-2 overflow-hidden rounded-md border px-2 py-1 text-sm"
-                  onClick={() => onSelect(undefined)}
-                >
-                  <span>Close</span>
-                  <RiCloseFill size={16} className="inline" />
-                </button>
-              </section>
+              <SearchIdlePlaceholder onSelect={onSelect} />
             )}
           </div>
 
@@ -335,20 +253,5 @@ export function SearchResults(
         </div>
       </div>
     </div>
-  );
-}
-
-function FlameOfFame(props: { score: number; threshold?: number }) {
-  const { score, threshold = 11 } = props;
-
-  if (score < threshold) {
-    return null;
-  }
-
-  return (
-    <RiFireFill
-      size={16}
-      className="animate-pulse text-ruby-9 animate-duration-1000"
-    />
   );
 }
