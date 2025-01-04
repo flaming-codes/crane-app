@@ -188,7 +188,7 @@ export class PackageService {
               value: normalizedQuery,
               model: google.textEmbeddingModel("text-embedding-004"),
             }).then((res) => res.embedding as unknown as string),
-            match_threshold: 0,
+            match_threshold: 0.4,
             match_count: limit,
           })
         : null,
@@ -218,9 +218,14 @@ export class PackageService {
     }
 
     const sources = similarity?.data || [];
-    const lexical = uniqBy(fts.data, (item) => item.id).filter((item) => {
-      return !sources.some((s) => s.cran_package_id === item.id);
-    });
+    const lexical = uniqBy(fts.data, (item) => item.id)
+      .filter((item) => {
+        return !sources.some((s) => s.cran_package_id === item.id);
+      })
+      .map((item) => ({
+        name: item.name,
+        synopsis: item.synopsis,
+      }));
 
     // Group sources by package id and source name, so that multiple hits per source & package
     // can be grouped together. `Object.values` is used to convert the object back to an array.
@@ -249,9 +254,9 @@ export class PackageService {
         }
 
         return {
-          ...item,
-          packageName: data.name,
+          name: data.name,
           synopsis: data.synopsis,
+          sources: Object.entries(item.sources),
         };
       }),
     );

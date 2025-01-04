@@ -560,6 +560,7 @@ export type Database = {
         Returns: {
           id: number;
           name: string;
+          synopsis: string;
           levenshtein_distance: number;
         }[];
       };

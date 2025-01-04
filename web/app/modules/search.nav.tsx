@@ -17,10 +17,14 @@ import { InfoPill } from "./info-pill";
 import { clsx } from "clsx";
 import { sendEvent } from "./plausible";
 import { debounce } from "es-toolkit";
-import { PackageSemanticSearchHit } from "../data/package.shape";
 import { SearchIdlePlaceholder } from "./search.idle-placeholder";
 import { FlameOfFame } from "./search.flame";
-import { SearchHit, SearchHitsResults, SemanticHit } from "./search.hit";
+import {
+  PackageSemanticSearchHit,
+  BaseSearchHit,
+  SearchHitsResults,
+  PackageHit,
+} from "./search.hit";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -158,10 +162,10 @@ export function SearchResults(
     state: "idle" | "loading" | "submitting";
     data: SearchHitsResults;
     isDataExpected?: boolean;
-    onSelect: (item?: SearchHit | PackageSemanticSearchHit) => void;
+    onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
   }>,
 ) {
-  const { state, data, isDataExpected, onSelect, children } = props;
+  const { data, isDataExpected, onSelect, children } = props;
   const { authors, packages } = data;
 
   const hasAuthors = authors.hits.length > 0;
@@ -184,15 +188,15 @@ export function SearchResults(
                       <ul className="flex flex-wrap gap-2">
                         {hasSemanticHits
                           ? packages.hits.semantic.map((item) => (
-                              <li key={item.packageName}>
-                                <SemanticHit
+                              <li key={item.name}>
+                                <PackageHit
                                   item={item}
                                   onClick={() => {
                                     onSelect(item);
                                     sendEvent("search-suggestion-selected", {
                                       props: {
                                         category: "package",
-                                        suggestion: item.packageName,
+                                        suggestion: item.name,
                                       },
                                     });
                                   }}
@@ -203,13 +207,17 @@ export function SearchResults(
                       </ul>
                     </div>
                   ) : (
-                    state === "idle" && (
-                      <p className="text-gray-dim">No results found</p>
-                    )
+                    <p className="text-gray-dim">No results found</p>
                   )}
                 </section>
 
-                <Separator />
+                <div hidden={!hasAnyHits}>
+                  <Separator />
+                  <p className="text-gray-dim mt-3 text-xs">
+                    Results are retrieved via hybrid semantic and full text
+                    search.
+                  </p>
+                </div>
 
                 <section hidden>
                   <h3 className="pb-6 text-lg">Authors</h3>

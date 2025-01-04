@@ -1,9 +1,9 @@
 import { RiGlassesFill, RiCloseFill } from "@remixicon/react";
 import { PackageSemanticSearchHit } from "../data/package.shape";
-import { SearchHit } from "./search.hit";
+import { BaseSearchHit } from "./search.hit";
 
 export function SearchIdlePlaceholder(props: {
-  onSelect: (item?: SearchHit | PackageSemanticSearchHit) => void;
+  onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
 }) {
   const { onSelect } = props;
 
