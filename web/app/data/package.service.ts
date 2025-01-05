@@ -217,7 +217,14 @@ export class PackageService {
       }
     }
 
-    const sources = similarity?.data || [];
+    // Prefer the exact match over the similarity match.
+    // Therefore we filter out the similarity match if it's the same as the exact match.
+    const sources = (similarity?.data || []).filter((item) => {
+      if (exact.data && exact.data.id === item.cran_package_id) {
+        return false;
+      }
+      return true;
+    });
     const lexical = uniqBy(fts.data, (item) => item.id)
       .filter((item) => {
         return !sources.some((s) => s.cran_package_id === item.id);
@@ -264,7 +271,8 @@ export class PackageService {
     return {
       lexical,
       semantic: groupedSourcesByPackage,
-      isSemanticPreferred: isSimilaritySearchEnabled && sources.length > 0,
+      isSemanticPreferred:
+        !exact.data && isSimilaritySearchEnabled && sources.length > 0,
     };
   }
 

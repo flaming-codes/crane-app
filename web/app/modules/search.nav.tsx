@@ -1,4 +1,4 @@
-import { Link, useFetcher } from "react-router";
+import { useFetcher } from "react-router";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 import {
   ChangeEvent,
@@ -13,18 +13,18 @@ import { createPortal } from "react-dom";
 import { ClientOnly } from "remix-utils/client-only";
 import { useKeyboardEvent, useKeyboardShortcut } from "./app";
 import { Separator } from "./separator";
-import { InfoPill } from "./info-pill";
-import { clsx } from "clsx";
 import { sendEvent } from "./plausible";
 import { debounce } from "es-toolkit";
 import { SearchIdlePlaceholder } from "./search.idle-placeholder";
-import { FlameOfFame } from "./search.flame";
 import {
   PackageSemanticSearchHit,
   BaseSearchHit,
   SearchHitsResults,
   PackageHit,
+  AuthorHit,
 } from "./search.hit";
+import { SearchInput } from "./search.input";
+import { ProvidedByLabel } from "./provided-by-label";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -37,7 +37,7 @@ type Props = {
 
 const fallbackSearchResults: SearchHitsResults = {
   authors: { hits: [] },
-  packages: { hits: { lexical: [], semantic: [] } },
+  packages: { hits: { lexical: [], semantic: [], isSemanticPreferred: false } },
 };
 
 export function NavSearch(props: Props) {
@@ -116,28 +116,15 @@ export function NavSearch(props: Props) {
 
   return (
     <>
-      <div className="flex h-14 items-center">
-        <input
-          ref={inputRef}
-          type="search"
-          autoCapitalize="none"
-          autoCorrect="off"
-          autoComplete="off"
-          spellCheck="false"
-          placeholder={
-            isFocused ? "Type to search for packages and authors" : "Search..."
-          }
-          className={clsx(
-            "h-full flex-1 bg-transparent outline-none focus:placeholder:opacity-30",
-            "transition-all",
-            inputClassName,
-          )}
-          value={input}
-          onFocus={() => setIsFocused(true)}
-          onChange={onChange}
-        />
-        {actions}
-      </div>
+      <SearchInput
+        input={input}
+        inputRef={inputRef}
+        isFocused={isFocused}
+        setIsFocused={setIsFocused}
+        actions={actions}
+        inputClassName={inputClassName}
+        onChange={onChange}
+      />
       {isFocused && searchContentRef.current && actionData ? (
         <ClientOnly>
           {() =>
@@ -173,37 +160,56 @@ export function SearchResults(
   const hasSemanticHits = packages.hits.semantic.length > 0;
   const hasAnyHits = hasAuthors || hasLexicalHits || hasSemanticHits;
 
+  let packageHits = [...packages.hits.lexical, ...packages.hits.semantic];
+  if (packages.hits.isSemanticPreferred) {
+    packageHits = [...packages.hits.semantic, ...packages.hits.lexical];
+  }
+
   useLockBodyScroll();
 
   return (
     <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl animate-duration-150 dark:bg-black/90">
       <div className="content-grid">
         <div className="full-width">
-          <div className="flex flex-col gap-16">
+          <div className="flex flex-col gap-32">
             {isDataExpected ? (
               <>
                 <section>
                   {hasAnyHits ? (
                     <div className="space-y-4">
-                      <ul className="flex flex-wrap gap-2">
-                        {hasSemanticHits
-                          ? packages.hits.semantic.map((item) => (
-                              <li key={item.name}>
-                                <PackageHit
-                                  item={item}
-                                  onClick={() => {
-                                    onSelect(item);
-                                    sendEvent("search-suggestion-selected", {
-                                      props: {
-                                        category: "package",
-                                        suggestion: item.name,
-                                      },
-                                    });
-                                  }}
-                                />
-                              </li>
-                            ))
-                          : null}
+                      <ul className="flex flex-col gap-6">
+                        {packageHits.map((item) => (
+                          <li key={item.name}>
+                            <PackageHit
+                              item={item}
+                              onClick={() => {
+                                onSelect(item);
+                                sendEvent("search-suggestion-selected", {
+                                  props: {
+                                    category: "package",
+                                    suggestion: item.name,
+                                  },
+                                });
+                              }}
+                            />
+                          </li>
+                        ))}
+                        {authors.hits.map((item) => (
+                          <li key={item.id}>
+                            <AuthorHit
+                              item={item}
+                              onClick={() => {
+                                onSelect(item);
+                                sendEvent("search-suggestion-selected", {
+                                  props: {
+                                    category: "author",
+                                    suggestion: item.name,
+                                  },
+                                });
+                              }}
+                            />
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   ) : (
@@ -213,44 +219,17 @@ export function SearchResults(
 
                 <div hidden={!hasAnyHits}>
                   <Separator />
-                  <p className="text-gray-dim mt-3 text-xs">
+                  <p className="text-gray-dim mt-3 text-end text-xs">
                     Results are retrieved via hybrid semantic and full text
-                    search.
+                    search
                   </p>
+                  <ProvidedByLabel
+                    headline="Embeddings generated by"
+                    source="Google Gemini text-embedding-004"
+                    sourceUrl="https://ai.google.dev/gemini-api/docs/models/gemini#text-embedding"
+                    className="mt-1"
+                  />
                 </div>
-
-                <section hidden>
-                  <h3 className="pb-6 text-lg">Authors</h3>
-                  {authors.hits.length > 0 ? (
-                    <ul className="flex flex-wrap gap-2">
-                      {authors.hits.map((item, i) => (
-                        <li key={item.id}>
-                          <Link
-                            to={`/author/${item.name}`}
-                            onClick={() => {
-                              onSelect(item);
-                              sendEvent("search-suggestion-selected", {
-                                props: {
-                                  category: "author",
-                                  suggestion: item.name,
-                                },
-                              });
-                            }}
-                          >
-                            <InfoPill
-                              variant="jade"
-                              label={<FlameOfFame score={i <= 3 ? 12 : 0} />}
-                            >
-                              {item.name}
-                            </InfoPill>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-dim">No authors found</p>
-                  )}
-                </section>
               </>
             ) : (
               <SearchIdlePlaceholder onSelect={onSelect} />
