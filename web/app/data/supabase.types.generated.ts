@@ -388,7 +388,7 @@ export type Database = {
           created_at: string;
           embedding: string;
           fts_content: unknown | null;
-          package_type: string;
+          package_type: Database["public"]["Enums"]["package_embedding_family_type"];
           source_chunk_type: Database["public"]["Enums"]["package_embedding_chunk_type"];
           source_content_hash: string;
           source_label: string | null;
@@ -408,7 +408,7 @@ export type Database = {
           created_at?: string;
           embedding: string;
           fts_content?: unknown | null;
-          package_type?: string;
+          package_type?: Database["public"]["Enums"]["package_embedding_family_type"];
           source_chunk_type?: Database["public"]["Enums"]["package_embedding_chunk_type"];
           source_content_hash: string;
           source_label?: string | null;
@@ -428,7 +428,7 @@ export type Database = {
           created_at?: string;
           embedding?: string;
           fts_content?: unknown | null;
-          package_type?: string;
+          package_type?: Database["public"]["Enums"]["package_embedding_family_type"];
           source_chunk_type?: Database["public"]["Enums"]["package_embedding_chunk_type"];
           source_content_hash?: string;
           source_label?: string | null;
@@ -552,6 +552,22 @@ export type Database = {
           levenshtein_distance: number;
         }[];
       };
+      find_closest_package_embeddings: {
+        Args: {
+          search_term: string;
+          result_limit: number;
+          package_type_filter?: Database["public"]["Enums"]["package_embedding_family_type"];
+          source_mime_type_filter?: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_chunk_type_filter?: Database["public"]["Enums"]["package_embedding_chunk_type"];
+        };
+        Returns: {
+          cran_package_id: number;
+          source_name: string;
+          source_searchable_content: string;
+          package_type: Database["public"]["Enums"]["package_embedding_family_type"];
+          rank: number;
+        }[];
+      };
       find_closest_packages: {
         Args: {
           search_term: string;
@@ -597,6 +613,7 @@ export type Database = {
         | "other";
       ai_model_type: "embedding" | "generation";
       package_embedding_chunk_type: "naive_chunk" | "summary" | "qa_pairs";
+      package_embedding_family_type: "cran";
       package_embedding_source_mime_type:
         | "pkg/synopsis"
         | "text/plain"
