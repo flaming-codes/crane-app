@@ -203,7 +203,7 @@ export class AuthorService {
    * @returns
    */
   static async searchAuthors(query: string, options?: { limit?: number }) {
-    const { limit = 20 } = options || {};
+    const { limit = 8 } = options || {};
 
     const [fts, exact] = await Promise.all([
       supabase.rpc("find_closest_authors", {
