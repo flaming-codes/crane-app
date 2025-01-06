@@ -205,17 +205,39 @@ export class AuthorService {
   static async searchAuthors(query: string, options?: { limit?: number }) {
     const { limit = 20 } = options || {};
 
-    const { data, error } = await supabase.rpc("find_closest_authors", {
-      search_term: query.trim(),
-      result_limit: limit,
-    });
+    const [fts, exact] = await Promise.all([
+      supabase.rpc("find_closest_authors", {
+        search_term: query,
+        result_limit: limit,
+        max_levenshtein_distance: 8,
+      }),
+      supabase
+        .from("authors")
+        .select("id,name")
+        .ilike("name", query)
+        .maybeSingle(),
+    ]);
 
-    if (error) {
-      slog.error("Error in searchAuthors", error);
-      return [];
+    if (fts.error) {
+      slog.error("Error in searchAuthors", fts.error);
+      throw fts.error;
+    }
+    if (exact.error) {
+      slog.error("Error in searchAuthors", exact.error);
+      throw exact.error;
     }
 
-    return uniqBy(data, (author) => author.id);
+    const lexical = fts.data;
+
+    if (exact.data) {
+      lexical.unshift({
+        id: exact.data.id,
+        name: exact.data.name,
+        levenshtein_distance: 0,
+      });
+    }
+
+    return uniqBy(lexical, (author) => author.id);
   }
 
   /**

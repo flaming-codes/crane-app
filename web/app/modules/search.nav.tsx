@@ -36,6 +36,7 @@ type Props = {
 };
 
 const fallbackSearchResults: SearchHitsResults = {
+  combined: [],
   authors: { hits: [] },
   packages: { hits: { lexical: [], semantic: [], isSemanticPreferred: false } },
 };
@@ -153,7 +154,7 @@ export function SearchResults(
   }>,
 ) {
   const { data, isDataExpected, onSelect, children } = props;
-  const { authors, packages } = data;
+  const { authors, packages, combined } = data;
 
   const hasAuthors = authors.hits.length > 0;
   const hasLexicalHits = packages.hits.lexical.length > 0;
@@ -175,6 +176,48 @@ export function SearchResults(
             {isDataExpected ? (
               <>
                 <section>
+                  {hasAnyHits ? (
+                    <div className="space-y-4">
+                      <ul className="flex flex-col gap-6">
+                        {combined.map((item) => (
+                          <li key={item.name}>
+                            {"synopsis" in item ? (
+                              <PackageHit
+                                item={item}
+                                onClick={() => {
+                                  onSelect(item);
+                                  sendEvent("search-suggestion-selected", {
+                                    props: {
+                                      category: "package",
+                                      suggestion: item.name,
+                                    },
+                                  });
+                                }}
+                              />
+                            ) : (
+                              <AuthorHit
+                                item={item}
+                                onClick={() => {
+                                  onSelect(item);
+                                  sendEvent("search-suggestion-selected", {
+                                    props: {
+                                      category: "author",
+                                      suggestion: item.name,
+                                    },
+                                  });
+                                }}
+                              />
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p className="text-gray-dim">No results found</p>
+                  )}
+                </section>
+
+                <section hidden>
                   {hasAnyHits ? (
                     <div className="space-y-4">
                       <ul className="flex flex-col gap-6">

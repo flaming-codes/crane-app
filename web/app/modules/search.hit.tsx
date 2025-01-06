@@ -17,6 +17,7 @@ export type PackageSemanticSearchHit = BaseSearchHit & {
 };
 
 export type SearchHitsResults = {
+  combined: Array<BaseSearchHit | PackageSemanticSearchHit>;
   authors: { hits: BaseSearchHit[] };
   packages: {
     hits: {
@@ -65,7 +66,7 @@ export function PackageHit(props: {
               <Tag size="sm" className="flex items-center gap-2 leading-none">
                 {sourceName}{" "}
                 {refData.source_type === "remote" ? (
-                  <RiArrowRightUpLine size={14} />
+                  <RiArrowRightUpLine size={10} />
                 ) : null}
               </Tag>
             );

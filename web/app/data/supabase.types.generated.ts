@@ -545,6 +545,7 @@ export type Database = {
         Args: {
           search_term: string;
           result_limit: number;
+          max_levenshtein_distance: number;
         };
         Returns: {
           id: number;

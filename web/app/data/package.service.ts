@@ -166,66 +166,77 @@ export class PackageService {
   ) {
     const { limit = 20 } = options || {};
 
-    const normalizedQuery = query.trim();
-
     // Check if at least one space and at least 8 characters
-    const isSimilaritySearchEnabled = normalizedQuery.length >= 6;
+    const isSimilaritySearchEnabled = query.length >= 6;
 
-    const [fts, exact, similarity] = await Promise.all([
-      supabase.rpc("find_closest_packages", {
-        search_term: normalizedQuery,
-        result_limit: limit,
-      }),
-      // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
-      supabase
-        .from("cran_packages")
-        .select("id,name,synopsis")
-        .ilike("name", normalizedQuery)
-        .maybeSingle(),
-      isSimilaritySearchEnabled
-        ? supabase.rpc("match_package_embeddings", {
-            query_embedding: await embed({
-              value: normalizedQuery,
-              model: google.textEmbeddingModel("text-embedding-004"),
-            }).then((res) => res.embedding as unknown as string),
-            match_threshold: 0.4,
-            match_count: limit,
-          })
-        : null,
-    ]);
+    const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
+      await Promise.all([
+        supabase.rpc("find_closest_packages", {
+          search_term: query,
+          result_limit: limit,
+        }),
+        // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
+        supabase
+          .from("cran_packages")
+          .select("id,name,synopsis")
+          .ilike("name", query)
+          .maybeSingle(),
+        isSimilaritySearchEnabled
+          ? supabase.rpc("match_package_embeddings", {
+              query_embedding: await embed({
+                value: query,
+                model: google.textEmbeddingModel("text-embedding-004"),
+              }).then((res) => res.embedding as unknown as string),
+              match_threshold: 0.4,
+              match_count: limit,
+            })
+          : null,
+        isSimilaritySearchEnabled
+          ? supabase.rpc("find_closest_package_embeddings", {
+              search_term: query,
+              result_limit: limit,
+            })
+          : null,
+      ]);
 
-    if (fts.error) {
-      slog.error("Error in searchPackages", fts.error);
-      return [];
+    if (packageFTS.error) {
+      slog.error("Error in searchPackages", packageFTS.error);
+      throw packageFTS.error;
     }
 
-    if (exact.error) {
-      slog.error("Error in searchPackages", exact.error);
-      return [];
+    if (packageExact.error) {
+      slog.error("Error in searchPackages", packageExact.error);
+      throw packageExact.error;
     }
 
-    if (exact.data) {
-      fts.data.unshift({
-        ...exact.data,
+    if (packageExact.data) {
+      packageFTS.data.unshift({
+        ...packageExact.data,
         levenshtein_distance: 0.4,
       });
     }
 
-    if (similarity) {
-      if (similarity.error) {
-        slog.error("Error in searchPackages", similarity.error);
+    if (embeddingSimilarity) {
+      if (embeddingSimilarity.error) {
+        slog.error("Error in searchPackages", embeddingSimilarity.error);
       }
     }
 
     // Prefer the exact match over the similarity match.
     // Therefore we filter out the similarity match if it's the same as the exact match.
-    const sources = (similarity?.data || []).filter((item) => {
-      if (exact.data && exact.data.id === item.cran_package_id) {
+    const sources = [
+      ...(embeddingFTS?.data || []),
+      ...(embeddingSimilarity?.data || []),
+    ].filter((item) => {
+      const hasExactMatch =
+        packageExact.data && packageExact.data.id === item.cran_package_id;
+      if (hasExactMatch) {
         return false;
       }
       return true;
     });
-    const lexical = uniqBy(fts.data, (item) => item.id)
+
+    const lexical = uniqBy(packageFTS.data, (item) => item.id)
       .filter((item) => {
         return !sources.some((s) => s.cran_package_id === item.id);
       })
@@ -268,11 +279,16 @@ export class PackageService {
       }),
     );
 
+    const isSemanticPreferred =
+      !packageExact.data && isSimilaritySearchEnabled && sources.length > 0;
+
     return {
       lexical,
       semantic: groupedSourcesByPackage,
-      isSemanticPreferred:
-        !exact.data && isSimilaritySearchEnabled && sources.length > 0,
+      combined: isSemanticPreferred
+        ? [...groupedSourcesByPackage, ...lexical]
+        : [...lexical, ...groupedSourcesByPackage],
+      isSemanticPreferred,
     };
   }
 
