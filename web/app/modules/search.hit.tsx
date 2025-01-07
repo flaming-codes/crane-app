@@ -76,7 +76,6 @@ export function PackageHit(props: {
                 {refData.source_type === "internal" ? (
                   <Link
                     to={refData.source_url || `/package/${name}`}
-                    className="transition-all duration-200 hover:brightness-125"
                     onClick={onClick}
                   >
                     {content}

@@ -166,8 +166,7 @@ export class PackageService {
   ) {
     const { limit = 20 } = options || {};
 
-    // Check if at least one space and at least 8 characters
-    const isSimilaritySearchEnabled = query.length >= 6;
+    const isSimilaritySearchEnabled = query.length >= 3;
 
     const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
       await Promise.all([
