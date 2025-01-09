@@ -4,9 +4,11 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
-import { uniqBy } from "es-toolkit";
+import { groupBy, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
+import { embed } from "ai";
+import { google } from "@ai-sdk/google";
 
 type Package = Tables<"cran_packages">;
 
@@ -164,37 +166,129 @@ export class PackageService {
   ) {
     const { limit = 20 } = options || {};
 
-    const [fts, exact] = await Promise.all([
-      supabase.rpc("find_closest_packages", {
-        search_term: query,
-        result_limit: limit,
-      }),
-      // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
-      supabase
-        .from("cran_packages")
-        .select("id,name")
-        .ilike("name", query)
-        .maybeSingle(),
-    ]);
+    const isSimilaritySearchEnabled = query.length >= 3;
 
-    if (fts.error) {
-      slog.error("Error in searchPackages", fts.error);
-      return [];
+    const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
+      await Promise.all([
+        supabase.rpc("find_closest_packages", {
+          search_term: query,
+          result_limit: limit,
+        }),
+        // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
+        supabase
+          .from("cran_packages")
+          .select("id,name,synopsis")
+          .ilike("name", query)
+          .maybeSingle(),
+        isSimilaritySearchEnabled
+          ? supabase.rpc("match_package_embeddings", {
+              query_embedding: await embed({
+                value: query,
+                model: google.textEmbeddingModel("text-embedding-004"),
+              }).then((res) => res.embedding as unknown as string),
+              match_threshold: 0.4,
+              match_count: limit,
+            })
+          : null,
+        isSimilaritySearchEnabled
+          ? supabase.rpc("find_closest_package_embeddings", {
+              search_term: query,
+              result_limit: limit,
+            })
+          : null,
+      ]);
+
+    if (packageFTS.error) {
+      slog.error("Error in searchPackages", packageFTS.error);
+      throw packageFTS.error;
     }
 
-    if (exact.error) {
-      slog.error("Error in searchPackages", exact.error);
-      return [];
+    if (packageExact.error) {
+      slog.error("Error in searchPackages", packageExact.error);
+      throw packageExact.error;
     }
 
-    if (exact.data) {
-      fts.data.unshift({
-        ...exact.data,
-        levenshtein_distance: 0,
+    if (packageExact.data) {
+      packageFTS.data.unshift({
+        ...packageExact.data,
+        levenshtein_distance: 0.4,
       });
     }
 
-    return uniqBy(fts.data, (item) => item.id);
+    if (embeddingSimilarity) {
+      if (embeddingSimilarity.error) {
+        slog.error("Error in searchPackages", embeddingSimilarity.error);
+      }
+    }
+
+    // Prefer the exact match over the similarity match.
+    // Therefore we filter out the similarity match if it's the same as the exact match.
+    const sources = [
+      ...(embeddingFTS?.data || []),
+      ...(embeddingSimilarity?.data || []),
+    ].filter((item) => {
+      const hasExactMatch =
+        packageExact.data && packageExact.data.id === item.cran_package_id;
+      if (hasExactMatch) {
+        return false;
+      }
+      return true;
+    });
+
+    const lexical = uniqBy(packageFTS.data, (item) => item.id)
+      .filter((item) => {
+        return !sources.some((s) => s.cran_package_id === item.id);
+      })
+      .map((item) => ({
+        name: item.name,
+        synopsis: item.synopsis,
+      }));
+
+    // Group sources by package id and source name, so that multiple hits per source & package
+    // can be grouped together. `Object.values` is used to convert the object back to an array.
+    const sourcesByPackage = groupBy(sources, (item) => item.cran_package_id);
+    const groupedSourcesByPackageIds = Object.entries(sourcesByPackage).map(
+      ([packageId, sources]) => ({
+        packageId,
+        sources: groupBy(sources, (item) => item.source_name),
+      }),
+    );
+
+    // Fetch the package name for each package id.
+    // This is not done inside the RPC call as we could
+    // potentially have different package families (CRAN, Bioconductor, etc.).
+    const groupedSourcesByPackage = await Promise.all(
+      groupedSourcesByPackageIds.map(async (item) => {
+        const { data, error } = await supabase
+          .from("cran_packages")
+          .select("name,synopsis")
+          .eq("id", item.packageId)
+          .maybeSingle();
+
+        if (error || !data) {
+          slog.error("Error in searchPackages", error);
+          return null;
+        }
+
+        return {
+          name: data.name,
+          synopsis: data.synopsis,
+          sources: Object.entries(item.sources),
+        };
+      }),
+    );
+
+    const isSemanticPreferred =
+      !packageExact.data && isSimilaritySearchEnabled && sources.length > 0;
+
+    return {
+      lexical,
+      semantic: groupedSourcesByPackage,
+      combined: isSemanticPreferred
+        ? [...groupedSourcesByPackage, ...lexical]
+        : [...lexical, ...groupedSourcesByPackage],
+      isSemanticPreferred,
+    };
   }
 
   private static sanitizeSitemapName(name: string) {

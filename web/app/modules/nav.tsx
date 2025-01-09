@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { NavSearch } from "../modules/nav-search";
+import { NavSearch } from "./search.nav";
 import { PropsWithChildren, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { RiHomeFill } from "@remixicon/react";

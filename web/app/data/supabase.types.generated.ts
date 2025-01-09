@@ -381,6 +381,82 @@ export type Database = {
           },
         ];
       };
+      package_embeddings: {
+        Row: {
+          _embedded_by_model: string;
+          cran_package_id: number;
+          created_at: string;
+          embedding: string;
+          fts_content: unknown | null;
+          package_type: Database["public"]["Enums"]["package_embedding_family_type"];
+          source_chunk_type: Database["public"]["Enums"]["package_embedding_chunk_type"];
+          source_content_hash: string;
+          source_label: string | null;
+          source_meta: Json | null;
+          source_mime_type: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_name: string;
+          source_og_content: string | null;
+          source_path: string | null;
+          source_searchable_content: string;
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          _embedded_by_model: string;
+          cran_package_id: number;
+          created_at?: string;
+          embedding: string;
+          fts_content?: unknown | null;
+          package_type?: Database["public"]["Enums"]["package_embedding_family_type"];
+          source_chunk_type?: Database["public"]["Enums"]["package_embedding_chunk_type"];
+          source_content_hash: string;
+          source_label?: string | null;
+          source_meta?: Json | null;
+          source_mime_type?: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_name: string;
+          source_og_content?: string | null;
+          source_path?: string | null;
+          source_searchable_content: string;
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          _embedded_by_model?: string;
+          cran_package_id?: number;
+          created_at?: string;
+          embedding?: string;
+          fts_content?: unknown | null;
+          package_type?: Database["public"]["Enums"]["package_embedding_family_type"];
+          source_chunk_type?: Database["public"]["Enums"]["package_embedding_chunk_type"];
+          source_content_hash?: string;
+          source_label?: string | null;
+          source_meta?: Json | null;
+          source_mime_type?: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_name?: string;
+          source_og_content?: string | null;
+          source_path?: string | null;
+          source_searchable_content?: string;
+          source_type?: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "package_embeddings__embedded_by_model_fkey";
+            columns: ["_embedded_by_model"];
+            referencedRelation: "ai_models";
+            referencedColumns: ["slug"];
+          },
+          {
+            foreignKeyName: "package_embeddings_package_id_fkey";
+            columns: ["cran_package_id"];
+            referencedRelation: "cran_packages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       press_article_authors: {
         Row: {
           author_slug: string;
@@ -465,27 +541,32 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      dmetaphone: {
-        Args: {
-          "": string;
-        };
-        Returns: string;
-      };
-      dmetaphone_alt: {
-        Args: {
-          "": string;
-        };
-        Returns: string;
-      };
       find_closest_authors: {
         Args: {
           search_term: string;
           result_limit: number;
+          max_levenshtein_distance: number;
         };
         Returns: {
           id: number;
           name: string;
           levenshtein_distance: number;
+        }[];
+      };
+      find_closest_package_embeddings: {
+        Args: {
+          search_term: string;
+          result_limit: number;
+          package_type_filter?: Database["public"]["Enums"]["package_embedding_family_type"];
+          source_mime_type_filter?: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_chunk_type_filter?: Database["public"]["Enums"]["package_embedding_chunk_type"];
+        };
+        Returns: {
+          cran_package_id: number;
+          source_name: string;
+          source_searchable_content: string;
+          package_type: Database["public"]["Enums"]["package_embedding_family_type"];
+          rank: number;
         }[];
       };
       find_closest_packages: {
@@ -496,66 +577,31 @@ export type Database = {
         Returns: {
           id: number;
           name: string;
+          synopsis: string;
           levenshtein_distance: number;
         }[];
       };
-      gtrgm_compress: {
+      match_package_embeddings: {
         Args: {
-          "": unknown;
+          query_embedding: string;
+          match_threshold: number;
+          match_count: number;
         };
-        Returns: unknown;
-      };
-      gtrgm_decompress: {
-        Args: {
-          "": unknown;
-        };
-        Returns: unknown;
-      };
-      gtrgm_in: {
-        Args: {
-          "": unknown;
-        };
-        Returns: unknown;
-      };
-      gtrgm_options: {
-        Args: {
-          "": unknown;
-        };
-        Returns: undefined;
-      };
-      gtrgm_out: {
-        Args: {
-          "": unknown;
-        };
-        Returns: unknown;
-      };
-      set_limit: {
-        Args: {
-          "": number;
-        };
-        Returns: number;
-      };
-      show_limit: {
-        Args: Record<PropertyKey, never>;
-        Returns: number;
-      };
-      show_trgm: {
-        Args: {
-          "": string;
-        };
-        Returns: string[];
-      };
-      soundex: {
-        Args: {
-          "": string;
-        };
-        Returns: string;
-      };
-      text_soundex: {
-        Args: {
-          "": string;
-        };
-        Returns: string;
+        Returns: {
+          cran_package_id: number;
+          package_type: string;
+          created_at: string;
+          updated_at: string;
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
+          source_url: string;
+          source_path: string;
+          source_name: string;
+          source_mime_type: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_chunk_type: Database["public"]["Enums"]["package_embedding_chunk_type"];
+          source_searchable_content: string;
+          _embedded_by_model: string;
+          similarity: number;
+        }[];
       };
     };
     Enums: {
@@ -567,6 +613,17 @@ export type Database = {
         | "time_series"
         | "other";
       ai_model_type: "embedding" | "generation";
+      package_embedding_chunk_type: "naive_chunk" | "summary" | "qa_pairs";
+      package_embedding_family_type: "cran";
+      package_embedding_source_mime_type:
+        | "pkg/synopsis"
+        | "text/plain"
+        | "text/html"
+        | "text/markdown"
+        | "text/code"
+        | "application/json"
+        | "application/pdf";
+      package_embedding_source_type: "remote" | "internal";
       package_relationship_type:
         | "depends"
         | "imports"
