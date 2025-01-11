@@ -32,8 +32,7 @@ export function SearchInput(props: Props) {
         autoComplete="off"
         spellCheck="false"
         placeholder={
-          // isFocused ? "Search by name or describe what you want" : "Search..."
-          isFocused ? "Search by name" : "Search..."
+          isFocused ? "Search by name or describe what you want" : "Search..."
         }
         className={clsx(
           "h-full flex-1 bg-transparent outline-none focus:placeholder:opacity-50",
