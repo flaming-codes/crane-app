@@ -229,10 +229,7 @@ export class PackageService {
     ].filter((item) => {
       const hasExactMatch =
         packageExact.data && packageExact.data.id === item.cran_package_id;
-      if (hasExactMatch) {
-        return false;
-      }
-      return true;
+      return !hasExactMatch;
     });
 
     const lexical = uniqBy(packageFTS.data, (item) => item.id)
@@ -249,7 +246,7 @@ export class PackageService {
     const sourcesByPackage = groupBy(sources, (item) => item.cran_package_id);
     const groupedSourcesByPackageIds = Object.entries(sourcesByPackage).map(
       ([packageId, sources]) => ({
-        packageId,
+        packageId: Number(packageId),
         sources: groupBy(sources, (item) => item.source_name),
       }),
     );

@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import { Database } from "../data/supabase.types.generated";
 import { Tag } from "./tag";
-import { RiArrowRightUpLine } from "@remixicon/react";
 import { PropsWithChildren, ReactNode } from "react";
 
 export type BaseSearchHit = { id: number; name: string; synopsis?: string };
@@ -62,18 +61,18 @@ export function PackageHit(props: {
               return null;
             }
 
+            const isInternal = refData.source_type === "internal";
+
             const content = (
               <Tag size="sm" className="flex items-center gap-2 leading-none">
-                {sourceName}{" "}
-                {refData.source_type === "remote" ? (
-                  <RiArrowRightUpLine size={10} />
-                ) : null}
+                {sourceName}
+                {/* !isInternal ? <RiArrowRightUpLine size={12} /> : null */}
               </Tag>
             );
 
             return (
               <li key={sourceName} className="opacity-80">
-                {refData.source_type === "internal" ? (
+                {isInternal ? (
                   <Link
                     to={refData.source_url || `/package/${name}`}
                     onClick={onClick}
