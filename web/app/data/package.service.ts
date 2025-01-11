@@ -4,7 +4,7 @@ import { Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
-import { groupBy, uniqBy } from "es-toolkit";
+import { groupBy, omit, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
 import { embed } from "ai";
@@ -199,12 +199,12 @@ export class PackageService {
       ]);
 
     if (packageFTS.error) {
-      slog.error("Error in searchPackages", packageFTS.error);
+      slog.error("Error in searchPackages FTS", packageFTS.error);
       throw packageFTS.error;
     }
 
     if (packageExact.error) {
-      slog.error("Error in searchPackages", packageExact.error);
+      slog.error("Error in searchPackages Exact", packageExact.error);
       throw packageExact.error;
     }
 
@@ -217,20 +217,38 @@ export class PackageService {
 
     if (embeddingSimilarity) {
       if (embeddingSimilarity.error) {
-        slog.error("Error in searchPackages", embeddingSimilarity.error);
+        slog.error(
+          "Error in searchPackages Embeddings",
+          embeddingSimilarity.error,
+        );
       }
     }
+
+    // console.log(
+    //   "embeddingSimilarity",
+    //   embeddingSimilarity?.data?.map((x) => {
+    //     const { source_searchable_content, ...rest } = x;
+    //     return rest;
+    //   }),
+    // );
 
     // Prefer the exact match over the similarity match.
     // Therefore we filter out the similarity match if it's the same as the exact match.
     const sources = [
-      ...(embeddingFTS?.data || []),
       ...(embeddingSimilarity?.data || []),
-    ].filter((item) => {
-      const hasExactMatch =
-        packageExact.data && packageExact.data.id === item.cran_package_id;
-      return !hasExactMatch;
-    });
+      ...(embeddingFTS?.data || []),
+    ]
+      .filter((item) => {
+        const hasExactMatch =
+          packageExact.data && packageExact.data.id === item.cran_package_id;
+        return !hasExactMatch;
+      })
+      .map((item) => {
+        // Remove the source_searchable_content from the response
+        // for now, as it's quite a lot of text data that's not
+        // applied in the UI.
+        return omit(item, ["source_searchable_content"]);
+      });
 
     const lexical = uniqBy(packageFTS.data, (item) => item.id)
       .filter((item) => {
@@ -263,7 +281,7 @@ export class PackageService {
           .maybeSingle();
 
         if (error || !data) {
-          slog.error("Error in searchPackages", error);
+          slog.error("Error in searchPackages fetching package data", error);
           return null;
         }
 

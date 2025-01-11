@@ -7,7 +7,6 @@ import {
   RefObject,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -65,7 +64,7 @@ export function NavSearch(props: Props) {
           action: "/api/search?index",
         });
       },
-      100,
+      150,
       {
         edges: ["trailing"],
       },
@@ -268,7 +267,7 @@ export function SearchResults(
 function useSyncedQueryHash() {
   const [q, setQ] = useState("");
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const getValue = () => {
       const hashes = new URLSearchParams(window.location.hash.replace("#", ""));
       return hashes.get("q") || "";

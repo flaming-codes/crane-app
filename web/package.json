@@ -3,7 +3,7 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "scripts": {
     "postinstall": "npm run licenses.build",
     "postuninstall": "npm run licenses.build",

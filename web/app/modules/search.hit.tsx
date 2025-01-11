@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { Database } from "../data/supabase.types.generated";
 import { Tag } from "./tag";
 import { PropsWithChildren, ReactNode } from "react";
+import { RiArrowRightUpLine } from "@remixicon/react";
 
 export type BaseSearchHit = { id: number; name: string; synopsis?: string };
 
@@ -62,11 +63,14 @@ export function PackageHit(props: {
             }
 
             const isInternal = refData.source_type === "internal";
+            const hasSource = Boolean(refData.source_url);
 
             const content = (
               <Tag size="sm" className="flex items-center gap-2 leading-none">
                 {sourceName}
-                {/* !isInternal ? <RiArrowRightUpLine size={12} /> : null */}
+                {!isInternal && hasSource ? (
+                  <RiArrowRightUpLine size={12} />
+                ) : null}
               </Tag>
             );
 
@@ -105,7 +109,7 @@ export function AuthorHit(props: { item: BaseSearchHit; onClick: () => void }) {
   return (
     <>
       <HitLink
-        to={`/package/${name}`}
+        to={`/author/${name}`}
         name={name}
         tag={<Tag borderGradients="jade">CRAN Author</Tag>}
         onClick={onClick}
