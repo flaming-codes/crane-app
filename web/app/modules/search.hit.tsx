@@ -84,6 +84,7 @@ export function PackageHit(props: {
                 {isInternal ? (
                   <Link
                     to={data.source_url || `/package/${name}`}
+                    prefetch="intent"
                     onClick={onClick}
                   >
                     {content}
@@ -156,6 +157,7 @@ function HitLink(
     <Link
       to={to}
       className="transition-all duration-200 hover:brightness-125"
+      prefetch="intent"
       onClick={onClick}
     >
       <div className="flex items-center gap-4 leading-none">
