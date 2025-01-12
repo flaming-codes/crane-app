@@ -6,7 +6,8 @@ import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
 import { groupBy, omit, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
-import { format, hoursToMilliseconds } from "date-fns";
+import { format, hoursToMilliseconds, minutesToMilliseconds } from "date-fns";
+
 // import { embed } from "ai";
 // import { google } from "@ai-sdk/google";
 
@@ -16,9 +17,24 @@ type CacheKey = "sitemap-items";
 
 type CacheValue = SitemapItem[];
 
+type SearchResult = {
+  combined: Array<{
+    name: string;
+    synopsis: string;
+  } | null>;
+  isSemanticPreferred: boolean;
+};
+
 export class PackageService {
+  /** Cache for singular domains, e.g. the sitemap. */
   private static cache = new TTLCache<CacheKey, CacheValue>({
     ttl: hoursToMilliseconds(6),
+  });
+
+  /** Specific cache for search hits by query as key. */
+  private static cachedHits = new TTLCache<string, SearchResult>({
+    ttl: minutesToMilliseconds(5),
+    max: 500,
   });
 
   private static readonly sitemapDivisor = 1000;
@@ -168,6 +184,11 @@ export class PackageService {
 
     const isSimilaritySearchEnabled = query.length >= 3;
 
+    const cached = this.cachedHits.get(query);
+    if (cached) {
+      return cached;
+    }
+
     const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
       await Promise.all([
         supabase.rpc("find_closest_packages", {
@@ -298,14 +319,15 @@ export class PackageService {
     const isSemanticPreferred =
       !packageExact.data && isSimilaritySearchEnabled && sources.length > 0;
 
-    return {
-      lexical,
-      semantic: groupedSourcesByPackage,
+    const result: SearchResult = {
       combined: isSemanticPreferred
         ? [...groupedSourcesByPackage, ...lexical]
         : [...lexical, ...groupedSourcesByPackage],
       isSemanticPreferred,
     };
+
+    this.cachedHits.set(query, result);
+    return result;
   }
 
   private static sanitizeSitemapName(name: string) {

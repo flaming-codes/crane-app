@@ -28,8 +28,6 @@ export const action: ActionFunction = async ({ request }) => {
         ? packages.value
         : {
             combined: [],
-            lexical: [],
-            semantic: [],
             isSemanticPreferred: false,
           };
     const authorHits = authors.status === "fulfilled" ? authors.value : [];
