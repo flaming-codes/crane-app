@@ -7,6 +7,8 @@ import { authorIdSchema } from "./author.shape";
 import { groupBy, omit, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds, minutesToMilliseconds } from "date-fns";
+import { google } from "@ai-sdk/google";
+import { embed } from "ai";
 
 // import { embed } from "ai";
 // import { google } from "@ai-sdk/google";
@@ -207,16 +209,16 @@ export class PackageService {
           .ilike("name", query)
           .maybeSingle(),
         // TODO: Embedding search disabled until DB performance is improved.
-        // isSimilaritySearchEnabled
-        //   ? supabase.rpc("match_package_embeddings", {
-        //       query_embedding: await embed({
-        //         value: query,
-        //         model: google.textEmbeddingModel("text-embedding-004"),
-        //       }).then((res) => res.embedding as unknown as string),
-        //       match_threshold: 0.4,
-        //       match_count: limit,
-        //     })
-        //   : null,
+        isSimilaritySearchEnabled
+          ? supabase.rpc("match_package_embeddings", {
+              query_embedding: await embed({
+                value: query,
+                model: google.textEmbeddingModel("text-embedding-004"),
+              }).then((res) => res.embedding as unknown as string),
+              match_threshold: 0.5,
+              match_count: limit,
+            })
+          : null,
         { data: [], error: null },
         isSimilaritySearchEnabled
           ? supabase.rpc("find_closest_package_embeddings", {

@@ -26,6 +26,7 @@ import {
 } from "./search.hit";
 import { SearchInput } from "./search.input";
 import { ProvidedByLabel } from "./provided-by-label";
+import { RiProgress8Fill } from "@remixicon/react";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -53,6 +54,8 @@ export function NavSearch(props: Props) {
   } = props;
 
   const fetcher = useFetcher();
+  const isBusy = fetcher.state === "loading" || fetcher.state === "submitting";
+
   const actionData =
     (fetcher.data as SearchHitsResults | undefined) || fallbackSearchResults;
 
@@ -64,7 +67,7 @@ export function NavSearch(props: Props) {
           action: "/api/search?index",
         });
       },
-      150,
+      300,
       {
         edges: ["trailing"],
       },
@@ -143,6 +146,12 @@ export function NavSearch(props: Props) {
         inputClassName={inputClassName}
         onChange={onChange}
       />
+      {isBusy ? (
+        <div className="text-gray-ui absolute right-1 top-5 animate-fade">
+          <RiProgress8Fill size={18} className="animate-pulse" />
+        </div>
+      ) : null}
+
       {isFocused && searchContentRef.current && actionData ? (
         <ClientOnly>
           {() =>
@@ -151,6 +160,7 @@ export function NavSearch(props: Props) {
                 state={fetcher.state}
                 data={actionData}
                 isDataExpected={input.length > 0}
+                isBusy={isBusy}
                 onSelect={onSelect}
               />,
               searchContentRef.current!,
@@ -167,10 +177,11 @@ export function SearchResults(
     state: "idle" | "loading" | "submitting";
     data: SearchHitsResults;
     isDataExpected?: boolean;
+    isBusy?: boolean;
     onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
   }>,
 ) {
-  const { data, isDataExpected, onSelect, children } = props;
+  const { data, isDataExpected, isBusy, onSelect, children } = props;
   const { combined } = data;
   const hasAnyHits = combined.length > 0;
 
@@ -220,7 +231,7 @@ export function SearchResults(
                         ))}
                       </ul>
                     </div>
-                  ) : (
+                  ) : isBusy ? null : (
                     <p className="text-gray-dim">No results found</p>
                   )}
                 </section>
