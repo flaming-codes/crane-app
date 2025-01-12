@@ -80,7 +80,7 @@ export function PackageHit(props: {
             );
 
             return (
-              <li key={sourceName} className="opacity-80">
+              <li key={sourceName} className="hover:text-gray-ui text-gray-dim">
                 {isInternal ? (
                   <Link
                     to={data.source_url || `/package/${name}`}

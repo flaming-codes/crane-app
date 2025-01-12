@@ -3,39 +3,50 @@ import { InfoPill } from "./info-pill";
 import { clsx } from "clsx";
 import { InfoCard } from "./info-card";
 import { ClientOnly } from "remix-utils/client-only";
-import { Enums } from "../data/supabase.types.generated";
+import { cva, VariantProps } from "cva";
 
-export function ArticleSynopsis(
-  props: PropsWithChildren<{
+type Props = PropsWithChildren<
+  Required<VariantProps<typeof twBase>> & {
     createdAt: string;
     updatedAt?: string;
     authors: string[];
-    type: Enums<"press_article_type">;
     footer?: ReactNode;
-  }>,
-) {
-  const { createdAt, updatedAt, authors, type, children, footer } = props;
+  }
+>;
+
+const twBase = cva({
+  base: [
+    "inline-block bg-gradient-to-tl bg-clip-text font-semibold text-transparent",
+    "animate-fade",
+    "text-gray-dim mt-8 w-3/4 text-xl leading-relaxed md:w-2/3",
+  ],
+  variants: {
+    gradient: {
+      amethyst:
+        "from-violet-9 to-purple-11 dark:from-violet-10 dark:to-purple-7",
+      opal: "from-iris-10 to-sky-10 dark:to-sky-8",
+    },
+  },
+});
+
+export function ArticleSynopsis(props: Props) {
+  const { createdAt, updatedAt, authors, gradient, children, footer } = props;
 
   return (
     <section className="space-y-12">
-      <div
-        className={clsx(
-          "inline-block bg-gradient-to-tl bg-clip-text font-semibold text-transparent",
-          "text-gray-dim mt-8 w-3/4 text-xl leading-relaxed md:w-2/3",
-          {
-            "from-violet-9 to-purple-11 dark:from-violet-10 dark:to-purple-7":
-              type === "news",
-            "from-iris-6 to-sky-4 dark:from-iris-10 dark:to-sky-10":
-              type === "magazine",
-          },
-        )}
-      >
-        {children}
-      </div>
-      <footer className="flex gap-2">
-        <ClientOnly>
-          {() => (
+      <ClientOnly fallback={<div className="h-[215px]" />}>
+        {() => <div className={twBase({ gradient })}>{children}</div>}
+      </ClientOnly>
+      <footer className="flex animate-fade gap-2">
+        <ClientOnly
+          fallback={
             <InfoPill size="sm" label="Publication">
+              ...
+            </InfoPill>
+          }
+        >
+          {() => (
+            <InfoPill size="sm" label="Publication" className="animate-fade">
               <time dateTime={createdAt}>{createdAt}</time>
               {updatedAt && (
                 <>

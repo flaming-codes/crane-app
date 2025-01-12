@@ -108,7 +108,7 @@ export default function PressArticle() {
 
       <PageContent>
         <ArticleSynopsis
-          type={article.type}
+          gradient={article.type === "news" ? "amethyst" : "opal"}
           createdAt={format(article.created_at, "dd-MM-yyyy")}
           updatedAt={
             article.updated_at
