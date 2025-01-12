@@ -9,7 +9,7 @@ import {
   RiMarkdownFill,
 } from "@remixicon/react";
 
-export type BaseSearchHit = { id: number; name: string; synopsis?: string };
+export type BaseSearchHit = { id?: number; name: string; synopsis?: string };
 
 export type PackageSemanticSearchHit = BaseSearchHit & {
   sources: Array<
