@@ -31,10 +31,15 @@ export class PackageService {
     ttl: hoursToMilliseconds(6),
   });
 
-  /** Specific cache for search hits by query as key. */
+  /**
+   * Specific cache for search hits by query as key.
+   * ! This is a global cache on the server for all users.
+   * Not an issue as the search results are not user-specific,
+   * but it's important to keep in mind.
+   * */
   private static cachedHits = new TTLCache<string, SearchResult>({
     ttl: minutesToMilliseconds(5),
-    max: 500,
+    max: 100,
   });
 
   private static readonly sitemapDivisor = 1000;
