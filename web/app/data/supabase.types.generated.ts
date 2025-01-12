@@ -566,6 +566,9 @@ export type Database = {
           source_name: string;
           source_searchable_content: string;
           package_type: Database["public"]["Enums"]["package_embedding_family_type"];
+          source_url: string;
+          source_mime_type: Database["public"]["Enums"]["package_embedding_source_mime_type"];
+          source_type: Database["public"]["Enums"]["package_embedding_source_type"];
           rank: number;
         }[];
       };
