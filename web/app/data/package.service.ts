@@ -8,7 +8,7 @@ import { groupBy, omit, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds, minutesToMilliseconds } from "date-fns";
 import { google } from "@ai-sdk/google";
-import { embed } from "ai";
+import { embed, generateText } from "ai";
 
 // import { embed } from "ai";
 // import { google } from "@ai-sdk/google";
@@ -190,10 +190,26 @@ export class PackageService {
     const { limit = 20 } = options || {};
 
     const isSimilaritySearchEnabled = query.length >= 3;
+    const cacheKey = query.toLowerCase();
 
-    const cached = this.cachedHits.get(query);
+    const cached = this.cachedHits.get(cacheKey);
     if (cached) {
       return cached;
+    }
+
+    let rephrasedQuery = query;
+    if (isSimilaritySearchEnabled) {
+      const model = google("gemini-1.5-flash");
+      const { text: rephrased } = await generateText({
+        model,
+        prompt:
+          "Improve the following search phrase. Fix spelling issues and add highly relevant words, if any: " +
+          query +
+          ". Return only the improved search phrase and nothing else." +
+          "Return original search phrase if no improvements are needed or if search phrase is package name.",
+      });
+      rephrasedQuery = rephrased.trim();
+      slog.log("info", `Rephrased query: ${rephrasedQuery}`);
     }
 
     const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
@@ -208,24 +224,20 @@ export class PackageService {
           .select("id,name,synopsis")
           .ilike("name", query)
           .maybeSingle(),
-        // TODO: Embedding search disabled until DB performance is improved.
         isSimilaritySearchEnabled
           ? supabase.rpc("match_package_embeddings", {
               query_embedding: await embed({
-                value: query,
+                value: rephrasedQuery,
                 model: google.textEmbeddingModel("text-embedding-004"),
               }).then((res) => res.embedding as unknown as string),
               match_threshold: 0.5,
               match_count: limit,
             })
           : null,
-        { data: [], error: null },
-        isSimilaritySearchEnabled
-          ? supabase.rpc("find_closest_package_embeddings", {
-              search_term: query,
-              result_limit: limit,
-            })
-          : null,
+        supabase.rpc("find_closest_package_embeddings", {
+          search_term: query,
+          result_limit: limit,
+        }),
       ]);
 
     if (packageFTS.error) {
@@ -333,7 +345,7 @@ export class PackageService {
       isSemanticPreferred,
     };
 
-    this.cachedHits.set(query, result);
+    this.cachedHits.set(cacheKey, result);
     return result;
   }
 
