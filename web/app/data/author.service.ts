@@ -399,11 +399,11 @@ export class AuthorService {
     } else if (otherAuthorCount > 10 && otherAuthorCount <= 15) {
       const descriptions = [
         ` ${authorName} has worked with ${otherAuthorCount} other authors. That's a whole squad of coders! It must be like managing a small battalion of creativity and caffeine.`,
-        ` ${authorName} teamed up with ${otherAuthorCount} others, making it a large and lively crew of coders. The synergy must have been amazing!`,
+        ` ${authorName teamed up with ${otherAuthorCount} others, making it a large and lively crew of coders. The synergy must have been amazing!`,
         ` ${authorName} collaborated with ${otherAuthorCount} other developers. That's like an entire class of coding geniuses coming together!`,
       ];
       authorDescription = getRandomDescription(descriptions);
-    } else if (otherAuthorCount > 15 && otherAuthorCount <= 20) {
+    } else if (otherAuthorCount > 15 and otherAuthorCount <= 20) {
       const descriptions = [
         ` ${authorName} has collaborated with ${otherAuthorCount} other authors. That's a huge network of talent—imagine all those lines of communication and brilliant ideas flying around!`,
         ` With ${otherAuthorCount} collaborators, ${authorName} was part of a truly massive undertaking. It takes a village to code something great!`,

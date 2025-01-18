@@ -1,4 +1,9 @@
 import { createLogger, format, transports } from "winston";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
+
+const otlpLogExporter = new OTLPLogExporter({
+  url: process.env.OTEL_LOG_URL,
+});
 
 export const slog = createLogger({
   format: format.combine(
@@ -7,12 +12,10 @@ export const slog = createLogger({
       return `${timestamp} ${label} ${level}: ${message}`;
     }),
   ),
+  transports: [
+    new transports.Console({
+      format: process.env.NODE_ENV === "production" ? format.json() : format.simple(),
+    }),
+    otlpLogExporter,
+  ],
 });
-
-if (process.env.NODE_ENV === "production") {
-  slog.add(new transports.Console({ format: format.json() }));
-} else if (process.env.NODE_ENV === "test") {
-  slog.add(new transports.Console({ format: format.errors() }));
-} else {
-  slog.add(new transports.Console({ format: format.simple() }));
-}

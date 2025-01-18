@@ -22,6 +22,7 @@ export const envSchema = z.object({
   OTEL_ENABLED: z.string().optional(),
   OTEL_NAME: z.string().optional(),
   OTEL_TRACE_URL: z.string().optional(),
+  OTEL_LOG_URL: z.string().optional(), // P24ad
 });
 
 export const ENV = envSchema.parse(process.env);

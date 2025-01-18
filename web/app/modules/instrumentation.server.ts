@@ -3,6 +3,7 @@ import process from "node:process";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import { Resource } from "@opentelemetry/resources";
 import {
   ATTR_SERVICE_NAME,
@@ -19,8 +20,13 @@ export function initOTEL() {
       url: ENV.OTEL_TRACE_URL,
     });
 
+    const logExporter = new OTLPLogExporter({
+      url: ENV.OTEL_LOG_URL,
+    });
+
     const sdk = new NodeSDK({
       traceExporter,
+      logExporter,
       instrumentations: [
         getNodeAutoInstrumentations(),
         new RemixInstrumentation(),

@@ -1,7 +1,7 @@
-import { slog } from "../modules/observability.server";
 import { articleSlugSchema, PressArticleContentSection } from "./article.shape";
 import { supabase } from "./supabase.server";
 import { Enums, Tables } from "./supabase.types.generated";
+import { slog } from "../modules/observability.server";
 
 export class ArticleService {
   static async checkNewsArticleExists(
