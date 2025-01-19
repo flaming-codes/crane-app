@@ -6,6 +6,8 @@ import { clsx } from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
 import { ClientOnly } from "remix-utils/client-only";
+import { PackageService } from "../data/package.service";
+import { AuthorService } from "../data/author.service";
 
 export const handle = {
   hasFooter: false,
@@ -14,8 +16,24 @@ export const handle = {
 export const loader = async () => {
   const meshIndex = randomInt(0, 27);
   const version = ENV.npm_package_version;
+
+  const [packageRes, authorRes] = await Promise.allSettled([
+    PackageService.getTotalPackagesCount(),
+    AuthorService.getTotalAuthorsCount(),
+  ]);
+
+  const packageCount = packageRes.status === "fulfilled" ? packageRes.value : 0;
+  const authorCount = authorRes.status === "fulfilled" ? authorRes.value : 0;
+
   return data(
-    { meshIndex, version },
+    {
+      meshIndex,
+      version,
+      // We're using the server here for formatting numbers
+      // to avoid client-side rehydration issues.
+      packageCount: Intl.NumberFormat().format(packageCount),
+      authorCount: Intl.NumberFormat().format(authorCount),
+    },
     {
       headers: {
         "Cache-Control": `public, s-maxage=10`,
@@ -25,7 +43,8 @@ export const loader = async () => {
 };
 
 export default function Index() {
-  const { meshIndex, version } = useLoaderData<typeof loader>();
+  const { meshIndex, version, packageCount, authorCount } =
+    useLoaderData<typeof loader>();
 
   return (
     <>
@@ -43,7 +62,8 @@ export default function Index() {
             </h1>
           </div>
           <p className="text-gray-dim text-lg font-light md:text-xl xl:text-2xl">
-            Search for R packages and authors hosted on CRAN
+            Search for {packageCount} R packages and {authorCount} authors
+            hosted on CRAN
           </p>
           <div className="text-gray-dim mt-16 space-y-2">
             <p className="animate-fade">

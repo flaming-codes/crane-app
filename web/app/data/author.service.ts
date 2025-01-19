@@ -9,9 +9,9 @@ import { Tables } from "./supabase.types.generated";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds } from "date-fns";
 
-type CacheKey = "sitemap-items";
+type CacheKey = "sitemap-items" | "count-authors";
 
-type CacheValue = SitemapItem[];
+type CacheValue = SitemapItem[] | number;
 
 export class AuthorService {
   private static cache = new TTLCache<CacheKey, CacheValue>({
@@ -154,7 +154,7 @@ export class AuthorService {
    * @returns
    */
   static async getAllSitemapAuthors(): Promise<SitemapItem[]> {
-    const cached = this.cache.get("sitemap-items");
+    const cached = this.cache.get("sitemap-items") as SitemapItem[] | undefined;
     if (cached) {
       return cached;
     }
@@ -194,6 +194,25 @@ export class AuthorService {
 
     this.cache.set("sitemap-items", sitemapItems);
     return sitemapItems;
+  }
+
+  static async getTotalAuthorsCount(): Promise<number> {
+    const cached = this.cache.get("count-authors") as number | undefined;
+    if (cached) {
+      return cached;
+    }
+
+    const { count, error } = await supabase
+      .from("authors")
+      .select("id", { count: "exact", head: true });
+
+    if (error) {
+      slog.error("Error in getAuthorsCount", error);
+      return 0;
+    }
+
+    this.cache.set("count-authors", count ?? 0);
+    return count ?? 0;
   }
 
   /**
