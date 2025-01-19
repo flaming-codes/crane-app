@@ -60,8 +60,10 @@ type LoaderData = {
   totalMonthDownloads: number;
   yesterdayDownloads?: { day: string; downloads: number };
   peakYearlyDayDownloads?: { day: string; downloads: number };
+  last31DaysDownloads: CranDownloadsResponse;
   monthlyDayDownloadsComment: string;
   totalYearDownloads: number;
+  totalLast31DaysDownloads: number;
   totalYearlyDownloadsComment: string;
   indexOfTrendingItems: number;
   indexOfTopDownloads: number;
@@ -165,12 +167,14 @@ export const loader: LoaderFunction = async ({ params }) => {
     maintainer: undefined,
     dailyDownloads: [],
     yearlyDailyDownloads: [],
+    last31DaysDownloads: [],
     lastRelease: "",
     totalMonthDownloads: 0,
     yesterdayDownloads: undefined,
     peakYearlyDayDownloads: undefined,
     monthlyDayDownloadsComment: "",
     totalYearDownloads: 0,
+    totalLast31DaysDownloads: 0,
     totalYearlyDownloadsComment: "",
     indexOfTrendingItems: -1,
     indexOfTopDownloads: -1,
@@ -285,6 +289,21 @@ export const loader: LoaderFunction = async ({ params }) => {
     loaderData.indexOfTopDownloads = _topDownloads?.downloads.findIndex(
       (item) => item.package === packageName,
     );
+
+    if (loaderData.yearlyDailyDownloads.at(0)) {
+      const yearly = loaderData.yearlyDailyDownloads.at(0)!;
+      loaderData.last31DaysDownloads = [
+        {
+          ...yearly,
+          downloads: yearly.downloads.slice(-31),
+        },
+      ];
+      loaderData.totalLast31DaysDownloads =
+        loaderData.last31DaysDownloads[0].downloads.reduce(
+          (acc, curr) => acc + curr.downloads,
+          0,
+        );
+    }
   } catch (error) {
     slog.error(error);
     throw new Response(null, {
@@ -310,11 +329,13 @@ export default function PackagePage() {
     authors,
     dailyDownloads,
     yearlyDailyDownloads,
+    last31DaysDownloads,
     lastRelease,
     totalMonthDownloads,
     yesterdayDownloads,
     totalYearDownloads,
     totalYearlyDownloadsComment,
+    totalLast31DaysDownloads,
     monthlyDayDownloadsComment,
     peakYearlyDayDownloads,
     indexOfTrendingItems,
@@ -367,6 +388,8 @@ export default function PackagePage() {
           totalYearDownloads={totalYearDownloads}
           monthlyDayDownloadsComment={monthlyDayDownloadsComment}
           totalYearlyDownloadsComment={totalYearlyDownloadsComment}
+          last31DaysDownloads={last31DaysDownloads}
+          totalLast31DaysDownloads={totalLast31DaysDownloads}
         />
 
         <BinariesPageContentSection
@@ -709,6 +732,8 @@ function InsightsPageContentSection(
     | "monthlyDayDownloadsComment"
     | "totalYearlyDownloadsComment"
     | "totalYearDownloads"
+    | "last31DaysDownloads"
+    | "totalLast31DaysDownloads"
   >,
 ) {
   const {
@@ -720,6 +745,7 @@ function InsightsPageContentSection(
     totalYearDownloads,
     monthlyDayDownloadsComment,
     totalYearlyDownloadsComment,
+    last31DaysDownloads,
   } = props;
 
   const nrFormatter = new Intl.NumberFormat("en-US");
@@ -788,6 +814,29 @@ function InsightsPageContentSection(
                   downloads={dailyDownloads[0].downloads}
                   start={dailyDownloads[0].start}
                   end={dailyDownloads[0].end}
+                />
+              )}
+            </ClientOnly>
+
+            <div className="space-y-4">
+              <p>
+                The following line graph shows the downloads per day. You can
+                hover over the graph to see the exact number of downloads per
+                day.
+              </p>
+            </div>
+            <ClientOnly
+              fallback={
+                <div className="h-200 bg-gray-ui animate-pulse rounded-md" />
+              }
+            >
+              {() => (
+                <LineGraph
+                  height={200}
+                  data={last31DaysDownloads[0].downloads.map((d) => ({
+                    date: d.day,
+                    value: d.downloads,
+                  }))}
                 />
               )}
             </ClientOnly>

@@ -4,10 +4,6 @@ import { NodeSDK } from "@opentelemetry/sdk-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { Resource } from "@opentelemetry/resources";
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-} from "@opentelemetry/semantic-conventions";
 import { ENV } from "../data/env";
 import { RemixInstrumentation } from "opentelemetry-instrumentation-remix";
 
@@ -26,8 +22,8 @@ export function initOTEL() {
         new RemixInstrumentation(),
       ],
       resource: new Resource({
-        [ATTR_SERVICE_NAME]: ENV.OTEL_NAME,
-        [ATTR_SERVICE_VERSION]: ENV.npm_package_version,
+        ["service.name"]: ENV.OTEL_NAME,
+        ["service.version"]: ENV.npm_package_version,
       }),
     });
 

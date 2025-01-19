@@ -9,14 +9,14 @@ import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
 import * as winston from "winston";
 import { Resource } from "@opentelemetry/resources";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { ENV } from "../data/env";
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 
 const serviceName = "crane-app";
 
 const resource = new Resource({
-  [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+  ["service.name"]: serviceName,
+  ["service.version"]: ENV.npm_package_version,
 });
 
 const otlpExporter = new OTLPLogExporter({
