@@ -8,7 +8,7 @@ import { groupBy, omit, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
 import { format, hoursToMilliseconds, minutesToMilliseconds } from "date-fns";
 import { google } from "@ai-sdk/google";
-import { embed, generateText } from "ai";
+import { embed } from "ai";
 
 // import { embed } from "ai";
 // import { google } from "@ai-sdk/google";
@@ -216,19 +216,35 @@ export class PackageService {
       return cached;
     }
 
-    let rephrasedQuery = query;
+    const rephrasedQuery = query;
+    let queryEmbedding = "";
     if (isSimilaritySearchEnabled) {
-      const model = google("gemini-1.5-flash");
-      const { text: rephrased } = await generateText({
-        model,
-        prompt:
-          "Improve the following search phrase. Fix spelling issues and add highly relevant words, if any: " +
-          query +
-          ". Return only the improved search phrase and nothing else." +
-          "Return original search phrase if no improvements are needed or if search phrase is package name.",
-      });
-      rephrasedQuery = rephrased.trim();
-      slog.log("info", `Rephrased query: ${rephrasedQuery}`);
+      // console.log("---->", query);
+
+      // console.time("---- generateText");
+      // const model = google("gemini-1.5-flash-8b");
+      // const [{ text: rephrased }, query_embedding] = await Promise.all([
+      //   generateText({
+      //     model,
+      //     prompt:
+      //       "Improve the following search phrase. Fix spelling issues and add highly relevant words, if any: " +
+      //       query +
+      //       ". Return only the improved search phrase and nothing else." +
+      //       "Return original search phrase if no improvements are needed or if search phrase is package name.",
+      //   }),
+      //   embed({
+      //     value: rephrasedQuery,
+      //     model: google.textEmbeddingModel("text-embedding-004"),
+      //   }).then((res) => res.embedding as unknown as string),
+      // ]);
+      // rephrasedQuery = rephrased.trim();
+      // slog.log("info", `Rephrased query: ${rephrasedQuery}`);
+      // queryEmbedding = query_embedding;
+      // console.timeEnd("---- generateText");
+      queryEmbedding = await embed({
+        value: rephrasedQuery,
+        model: google.textEmbeddingModel("text-embedding-004"),
+      }).then((res) => res.embedding as unknown as string);
     }
 
     const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
@@ -245,10 +261,7 @@ export class PackageService {
           .maybeSingle(),
         isSimilaritySearchEnabled
           ? supabase.rpc("match_package_embeddings", {
-              query_embedding: await embed({
-                value: rephrasedQuery,
-                model: google.textEmbeddingModel("text-embedding-004"),
-              }).then((res) => res.embedding as unknown as string),
+              query_embedding: queryEmbedding,
               match_threshold: 0.5,
               match_count: limit,
             })

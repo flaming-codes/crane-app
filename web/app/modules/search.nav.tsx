@@ -43,6 +43,8 @@ const fallbackSearchResults: SearchHitsResults = {
   packages: { hits: { lexical: [], semantic: [], isSemanticPreferred: false } },
 };
 
+const DEBOUNCE_DELAY_MS = 150;
+
 export function NavSearch(props: Props) {
   const {
     searchContentRef,
@@ -67,7 +69,7 @@ export function NavSearch(props: Props) {
           action: "/api/search?index",
         });
       },
-      300,
+      DEBOUNCE_DELAY_MS,
       {
         edges: ["trailing"],
       },
