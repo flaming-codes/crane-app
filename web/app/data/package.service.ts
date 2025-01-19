@@ -15,9 +15,9 @@ import { embed, generateText } from "ai";
 
 type Package = Tables<"cran_packages">;
 
-type CacheKey = "sitemap-items";
+type CacheKey = "sitemap-items" | "count-packages";
 
-type CacheValue = SitemapItem[];
+type CacheValue = SitemapItem[] | number;
 
 type SearchResult = {
   combined: Array<{
@@ -78,6 +78,25 @@ export class PackageService {
     }
 
     return data?.id || null;
+  }
+
+  static async getTotalPackagesCount(): Promise<number> {
+    const cached = this.cache.get("count-packages") as number | undefined;
+    if (cached) {
+      return cached;
+    }
+
+    const { count, error } = await supabase
+      .from("cran_packages")
+      .select("*", { count: "exact", head: true });
+
+    if (error) {
+      slog.error("Error in getTotalPackagesCount", error);
+      return 0;
+    }
+
+    this.cache.set("count-packages", count ?? 0);
+    return count ?? 0;
   }
 
   static async getPackageRelationsByPackageId(packageId: number) {
@@ -141,7 +160,7 @@ export class PackageService {
   }
 
   static async getAllSitemapPackages(): Promise<SitemapItem[]> {
-    const cached = this.cache.get("sitemap-items");
+    const cached = this.cache.get("sitemap-items") as SitemapItem[] | undefined;
     if (cached) {
       return cached;
     }
