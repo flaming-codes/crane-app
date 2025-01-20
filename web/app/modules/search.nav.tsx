@@ -41,7 +41,7 @@ const fallbackSearchResults: SearchHitsResults = {
   packages: { hits: { lexical: [], semantic: [], isSemanticPreferred: false } },
 };
 
-const DEBOUNCE_DELAY_MS = 150;
+const DEBOUNCE_DELAY_MS = 100;
 
 const fetcher = (url: string, data: FormData) =>
   fetch(url, {
@@ -106,8 +106,7 @@ export function NavSearch(props: Props) {
       if (!isFocused) {
         return;
       }
-      //setIsFocused(false);
-      inputRef.current?.blur();
+      setIsFocused(false);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]),
   );
