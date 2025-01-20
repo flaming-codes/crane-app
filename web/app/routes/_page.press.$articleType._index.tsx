@@ -8,6 +8,7 @@ import { BASE_URL } from "../modules/app";
 import { ArticleService } from "../data/article.service.server";
 import { Enums } from "../data/supabase.types.generated";
 import { format } from "date-fns";
+import { ClientOnly } from "remix-utils/client-only";
 
 type LoaderDaa = {
   articles: Awaited<ReturnType<typeof ArticleService.getAllArticlePreviews>>;
@@ -104,9 +105,15 @@ export default function NewsIndexPage() {
                   variant={articleType === "news" ? "amethyst" : "opal"}
                   createdAt={format(article.created_at, "dd-MM-yyyy")}
                 >
-                  <p
-                    dangerouslySetInnerHTML={{ __html: article.synopsis_html }}
-                  />
+                  <ClientOnly fallback={<div className="h-[290px]" />}>
+                    {() => (
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: article.synopsis_html,
+                        }}
+                      />
+                    )}
+                  </ClientOnly>
                 </ArticlePreviewInfoCard>
               </Link>
             ))}

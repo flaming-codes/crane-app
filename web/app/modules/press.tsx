@@ -107,7 +107,11 @@ export function ArticlePreviewInfoCard(
           )}
         />
         <div className="z-10 space-y-1">
-          <ClientOnly>
+          <ClientOnly
+            fallback={
+              <span className="text-gray-dim font-mono text-xs">...</span>
+            }
+          >
             {() => (
               <span className="text-gray-dim font-mono text-xs">
                 {createdAt}
