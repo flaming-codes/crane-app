@@ -1,4 +1,3 @@
-import { useFetcher } from "react-router";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 import {
   ChangeEvent,
@@ -7,7 +6,6 @@ import {
   RefObject,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -15,7 +13,6 @@ import { ClientOnly } from "remix-utils/client-only";
 import { useKeyboardEvent, useKeyboardShortcut } from "./app";
 import { Separator } from "./separator";
 import { sendEvent } from "./plausible";
-import { debounce } from "es-toolkit";
 import { SearchIdlePlaceholder } from "./search.idle-placeholder";
 import {
   PackageSemanticSearchHit,
@@ -27,6 +24,7 @@ import {
 import { SearchInput } from "./search.input";
 import { ProvidedByLabel } from "./provided-by-label";
 import { RiProgress8Fill } from "@remixicon/react";
+import useSWR from "swr";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -45,6 +43,12 @@ const fallbackSearchResults: SearchHitsResults = {
 
 const DEBOUNCE_DELAY_MS = 150;
 
+const fetcher = (url: string, data: FormData) =>
+  fetch(url, {
+    method: "POST",
+    body: data,
+  }).then((res) => res.json());
+
 export function NavSearch(props: Props) {
   const {
     searchContentRef,
@@ -55,28 +59,14 @@ export function NavSearch(props: Props) {
     inputClassName,
   } = props;
 
-  const fetcher = useFetcher();
-  const isBusy = fetcher.state === "loading" || fetcher.state === "submitting";
-
-  const actionData =
-    (fetcher.data as SearchHitsResults | undefined) || fallbackSearchResults;
-
-  const debouncedFetcher = useRef(
-    debounce(
-      (data: FormData) => {
-        fetcher.submit(data, {
-          method: "POST",
-          action: "/api/search?index",
-        });
-      },
-      DEBOUNCE_DELAY_MS,
-      {
-        edges: ["trailing"],
-      },
-    ),
-  );
-
   const [input, setInput] = useSyncedQueryHash();
+  const [query, setQuery] = useState<FormData | null>(null);
+
+  const { data: actionData = fallbackSearchResults, isValidating: isBusy } =
+    useSWR(query ? ["/api/search?index", query] : null, fetcher, {
+      revalidateOnFocus: false,
+      dedupingInterval: DEBOUNCE_DELAY_MS,
+    });
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +76,7 @@ export function NavSearch(props: Props) {
       data.set("q", e.target.value);
       data.set("intent", "all");
 
-      debouncedFetcher.current(data);
+      setQuery(data);
     },
     [setInput],
   );
@@ -116,8 +106,7 @@ export function NavSearch(props: Props) {
       if (!isFocused) {
         return;
       }
-      //setSearchParams({ q: "" });
-      setIsFocused(false);
+      //setIsFocused(false);
       inputRef.current?.blur();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]),
@@ -159,7 +148,7 @@ export function NavSearch(props: Props) {
           {() =>
             createPortal(
               <SearchResults
-                state={fetcher.state}
+                state={isBusy ? "loading" : "idle"}
                 data={actionData}
                 isDataExpected={input.length > 0}
                 isBusy={isBusy}

@@ -23,7 +23,7 @@
     "@isaacs/ttlcache": "^1.4.1",
     "@mcansh/http-helmet": "0.12.0",
     "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.55.2",
+    "@opentelemetry/auto-instrumentations-node": "^0.55.3",
     "@opentelemetry/auto-instrumentations-web": "^0.45.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.57.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.57.0",
@@ -37,7 +37,7 @@
     "@remix-pwa/client": "^3.0.7",
     "@remixicon/react": "^4.6.0",
     "@resvg/resvg-js": "^2.6.2",
-    "@supabase/supabase-js": "^2.47.12",
+    "@supabase/supabase-js": "^2.48.0",
     "@uidotdev/usehooks": "^2.4.1",
     "ai": "^4.0.33",
     "clsx": "^2.1.1",
@@ -60,7 +60,8 @@
     "web-vitals": "^4.2.4",
     "winston": "^3.17.0",
     "xss": "^1.0.15",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "swr": "^1.2.3"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
