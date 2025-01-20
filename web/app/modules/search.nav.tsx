@@ -25,6 +25,7 @@ import { SearchInput } from "./search.input";
 import { ProvidedByLabel } from "./provided-by-label";
 import { RiProgress8Fill } from "@remixicon/react";
 import useSWR from "swr";
+import * as motion from "motion/react-client";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -43,11 +44,13 @@ const fallbackSearchResults: SearchHitsResults = {
 
 const DEBOUNCE_DELAY_MS = 100;
 
-const fetcher = (url: string, data: FormData) =>
-  fetch(url, {
+const fetcher = (tuple: [url: string, data: FormData]) => {
+  const [url, data] = tuple;
+  return fetch(url, {
     method: "POST",
     body: data,
   }).then((res) => res.json());
+};
 
 export function NavSearch(props: Props) {
   const {
@@ -62,11 +65,16 @@ export function NavSearch(props: Props) {
   const [input, setInput] = useSyncedQueryHash();
   const [query, setQuery] = useState<FormData | null>(null);
 
-  const { data: actionData = fallbackSearchResults, isValidating: isBusy } =
-    useSWR(query ? ["/api/search?index", query] : null, fetcher, {
+  const { data: actionData, isValidating: isBusy } = useSWR<SearchHitsResults>(
+    query ? ["/api/search?index", query] : null,
+    fetcher,
+    {
       revalidateOnFocus: false,
       dedupingInterval: DEBOUNCE_DELAY_MS,
-    });
+      fallbackData: fallbackSearchResults,
+      keepPreviousData: true,
+    },
+  );
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -189,7 +197,13 @@ export function SearchResults(
                     <div className="space-y-4">
                       <ul className="flex flex-col gap-6">
                         {combined.map((item) => (
-                          <li key={item.name}>
+                          <motion.li
+                            key={item.name}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                          >
                             {"synopsis" in item ? (
                               <PackageHit
                                 item={item}
@@ -217,7 +231,7 @@ export function SearchResults(
                                 }}
                               />
                             )}
-                          </li>
+                          </motion.li>
                         ))}
                       </ul>
                     </div>
