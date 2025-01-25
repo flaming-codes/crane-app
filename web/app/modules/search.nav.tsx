@@ -6,6 +6,7 @@ import {
   RefObject,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -115,6 +116,7 @@ export function NavSearch(props: Props) {
         return;
       }
       setIsFocused(false);
+      inputRef.current?.blur();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]),
   );
@@ -179,14 +181,29 @@ export function SearchResults(
     onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
   }>,
 ) {
-  const { data, isDataExpected, isBusy, onSelect, children } = props;
+  const { state, data, isDataExpected, isBusy, onSelect, children } = props;
   const { combined } = data;
   const hasAnyHits = combined.length > 0;
 
   useLockBodyScroll();
 
+  // Scroll to top when the search results are done loading.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const previousState = useRef<"idle" | "loading" | "submitting">("idle");
+  useEffect(() => {
+    if (state === "idle" && previousState.current === "loading") {
+      containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    return () => {
+      previousState.current = state;
+    };
+  }, [state]);
+
   return (
-    <div className="animate-fade animate-duration-150 fixed top-14 left-0 z-10 h-[calc(100%-56px)] w-full overflow-y-auto bg-[#fff]/90 py-16 backdrop-blur-xl dark:bg-[#000]/90">
+    <div
+      ref={containerRef}
+      className="animate-fade animate-duration-150 fixed top-14 left-0 z-10 h-[calc(100%-56px)] w-full overflow-y-auto bg-[#fff]/90 py-16 backdrop-blur-xl dark:bg-[#000]/90"
+    >
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-32">
