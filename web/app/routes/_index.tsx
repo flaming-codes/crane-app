@@ -2,19 +2,18 @@ import { data, useLoaderData } from "react-router";
 import { SyneLogo } from "../modules/svg";
 import NavigationPage from "../modules/nav";
 import { randomInt } from "es-toolkit";
-import { clsx } from "clsx";
 import { Footer } from "../modules/footer";
 import { ENV } from "../data/env";
 import { ClientOnly } from "remix-utils/client-only";
 import { PackageService } from "../data/package.service";
 import { AuthorService } from "../data/author.service";
+import { gradients } from "../modules/gradients";
 
 export const handle = {
   hasFooter: false,
 };
 
 export const loader = async () => {
-  const meshIndex = randomInt(0, 27);
   const version = ENV.npm_package_version;
 
   const [packageRes, authorRes] = await Promise.allSettled([
@@ -27,7 +26,7 @@ export const loader = async () => {
 
   return data(
     {
-      meshIndex,
+      gradient: gradients[randomInt(0, gradients.length)],
       version,
       // We're using the server here for formatting numbers
       // to avoid client-side rehydration issues.
@@ -43,12 +42,12 @@ export const loader = async () => {
 };
 
 export default function Index() {
-  const { meshIndex, version, packageCount, authorCount } =
+  const { gradient, version, packageCount, authorCount } =
     useLoaderData<typeof loader>();
 
   return (
     <>
-      <GradientBackground meshIndex={meshIndex} />
+      <GradientBackground gradient={gradient} />
 
       <NavigationPage
         hasSubtleBackground
@@ -94,45 +93,15 @@ export default function Index() {
   );
 }
 
-function GradientBackground({ meshIndex }: { meshIndex: null | number }) {
-  if (meshIndex === null) {
+function GradientBackground({ gradient }: { gradient: null | string }) {
+  if (gradient === null) {
     return null;
   }
   return (
     <>
       <div
-        className={clsx(
-          "fixed inset-x-0 top-0 -z-50 h-[60vh] transform-gpu animate-fade duration-500",
-          {
-            "bg-mesh-1": meshIndex === 0,
-            "bg-mesh-2": meshIndex === 1,
-            "bg-mesh-3": meshIndex === 2,
-            "bg-mesh-4": meshIndex === 3,
-            "bg-mesh-5": meshIndex === 4,
-            "bg-mesh-6": meshIndex === 5,
-            "bg-mesh-7": meshIndex === 6,
-            "bg-mesh-8": meshIndex === 7,
-            "bg-mesh-9": meshIndex === 8,
-            "bg-mesh-10": meshIndex === 9,
-            "bg-mesh-11": meshIndex === 10,
-            "bg-mesh-12": meshIndex === 11,
-            "bg-mesh-13": meshIndex === 12,
-            "bg-mesh-14": meshIndex === 13,
-            "bg-mesh-15": meshIndex === 14,
-            "bg-mesh-16": meshIndex === 15,
-            "bg-mesh-17": meshIndex === 16,
-            "bg-mesh-18": meshIndex === 17,
-            "bg-mesh-19": meshIndex === 18,
-            "bg-mesh-20": meshIndex === 19,
-            "bg-mesh-21": meshIndex === 20,
-            "bg-mesh-22": meshIndex === 21,
-            "bg-mesh-23": meshIndex === 22,
-            "bg-mesh-24": meshIndex === 23,
-            "bg-mesh-25": meshIndex === 24,
-            "bg-mesh-26": meshIndex === 25,
-            "bg-mesh-27": meshIndex === 26,
-          },
-        )}
+        style={{ background: gradient }}
+        className="animate-fade fixed inset-x-0 top-0 -z-50 h-[60vh] transform-gpu duration-500"
       />
 
       <div className="fixed inset-x-0 top-0 -z-50 h-[60vh] bg-linear-to-t from-white dark:from-black" />
