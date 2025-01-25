@@ -34,7 +34,7 @@ const twGradient = cva({
       jade: "from-jade-5 dark:from-jade-11",
       slate: "from-gray-5 dark:from-gray-11",
       sand: "from-sand-5 via-gold-5 dark:from-sand-11 dark:via-gold-12",
-      amethyst: "from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
+      amethyst: "from-plum-7 via-iris-6 dark:from-plum-11 dark:via-iris-12",
       opal: "from-iris-11 via-sky-4 dark:from-iris-10 dark:via-sky-12",
     },
   },

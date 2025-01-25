@@ -18,7 +18,7 @@ const twBase = cva({
       bronze: "bg-linear-to-tl from-bronze-8 dark:from-bronze-11",
       sand: "bg-linear-to-br from-sand-8 via-gold-6 dark:from-sand-11 dark:via-gold-12/60",
       amethyst:
-        "bg-linear-to-tl from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
+        "bg-linear-to-tl from-plum-7 via-iris-6 dark:from-plum-11 dark:via-iris-12",
       opal: "bg-linear-to-tl from-iris-11 via-sky-4 dark:from-iris-10 dark:via-sky-12 ",
     },
   },

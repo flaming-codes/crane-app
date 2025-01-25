@@ -22,8 +22,7 @@ const twBase = cva({
   ],
   variants: {
     gradient: {
-      amethyst:
-        "from-violet-9 to-purple-11 dark:from-violet-10 dark:to-purple-7",
+      amethyst: "from-iris-9 to-purple-11 dark:from-iris-10 dark:to-purple-7",
       opal: "from-iris-10 to-sky-10 dark:to-sky-8",
     },
   },
@@ -101,8 +100,8 @@ export function ArticlePreviewInfoCard(
             "absolute inset-0 bg-linear-to-br",
             "opacity-0 transition-opacity duration-500 group-hover/card:opacity-100 group-hover/card:backdrop-blur-xs",
             {
-              "from-violet-6 dark:from-violet-12": variant === "amethyst",
-              "from-sky-4 dark:from-skya-12": variant === "opal",
+              "from-plum-6 dark:from-plum-12": variant === "amethyst",
+              "from-sky-4 dark:from-sky-12": variant === "opal",
             },
           )}
         />

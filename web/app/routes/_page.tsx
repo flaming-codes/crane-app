@@ -12,10 +12,10 @@ const twToaster = cva({
   variants: {
     variant: {
       default: "from-gray-2 dark:from-gray-12",
-      success: "from-grass-6 dark:from-grass-11",
-      error: "from-crimson-6 dark:from-crimson-11",
+      success: "from-jade-6 dark:from-jade-11",
+      error: "from-ruby-6 dark:from-ruby-11",
       info: "from-sky-6 dark:from-sky-11",
-      warning: "from-amber-6 dark:from-amber-11",
+      warning: "from-bronze-6 dark:from-bronze-11",
     },
   },
 });
