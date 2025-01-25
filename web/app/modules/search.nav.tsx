@@ -145,7 +145,7 @@ export function NavSearch(props: Props) {
         onChange={onChange}
       />
       {isBusy ? (
-        <div className="text-gray-ui absolute right-1 top-5 animate-fade">
+        <div className="text-gray-ui animate-fade absolute top-5 right-1">
           <RiProgress8Fill size={18} className="animate-pulse" />
         </div>
       ) : null}
@@ -186,7 +186,7 @@ export function SearchResults(
   useLockBodyScroll();
 
   return (
-    <div className="fixed left-0 top-14 z-10 h-[calc(100%-56px)] w-full animate-fade overflow-y-auto bg-white/90 py-16 backdrop-blur-xl animate-duration-150 dark:bg-black/90">
+    <div className="animate-fade animate-duration-150 fixed top-14 left-0 z-10 h-[calc(100%-56px)] w-full overflow-y-auto bg-[#fff]/90 py-16 backdrop-blur-xl dark:bg-[#000]/90">
       <div className="content-grid">
         <div className="full-width">
           <div className="flex flex-col gap-32">

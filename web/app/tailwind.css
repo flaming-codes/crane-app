@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-*: initial;
+}
+
 /* Import Radix Colors */
 @import "tailwindcss-radix-colors/dist/gray.css";
 @import "tailwindcss-radix-colors/dist/iris.css";
@@ -82,12 +86,7 @@
 
 
 html {
-  @apply h-full bg-white;
-
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-    @apply bg-black;
-  }
+  @apply h-full bg-[#fff] dark:scheme-dark dark:bg-[#000];
 }
 
 body {

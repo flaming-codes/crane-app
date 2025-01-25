@@ -29,10 +29,10 @@ export default function NavigationPage(props: Props) {
     <>
       <nav
         className={clsx(
-          "full-width sticky inset-x-0 top-0 z-10 border-b border-gray-8 backdrop-blur-lg dark:border-gray-12",
-          { "bg-white/90 dark:bg-black/90": isFocused },
+          "full-width border-gray-8 dark:border-gray-12 sticky inset-x-0 top-0 z-10 border-b backdrop-blur-lg",
+          { "bg-[#fff]/90 dark:bg-[#000]/90": isFocused },
           {
-            "border-transparent bg-black/10 dark:border-transparent dark:bg-black/25":
+            "border-transparent bg-[#000]/10 dark:border-transparent dark:bg-[#000]/25":
               !isFocused && hasSubtleBackground,
           },
           className,
