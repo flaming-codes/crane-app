@@ -37,7 +37,7 @@ export function SearchInput(props: Props) {
             : "Search & explore..."
         }
         className={clsx(
-          "h-full flex-1 bg-transparent outline-none focus:placeholder:opacity-50",
+          "h-full flex-1 bg-transparent outline-hidden focus:placeholder:opacity-50",
           "transition-all",
           inputClassName,
         )}

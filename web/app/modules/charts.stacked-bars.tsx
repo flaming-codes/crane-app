@@ -14,7 +14,7 @@ export function StackedBarsChart(props: Props) {
   const { total, data } = props;
 
   return (
-    <div className="grid grid-cols-[auto,1fr] gap-4">
+    <div className="grid grid-cols-[auto_1fr] gap-4">
       {data.map(({ label, value }, i) => (
         <Fragment key={i}>
           <div className="text-sm">{label}</div>

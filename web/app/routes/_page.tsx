@@ -8,7 +8,7 @@ export const handle = {
 };
 
 const twToaster = cva({
-  base: "bg-gradient-to-tr px-6 py-4 text-sm backdrop-blur-lg rounded-lg w-full inline-flex gap-2 items-center",
+  base: "bg-linear-to-tr px-6 py-4 text-sm backdrop-blur-lg rounded-lg w-full inline-flex gap-2 items-center",
   variants: {
     variant: {
       default: "from-gray-2 dark:from-gray-12",

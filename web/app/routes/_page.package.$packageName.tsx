@@ -464,7 +464,7 @@ function AboveTheFoldSection(
                 to="/statistic/packages/trends"
                 aria-label="Show trending packages"
               >
-                <InfoPill className="bg-gradient-to-bl from-gold-6 dark:from-gold-11">
+                <InfoPill className="bg-linear-to-bl from-gold-6 dark:from-gold-11">
                   <span>{getTrendingLabel()}</span>
                   <RiArrowRightSLine size={16} />
                 </InfoPill>
@@ -477,7 +477,7 @@ function AboveTheFoldSection(
                 to="/statistic/packages/downloads"
                 aria-label="Show top downloaded packages"
               >
-                <InfoPill className="bg-gradient-to-bl from-gold-6 dark:from-gold-11">
+                <InfoPill className="bg-linear-to-bl from-gold-6 dark:from-gold-11">
                   <span>{getTopDownloadsLabel()}</span>
                   <RiArrowRightSLine size={16} />
                 </InfoPill>

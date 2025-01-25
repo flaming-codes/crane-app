@@ -44,8 +44,8 @@ export function PlausibleChoicePillButton() {
             label={<span className="text-gray-normal">Your choice</span>}
             variant="slate"
             className={clsx({
-              "bg-gradient-to-br from-green-6 dark:from-green-10": isEnabled,
-              "bg-gradient-to-br from-red-6 dark:from-red-10": !isEnabled,
+              "bg-linear-to-br from-green-6 dark:from-green-10": isEnabled,
+              "bg-linear-to-br from-red-6 dark:from-red-10": !isEnabled,
             })}
           >
             {isEnabled ? "Enabled" : "Disabled"}

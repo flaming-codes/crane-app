@@ -16,7 +16,7 @@ type Props = PropsWithChildren<
 
 const twBase = cva({
   base: [
-    "inline-block bg-gradient-to-tl bg-clip-text font-semibold text-transparent",
+    "inline-block bg-linear-to-tl bg-clip-text font-semibold text-transparent",
     "animate-fade",
     "text-gray-dim mt-8 w-3/4 text-xl leading-relaxed md:w-2/3",
   ],
@@ -37,7 +37,7 @@ export function ArticleSynopsis(props: Props) {
       <ClientOnly fallback={<div className="h-[215px]" />}>
         {() => <div className={twBase({ gradient })}>{children}</div>}
       </ClientOnly>
-      <footer className="flex animate-fade gap-2">
+      <footer className="animate-fade flex gap-2">
         <ClientOnly
           fallback={
             <InfoPill size="sm" label="Publication">
@@ -98,8 +98,8 @@ export function ArticlePreviewInfoCard(
       <div className="grid gap-4 sm:min-h-60 sm:grid-cols-2">
         <div
           className={clsx(
-            "absolute inset-0 bg-gradient-to-br",
-            "opacity-0 transition-opacity duration-500 group-hover/card:opacity-100",
+            "absolute inset-0 bg-linear-to-br",
+            "opacity-0 transition-opacity duration-500 group-hover/card:opacity-100 group-hover/card:backdrop-blur-xs",
             {
               "from-violet-6 dark:from-violet-12": variant === "amethyst",
               "from-sky-4 dark:from-skya-12": variant === "opal",
@@ -124,7 +124,7 @@ export function ArticlePreviewInfoCard(
         <div
           className={clsx(
             "text-gray-dim relative -z-10 hidden overflow-hidden px-4 text-xl leading-relaxed opacity-50 sm:block",
-            "after:absolute after:inset-x-0 after:bottom-0 after:h-full after:bg-gradient-to-t after:content-[''] after:dark:from-black",
+            "after:absolute after:inset-x-0 after:bottom-0 after:h-full after:bg-linear-to-t after:content-[''] dark:after:from-black",
           )}
         >
           {children}

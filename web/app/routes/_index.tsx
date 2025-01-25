@@ -135,9 +135,9 @@ function GradientBackground({ meshIndex }: { meshIndex: null | number }) {
         )}
       />
 
-      <div className="fixed inset-x-0 top-0 -z-50 h-[60vh] bg-gradient-to-t from-white dark:from-black" />
-      <div className="fixed inset-x-0 top-0 -z-40 h-[60vh] bg-gradient-to-t from-white via-white opacity-50 dark:from-black dark:via-black" />
-      <div className="fixed inset-x-0 top-[40vh] -z-30 h-[20vh] bg-gradient-to-t from-white via-white opacity-80 dark:from-black dark:via-black" />
+      <div className="fixed inset-x-0 top-0 -z-50 h-[60vh] bg-linear-to-t from-white dark:from-black" />
+      <div className="fixed inset-x-0 top-0 -z-40 h-[60vh] bg-linear-to-t from-white via-white opacity-50 dark:from-black dark:via-black" />
+      <div className="fixed inset-x-0 top-[40vh] -z-30 h-[20vh] bg-linear-to-t from-white via-white opacity-80 dark:from-black dark:via-black" />
     </>
   );
 }

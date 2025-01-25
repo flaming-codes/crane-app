@@ -121,7 +121,7 @@ export function LineGraph({
       {/* Hover tooltip */}
       {hoveredPoint && (
         <div
-          className="text-gray-normal absolute cursor-auto rounded-md p-2 text-center text-sm shadow backdrop-blur-sm"
+          className="text-gray-normal absolute cursor-auto rounded-md p-2 text-center text-sm shadow-sm backdrop-blur-xs"
           style={{
             left: `${xScale(data.findIndex((d) => d === hoveredPoint))}px`,
             top: `${yScale(hoveredPoint.value) - 50}px`,

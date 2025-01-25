@@ -26,7 +26,7 @@ const twBase = cva({
 });
 
 const twGradient = cva({
-  base: "inset-0 absolute bg-gradient-to-tr -z-10 opacity-0 group-hover/pill:opacity-100 transition-opacity duration-700",
+  base: "inset-0 absolute bg-linear-to-tr -z-10 opacity-0 group-hover/pill:opacity-100 transition-opacity duration-700",
   variants: {
     variant: {
       iris: "from-iris-4 dark:from-iris-11",

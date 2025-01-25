@@ -93,7 +93,7 @@ export function PackageDependencySearch(props: Props) {
     <>
       <div
         className={clsx(
-          "border-gray-dim relative flex min-h-16 flex-col items-center overflow-hidden rounded-xl border-t bg-gradient-to-b p-4",
+          "border-gray-dim relative flex min-h-16 flex-col items-center overflow-hidden rounded-xl border-t bg-linear-to-b p-4",
         )}
       >
         <form
@@ -108,7 +108,7 @@ export function PackageDependencySearch(props: Props) {
             type="text"
             id="search"
             placeholder="Type to search dependencies..."
-            className="flex-grow bg-transparent p-1 focus:outline-none"
+            className="grow bg-transparent p-1 focus:outline-hidden"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
@@ -132,7 +132,7 @@ export function PackageDependencySearch(props: Props) {
           </button>
         </form>
 
-        <div className="absolute inset-0 isolate -z-10 bg-gradient-to-b from-gray-4 peer-focus-within:from-iris-6 dark:from-gray-12 dark:peer-focus-within:from-iris-12" />
+        <div className="absolute inset-0 isolate -z-10 bg-linear-to-b from-gray-4 peer-focus-within:from-iris-6 dark:from-gray-12 dark:peer-focus-within:from-iris-12" />
       </div>
 
       {!input ? (
