@@ -13,7 +13,6 @@ const twBase = cva({
   variants: {
     gradient: {
       iris: "bg-linear-to-tr from-iris-6 dark:from-iris-10",
-      gold: "bg-linear-to-tr from-gold-6 dark:from-gold-10",
       ruby: "bg-linear-to-tr from-ruby-6 dark:from-ruby-10",
       jade: "bg-linear-to-bl from-jade-8 dark:from-jade-11",
       bronze: "bg-linear-to-tl from-bronze-8 dark:from-bronze-11",
@@ -21,7 +20,6 @@ const twBase = cva({
       amethyst:
         "bg-linear-to-tl from-plum-7 via-violet-6 dark:from-plum-11 dark:via-violet-12",
       opal: "bg-linear-to-tl from-iris-11 via-sky-4 dark:from-iris-10 dark:via-sky-12 ",
-      wood: "bg-linear-to-tl from-brown-5 via-amber-4 dark:from-brown-10 dark:via-amber-11",
     },
   },
 });

@@ -43,9 +43,9 @@ export function PlausibleChoicePillButton() {
           <InfoPill
             label={<span className="text-gray-normal">Your choice</span>}
             variant="slate"
-            className={clsx({
-              "bg-linear-to-br from-green-6 dark:from-green-10": isEnabled,
-              "bg-linear-to-br from-red-6 dark:from-red-10": !isEnabled,
+            className={clsx("cursor-pointer", {
+              "from-jade-6 dark:from-jade-11 bg-linear-to-br": isEnabled,
+              "from-ruby-6 dark:from-ruby-10 bg-linear-to-br": !isEnabled,
             })}
           >
             {isEnabled ? "Enabled" : "Disabled"}

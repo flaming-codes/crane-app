@@ -107,7 +107,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="text-gray-normal">
         <script
           nonce={isServer ? nonce : ""}
           dangerouslySetInnerHTML={{
