@@ -126,6 +126,7 @@ export function NavSearch(props: Props) {
     useCallback(() => {
       inputRef.current?.focus();
       setIsFocused(true);
+      inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
       sendEvent("focus-search-shortcut-used", {
         props: {
           origin: window.location.pathname,
