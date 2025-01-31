@@ -22,7 +22,7 @@ const twBase = cva({
   ],
   variants: {
     gradient: {
-      amethyst: "from-iris-9 to-purple-11 dark:from-iris-10 dark:to-purple-7",
+      amethyst: "from-iris-9 to-purple-11 dark:from-iris-8 dark:to-violet-10",
       opal: "from-iris-10 to-sky-10 dark:to-sky-8",
     },
   },
@@ -123,7 +123,8 @@ export function ArticlePreviewInfoCard(
         <div
           className={clsx(
             "text-gray-dim relative -z-10 hidden overflow-hidden px-4 text-xl leading-relaxed opacity-50 sm:block",
-            "after:absolute after:inset-x-0 after:bottom-0 after:h-full after:bg-linear-to-t after:content-[''] dark:after:from-black",
+            "max-h-[280px] overflow-hidden",
+            "after:absolute after:inset-x-0 after:bottom-0 after:h-full after:bg-linear-to-t after:from-[#fff] after:content-[''] dark:after:from-[#000]",
           )}
         >
           {children}
