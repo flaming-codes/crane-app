@@ -489,6 +489,9 @@ export type Database = {
         Row: {
           categories: Database["public"]["Enums"]["press_article_category"][];
           created_at: string;
+          publish_state:
+            | Database["public"]["Enums"]["press_article_publish_state"]
+            | null;
           sections: Json;
           slug: string;
           subline: string | null;
@@ -500,6 +503,9 @@ export type Database = {
         Insert: {
           categories: Database["public"]["Enums"]["press_article_category"][];
           created_at: string;
+          publish_state?:
+            | Database["public"]["Enums"]["press_article_publish_state"]
+            | null;
           sections: Json;
           slug: string;
           subline?: string | null;
@@ -511,6 +517,9 @@ export type Database = {
         Update: {
           categories?: Database["public"]["Enums"]["press_article_category"][];
           created_at?: string;
+          publish_state?:
+            | Database["public"]["Enums"]["press_article_publish_state"]
+            | null;
           sections?: Json;
           slug?: string;
           subline?: string | null;
@@ -639,6 +648,7 @@ export type Database = {
         | "reverse_enhances"
         | "reverse_linking_to";
       press_article_category: "general" | "announcement";
+      press_article_publish_state: "draft" | "published";
       press_article_type: "news" | "magazine";
     };
     CompositeTypes: {
