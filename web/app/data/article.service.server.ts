@@ -16,7 +16,7 @@ export class ArticleService {
       .eq("slug", articleSlug);
 
     if (articleType) {
-      query.eq("type", articleType);
+      query.eq("type", articleType as Enums<"press_article_type">);
     }
 
     const { count, error } = await query.maybeSingle();
@@ -41,7 +41,7 @@ export class ArticleService {
       .eq("slug", articleSlug);
 
     if (articleType) {
-      query.eq("type", articleType);
+      query.eq("type", articleType as Enums<"press_article_type">);
     }
 
     const { data, error } = await query.maybeSingle();
@@ -78,10 +78,11 @@ export class ArticleService {
           "type",
         ].join(","),
       )
+      .eq("publish_state", "published")
       .order("created_at", { ascending: false });
 
     if (articleType) {
-      query.eq("type", articleType);
+      query.eq("type", articleType as Enums<"press_article_type">);
     }
 
     const { data, error } = await query;
