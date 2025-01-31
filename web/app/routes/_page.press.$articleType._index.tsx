@@ -95,9 +95,10 @@ export default function NewsIndexPage() {
             )}
             {articles.map((article) => (
               <Link
-                key={article.slug}
                 viewTransition
+                key={article.slug}
                 to={`/press/${article.type}/${article.slug}`}
+                prefetch="intent"
               >
                 <ArticlePreviewInfoCard
                   headline={article.title}

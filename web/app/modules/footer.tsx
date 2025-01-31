@@ -46,6 +46,7 @@ export function Footer(props: Props) {
               viewTransition
               to={href}
               className="underline-offset-4 hover:underline"
+              prefetch="intent"
             >
               {label}
             </Link>
