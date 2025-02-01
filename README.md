@@ -1,4 +1,4 @@
-<p align="center"><img src="./web/public/images/og/cover-1.jpg" /></p>
+<p align="center"><img src="./web/public/images/og/cover-1.webp" /></p>
 <h2 align="center">
 <a href="https://cran-e.com">CRAN/E</a>
 </h2>
