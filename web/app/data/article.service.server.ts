@@ -85,7 +85,6 @@ export class ArticleService {
           "type",
         ].join(","),
       )
-      //   .eq("publish_state", "published")
       .order("created_at", { ascending: false });
 
     if (articleType) {
