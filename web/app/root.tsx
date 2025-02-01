@@ -21,8 +21,12 @@ const isServer = typeof window === "undefined";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "CRAN/E" },
-    { name: "description", content: "The R package search engine, enhanced" },
+    { title: "CRAN/E - The R packages & authors search engine, enhanced" },
+    {
+      name: "description",
+      content:
+        "CRAN/E is a semantic search engine for R packages and authors, enhanced with additional features.",
+    },
     { property: "og:type", content: "website" },
     { property: "og:url", content: BASE_URL },
     {
