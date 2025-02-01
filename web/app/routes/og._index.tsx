@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       // Tip: You might want to heavily cache the response in production
       "cache-control":
         ENV.NODE_ENV === "production"
-          ? `public, immutable, no-transform, max-age=${hoursToSeconds(24 * 7)}`
+          ? `public, immutable, no-transform, max-age=${hoursToSeconds(1)}`
           : "no-cache",
     },
   });
