@@ -132,6 +132,7 @@ export async function composeIndexOGImage(params: { requestUrl: string }) {
         gap: 30,
         height: "100%",
         width: "100%",
+        paddingTop: 40,
         backgroundImage,
       }}
     >
