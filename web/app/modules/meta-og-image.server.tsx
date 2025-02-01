@@ -4,6 +4,8 @@ import { Resvg } from "@resvg/resvg-js";
 import { CSSProperties, ReactNode } from "react";
 import type { SatoriOptions } from "satori";
 import satori from "satori";
+import { SyneLogo } from "./svg";
+import { randomInt } from "es-toolkit";
 
 const OG_IMAGE_HEIGHT = 630;
 const OG_IMAGE_WIDTH = 1200;
@@ -82,6 +84,63 @@ function CategoryPill({ children }: { children: ReactNode }) {
       {children}
     </div>
   );
+}
+
+export async function composeIndexOGImage(params: { requestUrl: string }) {
+  const { requestUrl } = params;
+
+  const gradients = [
+    "linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%)",
+    "linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%)",
+    "linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%)",
+    "linear-gradient(-20deg, #ddd6f3 0%, #faaca8 50%, #faaca8 100%)",
+    "linear-gradient(120deg, #f6d365 0%, #fda085 50%, #fda085 100%)",
+    "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 50%, #c2e9fb 100%)",
+    "linear-gradient(120deg, #84fab0 0%, #8fd3f4 50%, #8fd3f4 100%)",
+    "linear-gradient(45deg, #93a5cf 0%, #e4efe9 50%, #e4efe9 100%)",
+    "linear-gradient(to top, #c1dfc4 0%, #deecdd 50%, #deecdd 100%)",
+    "linear-gradient(to top, #dbdcd7 0%, #dddcd7 24%, #e2c9cc 30%, #e7627d 46%, #b8235a 59%, #801357 71%, #3d1635 84%, #1c1a27 100%)",
+    "linear-gradient(to top, #a8edea 0%, #fed6e3 50%, #fed6e3 100%)",
+    "linear-gradient(to top, #fbc2eb 0%, #a6c1ee 50%, #a6c1ee 100%)",
+    "linear-gradient(to right, #ffecd2 0%, #fcb69f 50%, #fcb69f 100%)",
+    "linear-gradient(to right, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)",
+    "linear-gradient(to right, #f6d365 0%, #fda085 50%, #fda085 100%)",
+    "linear-gradient(to right, #a1c4fd 0%, #c2e9fb 50%, #c2e9fb 100%)",
+    "linear-gradient(to right, #84fab0 0%, #8fd3f4 50%, #8fd3f4 100%)",
+    "linear-gradient(to right, #cfd9df 0%, #e2ebf0 50%, #e2ebf0 100%)",
+    "linear-gradient(to right, #a6c0fe 0%, #f68084 50%, #f68084 100%)",
+    "linear-gradient(to right, #fccb90 0%, #d57eeb 50%, #d57eeb 100%)",
+    "linear-gradient(to right, #e0c3fc 0%, #8ec5fc 50%, #8ec5fc 100%)",
+    "linear-gradient(to right, #f093fb 0%, #f5576c 50%, #f5576c 100%)",
+    "linear-gradient(to right, #4facfe 0%, #00f2fe 50%, #00f2fe 100%)",
+  ];
+
+  const backgroundImage = gradients[randomInt(0, gradients.length)];
+
+  // Design the image and generate an SVG with "satori"
+  const svg = await satori(
+    <div
+      style={{
+        display: "flex",
+        position: "relative",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 30,
+        height: "100%",
+        width: "100%",
+        backgroundImage,
+      }}
+    >
+      <SyneLogo style={{ transform: "scale(1.5)" }} />
+      <p style={{ fontSize: 45, color: "#000" }}>
+        The R Packages Search Engine, Enhanced
+      </p>
+    </div>,
+    await getBaseOptions(requestUrl),
+  );
+
+  return new Resvg(svg).render().asPng();
 }
 
 export async function composeAuthorOGImage(params: {
