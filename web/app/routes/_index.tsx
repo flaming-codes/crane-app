@@ -7,7 +7,7 @@ import { ENV } from "../data/env";
 import { ClientOnly } from "remix-utils/client-only";
 import { PackageService } from "../data/package.service";
 import { AuthorService } from "../data/author.service";
-import { gradients } from "../modules/gradients";
+import { gradients } from "../modules/gradients.server";
 
 export const handle = {
   hasFooter: false,

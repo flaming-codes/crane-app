@@ -1,24 +1,15 @@
-import { LoaderFunctionArgs } from "react-router";
-import { composeAuthorOGImage } from "../modules/meta-og-image.server";
+import { composePressArticleOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { hoursToSeconds } from "date-fns";
-import { AuthorService } from "../data/author.service";
+import { LoaderFunctionArgs } from "react-router";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
-  const { authorName = "" } = params;
 
-  const exists = await AuthorService.checkAuthorExistsByName(authorName);
-  if (!exists) {
-    throw new Response(null, {
-      status: 400,
-      statusText: "Valid author ID is required",
-    });
-  }
-
-  const png = await composeAuthorOGImage({
-    name: authorName,
+  const png = await composePressArticleOGImage({
+    headline: "CRAN/E Newsroom",
     requestUrl: origin,
+    articleType: params.articleType as string,
   });
 
   return new Response(png, {

@@ -1,3 +1,4 @@
+import { IS_DEV } from "../modules/app.server";
 import { slog } from "../modules/observability.server";
 import { articleSlugSchema, PressArticleContentSection } from "./article.shape";
 import { supabase } from "./supabase.server";
@@ -17,6 +18,9 @@ export class ArticleService {
 
     if (articleType) {
       query.eq("type", articleType as Enums<"press_article_type">);
+    }
+    if (!IS_DEV) {
+      query.eq("publish_state", "published");
     }
 
     const { count, error } = await query.maybeSingle();
@@ -42,6 +46,9 @@ export class ArticleService {
 
     if (articleType) {
       query.eq("type", articleType as Enums<"press_article_type">);
+    }
+    if (!IS_DEV) {
+      query.eq("publish_state", "published");
     }
 
     const { data, error } = await query.maybeSingle();
@@ -78,11 +85,13 @@ export class ArticleService {
           "type",
         ].join(","),
       )
-      .eq("publish_state", "published")
       .order("created_at", { ascending: false });
 
     if (articleType) {
       query.eq("type", articleType as Enums<"press_article_type">);
+    }
+    if (!IS_DEV) {
+      query.eq("publish_state", "published");
     }
 
     const { data, error } = await query;
