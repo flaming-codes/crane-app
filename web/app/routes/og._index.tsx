@@ -1,6 +1,6 @@
 import { composeIndexOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
-import { hoursToSeconds } from "date-fns";
+import { minutesToSeconds } from "date-fns";
 import { LoaderFunctionArgs } from "react-router";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       // Tip: You might want to heavily cache the response in production
       "cache-control":
         ENV.NODE_ENV === "production"
-          ? `public, immutable, no-transform, max-age=${hoursToSeconds(1)}`
+          ? `public, immutable, no-transform, max-age=${minutesToSeconds(5)}`
           : "no-cache",
     },
   });
