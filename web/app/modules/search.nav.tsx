@@ -27,6 +27,7 @@ import { ProvidedByLabel } from "./provided-by-label";
 import { RiProgress8Fill } from "@remixicon/react";
 import useSWR from "swr";
 import * as motion from "motion/react-client";
+import { useNavigate } from "react-router";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -136,6 +137,40 @@ export function NavSearch(props: Props) {
     }, []),
   );
 
+  // Only if idle and focused, we listen to Enter to open the first search result
+  const navigate = useNavigate();
+  useKeyboardEvent(
+    "Enter",
+    useCallback(() => {
+      if (
+        !isFocused ||
+        isBusy ||
+        !actionData ||
+        actionData.combined.length === 0
+      ) {
+        return;
+      }
+
+      const firstHit = actionData.combined[0];
+      if ("synopsis" in firstHit) {
+        navigate(`/package/${firstHit.name}`);
+      } else {
+        navigate(`/author/${firstHit.name}`);
+      }
+      // Close the search input.
+      setIsFocused(false);
+      inputRef.current?.blur();
+      // Track the event.
+      sendEvent("search-suggestion-selected", {
+        props: {
+          category: "package",
+          suggestion: firstHit.name,
+        },
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isFocused, isBusy, actionData]),
+  );
+
   return (
     <>
       <SearchInput
@@ -214,7 +249,7 @@ export function SearchResults(
                   {hasAnyHits ? (
                     <div className="space-y-4">
                       <ul className="flex flex-col gap-6">
-                        {combined.map((item) => (
+                        {combined.map((item, i) => (
                           <motion.li
                             key={item.name}
                             initial={{ opacity: 0 }}
@@ -249,6 +284,15 @@ export function SearchResults(
                                 }}
                               />
                             )}
+                            {i === 0 && state === "idle" ? (
+                              <p className="text-gray-dim mt-2 max-w-min animate-pulse text-xs whitespace-nowrap">
+                                Hit{" "}
+                                <kbd className="border-gray-solid mx-1 rounded-md border px-2 py-1 text-[0.6rem]">
+                                  Enter
+                                </kbd>{" "}
+                                to open {item.name}
+                              </p>
+                            ) : null}
                           </motion.li>
                         ))}
                       </ul>
