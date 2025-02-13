@@ -163,7 +163,7 @@ export function NavSearch(props: Props) {
       // Track the event.
       sendEvent("search-suggestion-selected", {
         props: {
-          category: "package",
+          category: "synopsis" in firstHit ? "package" : "author",
           suggestion: firstHit.name,
         },
       });
