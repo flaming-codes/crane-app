@@ -18,7 +18,7 @@ export function ProvidedByLabel(props: {
   } = props;
 
   return (
-    <p className={clsx("text-gray-dim mt-16 text-right text-xs", className)}>
+    <p className={clsx("text-gray-dim text-right text-xs", className)}>
       {headline}{" "}
       <ExternalLink
         href={sourceUrl}
