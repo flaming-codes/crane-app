@@ -28,6 +28,7 @@ import { RiProgress8Fill } from "@remixicon/react";
 import useSWR from "swr";
 import * as motion from "motion/react-client";
 import { useNavigate } from "react-router";
+import { clog } from "./observability";
 
 type Props = {
   searchContentRef: RefObject<HTMLDivElement>;
@@ -170,6 +171,31 @@ export function NavSearch(props: Props) {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused, isBusy, actionData]),
   );
+
+  // Prefetch the first search result when the search results are loaded.
+  useEffect(() => {
+    if (
+      !isFocused ||
+      isBusy ||
+      !actionData ||
+      actionData.combined.length === 0
+    ) {
+      return;
+    }
+
+    const firstHit = actionData.combined[0];
+    // Remix does not have an imperative prefetch API for routes.
+    // Use fetch to warm up the loader cache.
+    try {
+      if ("synopsis" in firstHit) {
+        fetch(`/package/${firstHit.name}`);
+      } else {
+        fetch(`/author/${firstHit.name}`);
+      }
+    } catch (error) {
+      clog.warn("Failed to prefetch the first search result", error);
+    }
+  }, [isFocused, isBusy, actionData]);
 
   return (
     <>
