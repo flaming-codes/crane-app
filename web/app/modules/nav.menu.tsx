@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { clsx } from "clsx";
 import { RiMenuLine } from "@remixicon/react";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu } from "radix-ui";
 
 const menuItems = [
   // Main navigation
@@ -24,10 +24,7 @@ const menuItems = [
 const dropdownContentClasses = clsx(
   "min-w-[220px] rounded-lg p-1.5 shadow-lg duration-200 z-50",
   "bg-white/40 backdrop-blur-md dark:border border-gray-dim dark:bg-black/40",
-  "data-[state=open]:animate-in data-[state=closed]:animate-out",
-  "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-  "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-  "data-[side=bottom]:animate-slideUpAndFade data-[side=top]:animate-slideDownAndFade",
+  "data-[state=open]:animate-fade data-[state=open]:animate-duration-200",
 );
 
 const menuItemClasses = clsx(
