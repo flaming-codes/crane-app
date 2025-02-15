@@ -68,7 +68,11 @@ export function NavMenu() {
                 className="outline-none focus:outline-none"
                 asChild
               >
-                <Link to={item.path} className={menuItemClasses}>
+                <Link
+                  to={item.path}
+                  className={menuItemClasses}
+                  prefetch="intent"
+                >
                   {item.label}
                 </Link>
               </DropdownMenu.Item>
