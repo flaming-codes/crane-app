@@ -40,7 +40,7 @@ export default function PackageLayoutPage() {
           },
         }}
       />
-      <NavigationPage hasHomeLink>
+      <NavigationPage hasMenu>
         <Outlet />
       </NavigationPage>
     </>

@@ -31,8 +31,8 @@ import { useNavigate } from "react-router";
 import { clog } from "./observability";
 
 type Props = {
-  searchContentRef: RefObject<HTMLDivElement>;
-  inputRef: RefObject<HTMLInputElement>;
+  searchContentRef: RefObject<HTMLDivElement | null>;
+  inputRef: RefObject<HTMLInputElement | null>;
   isFocused: boolean;
   setIsFocused: (isFocused: boolean) => void;
   actions?: ReactNode;

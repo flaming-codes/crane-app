@@ -3,7 +3,7 @@ import { RefObject, ReactNode } from "react";
 
 type Props = {
   input?: string;
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLInputElement | null>;
   isFocused: boolean;
   actions?: ReactNode;
   inputClassName?: string;
