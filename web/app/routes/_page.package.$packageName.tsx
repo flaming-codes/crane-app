@@ -443,7 +443,7 @@ function AboveTheFoldSection(
   );
 
   return (
-    <PageContentSection>
+    <PageContentSection fragment="synopsis">
       <div className="space-y-6">
         <Prose html={enhancedDescription} />
       </div>

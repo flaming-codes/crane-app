@@ -97,7 +97,9 @@ export default function PressArticle() {
       />
 
       {hasSections ? (
-        <Anchors>
+        <Anchors
+          anchorIds={article.sections.map((section) => section.fragment)}
+        >
           {article.sections.map((section) => (
             <AnchorLink key={section.fragment} fragment={section.fragment}>
               {section.fragmentHeadline || section.headline}

@@ -36,7 +36,7 @@ export default function PrivacyPage() {
         subline="Learn more about how privacy is handled to CRAN/E"
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchors.map((item) => item.toLowerCase())}>
         {anchors.map((anchor) => (
           <AnchorLink key={anchor} fragment={anchor.toLowerCase()}>
             {anchor}
