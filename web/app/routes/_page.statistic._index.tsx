@@ -27,7 +27,7 @@ export default function StatisticsOverviewPage() {
         ornament={<Tag>Statistics</Tag>}
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchors.map((item) => item.slug)}>
         {anchors.map(({ name, slug }) => (
           <AnchorLink key={slug} fragment={slug}>
             {name}

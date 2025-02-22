@@ -25,7 +25,7 @@ type AuthorRes = Awaited<
   ReturnType<typeof AuthorService.getAuthorDetailsByName>
 >;
 
-const anchors = ["Synopsis", "Packages", "Team"] as const;
+const anchors = ["Synopsis", "Packages", "Team"];
 
 export const meta = mergeMeta(
   (params) => {
@@ -151,7 +151,7 @@ export default function AuthorPage() {
         ornament={<Tag>CRAN Author</Tag>}
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchors.map((item) => item.toLowerCase())}>
         {anchors
           .filter((anchor) => {
             if (anchor === "Team" && !hasOtherAuthors) return false;

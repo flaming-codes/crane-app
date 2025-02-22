@@ -104,7 +104,7 @@ export default function StatisticPackagesPage() {
         ornament={<Tag>Statistics</Tag>}
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchors.map((item) => item.slug)}>
         {anchors.map(({ slug, name }) => (
           <AnchorLink key={slug} fragment={slug}>
             {name}

@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         subline="Learn more about the creators of CRAN/E"
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchors.map((item) => item.toLowerCase())}>
         {anchors.map((anchor) => (
           <AnchorLink key={anchor} fragment={anchor.toLowerCase()}>
             {anchor}
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
                 <img
                   src={`/images/we/${name.toLowerCase()}.webp`}
                   alt={`A portrait of ${name}`}
-                  className="aspect-square w-20 rounded-full hover:animate-wiggle hover:animate-infinite"
+                  className="hover:animate-wiggle hover:animate-infinite aspect-square w-20 rounded-full"
                 />
                 <figcaption>{name}</figcaption>
               </figure>

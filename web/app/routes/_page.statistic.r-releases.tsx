@@ -47,7 +47,7 @@ export default function StatisticsCranPageVisitTrendsPage() {
         ornament={<Tag>Statistics</Tag>}
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchors.map((item) => item.toLowerCase())}>
         {anchors.map((anchor) => (
           <AnchorLink key={anchor} fragment={anchor.toLowerCase()}>
             {anchor}
