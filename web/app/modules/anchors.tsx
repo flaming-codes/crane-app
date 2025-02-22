@@ -4,8 +4,10 @@ import { cva } from "cva";
 import {
   PropsWithChildren,
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useHydrated } from "remix-utils/use-hydrated";
@@ -26,65 +28,93 @@ const twBase = cva({
 const ActiveAnchorContext = createContext<string>("");
 
 /**
- * Hook that scroll-spies on anchorIds by:
- * 1. Determining a “reference line” that shifts from ~30% viewport height to ~70% viewport height
- *    depending on how far down the user is.
- * 2. On each scroll, we find which anchor’s vertical center is closest to that reference line.
+ * Clamps a number to the [min..max] range.
  */
-function useActiveAnchor(anchorIds: string[], initialAnchor: string) {
+function clamp(num: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, num));
+}
+
+/**
+ * Hook that scroll-spies on anchor elements by:
+ * 1. Defining a "reference line" that shifts from ~40% of the viewport height
+ *    up to ~80% as the user scrolls from top to bottom.
+ * 2. On each scroll (throttled via requestAnimationFrame),
+ *    we measure the distance of each anchor's center to the reference line and pick the closest.
+ */
+function useActiveAnchor(anchorIds: string[], initialAnchor: string): string {
   const [activeAnchor, setActiveAnchor] = useState(initialAnchor);
 
+  // We'll store actual DOM elements here so we don't need to query them repeatedly.
+  const anchorElementsRef = useRef<HTMLElement[]>([]);
+
+  // Build a list of anchor elements on mount or when anchorIds changes.
   useEffect(() => {
-    function handleScroll() {
-      const docHeight = document.documentElement.scrollHeight;
-      const winHeight = window.innerHeight;
-      const scrollY = window.scrollY;
+    anchorElementsRef.current = anchorIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+  }, [anchorIds]);
 
-      // The ratio of how far the user has scrolled, from 0 (top) to 1 (bottom).
-      // We clamp just in case (though not strictly necessary).
-      const scrollRatio = Math.max(
-        0,
-        Math.min(1, scrollY / (docHeight - winHeight)),
-      );
+  /**
+   * This function calculates the reference line position, finds the closest anchor,
+   * and updates `activeAnchor` if needed.
+   */
+  const updateActiveAnchor = useCallback(() => {
+    if (!anchorElementsRef.current.length) return;
 
-      /**
-       * We define linePercentage to move from 30% -> 70% of the screen
-       * as the user goes from top to bottom.
-       */
-      const linePercentage = 0.4 + 0.4 * scrollRatio; // [0.4 .. 0.8]
+    const docHeight = document.documentElement.scrollHeight;
+    const winHeight = window.innerHeight;
+    const scrollY = window.scrollY;
 
-      // The Y-position (in viewport coordinates) of our reference line.
-      const lineY = linePercentage * winHeight;
+    // How far along we are in scrolling from 0 (top) to 1 (very bottom).
+    const scrollRatio = clamp(scrollY / (docHeight - winHeight), 0, 1);
 
-      let closestId = "";
-      let smallestDistance = Number.MAX_SAFE_INTEGER;
+    // Define linePercentage to move from ~40% -> ~80% of the viewport
+    // as the user goes from top -> bottom.
+    const linePercentage = 0.4 + 0.4 * scrollRatio; // [0.4..0.8]
+    const lineY = linePercentage * winHeight;
 
-      for (const id of anchorIds) {
-        const el = document.getElementById(id);
-        if (!el) continue;
+    let closestId = "";
+    let smallestDistance = Number.MAX_SAFE_INTEGER;
 
-        const rect = el.getBoundingClientRect();
-        // Approximate center of the element
-        const elementCenter = rect.top + rect.height / 2;
+    // Iterate over each anchor element and check its center position.
+    for (const el of anchorElementsRef.current) {
+      const rect = el.getBoundingClientRect();
+      const elementCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(elementCenter - lineY);
 
-        const distance = Math.abs(elementCenter - lineY);
-        if (distance < smallestDistance) {
-          smallestDistance = distance;
-          closestId = id;
-        }
-      }
-
-      if (closestId && closestId !== activeAnchor) {
-        setActiveAnchor(closestId);
+      if (distance < smallestDistance) {
+        smallestDistance = distance;
+        closestId = el.id;
       }
     }
 
-    // Highlight the correct anchor immediately on mount, in case user is mid-page or there's a hash.
-    handleScroll();
+    if (closestId && closestId !== activeAnchor) {
+      setActiveAnchor(closestId);
+    }
+  }, [activeAnchor]);
+
+  // Use a scroll listener that throttles via requestAnimationFrame.
+  useEffect(() => {
+    let ticking = false;
+
+    function handleScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateActiveAnchor();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    // Update immediately, in case the user is mid-page or there's a hash.
+    updateActiveAnchor();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [anchorIds, activeAnchor]);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [updateActiveAnchor]);
 
   return activeAnchor;
 }
@@ -97,10 +127,10 @@ export function Anchors({ children, className, anchorIds }: AnchorsProps) {
   const location = useLocation();
 
   // Prefer the URL hash if available, otherwise default to the first anchor.
-  // (If none, we’ll have an empty string.)
+  // (If none, default to an empty string.)
   const initialAnchor = location.hash.slice(1) || anchorIds[0] || "";
 
-  // Use our custom scroll-spy hook.
+  // Use our custom scroll-spy hook to track active anchor.
   const activeAnchor = useActiveAnchor(anchorIds, initialAnchor);
 
   return (
@@ -122,8 +152,8 @@ export function AnchorLink(props: PropsWithChildren<{ fragment: string }>) {
   const currentFragment = location.hash.slice(1);
   const isHydrated = useHydrated();
 
-  // If we’re hydrated, we rely on the real-time active anchor from scroll.
-  // If not, fall back to checking the initial location hash.
+  // If we’re hydrated, rely on the real-time active anchor from scroll.
+  // Otherwise fall back to the URL hash.
   const isSelected = isHydrated
     ? activeAnchor
       ? activeAnchor === fragment
