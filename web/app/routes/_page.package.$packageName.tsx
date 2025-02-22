@@ -342,6 +342,8 @@ export default function PackagePage() {
     indexOfTopDownloads,
   } = useLoaderData<LoaderData>();
 
+  const anchorIds = sections.map((item) => item.toLowerCase());
+
   return (
     <>
       <Header
@@ -351,7 +353,7 @@ export default function PackagePage() {
         ornament={<Tag>CRAN Package</Tag>}
       />
 
-      <Anchors>
+      <Anchors anchorIds={anchorIds}>
         {sections.map((item) => (
           <AnchorLink key={item} fragment={item.toLowerCase()}>
             {item}
@@ -464,7 +466,7 @@ function AboveTheFoldSection(
                 to="/statistic/packages/trends"
                 aria-label="Show trending packages"
               >
-                <InfoPill className="bg-linear-to-bl from-gold-6 dark:from-gold-11">
+                <InfoPill className="from-gold-6 dark:from-gold-11 bg-linear-to-bl">
                   <span>{getTrendingLabel()}</span>
                   <RiArrowRightSLine size={16} />
                 </InfoPill>
@@ -477,7 +479,7 @@ function AboveTheFoldSection(
                 to="/statistic/packages/downloads"
                 aria-label="Show top downloaded packages"
               >
-                <InfoPill className="bg-linear-to-bl from-gold-6 dark:from-gold-11">
+                <InfoPill className="from-gold-6 dark:from-gold-11 bg-linear-to-bl">
                   <span>{getTopDownloadsLabel()}</span>
                   <RiArrowRightSLine size={16} />
                 </InfoPill>
@@ -827,7 +829,7 @@ function InsightsPageContentSection(
             </div>
             <ClientOnly
               fallback={
-                <div className="h-200 bg-gray-ui animate-pulse rounded-md" />
+                <div className="bg-gray-ui h-200 animate-pulse rounded-md" />
               }
             >
               {() => (
@@ -885,7 +887,7 @@ function InsightsPageContentSection(
             </div>
             <ClientOnly
               fallback={
-                <div className="h-200 bg-gray-ui animate-pulse rounded-md" />
+                <div className="bg-gray-ui h-200 animate-pulse rounded-md" />
               }
             >
               {() => (
