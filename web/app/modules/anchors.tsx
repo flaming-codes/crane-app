@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { useHydrated } from "remix-utils/use-hydrated";
+import { clamp } from "es-toolkit";
 
 type Props = PropsWithChildren<{
   className?: string;
@@ -26,13 +27,6 @@ const twBase = cva({
 
 // Context to provide our current (active) anchor’s ID.
 const ActiveAnchorContext = createContext<string>("");
-
-/**
- * Clamps a number to the [min..max] range.
- */
-function clamp(num: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, num));
-}
 
 /**
  * Hook that scroll-spies on anchor elements by:
