@@ -94,7 +94,7 @@
     "tailwindcss-bg-patterns": "^0.3.0",
     "tailwindcss-radix-colors": "^2.0.0",
     "typescript": "^5.8.2",
-    "vite": "^6.2.3",
+    "vite": "^6.2.6",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {
