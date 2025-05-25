@@ -22,8 +22,8 @@ const twBase = cva({
   ],
   variants: {
     gradient: {
-      amethyst: "from-iris-9 to-purple-11 dark:from-iris-8 dark:to-violet-10",
-      opal: "from-iris-10 to-sky-10 dark:to-sky-8",
+      amethyst: "from-violet-9 to-iris-8 dark:from-violet-8 dark:to-iris-10",
+      opal: "from-violet-10 to-sky-10 dark:to-sky-8",
     },
   },
 });
