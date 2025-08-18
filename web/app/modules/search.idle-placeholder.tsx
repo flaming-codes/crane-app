@@ -1,6 +1,5 @@
 import { RiGlassesFill, RiCloseFill } from "@remixicon/react";
-import { PackageSemanticSearchHit } from "../data/package.shape";
-import { BaseSearchHit } from "./search.hit";
+import { BaseSearchHit, PackageSemanticSearchHit } from "./search.hit";
 
 export function SearchIdlePlaceholder(props: {
   onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
@@ -13,7 +12,7 @@ export function SearchIdlePlaceholder(props: {
         Ready when you are{" "}
         <RiGlassesFill
           size={32}
-          className="mb-2 ml-2 inline animate-wiggle animate-duration-700 animate-infinite"
+          className="animate-wiggle animate-duration-700 animate-infinite mb-2 ml-2 inline"
         />
       </p>
       <div className="text-gray-dim mt-28 space-y-1 text-center text-sm">

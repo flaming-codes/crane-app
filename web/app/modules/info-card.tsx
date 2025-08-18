@@ -1,6 +1,6 @@
 import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import { cva, VariantProps } from "cva";
-import { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<
   Required<VariantProps<typeof twGradient>> & {
@@ -29,7 +29,7 @@ const twGradient = cva({
   },
 });
 
-const iconMap: Record<string, JSX.Element> = {
+const iconMap: Record<string, React.ReactNode> = {
   external: (
     <RiExternalLinkLine
       className="group-hover/card:animate-wiggle-more group-hover/card:animate-infinite"

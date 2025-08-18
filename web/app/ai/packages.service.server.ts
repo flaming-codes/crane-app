@@ -40,7 +40,7 @@ export class AIPackageService {
       model: google("gemini-1.5-flash"),
       prompt: `${prompt}\n---\n${context}`,
       // Just a safeguard to prevent excessive token usage.
-      maxTokens: 8192,
+      maxOutputTokens: 8192,
       temperature: 0.3,
     });
 
@@ -73,7 +73,7 @@ export class AIPackageService {
       model: google("gemini-1.5-flash"),
       prompt: `${prompt}\n---\n${context}`,
       // Just a safeguard to prevent excessive token usage.
-      maxTokens: 8192,
+      maxOutputTokens: 8192,
     });
 
     const answer = this.sanitizeHTMLPartial(text);
@@ -113,7 +113,7 @@ export class AIPackageService {
     const json = await generateObject({
       model: google("gemini-1.5-flash"),
       prompt: `${prompt}\n---\n${context}`,
-      maxTokens: 8192,
+      maxOutputTokens: 8192,
       schema: z.array(
         z.object({
           platform: z.string(),

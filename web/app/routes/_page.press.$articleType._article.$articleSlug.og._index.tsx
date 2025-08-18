@@ -39,7 +39,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   });
 
   // Respond with the PNG buffer
-  return new Response(png, {
+  return new Response(png as BodyInit, {
     status: 200,
     headers: {
       "Content-Type": "image/png",

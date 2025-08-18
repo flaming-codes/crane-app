@@ -29,7 +29,7 @@ export const mergeMeta = (
     // replace any parent meta with the same name or property with the override
     const overrides = overrideFn(arg);
 
-    for (const override of overrides) {
+    for (const override of overrides || []) {
       const index = mergedMeta.findIndex(
         (meta) =>
           ("name" in meta &&
@@ -49,7 +49,7 @@ export const mergeMeta = (
 
     // append any additional meta
     if (appendFn) {
-      mergedMeta = mergedMeta.concat(appendFn(arg));
+      mergedMeta = mergedMeta.concat(appendFn(arg) || []);
     }
 
     return mergedMeta;

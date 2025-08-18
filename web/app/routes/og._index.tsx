@@ -11,7 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   // Respond with the PNG buffer
-  return new Response(png, {
+  return new Response(png as BodyInit, {
     status: 200,
     headers: {
       // Tell the browser the response is an image

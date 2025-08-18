@@ -12,7 +12,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     articleType: params.articleType as string,
   });
 
-  return new Response(png, {
+  return new Response(png as BodyInit, {
     status: 200,
     headers: {
       "Content-Type": "image/png",
