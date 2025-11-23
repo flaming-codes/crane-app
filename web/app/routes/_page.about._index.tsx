@@ -17,7 +17,50 @@ import { PlausibleChoicePillButton } from "../modules/plausible";
 import { mergeMeta } from "../modules/meta";
 import { LicenseTable } from "../modules/licenses";
 
-const anchors = ["Mission", "Team", "Analytics", "Source Code", "Licenses"];
+const anchors = ["Creators", "Mission", "Analytics", "Source Code", "Licenses"];
+
+const creatorSpotlight = [
+  {
+    name: "Lukas Schönmann",
+    role: "Bioinformatics & R Development",
+    location: "Vienna, Austria",
+    portrait: "/images/we/lukas_v2.webp",
+    tagline:
+      "Specializes in Bioinformatics with a master's from the University of Life Sciences in Vienna, working at the intersection of R research and data analysis.",
+    bio: [
+      "Lukas brings expertise in Bioinformatics, combining his master's degree from the University of Life Sciences in Vienna with practical R development skills.",
+      "He focuses on data analysis and research applications, bridging the gap between biological data and computational insights through R programming.",
+    ],
+    focusAreas: ["Bioinformatics", "R programming", "Data analysis"],
+    links: [
+      {
+        href: "https://www.linkedin.com/in/lukas-schönmann-70781a215/",
+        copy: "Connect with Lukas",
+        icon: <RiLinkedinFill size={16} />,
+      },
+    ],
+  },
+  {
+    name: "Tom Schönmann",
+    role: "Informatics & TypeScript Development",
+    location: "Vienna, Austria",
+    portrait: "/images/we/tom_v2.webp",
+    tagline:
+      "Works in informatics with a focus on TypeScript development, turning raw CRAN data into lightning-fast search experiences.",
+    bio: [
+      "Tom specializes in informatics and TypeScript development, architecting the infrastructure that indexes and hydrates tens of thousands of R packages.",
+      "He focuses on technical implementation and performance optimization, ensuring the search functionality works seamlessly across the platform.",
+    ],
+    focusAreas: ["Informatics", "TypeScript", "Search architecture"],
+    links: [
+      {
+        href: "https://www.linkedin.com/in/tom-schönmann-487b97164/",
+        copy: "Connect with Tom",
+        icon: <RiLinkedinFill size={16} />,
+      },
+    ],
+  },
+];
 
 export const meta = mergeMeta(() => {
   return [
@@ -44,61 +87,116 @@ export default function PrivacyPage() {
       </Anchors>
 
       <PageContent>
-        <PageContentSection headline="Mission" fragment="mission">
-          <p>
-            CRAN/E is a modern PWA (Progressive Web App) that serves as a search
-            engine and information display for packages hosted on CRAN. CRAN/E
-            means The Comprehensive R Archive Network, Enhanced. None of our
-            provided services host any of the packages. The only mission of this
-            application is to make R-packages hosted on CRAN easier to find and
-            better to read. CRAN/E services only store metadata associated to
-            the packages for the purpose of searching and displaying
-            information.
-          </p>
+        <PageContentSection
+          headline="Mission"
+          fragment="mission"
+          className="gap-10"
+        >
+          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="text-gray-normal space-y-6 text-lg leading-relaxed">
+              <p>
+                CRAN/E is a modern PWA (Progressive Web App) that serves as a
+                search engine and information display for the incredible
+                catalogue of packages hosted on CRAN. CRAN/E means The
+                Comprehensive R Archive Network, Enhanced.
+              </p>
+              <p>
+                None of our provided services host any of the packages. Our
+                mission is to make R-packages easier to find and better to read.
+                We only store metadata associated to the packages for the
+                purpose of searching and displaying information.
+              </p>
+            </div>
+          </div>
         </PageContentSection>
 
         <Separator />
 
-        <PageContentSection headline="Team" fragment="team">
-          <div className="flex gap-6 md:justify-center md:gap-16">
-            {["Lukas", "Tom"].map((name) => (
-              <figure
-                key={name}
-                className="text-gray-dim space-y-2 text-center text-sm"
+        <PageContentSection
+          headline="Creators"
+          fragment="creators"
+          subline="Portraits, bios, and the craft that keeps CRAN/E alive."
+          className="gap-14"
+        >
+          <div className="grid gap-10 xl:grid-cols-2">
+            {creatorSpotlight.map((creator) => (
+              <article
+                key={creator.name}
+                className="group border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 overflow-hidden rounded-3xl border bg-white/80 shadow-[0_35px_120px_-60px_rgba(15,23,42,0.9)] backdrop-blur-xl"
               >
-                <img
-                  src={`/images/we/${name.toLowerCase()}.webp`}
-                  alt={`A portrait of ${name}`}
-                  className="hover:animate-wiggle hover:animate-infinite aspect-square w-20 rounded-full"
-                />
-                <figcaption>{name}</figcaption>
-              </figure>
+                <div className="relative h-[360px] w-full overflow-hidden lg:h-[420px]">
+                  <img
+                    src={creator.portrait}
+                    alt={`Portrait of ${creator.name}`}
+                    className="size-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <div className="from-gray-12/80 via-gray-12/20 dark:from-gray-12/80 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent" />
+                  <div className="dark:bg-gray-12/60 border-gray-6/40 dark:border-gray-1/40 absolute inset-x-0 bottom-0 flex flex-col gap-1 border-t bg-white/5 px-8 pt-5 pb-5 text-white backdrop-blur-md">
+                    <p className="text-2xl leading-tight font-semibold">
+                      {creator.name}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-6 p-8">
+                  <p className="text-gray-normal text-lg leading-relaxed">
+                    {creator.tagline}
+                  </p>
+                  <div className="text-gray-normal space-y-4 text-base leading-relaxed">
+                    {creator.bio.map((paragraph, index) => (
+                      <p key={`${creator.name}-bio-${index}`}>{paragraph}</p>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {creator.focusAreas.map((focus) => (
+                      <span
+                        key={`${creator.name}-${focus}`}
+                        className="border-gray-6/40 text-gray-dim dark:border-gray-1/40 dark:bg-gray-12/20 dark:text-gray-3 rounded-full border bg-white/60 px-4 py-1 text-xs tracking-[0.2em] uppercase"
+                      >
+                        {focus}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {creator.links.map((link) => (
+                      <ExternalLink key={link.href} href={link.href}>
+                        <InfoPill variant="sand" label={link.icon}>
+                          {link.copy}
+                          <RiExternalLinkLine
+                            size={16}
+                            className="text-gray-dim ml-2"
+                          />
+                        </InfoPill>
+                      </ExternalLink>
+                    ))}
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
-          <p>
-            Our names are Lukas and Tom and we&apos;re two developers from
-            Austria. Our passion for coding (the one in R, the other in
-            TypeScript) led us to the discovery of the original CRAN-site.
-            Seeing the desperate visual state the site was in, we decided to
-            give it a facelift. We&apos;re not affiliated with CRAN or RStudio
-            in any way. CRAN/E is the culmination of our efforts to make the
-            site more modern and user-friendly and we hope you enjoy it as much
-            as we do! Our main focus was ease of use and accessibility,
-            especially for lightning fast searches.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <ExternalLink href="https://www.linkedin.com/in/lukas-schönmann-70781a215/">
-              <InfoPill variant="slate" label={<RiLinkedinFill size={16} />}>
-                Lukas&apos; LinkedIn
-                <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
-              </InfoPill>
-            </ExternalLink>
-            <ExternalLink href="https://www.linkedin.com/in/tom-schönmann-487b97164/">
-              <InfoPill variant="slate" label={<RiLinkedinFill size={16} />}>
-                Tom&apos;s LinkedIn
-                <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
-              </InfoPill>
-            </ExternalLink>
+          <div className="border-gray-6/30 from-sand-3/50 via-amber-2/40 text-gray-normal dark:border-gray-1/20 dark:from-sand-9/40 dark:via-amber-9/20 dark:to-gray-12/40 dark:text-gray-2 space-y-4 rounded-2xl border bg-linear-to-br to-white/60 p-8 text-base leading-relaxed shadow-[0_25px_90px_-60px_rgba(15,23,42,0.75)]">
+            <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
+              Our story
+            </p>
+            <p className="text-gray-normal mt-1 text-2xl font-semibold">
+              Two developers from Austria passionate about coding.
+            </p>
+            <p>
+              Our names are Lukas and Tom and we&apos;re two developers from
+              Austria. Our passion for coding (the one in R, the other in
+              TypeScript) led us to the discovery of the original CRAN-site.
+            </p>
+            <p>
+              Seeing the desperate visual state the site was in, we decided to
+              give it a facelift. We&apos;re not affiliated with CRAN or RStudio
+              in any way. CRAN/E is the culmination of our efforts to make the
+              site more modern and user-friendly and we hope you enjoy it as
+              much as we do!
+            </p>
+            <p>
+              Our main focus was ease of use and accessibility, especially for
+              lightning fast searches.
+            </p>
           </div>
         </PageContentSection>
 
