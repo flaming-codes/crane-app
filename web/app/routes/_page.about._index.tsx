@@ -107,19 +107,6 @@ export default function PrivacyPage() {
                 purpose of searching and displaying information.
               </p>
             </div>
-            <div className="border-gray-6/20 from-sand-3/40 via-sand-1/60 text-gray-normal dark:border-gray-1/20 dark:from-sand-10/20 dark:via-sand-9/10 dark:to-gray-12/30 dark:text-gray-2 rounded-4xl border bg-linear-to-br to-white/60 p-6 text-base leading-relaxed shadow-[0_20px_80px_-60px_rgba(15,23,42,0.7)]">
-              <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
-                Experience principles
-              </p>
-              <ul className="mt-4 list-disc space-y-3 pl-5">
-                <li>Lead with human-scale portraits before charts or stats.</li>
-                <li>Pair every bio with tangible contributions to CRAN/E.</li>
-                <li>
-                  Use generous whitespace and gradients so dense data still
-                  feels breathable.
-                </li>
-              </ul>
-            </div>
           </div>
         </PageContentSection>
 
@@ -135,7 +122,7 @@ export default function PrivacyPage() {
             {creatorSpotlight.map((creator) => (
               <article
                 key={creator.name}
-                className="group border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 overflow-hidden rounded-4xl border bg-white/80 shadow-[0_35px_120px_-60px_rgba(15,23,42,0.9)] backdrop-blur-xl"
+                className="group border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 overflow-hidden rounded-3xl border bg-white/80 shadow-[0_35px_120px_-60px_rgba(15,23,42,0.9)] backdrop-blur-xl"
               >
                 <div className="relative h-[360px] w-full overflow-hidden lg:h-[420px]">
                   <img
@@ -144,14 +131,10 @@ export default function PrivacyPage() {
                     className="size-full object-cover transition duration-700 group-hover:scale-105"
                   />
                   <div className="from-gray-12/80 via-gray-12/20 dark:from-gray-12/80 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent" />
-                  <div className="absolute inset-x-8 bottom-8 flex flex-col gap-1 text-white">
-                    <span className="text-xs font-semibold tracking-[0.35em] text-white/70 uppercase">
-                      {creator.role}
-                    </span>
-                    <p className="text-3xl leading-tight font-semibold">
+                  <div className="dark:bg-gray-12/60 border-gray-6/40 dark:border-gray-1/40 absolute inset-x-0 bottom-0 flex flex-col gap-1 border-t bg-white/5 px-8 pt-5 pb-5 text-white backdrop-blur-md">
+                    <p className="text-2xl leading-tight font-semibold">
                       {creator.name}
                     </p>
-                    <p className="text-sm text-white/70">{creator.location}</p>
                   </div>
                 </div>
 
@@ -191,11 +174,11 @@ export default function PrivacyPage() {
               </article>
             ))}
           </div>
-          <div className="border-gray-6/30 from-sand-3/50 via-amber-2/40 text-gray-normal dark:border-gray-1/20 dark:from-sand-9/40 dark:via-amber-9/20 dark:to-gray-12/40 dark:text-gray-2 rounded-4xl border bg-linear-to-br to-white/60 p-8 text-base leading-relaxed shadow-[0_25px_90px_-60px_rgba(15,23,42,0.75)]">
+          <div className="border-gray-6/30 from-sand-3/50 via-amber-2/40 text-gray-normal dark:border-gray-1/20 dark:from-sand-9/40 dark:via-amber-9/20 dark:to-gray-12/40 dark:text-gray-2 space-y-4 rounded-2xl border bg-linear-to-br to-white/60 p-8 text-base leading-relaxed shadow-[0_25px_90px_-60px_rgba(15,23,42,0.75)]">
             <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
               Our story
             </p>
-            <p className="text-gray-normal text-2xl font-semibold">
+            <p className="text-gray-normal mt-1 text-2xl font-semibold">
               Two developers from Austria passionate about coding.
             </p>
             <p>
