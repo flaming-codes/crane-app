@@ -22,16 +22,16 @@ const anchors = ["Creators", "Mission", "Analytics", "Source Code", "Licenses"];
 const creatorSpotlight = [
   {
     name: "Lukas Schönmann",
-    role: "Product & UX",
-    location: "Graz ↔ Vienna, Austria",
+    role: "Bioinformatics & R Development",
+    location: "Vienna, Austria",
     portrait: "/images/we/lukas_v2.webp",
     tagline:
-      "Designs tactile search experiences and keeps CRAN/E feeling editorial instead of utilitarian.",
+      "Specializes in Bioinformatics with a master's from the University of Life Sciences in Vienna, working at the intersection of R research and data analysis.",
     bio: [
-      "Lukas approaches every release like an editorial spread, orchestrating typography, rhythm, and motion so that package metadata feels curated and calm.",
-      "He bridges R research with visual storytelling, prototyping interactions directly in R before translating them into deliberate UI systems.",
+      "Lukas brings expertise in Bioinformatics, combining his master's degree from the University of Life Sciences in Vienna with practical R development skills.",
+      "He focuses on data analysis and research applications, bridging the gap between biological data and computational insights through R programming.",
     ],
-    focusAreas: ["Product direction", "UX research", "Visual systems"],
+    focusAreas: ["Bioinformatics", "R programming", "Data analysis"],
     links: [
       {
         href: "https://www.linkedin.com/in/lukas-schönmann-70781a215/",
@@ -42,16 +42,16 @@ const creatorSpotlight = [
   },
   {
     name: "Tom Schönmann",
-    role: "Engineering & DX",
+    role: "Informatics & TypeScript Development",
     location: "Vienna, Austria",
     portrait: "/images/we/tom_v2.webp",
     tagline:
-      "Turns raw CRAN data into a lightning-fast PWA and keeps every animation honest with the underlying code.",
+      "Works in informatics with a focus on TypeScript development, turning raw CRAN data into lightning-fast search experiences.",
     bio: [
-      "Tom architects the infrastructure that indexes and hydrates tens of thousands of R packages so searches return results almost instantly.",
-      "He obsesses over developer experience, resilient edge deployments, and ensuring the interfaces we imagine are actually shippable.",
+      "Tom specializes in informatics and TypeScript development, architecting the infrastructure that indexes and hydrates tens of thousands of R packages.",
+      "He focuses on technical implementation and performance optimization, ensuring the search functionality works seamlessly across the platform.",
     ],
-    focusAreas: ["Edge performance", "TypeScript DX", "Search architecture"],
+    focusAreas: ["Informatics", "TypeScript", "Search architecture"],
     links: [
       {
         href: "https://www.linkedin.com/in/tom-schönmann-487b97164/",
@@ -193,20 +193,26 @@ export default function PrivacyPage() {
           </div>
           <div className="border-gray-6/30 from-sand-3/50 via-amber-2/40 text-gray-normal dark:border-gray-1/20 dark:from-sand-9/40 dark:via-amber-9/20 dark:to-gray-12/40 dark:text-gray-2 rounded-4xl border bg-linear-to-br to-white/60 p-8 text-base leading-relaxed shadow-[0_25px_90px_-60px_rgba(15,23,42,0.75)]">
             <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
-              Design notes
+              Our story
             </p>
             <p className="text-gray-normal text-2xl font-semibold">
-              Portraits first, pixels second.
+              Two developers from Austria passionate about coding.
             </p>
             <p>
-              CRAN/E is pragmatic by nature, but this page is our breathing room
-              to slow down and tell a story about the humans behind the search
-              box.
+              Our names are Lukas and Tom and we&apos;re two developers from
+              Austria. Our passion for coding (the one in R, the other in
+              TypeScript) led us to the discovery of the original CRAN-site.
             </p>
             <p>
-              Large-format photography, oversized typography, and deliberate
-              white space let visitors meet us before they dive back into
-              tens-of-thousands of package docs.
+              Seeing the desperate visual state the site was in, we decided to
+              give it a facelift. We&apos;re not affiliated with CRAN or RStudio
+              in any way. CRAN/E is the culmination of our efforts to make the
+              site more modern and user-friendly and we hope you enjoy it as
+              much as we do!
+            </p>
+            <p>
+              Our main focus was ease of use and accessibility, especially for
+              lightning fast searches.
             </p>
           </div>
         </PageContentSection>
