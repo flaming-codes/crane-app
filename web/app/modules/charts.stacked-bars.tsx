@@ -1,4 +1,4 @@
-import { Fragment } from "react/jsx-runtime";
+import { Fragment } from "react";
 
 type DataPoint = {
   label: string;
@@ -20,7 +20,7 @@ export function StackedBarsChart(props: Props) {
           <div className="text-sm">{label}</div>
           <div className="flex">
             <div
-              className="rounded-md bg-iris-12"
+              className="bg-iris-12 rounded-md"
               style={{ flex: value / total }}
             />
           </div>
