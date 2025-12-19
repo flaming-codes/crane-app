@@ -3,6 +3,7 @@ import { z } from "zod";
 import { AuthorService } from "../data/author.service";
 import { PackageService } from "../data/package.service";
 import { SearchService } from "../data/search.service";
+import { BASE_URL } from "../modules/app";
 
 // Create a singleton instance
 let mcpServer: McpServer | null = null;
@@ -30,11 +31,19 @@ export function getMcpServer() {
     },
     async ({ query, limit }) => {
       const results = await PackageService.searchPackages(query, { limit });
+      const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
+      const withLinks = {
+        ...results,
+        combined: (results.combined ?? []).filter(nonNull).map((item) => ({
+          ...item,
+          url: `${BASE_URL}/package/${encodeURIComponent(item.name)}`,
+        })),
+      };
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(results, null, 2),
+            text: JSON.stringify(withLinks, null, 2),
           },
         ],
       };
@@ -56,11 +65,15 @@ export function getMcpServer() {
     },
     async ({ query, limit }) => {
       const results = await AuthorService.searchAuthors(query, { limit });
+      const withLinks = results.map((item) => ({
+        ...item,
+        url: `${BASE_URL}/author/${encodeURIComponent(item.name)}`,
+      }));
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(results, null, 2),
+            text: JSON.stringify(withLinks, null, 2),
           },
         ],
       };

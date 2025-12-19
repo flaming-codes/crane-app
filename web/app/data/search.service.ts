@@ -1,5 +1,6 @@
 import { AuthorService } from "./author.service";
 import { PackageService } from "./package.service";
+import { BASE_URL } from "../modules/app";
 import { slog } from "../modules/observability.server";
 
 export class SearchService {
@@ -44,13 +45,40 @@ export class SearchService {
       return 0;
     });
 
+    const withPackageUrl = (name: string) =>
+      `${BASE_URL}/package/${encodeURIComponent(name)}`;
+    const withAuthorUrl = (name: string) =>
+      `${BASE_URL}/author/${encodeURIComponent(name)}`;
+
+    const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
+
     return {
-      combined,
+      combined: combined.filter(nonNull).map((item) => {
+        if ("synopsis" in item) {
+          return {
+            ...item,
+            url: withPackageUrl(item.name),
+          };
+        }
+        return {
+          ...item,
+          url: withAuthorUrl(item.name),
+        };
+      }),
       packages: {
-        hits: packageHits,
+        hits: {
+          ...packageHits,
+          combined: packageHits.combined.filter(nonNull).map((item) => ({
+            ...item,
+            url: withPackageUrl(item.name),
+          })),
+        },
       },
       authors: {
-        hits: authorHits,
+        hits: authorHits.filter(nonNull).map((item) => ({
+          ...item,
+          url: withAuthorUrl(item.name),
+        })),
       },
     };
   }
