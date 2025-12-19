@@ -15,7 +15,7 @@
     "typecheck": "react-router typegen && tsc",
     "format": "prettier --write .",
     "update.all": "npx ncu -i --format group",
-    "licenses.build": "license-report --output=json > ./app/licenses.json",
+    "licenses.build": "npx --yes license-report --output=json > ./app/licenses.json",
     "db.types": "npx supabase gen types typescript --local > app/data/db.types.generated.ts"
   },
   "dependencies": {
