@@ -25,6 +25,14 @@ Minimal notes to integrate the deployed MCP server.
   - Action: Combined packages + authors via `SearchService.searchUniversal`.
   - Response: each item has `url` to the package/author page.
 
+## Resources
+- `cran://package/{name}`
+  - Description: Full details for a CRAN package.
+  - Data: Includes metadata, authors, maintainer, dependency relations, and download statistics (last month/year).
+- `cran://author/{name}`
+  - Description: Full details for a package author.
+  - Data: Includes author metadata and a list of all authored packages with roles.
+
 Responses are returned as MCP tool results with `content: [{ type: "text", text: JSON.stringify(result, null, 2) }]`.
 
 ## Client Connect (example)
