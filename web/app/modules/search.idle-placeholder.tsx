@@ -1,8 +1,8 @@
 import { RiGlassesFill, RiCloseFill } from "@remixicon/react";
-import { BaseSearchHit, PackageSemanticSearchHit } from "./search.hit";
+import type { CombinedSearchHit } from "../data/search.service";
 
 export function SearchIdlePlaceholder(props: {
-  onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
+  onSelect: (item?: CombinedSearchHit) => void;
 }) {
   const { onSelect } = props;
 

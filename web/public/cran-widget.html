@@ -280,51 +280,22 @@
           return;
         }
 
-        const { searchType, combined, packages, authors, query } = structured;
+        const { searchType, combined, query } = structured;
 
         if (query) {
           queryInput.value = query;
         }
 
         const showCombined = combined && combined.length > 0;
-        const showPackages = packages?.hits?.combined?.length;
-        const showAuthors = authors?.hits?.length;
 
-        if (searchType === "universal" && showCombined) {
+        if (showCombined) {
           combined.forEach((item) =>
-            primary.appendChild(renderCard(item, "Match")),
-          );
-        } else if (searchType === "packages" && showPackages) {
-          packages.hits.combined.forEach((item) =>
-            primary.appendChild(renderCard(item, "Package")),
-          );
-        } else if (searchType === "authors" && showAuthors) {
-          authors.hits.forEach((item) =>
-            primary.appendChild(renderCard(item, "Author")),
+            primary.appendChild(
+              renderCard(item, item.type === "package" ? "Package" : "Author"),
+            ),
           );
         } else {
           renderEmpty(primary, "No matches for this search.");
-        }
-
-        // Secondary section: always show per-type buckets when available
-        if (showPackages && searchType === "universal") {
-          const title = document.createElement("div");
-          title.className = "badge";
-          title.textContent = "Packages";
-          secondary.appendChild(title);
-          packages.hits.combined.forEach((item) =>
-            secondary.appendChild(renderCard(item, "Package")),
-          );
-        }
-
-        if (showAuthors && searchType === "universal") {
-          const title = document.createElement("div");
-          title.className = "badge";
-          title.textContent = "Authors";
-          secondary.appendChild(title);
-          authors.hits.forEach((item) =>
-            secondary.appendChild(renderCard(item, "Author")),
-          );
         }
       };
 

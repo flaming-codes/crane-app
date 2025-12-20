@@ -189,14 +189,13 @@ export function getMcpServer() {
         combined: (results.combined ?? []).filter(nonNull).map((item) => ({
           ...item,
           url: `${BASE_URL}/package/${encodeURIComponent(item.name)}`,
+          type: "package" as const,
         })),
       };
       const structured = {
         searchType: "packages" as const,
         query,
         combined: withLinks.combined,
-        packages: { hits: withLinks },
-        authors: { hits: [] },
       };
       return makeToolResponse(structured, withLinks);
     },
@@ -229,13 +228,12 @@ export function getMcpServer() {
       const withLinks = results.map((item) => ({
         ...item,
         url: `${BASE_URL}/author/${encodeURIComponent(item.name)}`,
+        type: "author" as const,
       }));
       const structured = {
         searchType: "authors" as const,
         query,
         combined: withLinks,
-        packages: { hits: { combined: [] } },
-        authors: { hits: withLinks },
       };
       return makeToolResponse(structured, withLinks);
     },

@@ -1,6 +1,6 @@
 import { packageIdSchema, packageNameSchema } from "./package.shape";
 import { SitemapItem } from "./types";
-import { Tables } from "./supabase.types.generated";
+import { Database, Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
@@ -27,11 +27,25 @@ type CacheKey = "sitemap-items" | "count-packages";
 
 type CacheValue = SitemapItem[] | number;
 
+type PackageSearchHit =
+  | {
+      name: string;
+      synopsis: string | null;
+    }
+  | {
+      name: string;
+      synopsis: string | null;
+      sources: Array<
+        [
+          /* source name */ string,
+          /* source data */
+          Database["public"]["Functions"]["match_package_embeddings"]["Returns"],
+        ]
+      >;
+    };
+
 type SearchResult = {
-  combined: Array<{
-    name: string;
-    synopsis: string;
-  } | null>;
+  combined: Array<PackageSearchHit | null>;
   isSemanticPreferred: boolean;
 };
 

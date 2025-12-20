@@ -1,6 +1,4 @@
 import { Link } from "react-router";
-import { Database, Enums } from "../data/supabase.types.generated";
-import { Tag } from "./tag";
 import { PropsWithChildren, ReactNode } from "react";
 import {
   RiArrowRightUpLine,
@@ -8,39 +6,27 @@ import {
   RiCodeSSlashFill,
   RiMarkdownFill,
 } from "@remixicon/react";
-
-export type BaseSearchHit = { id?: number; name: string; synopsis?: string };
-
-export type PackageSemanticSearchHit = BaseSearchHit & {
-  sources: Array<
-    [
-      /* source name */ string,
-      /* source data */
-      Database["public"]["Functions"]["match_package_embeddings"]["Returns"],
-    ]
-  >;
-};
+import type { CombinedSearchHit } from "../data/search.service";
+import { Enums } from "../data/supabase.types.generated";
+import { Tag } from "./tag";
 
 export type SearchHitsResults = {
-  combined: Array<BaseSearchHit | PackageSemanticSearchHit>;
-  authors: { hits: BaseSearchHit[] };
-  packages: {
-    hits: {
-      lexical: BaseSearchHit[];
-      semantic: PackageSemanticSearchHit[];
-      isSemanticPreferred: boolean;
-    };
-  };
+  combined: CombinedSearchHit[];
+  searchType?: "universal" | "packages" | "authors";
+  query?: string;
 };
 
+type PackageHitItem = Extract<CombinedSearchHit, { type: "package" }>;
+type AuthorHitItem = Extract<CombinedSearchHit, { type: "author" }>;
+
 export function PackageHit(props: {
-  item: BaseSearchHit | PackageSemanticSearchHit;
+  item: PackageHitItem;
   onClick: () => void;
 }) {
   const { item, onClick } = props;
   const { name, synopsis } = item;
 
-  const sources = "sources" in item ? item.sources : [];
+  const sources = item.sources ?? [];
   const hasSources = sources.length > 0;
 
   const originLabel =
@@ -126,7 +112,7 @@ function SourceMimeIcon({
   }
 }
 
-export function AuthorHit(props: { item: BaseSearchHit; onClick: () => void }) {
+export function AuthorHit(props: { item: AuthorHitItem; onClick: () => void }) {
   const { item, onClick } = props;
   const { name } = item;
 

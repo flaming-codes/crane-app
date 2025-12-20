@@ -15,13 +15,7 @@ import { useKeyboardEvent, useKeyboardShortcut } from "./app";
 import { Separator } from "./separator";
 import { sendEvent } from "./plausible";
 import { SearchIdlePlaceholder } from "./search.idle-placeholder";
-import {
-  PackageSemanticSearchHit,
-  BaseSearchHit,
-  SearchHitsResults,
-  PackageHit,
-  AuthorHit,
-} from "./search.hit";
+import { SearchHitsResults, PackageHit, AuthorHit } from "./search.hit";
 import { SearchInput } from "./search.input";
 import { ProvidedByLabel } from "./provided-by-label";
 import { RiProgress8Fill } from "@remixicon/react";
@@ -41,8 +35,6 @@ type Props = {
 
 const fallbackSearchResults: SearchHitsResults = {
   combined: [],
-  authors: { hits: [] },
-  packages: { hits: { lexical: [], semantic: [], isSemanticPreferred: false } },
 };
 
 const DEBOUNCE_DELAY_MS = 100;
@@ -153,7 +145,7 @@ export function NavSearch(props: Props) {
       }
 
       const firstHit = actionData.combined[0];
-      if ("synopsis" in firstHit) {
+      if (firstHit.type === "package") {
         navigate(`/package/${firstHit.name}`);
       } else {
         navigate(`/author/${firstHit.name}`);
@@ -164,7 +156,7 @@ export function NavSearch(props: Props) {
       // Track the event.
       sendEvent("search-suggestion-selected", {
         props: {
-          category: "synopsis" in firstHit ? "package" : "author",
+          category: firstHit.type,
           suggestion: firstHit.name,
         },
       });
@@ -187,7 +179,7 @@ export function NavSearch(props: Props) {
     // Remix does not have an imperative prefetch API for routes.
     // Use fetch to warm up the loader cache.
     try {
-      if ("synopsis" in firstHit) {
+      if (firstHit.type === "package") {
         fetch(`/package/${firstHit.name}`);
       } else {
         fetch(`/author/${firstHit.name}`);
@@ -240,7 +232,7 @@ export function SearchResults(
     data: SearchHitsResults;
     isDataExpected?: boolean;
     isBusy?: boolean;
-    onSelect: (item?: BaseSearchHit | PackageSemanticSearchHit) => void;
+    onSelect: (item?: SearchHitsResults["combined"][number]) => void;
   }>,
 ) {
   const { state, data, isDataExpected, isBusy, onSelect, children } = props;
@@ -283,14 +275,14 @@ export function SearchResults(
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5, ease: "easeInOut" }}
                           >
-                            {"synopsis" in item ? (
+                            {item.type === "package" ? (
                               <PackageHit
                                 item={item}
                                 onClick={() => {
                                   onSelect(item);
                                   sendEvent("search-suggestion-selected", {
                                     props: {
-                                      category: "package",
+                                      category: item.type,
                                       suggestion: item.name,
                                     },
                                   });
@@ -303,7 +295,7 @@ export function SearchResults(
                                   onSelect(item);
                                   sendEvent("search-suggestion-selected", {
                                     props: {
-                                      category: "author",
+                                      category: item.type,
                                       suggestion: item.name,
                                     },
                                   });
