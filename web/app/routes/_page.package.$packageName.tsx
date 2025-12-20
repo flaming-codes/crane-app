@@ -7,7 +7,7 @@ import { data, type LoaderFunction } from "react-router";
 import { Prose } from "../modules/prose";
 import { Separator } from "../modules/separator";
 import { PageContent } from "../modules/page-content";
-import { format, formatRelative, minutesToSeconds, subDays } from "date-fns";
+import { format, minutesToSeconds } from "date-fns";
 import { ExternalLink } from "../modules/external-link";
 import {
   RiArrowRightSLine,
@@ -31,7 +31,7 @@ import {
   mergeMeta,
 } from "../modules/meta";
 import { BASE_URL } from "../modules/app";
-import { groupBy, uniq } from "es-toolkit";
+import { uniq } from "es-toolkit";
 import { PackageInsightService } from "../data/package-insight.service.server";
 import { slog } from "../modules/observability.server";
 import { DataProvidedByCRANLabel } from "../modules/provided-by-label";
@@ -41,7 +41,6 @@ import { ClientOnly } from "remix-utils/client-only";
 import { LineGraph } from "../modules/charts.line";
 import { getFunnyPeakDownloadComment } from "../modules/package.insights.server";
 import { IS_DEV } from "../modules/app.server";
-import { AuthorService } from "../data/author.service";
 import { Tables } from "../data/supabase.types.generated";
 import { PackageDependency, PackageRelationshipType } from "../data/types";
 
@@ -158,8 +157,6 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const now = new Date();
-
   const loaderData: Partial<LoaderData> = {
     item: undefined,
     relations: {},
@@ -181,68 +178,48 @@ export const loader: LoaderFunction = async ({ params }) => {
   };
 
   try {
-    const _item = await PackageService.getPackageByName(packageName);
-    if (!_item) {
+    // Use shared enrichment method
+    const enrichedData =
+      await PackageService.getEnrichedPackageByName(packageName);
+    if (!enrichedData) {
       throw new Response(null, {
         status: 404,
         statusText: `Package '${packageName}' not found`,
       });
     }
 
-    loaderData.item = _item;
+    const {
+      pkg,
+      groupedRelations,
+      authorsList,
+      maintainer,
+      dailyDownloads: _dailyDownloads,
+      yearlyDailyDownloads: _yearlyDailyDownloads,
+      trendingPackages: _trendingPackages,
+      totalMonthDownloads,
+      totalYearDownloads,
+      lastRelease,
+    } = enrichedData;
 
-    // Fetch additional data.
-    const [
-      _relations,
-      _authors,
-      _dailyDownloads,
-      _yearlyDailyDownloads,
-      _trendingPackages,
-      _topDownloads,
-    ] = await Promise.all([
-      PackageService.getPackageRelationsByPackageId(_item.id),
-      AuthorService.getAuthorsByPackageId(_item.id),
-      PackageInsightService.getDailyDownloadsForPackage(
-        packageName,
-        "last-month",
-      ),
-      PackageInsightService.getDailyDownloadsForPackage(
-        packageName,
-        `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
-      ),
-      PackageInsightService.getTrendingPackages(),
-      PackageInsightService.getTopDownloadedPackages("last-day", 50),
-    ]);
+    // Fetch page-specific data (top downloads)
+    const _topDownloads = await PackageInsightService.getTopDownloadedPackages(
+      "last-day",
+      50,
+    );
 
-    // Assign the fetched data.
-    loaderData.relations = groupBy(
-      _relations || [],
-      (item) => item.relationship_type,
-    ) as unknown as LoaderData["relations"];
-
-    loaderData.authors = (_authors || [])
-      .map(({ author, roles }) => ({
-        ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
-        roles: roles || [],
-      }))
-      .filter((a) => !a.roles.includes("mnt"));
-
-    loaderData.maintainer = (_authors || [])
-      .map(({ author, roles }) => ({
-        ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
-        roles: roles || [],
-      }))
-      .filter((a) => a.roles.includes("mnt"))
-      .at(0);
-
+    // Assign the core enriched data
+    loaderData.item = pkg;
+    loaderData.relations =
+      groupedRelations as unknown as LoaderData["relations"];
+    loaderData.authors = authorsList;
+    loaderData.maintainer = maintainer;
     loaderData.dailyDownloads = _dailyDownloads;
-
     loaderData.yearlyDailyDownloads = _yearlyDailyDownloads;
+    loaderData.totalMonthDownloads = totalMonthDownloads;
+    loaderData.totalYearDownloads = totalYearDownloads;
+    loaderData.lastRelease = lastRelease;
 
-    loaderData.totalMonthDownloads = _dailyDownloads
-      .at(0)
-      ?.downloads?.reduce((acc, curr) => acc + curr.downloads, 0);
-
+    // Page-specific calculations
     loaderData.yesterdayDownloads = _dailyDownloads.at(0)?.downloads?.at(-1);
 
     const maxYearlyDownloads = [
@@ -253,26 +230,6 @@ export const loader: LoaderFunction = async ({ params }) => {
       _yearlyDailyDownloads[0]?.downloads?.find(
         (d) => d.downloads === maxYearlyDownloads.downloads,
       );
-
-    const groupedByMonthDownloads = _yearlyDailyDownloads
-      ?.at(0)
-      ?.downloads?.reduce(
-        (acc, curr) => {
-          const month = format(new Date(curr.day), "MMM");
-          if (!acc[month]) {
-            acc[month] = 0;
-          }
-          acc[month] += curr.downloads;
-          return acc;
-        },
-        {} as Record<string, number>,
-      );
-
-    loaderData.totalYearDownloads = Object.values(
-      groupedByMonthDownloads || {},
-    )?.reduce((acc, curr) => acc + curr, 0);
-
-    loaderData.lastRelease = formatRelative(_item.last_released_at, new Date());
 
     loaderData.totalYearlyDownloadsComment = getFunnyPeakDownloadComment(
       loaderData.totalYearDownloads,

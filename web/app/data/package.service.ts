@@ -6,9 +6,17 @@ import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
 import { groupBy, omit, uniqBy } from "es-toolkit";
 import TTLCache from "@isaacs/ttlcache";
-import { format, hoursToMilliseconds, minutesToMilliseconds } from "date-fns";
+import {
+  format,
+  formatRelative,
+  hoursToMilliseconds,
+  minutesToMilliseconds,
+  subDays,
+} from "date-fns";
 import { google } from "@ai-sdk/google";
 import { embed } from "ai";
+import { AuthorService } from "./author.service";
+import { PackageInsightService } from "./package-insight.service.server";
 
 // import { embed } from "ai";
 // import { google } from "@ai-sdk/google";
@@ -25,6 +33,30 @@ type SearchResult = {
     synopsis: string;
   } | null>;
   isSemanticPreferred: boolean;
+};
+
+type EnrichedPackage = {
+  pkg: Package;
+  relations: Awaited<
+    ReturnType<typeof PackageService.getPackageRelationsByPackageId>
+  >;
+  groupedRelations: ReturnType<typeof groupBy<any, string>>;
+  authorsData: Awaited<ReturnType<typeof AuthorService.getAuthorsByPackageId>>;
+  authorsList: Array<Tables<"authors"> & { roles: string[] }>;
+  maintainer: (Tables<"authors"> & { roles: string[] }) | undefined;
+  dailyDownloads: Awaited<
+    ReturnType<typeof PackageInsightService.getDailyDownloadsForPackage>
+  >;
+  yearlyDailyDownloads: Awaited<
+    ReturnType<typeof PackageInsightService.getDailyDownloadsForPackage>
+  >;
+  trendingPackages: Awaited<
+    ReturnType<typeof PackageInsightService.getTrendingPackages>
+  >;
+  totalMonthDownloads: number;
+  totalYearDownloads: number;
+  isTrending: boolean;
+  lastRelease: string;
 };
 
 export class PackageService {
@@ -61,6 +93,98 @@ export class PackageService {
     }
 
     return data;
+  }
+
+  /**
+   * Get enriched package data with relations, authors, maintainer, downloads, and trending status.
+   * This method consolidates the data fetching and processing logic used by both
+   * the MCP resource and the package page loader to follow DRY principle.
+   */
+  static async getEnrichedPackageByName(
+    packageName: string,
+  ): Promise<EnrichedPackage | null> {
+    packageNameSchema.parse(packageName);
+
+    const pkg = await this.getPackageByName(packageName);
+    if (!pkg) {
+      return null;
+    }
+
+    const now = new Date();
+
+    const [
+      relations,
+      authorsData,
+      dailyDownloads,
+      yearlyDailyDownloads,
+      trendingPackages,
+    ] = await Promise.all([
+      this.getPackageRelationsByPackageId(pkg.id),
+      AuthorService.getAuthorsByPackageId(pkg.id),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageName,
+        "last-month",
+      ),
+      PackageInsightService.getDailyDownloadsForPackage(
+        packageName,
+        `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
+      ),
+      PackageInsightService.getTrendingPackages(),
+    ]);
+
+    // Process Relations
+    const groupedRelations = groupBy(
+      relations || [],
+      (item) => item.relationship_type,
+    );
+
+    // Process Authors & Maintainers
+    const authorsList = (authorsData || [])
+      .map(({ author, roles }) => ({
+        ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
+        roles: roles || [],
+      }))
+      .filter((a) => !a.roles.includes("mnt"));
+
+    const maintainer = (authorsData || [])
+      .map(({ author, roles }) => ({
+        ...((Array.isArray(author) ? author[0] : author) as Tables<"authors">),
+        roles: roles || [],
+      }))
+      .filter((a) => a.roles.includes("mnt"))
+      .at(0);
+
+    // Process Downloads
+    const totalMonthDownloads =
+      dailyDownloads
+        .at(0)
+        ?.downloads?.reduce((acc, curr) => acc + curr.downloads, 0) || 0;
+
+    const totalYearDownloads =
+      yearlyDailyDownloads
+        .at(0)
+        ?.downloads?.reduce((acc, curr) => acc + curr.downloads, 0) || 0;
+
+    const isTrending =
+      trendingPackages.findIndex((item) => item.package === packageName) !== -1;
+
+    const lastRelease = formatRelative(new Date(pkg.last_released_at), now);
+
+    return {
+      pkg,
+      relations,
+      groupedRelations,
+      authorsData,
+      authorsList,
+      maintainer,
+      dailyDownloads,
+      yearlyDailyDownloads,
+      trendingPackages,
+      totalMonthDownloads,
+      totalYearDownloads,
+      isTrending,
+      lastRelease,
+    };
   }
 
   static async getPackageIdByName(packageName: string): Promise<number | null> {

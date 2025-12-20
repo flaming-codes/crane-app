@@ -7,10 +7,6 @@ import { AuthorService } from "../data/author.service";
 import { PackageService } from "../data/package.service";
 import { SearchService } from "../data/search.service";
 import { BASE_URL } from "../modules/app";
-import { PackageInsightService } from "../data/package-insight.service.server";
-import { format, formatRelative, subDays } from "date-fns";
-import { groupBy } from "es-toolkit";
-import { Tables } from "../data/supabase.types.generated";
 
 // Create a singleton instance
 let mcpServer: McpServer | null = null;
@@ -32,77 +28,29 @@ export function getMcpServer() {
     },
     async (uri, { name }) => {
       const pkgName = String(name);
-      const pkg = await PackageService.getPackageByName(pkgName);
-      if (!pkg) {
+      const enrichedData =
+        await PackageService.getEnrichedPackageByName(pkgName);
+
+      if (!enrichedData) {
         throw new Error(`Package not found: ${pkgName}`);
       }
 
-      const now = new Date();
-
-      const [
-        relations,
-        authorsData,
+      const {
+        pkg,
+        groupedRelations,
+        authorsList,
+        maintainer,
         dailyDownloads,
-        yearlyDailyDownloads,
-        trendingPackages,
-      ] = await Promise.all([
-        PackageService.getPackageRelationsByPackageId(pkg.id),
-        AuthorService.getAuthorsByPackageId(pkg.id),
-        PackageInsightService.getDailyDownloadsForPackage(
-          pkgName,
-          "last-month",
-        ),
-        PackageInsightService.getDailyDownloadsForPackage(
-          pkgName,
-          `${format(subDays(now, 365), "yyyy-MM-dd")}:${format(now, "yyyy-MM-dd")}`,
-        ),
-        PackageInsightService.getTrendingPackages(),
-      ]);
-
-      // Process Relations
-      const groupedRelations = groupBy(
-        relations || [],
-        (item) => item.relationship_type,
-      );
-
-      // Process Authors & Maintainers
-      const authorsList = (authorsData || [])
-        .map(({ author, roles }) => ({
-          ...((Array.isArray(author)
-            ? author[0]
-            : author) as Tables<"authors">),
-          roles: roles || [],
-        }))
-        .filter((a) => !a.roles.includes("mnt"));
-
-      const maintainer = (authorsData || [])
-        .map(({ author, roles }) => ({
-          ...((Array.isArray(author)
-            ? author[0]
-            : author) as Tables<"authors">),
-          roles: roles || [],
-        }))
-        .filter((a) => a.roles.includes("mnt"))
-        .at(0);
-
-      // Process Downloads
-      const totalMonthDownloads =
-        dailyDownloads
-          .at(0)
-          ?.downloads?.reduce((acc, curr) => acc + curr.downloads, 0) || 0;
-
-      const totalYearDownloads =
-        yearlyDailyDownloads
-          .at(0)
-          ?.downloads?.reduce((acc, curr) => acc + curr.downloads, 0) || 0;
-
-      const isTrending =
-        trendingPackages.findIndex((item) => item.package === pkgName) !== -1;
+        totalMonthDownloads,
+        totalYearDownloads,
+        isTrending,
+        lastRelease,
+      } = enrichedData;
 
       const enriched = {
         ...pkg,
         url: `${BASE_URL}/package/${encodeURIComponent(pkg.name)}`,
-        lastRelease: formatRelative(new Date(pkg.last_released_at), now),
+        lastRelease,
         authors: authorsList.map((a) => ({
           name: a.name,
           url: `${BASE_URL}/author/${encodeURIComponent(a.name)}`,
