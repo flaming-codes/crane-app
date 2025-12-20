@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import {
   McpServer,
   ResourceTemplate,
@@ -11,6 +13,22 @@ import { BASE_URL } from "../modules/app";
 // Create a singleton instance
 let mcpServer: McpServer | null = null;
 
+const WIDGET_URI = "ui://widget/cran.html";
+const WIDGET_PATH = path.resolve("public", "cran-widget.html");
+const widgetHtml = readFileSync(WIDGET_PATH, "utf8");
+
+function makeToolResponse(structured: unknown, textPayload?: unknown) {
+  return {
+    content: [
+      {
+        type: "text" as const,
+        text: JSON.stringify(textPayload ?? structured, null, 2),
+      },
+    ],
+    structuredContent: structured as Record<string, unknown>,
+  };
+}
+
 export function getMcpServer() {
   if (mcpServer) return mcpServer;
 
@@ -18,6 +36,29 @@ export function getMcpServer() {
     name: "Crane App MCP Server",
     version: "1.0.0",
   });
+
+  server.registerResource(
+    "cran_widget",
+    new ResourceTemplate(WIDGET_URI, { list: undefined }),
+    {
+      mimeType: "text/html+skybridge",
+      description: "ChatGPT widget for searching CRAN packages and authors",
+    },
+    async (uri) => {
+      return {
+        contents: [
+          {
+            uri: uri.toString(),
+            mimeType: "text/html+skybridge",
+            text: widgetHtml,
+            _meta: {
+              "openai/widgetPrefersBorder": true,
+            },
+          },
+        ],
+      };
+    },
+  );
 
   server.registerResource(
     "package",
@@ -130,6 +171,15 @@ export function getMcpServer() {
           .optional()
           .describe("Maximum number of results to return (default: 20)"),
       }),
+      _meta: {
+        "openai/outputTemplate": WIDGET_URI,
+        "openai/toolInvocation/invoking": "Searching CRAN packages",
+        "openai/toolInvocation/invoked": "Found CRAN packages",
+        "openai/toolDefinition": {
+          readOnlyHint: true,
+          openWorldHint: true,
+        },
+      },
     },
     async ({ query, limit }) => {
       const results = await PackageService.searchPackages(query, { limit });
@@ -141,14 +191,14 @@ export function getMcpServer() {
           url: `${BASE_URL}/package/${encodeURIComponent(item.name)}`,
         })),
       };
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(withLinks, null, 2),
-          },
-        ],
+      const structured = {
+        searchType: "packages" as const,
+        query,
+        combined: withLinks.combined,
+        packages: { hits: withLinks },
+        authors: { hits: [] },
       };
+      return makeToolResponse(structured, withLinks);
     },
   );
 
@@ -164,6 +214,15 @@ export function getMcpServer() {
           .optional()
           .describe("Maximum number of results to return (default: 8)"),
       }),
+      _meta: {
+        "openai/outputTemplate": WIDGET_URI,
+        "openai/toolInvocation/invoking": "Searching authors",
+        "openai/toolInvocation/invoked": "Found authors",
+        "openai/toolDefinition": {
+          readOnlyHint: true,
+          openWorldHint: true,
+        },
+      },
     },
     async ({ query, limit }) => {
       const results = await AuthorService.searchAuthors(query, { limit });
@@ -171,14 +230,14 @@ export function getMcpServer() {
         ...item,
         url: `${BASE_URL}/author/${encodeURIComponent(item.name)}`,
       }));
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(withLinks, null, 2),
-          },
-        ],
+      const structured = {
+        searchType: "authors" as const,
+        query,
+        combined: withLinks,
+        packages: { hits: { combined: [] } },
+        authors: { hits: withLinks },
       };
+      return makeToolResponse(structured, withLinks);
     },
   );
 
@@ -190,17 +249,24 @@ export function getMcpServer() {
       inputSchema: z.object({
         query: z.string().describe("The search query string"),
       }),
+      _meta: {
+        "openai/outputTemplate": WIDGET_URI,
+        "openai/toolInvocation/invoking": "Searching CRAN",
+        "openai/toolInvocation/invoked": "CRAN results ready",
+        "openai/toolDefinition": {
+          readOnlyHint: true,
+          openWorldHint: true,
+        },
+      },
     },
     async ({ query }) => {
       const results = await SearchService.searchUniversal(query);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(results, null, 2),
-          },
-        ],
+      const structured = {
+        ...results,
+        searchType: "universal" as const,
+        query,
       };
+      return makeToolResponse(structured, results);
     },
   );
 

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CRAN Search Widget</title>
+    <style>
+      :root {
+        color: #0b1221;
+        background: #f5f7fb;
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 10% 10%, #eef2ff 0, transparent 25%),
+          radial-gradient(circle at 90% 20%, #e8f7ff 0, transparent 28%),
+          #f5f7fb;
+        min-height: 100vh;
+        padding: 18px;
+      }
+      main {
+        max-width: 840px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 18px 38px rgba(12, 22, 54, 0.08);
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      header h1 {
+        font-size: 20px;
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+      header span {
+        color: #5c637a;
+        font-size: 14px;
+      }
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      input[type="search"] {
+        flex: 1;
+        min-width: 200px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid #d8deea;
+        font-size: 15px;
+        outline: none;
+      }
+      input[type="search"]:focus {
+        border-color: #2a6cf6;
+        box-shadow: 0 0 0 3px rgba(42, 108, 246, 0.12);
+      }
+      select,
+      button {
+        border-radius: 12px;
+        border: 1px solid #d8deea;
+        background: #fff;
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+      button[type="submit"] {
+        background: linear-gradient(135deg, #1a50ff, #3b82f6);
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 120ms ease,
+          box-shadow 120ms ease;
+      }
+      button[type="submit"]:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(26, 80, 255, 0.18);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #1a50ff;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .results {
+        display: grid;
+        gap: 12px;
+      }
+      .card {
+        border: 1px solid #e5e9f2;
+        border-radius: 14px;
+        padding: 14px;
+        background: linear-gradient(180deg, #fff, #fafbff);
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .card-title {
+        font-weight: 700;
+        margin: 0;
+        font-size: 15px;
+        color: #0b1221;
+      }
+      .card-meta {
+        color: #5c637a;
+        font-size: 12px;
+      }
+      .card a {
+        color: #1a50ff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #334155;
+        font-size: 12px;
+      }
+      .layout {
+        display: grid;
+        gap: 12px;
+      }
+      .empty {
+        color: #6b7280;
+        font-size: 14px;
+        padding: 10px 0;
+      }
+      footer {
+        margin-top: 12px;
+        color: #6b7280;
+        font-size: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      @media (min-width: 960px) {
+        .layout {
+          grid-template-columns: 1.2fr 0.8fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="pill">CRAN packages & authors</div>
+        <div>
+          <h1>Search and preview</h1>
+          <span>Powered by Crane MCP server</span>
+        </div>
+      </header>
+
+      <form id="search-form">
+        <input
+          id="query-input"
+          type="search"
+          name="query"
+          placeholder="Search packages, authors, or topics"
+          autocomplete="off"
+        />
+        <select id="mode-select" name="mode" aria-label="Search scope">
+          <option value="universal">Packages + Authors</option>
+          <option value="packages">Packages only</option>
+          <option value="authors">Authors only</option>
+        </select>
+        <button type="submit">Search</button>
+      </form>
+
+      <div class="layout">
+        <section class="results" id="primary-results"></section>
+        <section class="results" id="secondary-results"></section>
+      </div>
+
+      <footer>
+        <span class="badge">Read-only · Open-world data</span>
+        <span>UI updates automatically from tool responses.</span>
+      </footer>
+    </main>
+
+    <script type="module">
+      const queryInput = document.querySelector("#query-input");
+      const modeSelect = document.querySelector("#mode-select");
+      const primary = document.querySelector("#primary-results");
+      const secondary = document.querySelector("#secondary-results");
+
+      const renderEmpty = (container, message) => {
+        const div = document.createElement("div");
+        div.className = "empty";
+        div.textContent = message;
+        container.appendChild(div);
+      };
+
+      const renderCard = (item, kind) => {
+        const card = document.createElement("article");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+
+        const badge = document.createElement("span");
+        badge.className = "pill";
+        badge.textContent = kind;
+
+        const title = document.createElement("p");
+        title.className = "card-title";
+        title.textContent =
+          item.name || item.package?.name || item.authorName || "Result";
+
+        header.appendChild(badge);
+        header.appendChild(title);
+
+        const body = document.createElement("div");
+        body.className = "card-meta";
+        const synopsis = item.synopsis || item.description || item.summary;
+        const url = item.url;
+        body.textContent = synopsis ? synopsis.slice(0, 220) : "";
+
+        if (url) {
+          const link = document.createElement("a");
+          link.href = url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Open";
+          link.style.marginLeft = "8px";
+          body.appendChild(link);
+        }
+
+        // Optional semantic sources
+        if (item.sources) {
+          const sources = document.createElement("div");
+          sources.style.marginTop = "8px";
+          sources.style.display = "flex";
+          sources.style.flexWrap = "wrap";
+          sources.style.gap = "6px";
+          item.sources.forEach((sourceTuple) => {
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = sourceTuple[0];
+            sources.appendChild(badge);
+          });
+          body.appendChild(sources);
+        }
+
+        card.appendChild(header);
+        card.appendChild(body);
+        return card;
+      };
+
+      const renderResults = (structured) => {
+        primary.innerHTML = "";
+        secondary.innerHTML = "";
+
+        if (!structured) {
+          renderEmpty(primary, "No results yet. Run a search.");
+          return;
+        }
+
+        const { searchType, combined, packages, authors, query } = structured;
+
+        if (query) {
+          queryInput.value = query;
+        }
+
+        const showCombined = combined && combined.length > 0;
+        const showPackages = packages?.hits?.combined?.length;
+        const showAuthors = authors?.hits?.length;
+
+        if (searchType === "universal" && showCombined) {
+          combined.forEach((item) =>
+            primary.appendChild(renderCard(item, "Match")),
+          );
+        } else if (searchType === "packages" && showPackages) {
+          packages.hits.combined.forEach((item) =>
+            primary.appendChild(renderCard(item, "Package")),
+          );
+        } else if (searchType === "authors" && showAuthors) {
+          authors.hits.forEach((item) =>
+            primary.appendChild(renderCard(item, "Author")),
+          );
+        } else {
+          renderEmpty(primary, "No matches for this search.");
+        }
+
+        // Secondary section: always show per-type buckets when available
+        if (showPackages && searchType === "universal") {
+          const title = document.createElement("div");
+          title.className = "badge";
+          title.textContent = "Packages";
+          secondary.appendChild(title);
+          packages.hits.combined.forEach((item) =>
+            secondary.appendChild(renderCard(item, "Package")),
+          );
+        }
+
+        if (showAuthors && searchType === "universal") {
+          const title = document.createElement("div");
+          title.className = "badge";
+          title.textContent = "Authors";
+          secondary.appendChild(title);
+          authors.hits.forEach((item) =>
+            secondary.appendChild(renderCard(item, "Author")),
+          );
+        }
+      };
+
+      const updateFromResponse = (response) => {
+        const structured = response?.structuredContent;
+        if (structured) {
+          renderResults(structured);
+        }
+      };
+
+      const handleSetGlobals = (event) => {
+        const globals = event.detail?.globals;
+        if (globals?.toolOutput) {
+          updateFromResponse(globals.toolOutput);
+        }
+      };
+
+      window.addEventListener("openai:set_globals", handleSetGlobals, {
+        passive: true,
+      });
+
+      const callTool = async (name, payload) => {
+        if (window.openai?.callTool) {
+          const response = await window.openai.callTool(name, payload);
+          updateFromResponse(response);
+          return;
+        }
+        // Fallback for local dev without Apps SDK host
+        console.warn(
+          "window.openai.callTool not available; showing payload only.",
+        );
+        renderResults({
+          ...payload,
+          searchType: name.replace("search_", ""),
+          combined: [],
+        });
+      };
+
+      document
+        .querySelector("#search-form")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+          const query = queryInput.value.trim();
+          const mode = modeSelect.value;
+          if (!query) return;
+          if (mode === "packages") {
+            callTool("search_packages", { query });
+          } else if (mode === "authors") {
+            callTool("search_authors", { query });
+          } else {
+            callTool("search_universal", { query });
+          }
+        });
+
+      // Initial render from injected toolOutput
+      if (window.openai?.toolOutput) {
+        updateFromResponse(window.openai.toolOutput);
+      } else {
+        renderResults(null);
+      }
+    </script>
+  </body>
+</html>
