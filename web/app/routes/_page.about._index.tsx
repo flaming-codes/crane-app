@@ -11,13 +11,22 @@ import {
   RiGithubFill,
   RiLinkedinFill,
   RiPieChart2Fill,
+  RiFileCopyLine,
 } from "@remixicon/react";
 import { Header } from "../modules/header";
 import { PlausibleChoicePillButton } from "../modules/plausible";
 import { mergeMeta } from "../modules/meta";
 import { LicenseTable } from "../modules/licenses";
+import { useState } from "react";
 
-const anchors = ["Creators", "Mission", "Analytics", "Source Code", "Licenses"];
+const anchors = [
+  "Creators",
+  "Mission",
+  "MCP",
+  "Analytics",
+  "Source Code",
+  "Licenses",
+];
 
 const creatorSpotlight = [
   {
@@ -70,6 +79,18 @@ export const meta = mergeMeta(() => {
 });
 
 export default function PrivacyPage() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyMcpUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/api/mcp`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
   return (
     <>
       <Header
@@ -197,6 +218,56 @@ export default function PrivacyPage() {
               Our main focus was ease of use and accessibility, especially for
               lightning fast searches.
             </p>
+          </div>
+        </PageContentSection>
+
+        <Separator />
+
+        <PageContentSection headline="MCP" fragment="mcp">
+          <p>
+            CRAN/E provides a Model Context Protocol (MCP) server that enables
+            programmatic access to our comprehensive R package database. This
+            MCP server allows AI assistants and other tools to directly query
+            CRAN package information, author details, and perform searches with
+            real-time data.
+          </p>
+          <p>The MCP server exposes three main resources and tools:</p>
+          <ul className="ml-4 list-inside list-disc space-y-2">
+            <li>
+              <strong>Package Resource:</strong> Access detailed metadata for
+              any CRAN package including dependencies, authors, download
+              statistics, and release information
+            </li>
+            <li>
+              <strong>Author Resource:</strong> Retrieve comprehensive author
+              profiles with their associated packages and contributions
+            </li>
+            <li>
+              <strong>Search Tools:</strong> Perform intelligent searches across
+              packages, authors, or both with flexible querying options
+            </li>
+          </ul>
+          <p>
+            This integration makes CRAN/E's data seamlessly accessible to
+            AI-powered development workflows, enabling smarter package
+            discovery, automated dependency analysis, and enhanced R development
+            experiences.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <ExternalLink href="https://modelcontextprotocol.io">
+              <InfoPill variant="slate" label="Learn more">
+                About MCP
+                <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
+              </InfoPill>
+            </ExternalLink>
+            <div
+              onClick={handleCopyMcpUrl}
+              className="hover:bg-slate-6 cursor-pointer rounded-full transition-colors"
+            >
+              <InfoPill variant="slate" label={<RiFileCopyLine size={16} />}>
+                {copied ? "Copied!" : "Copy MCP URL"}
+              </InfoPill>
+            </div>
           </div>
         </PageContentSection>
 
