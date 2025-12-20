@@ -67,6 +67,8 @@ export class SearchService {
         type: "package" as const,
         name: item.name,
         synopsis: item.synopsis ?? null,
+        title: item.title,
+        last_released_at: item.last_released_at,
         url: withPackageUrl(item.name),
         sources: "sources" in item ? item.sources : undefined,
       }));

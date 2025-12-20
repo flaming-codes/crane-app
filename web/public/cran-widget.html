@@ -1,360 +1,344 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
-    <meta charset="utf-8" />
-    <title>CRAN Search Widget</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crane Widget</title>
     <style>
       :root {
-        color: #0b1221;
-        background: #f5f7fb;
-        font-family:
-          "Inter",
-          system-ui,
-          -apple-system,
-          sans-serif;
+        /* Radix Colors (Dark Mode exact values) */
+        /* Gray (Dark) */
+        --gray-1: #111111;
+        --gray-2: #191919;
+        --gray-3: #222222;
+        --gray-4: #2a2a2a;
+        --gray-5: #313131;
+        --gray-6: #3a3a3a;
+        --gray-7: #484848;
+        --gray-8: #606060;
+        --gray-9: #6e6e6e;
+        --gray-10: #7b7b7b;
+        --gray-11: #b4b4b4;
+        --gray-12: #eeeeee;
+
+        /* Iris (Dark) */
+        --iris-1: #13131e;
+        --iris-2: #171625;
+        --iris-3: #202248;
+        --iris-4: #262a65;
+        --iris-5: #303374;
+        --iris-6: #3d3e82;
+        --iris-7: #4a4a95;
+        --iris-8: #5958b1;
+        --iris-9: #5b5bd6;
+        --iris-10: #6e6ade;
+        --iris-11: #b1a9ff;
+        --iris-12: #e0dffe;
+
+        /* Jade (Dark) */
+        --jade-1: #0d1512;
+        --jade-2: #121c18;
+        --jade-3: #0f2e22;
+        --jade-4: #0b3b2c;
+        --jade-5: #114837;
+        --jade-6: #1b5745;
+        --jade-7: #246854;
+        --jade-8: #2a7e68;
+        --jade-9: #29a383;
+        --jade-10: #27b08b;
+        --jade-11: #1fd8a4;
+        --jade-12: #adf0d4;
+
+        /* Base Tokens */
+        --bg-app: var(--gray-1);
+        --bg-card: var(--gray-2);
+        --border-subtle: var(--gray-4);
+        --text-main: var(--gray-12);
+        --text-dim: var(--gray-11);
+
+        /* Typography */
+        --font-sans:
+          system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
       }
+
+      /* Reset & Base */
       * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
+
       body {
-        margin: 0;
-        background:
-          radial-gradient(circle at 10% 10%, #eef2ff 0, transparent 25%),
-          radial-gradient(circle at 90% 20%, #e8f7ff 0, transparent 28%),
-          #f5f7fb;
-        min-height: 100vh;
-        padding: 18px;
+        font-family: var(--font-sans);
+        background-color: var(--bg-app);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+        padding: 1rem;
+        font-size: 14px;
+        line-height: 1.5;
       }
-      main {
-        max-width: 840px;
-        margin: 0 auto;
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 18px 38px rgba(12, 22, 54, 0.08);
-      }
-      header {
+
+      /* Layout Utilities */
+      .flex {
         display: flex;
+      }
+      .flex-col {
+        flex-direction: column;
+      }
+      .items-center {
         align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
       }
-      header h1 {
-        font-size: 20px;
-        margin: 0;
-        letter-spacing: -0.02em;
+      .gap-2 {
+        gap: 0.5rem;
       }
-      header span {
-        color: #5c637a;
-        font-size: 14px;
+      .gap-4 {
+        gap: 1rem;
       }
-      form {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 14px;
+      .gap-1 {
+        gap: 0.25rem;
       }
-      input[type="search"] {
-        flex: 1;
-        min-width: 200px;
-        padding: 12px 14px;
-        border-radius: 12px;
-        border: 1px solid #d8deea;
-        font-size: 15px;
-        outline: none;
+      .w-full {
+        width: 100%;
       }
-      input[type="search"]:focus {
-        border-color: #2a6cf6;
-        box-shadow: 0 0 0 3px rgba(42, 108, 246, 0.12);
+      .justify-between {
+        justify-content: space-between;
       }
-      select,
-      button {
-        border-radius: 12px;
-        border: 1px solid #d8deea;
-        background: #fff;
-        padding: 12px 14px;
-        font-size: 14px;
+
+      /* Typography Utilities */
+      .text-xs {
+        font-size: 0.75rem;
       }
-      button[type="submit"] {
-        background: linear-gradient(135deg, #1a50ff, #3b82f6);
-        color: #fff;
-        border: none;
+      .text-sm {
+        font-size: 0.875rem;
+      }
+      .text-lg {
+        font-size: 1.125rem;
         font-weight: 600;
-        cursor: pointer;
-        transition:
-          transform 120ms ease,
-          box-shadow 120ms ease;
       }
-      button[type="submit"]:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 12px 24px rgba(26, 80, 255, 0.18);
+      .font-semibold {
+        font-weight: 600;
       }
+      .text-dim {
+        color: var(--text-dim);
+      }
+
+      /* Components */
+      .header {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 1rem;
+      }
+
+      .header-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .info-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        transition: border-color 0.2s;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .info-card:hover {
+        border-color: var(--gray-6);
+      }
+
+      .info-card.variant-iris:hover {
+        border-color: var(--iris-8);
+      }
+      .info-card.variant-jade:hover {
+        border-color: var(--jade-8);
+      }
+
       .pill {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: #eef2ff;
-        color: #1a50ff;
-        font-size: 12px;
-        font-weight: 600;
+        padding: 0.125rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background-color: var(--gray-3);
+        color: var(--text-dim);
+        border: 1px solid var(--border-subtle);
       }
-      .results {
-        display: grid;
-        gap: 12px;
+
+      /* Custom Gradients/Effects based on app design */
+      .gradient-text-iris {
+        background: linear-gradient(to right, var(--iris-11), var(--iris-9));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
       }
-      .card {
-        border: 1px solid #e5e9f2;
-        border-radius: 14px;
-        padding: 14px;
-        background: linear-gradient(180deg, #fff, #fafbff);
+
+      .gradient-text-jade {
+        background: linear-gradient(to right, var(--jade-11), var(--jade-9));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
       }
-      .card-header {
+
+      .icon-box {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
+        justify-content: center;
+        background-color: var(--gray-3);
       }
-      .card-title {
-        font-weight: 700;
-        margin: 0;
-        font-size: 15px;
-        color: #0b1221;
+
+      .variant-iris .icon-box {
+        background-color: rgba(91, 91, 214, 0.15);
+        color: var(--iris-11);
       }
-      .card-meta {
-        color: #5c637a;
-        font-size: 12px;
-      }
-      .card a {
-        color: #1a50ff;
-        text-decoration: none;
-        font-weight: 600;
-      }
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: #f1f5f9;
-        color: #334155;
-        font-size: 12px;
-      }
-      .layout {
-        display: grid;
-        gap: 12px;
-      }
-      .empty {
-        color: #6b7280;
-        font-size: 14px;
-        padding: 10px 0;
-      }
-      footer {
-        margin-top: 12px;
-        color: #6b7280;
-        font-size: 12px;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      @media (min-width: 960px) {
-        .layout {
-          grid-template-columns: 1.2fr 0.8fr;
-        }
+      .variant-jade .icon-box {
+        background-color: rgba(41, 163, 131, 0.15);
+        color: var(--jade-11);
       }
     </style>
   </head>
   <body>
-    <main>
-      <header>
-        <div class="pill">CRAN packages & authors</div>
-        <div>
-          <h1>Search and preview</h1>
-          <span>Powered by Crane MCP server</span>
-        </div>
-      </header>
-
-      <form id="search-form">
-        <input
-          id="query-input"
-          type="search"
-          name="query"
-          placeholder="Search packages, authors, or topics"
-          autocomplete="off"
-        />
-        <select id="mode-select" name="mode" aria-label="Search scope">
-          <option value="universal">Packages + Authors</option>
-          <option value="packages">Packages only</option>
-          <option value="authors">Authors only</option>
-        </select>
-        <button type="submit">Search</button>
-      </form>
-
-      <div class="layout">
-        <section class="results" id="primary-results"></section>
-        <section class="results" id="secondary-results"></section>
+    <div id="app">
+      <!-- Content will be injected here -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          color: var(--text-dim);
+        "
+      >
+        Waiting for data...
       </div>
+    </div>
 
-      <footer>
-        <span class="badge">Read-only · Open-world data</span>
-        <span>UI updates automatically from tool responses.</span>
-      </footer>
-    </main>
+    <script>
+      // Mock Data for testing if opened directly
+      // window.data = { ... }
 
-    <script type="module">
-      const queryInput = document.querySelector("#query-input");
-      const modeSelect = document.querySelector("#mode-select");
-      const primary = document.querySelector("#primary-results");
-      const secondary = document.querySelector("#secondary-results");
+      function render(data) {
+        const app = document.getElementById("app");
 
-      const renderEmpty = (container, message) => {
-        const div = document.createElement("div");
-        div.className = "empty";
-        div.textContent = message;
-        container.appendChild(div);
-      };
-
-      const renderCard = (item, kind) => {
-        const card = document.createElement("article");
-        card.className = "card";
-
-        const header = document.createElement("div");
-        header.className = "card-header";
-
-        const badge = document.createElement("span");
-        badge.className = "pill";
-        badge.textContent = kind;
-
-        const title = document.createElement("p");
-        title.className = "card-title";
-        title.textContent =
-          item.name || item.package?.name || item.authorName || "Result";
-
-        header.appendChild(badge);
-        header.appendChild(title);
-
-        const body = document.createElement("div");
-        body.className = "card-meta";
-        const synopsis = item.synopsis || item.description || item.summary;
-        const url = item.url;
-        body.textContent = synopsis ? synopsis.slice(0, 220) : "";
-
-        if (url) {
-          const link = document.createElement("a");
-          link.href = url;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = "Open";
-          link.style.marginLeft = "8px";
-          body.appendChild(link);
-        }
-
-        // Optional semantic sources
-        if (item.sources) {
-          const sources = document.createElement("div");
-          sources.style.marginTop = "8px";
-          sources.style.display = "flex";
-          sources.style.flexWrap = "wrap";
-          sources.style.gap = "6px";
-          item.sources.forEach((sourceTuple) => {
-            const badge = document.createElement("span");
-            badge.className = "badge";
-            badge.textContent = sourceTuple[0];
-            sources.appendChild(badge);
-          });
-          body.appendChild(sources);
-        }
-
-        card.appendChild(header);
-        card.appendChild(body);
-        return card;
-      };
-
-      const renderResults = (structured) => {
-        primary.innerHTML = "";
-        secondary.innerHTML = "";
-
-        if (!structured) {
-          renderEmpty(primary, "No results yet. Run a search.");
+        if (!data) {
+          app.innerHTML = '<div class="text-dim">No data available</div>';
           return;
         }
 
-        const { searchType, combined, query } = structured;
+        // Handle Tool Response format
+        // { searchType: 'packages' | 'authors' | 'universal', query: string, combined: Array }
+        // Or Resource format if applicable
 
-        if (query) {
-          queryInput.value = query;
+        let content = "";
+        const items = data.combined || [];
+        const query = data.query || "";
+        const type = data.searchType || "universal";
+
+        // Header
+        content += `
+        <div class="header">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="header-title">
+                ${type === "packages" ? "Package Results" : type === "authors" ? "Author Results" : "Search Results"}
+              </h1>
+              <p class="text-sm text-dim">
+                Found ${items.length} ${items.length === 1 ? "match" : "matches"} for "${query}"
+              </p>
+            </div>
+            <div class="pill">CRAN/E</div>
+          </div>
+        </div>
+      `;
+
+        // Grid
+        content += '<div class="card-grid">';
+
+        items.forEach((item) => {
+          const isAuthor = item.type === "author" || type === "authors"; // Helper logic
+          const variant = isAuthor ? "variant-jade" : "variant-iris";
+          const iconSvg = isAuthor
+            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+            : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22v-9"/></svg>`;
+
+          content += `
+          <a href="${item.url}" target="_blank" class="info-card ${variant}">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                ${iconSvg}
+              </div>
+              ${item.lastRelease ? `<span class="text-xs text-dim">${item.lastRelease.split("T")[0]}</span>` : ""}
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs tracking-wider uppercase text-dim">${isAuthor ? "Author" : "Package"}</span>
+              <span class="font-semibold text-lg ${isAuthor ? "gradient-text-jade" : "gradient-text-iris"}">
+                ${item.name}
+              </span>
+            </div>
+            ${item.title ? `<p class="text-sm text-dim" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.title}</p>` : ""}
+          </a>
+        `;
+        });
+
+        content += "</div>";
+        app.innerHTML = content;
+      }
+
+      // Listen for data from host (OpenAI Apps SDK / Skybridge / MCP)
+
+      // OpenAI Apps SDK
+      const SET_GLOBALS_EVENT_TYPE = "openai:set_globals";
+
+      function handleOpenAiGlobals(globals) {
+        // toolOutput contains the structured data returned by the tool
+        if (globals && globals.toolOutput) {
+          const data = globals.toolOutput;
+          // Handle case where data is wrapped in structuredContent or is the data itself
+          render(data.structuredContent || data);
         }
+      }
 
-        const showCombined = combined && combined.length > 0;
-
-        if (showCombined) {
-          combined.forEach((item) =>
-            primary.appendChild(
-              renderCard(item, item.type === "package" ? "Package" : "Author"),
-            ),
-          );
-        } else {
-          renderEmpty(primary, "No matches for this search.");
-        }
-      };
-
-      const updateFromResponse = (response) => {
-        const structured = response?.structuredContent;
-        if (structured) {
-          renderResults(structured);
-        }
-      };
-
-      const handleSetGlobals = (event) => {
-        const globals = event.detail?.globals;
-        if (globals?.toolOutput) {
-          updateFromResponse(globals.toolOutput);
-        }
-      };
-
-      window.addEventListener("openai:set_globals", handleSetGlobals, {
-        passive: true,
+      window.addEventListener(SET_GLOBALS_EVENT_TYPE, (event) => {
+        handleOpenAiGlobals(event.detail.globals);
       });
 
-      const callTool = async (name, payload) => {
-        if (window.openai?.callTool) {
-          const response = await window.openai.callTool(name, payload);
-          updateFromResponse(response);
-          return;
+      // Initial check for OpenAI globals
+      if (window.openai) {
+        handleOpenAiGlobals(window.openai);
+      }
+
+      // Standard pattern: window.addEventListener('message', ...)
+      window.addEventListener("message", (event) => {
+        // Basic validation
+        if (
+          event.data &&
+          (event.data.combined || event.data.structuredContent)
+        ) {
+          render(event.data.structuredContent || event.data);
         }
-        // Fallback for local dev without Apps SDK host
-        console.warn(
-          "window.openai.callTool not available; showing payload only.",
-        );
-        renderResults({
-          ...payload,
-          searchType: name.replace("search_", ""),
-          combined: [],
-        });
-      };
+      });
 
-      document
-        .querySelector("#search-form")
-        .addEventListener("submit", (event) => {
-          event.preventDefault();
-          const query = queryInput.value.trim();
-          const mode = modeSelect.value;
-          if (!query) return;
-          if (mode === "packages") {
-            callTool("search_packages", { query });
-          } else if (mode === "authors") {
-            callTool("search_authors", { query });
-          } else {
-            callTool("search_universal", { query });
-          }
-        });
-
-      // Initial render from injected toolOutput
-      if (window.openai?.toolOutput) {
-        updateFromResponse(window.openai.toolOutput);
-      } else {
-        renderResults(null);
+      // Also check if data was injected globally
+      if (window.widgetData) {
+        render(window.widgetData);
       }
     </script>
   </body>

@@ -15,7 +15,6 @@ let mcpServer: McpServer | null = null;
 
 const WIDGET_URI = "ui://widget/cran.html";
 const WIDGET_PATH = path.resolve("public", "cran-widget.html");
-const widgetHtml = readFileSync(WIDGET_PATH, "utf8");
 
 function makeToolResponse(structured: unknown, textPayload?: unknown) {
   return {
@@ -45,6 +44,9 @@ export function getMcpServer() {
       description: "ChatGPT widget for searching CRAN packages and authors",
     },
     async (uri) => {
+      // Read the widget HTML file dynamically to allow for hot-reloading during development
+      const widgetHtml = readFileSync(WIDGET_PATH, "utf8");
+
       return {
         contents: [
           {
