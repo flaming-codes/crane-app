@@ -132,7 +132,7 @@ export function PackageDependencySearch(props: Props) {
           </button>
         </form>
 
-        <div className="absolute inset-0 isolate -z-10 bg-linear-to-b from-gray-4 peer-focus-within:from-iris-6 dark:from-gray-12 dark:peer-focus-within:from-iris-12" />
+        <div className="from-gray-4 peer-focus-within:from-iris-6 dark:from-gray-12 dark:peer-focus-within:from-iris-12 absolute inset-0 isolate -z-10 bg-linear-to-b" />
       </div>
 
       {!input ? (

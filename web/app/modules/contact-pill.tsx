@@ -62,7 +62,7 @@ export function ContactPill(props: Props) {
                 className="text-gold-10 dark:text-gold-2"
               />
             }
-            className="border-transparent bg-gold-4 text-gold-12 dark:bg-gold-12 dark:text-gold-1"
+            className="bg-gold-4 text-gold-12 dark:bg-gold-12 dark:text-gold-1 border-transparent"
           >
             Maintainer
           </InfoPill>

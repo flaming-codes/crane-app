@@ -34,7 +34,7 @@ export function LicenseTable() {
                 key={index}
                 scope="col"
                 className={clsx(
-                  "whitespace-nowrap py-3 pr-6 text-left text-sm",
+                  "py-3 pr-6 text-left text-sm whitespace-nowrap",
                   "overflow-hidden first:rounded-s-lg first:pl-2 last:rounded-e-lg last:pr-2",
                 )}
               >
@@ -84,7 +84,7 @@ export function LicenseTable() {
               <tr
                 key={index}
                 className={clsx(
-                  "group/item transition-colors hover:bg-gray-2 dark:hover:bg-gray-12/40",
+                  "group/item hover:bg-gray-2 dark:hover:bg-gray-12/40 transition-colors",
                   {
                     "cursor-pointer": Boolean(license.link),
                   },
@@ -103,7 +103,7 @@ export function LicenseTable() {
                   <td
                     key={index}
                     className={clsx(
-                      "whitespace-nowrap py-2 pl-2 pr-4 text-xs",
+                      "py-2 pr-4 pl-2 text-xs whitespace-nowrap",
                       "first:rounded-s-lg last:rounded-e-lg",
                     )}
                     // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role

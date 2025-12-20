@@ -31,7 +31,7 @@ export function BinaryDownloadLink(props: Props) {
     <a download href={href} className={twBase({ className })}>
       <RiDownloadLine
         size={18}
-        className="opacity-50 transition-opacity group-hover/binary:animate-wiggle-more group-hover/binary:opacity-100 group-hover/binary:animate-infinite"
+        className="group-hover/binary:animate-wiggle-more group-hover/binary:animate-infinite opacity-50 transition-opacity group-hover/binary:opacity-100"
       />
       <div className="flex flex-col gap-2">
         <span className={twGradient({ variant })} />

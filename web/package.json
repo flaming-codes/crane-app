@@ -22,6 +22,7 @@
     "@ai-sdk/google": "^2.0.42",
     "@isaacs/ttlcache": "^1.4.1",
     "@mcansh/http-helmet": "0.13.2",
+    "@modelcontextprotocol/sdk": "^1.25.1",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.56.1",
     "@opentelemetry/auto-instrumentations-web": "^0.45.1",
@@ -63,7 +64,7 @@
     "web-vitals": "^5.1.0",
     "winston": "^3.18.3",
     "xss": "^1.0.15",
-    "zod": "^3.25.67"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/compat": "^1.3.2",

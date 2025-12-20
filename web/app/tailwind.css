@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
   --color-*: initial;
@@ -17,19 +17,14 @@
 @import "tailwindcss-radix-colors/dist/gold.css";
 @import "tailwindcss-radix-colors/dist/ruby.css";
 
-@plugin 'tailwindcss-animated';
+@plugin "tailwindcss-animated";
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme {
-  --font-sans: system-ui,
-  ui-sans-serif,
-  Helvetica,
-  sans-serif,
-  'Apple Color Emoji',
-  'Segoe UI Emoji',
-  'Segoe UI Symbol',
-  'Noto Color Emoji';
+  --font-sans:
+    system-ui, ui-sans-serif, Helvetica, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 /*
@@ -41,7 +36,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -57,25 +51,36 @@
     --content-max-width: 900px;
     --breakout-max-width: 1200px;
 
-    --breakout-size: calc((var(--breakout-max-width) - var(--content-max-width)) / 2);
+    --breakout-size: calc(
+      (var(--breakout-max-width) - var(--content-max-width)) / 2
+    );
 
     display: grid;
     place-content: flex-start;
     grid-template-columns:
-      [full-width-start] minmax(var(--padding-inline), 1fr) [breakout-start] minmax(0, var(--breakout-size)) [content-start] min(100% - (var(--padding-inline) * 2),
-        var(--content-max-width)) [content-end] minmax(0, var(--breakout-size)) [breakout-end] minmax(var(--padding-inline), 1fr) [full-width-end];
+      [full-width-start] minmax(
+        var(--padding-inline),
+        1fr
+      ) [breakout-start] minmax(0, var(--breakout-size)) [content-start] min(
+        100% - (var(--padding-inline) * 2),
+        var(--content-max-width)
+      )
+      [content-end] minmax(0, var(--breakout-size)) [breakout-end] minmax(
+        var(--padding-inline),
+        1fr
+      ) [full-width-end];
   }
 
-  .content-grid> :not(.breakout, .full-width),
-  .full-width> :not(.breakout, .full-width) {
+  .content-grid > :not(.breakout, .full-width),
+  .full-width > :not(.breakout, .full-width) {
     grid-column: content;
   }
 
-  .content-grid>.breakout {
+  .content-grid > .breakout {
     grid-column: breakout;
   }
 
-  .content-grid>.full-width {
+  .content-grid > .full-width {
     grid-column: full-width;
 
     display: grid;
@@ -83,10 +88,8 @@
   }
 }
 
-
-
 html {
-  @apply h-full bg-[#fff] dark:scheme-dark dark:bg-[#000];
+  @apply h-full bg-[#fff] dark:bg-[#000] dark:scheme-dark;
 }
 
 body {
