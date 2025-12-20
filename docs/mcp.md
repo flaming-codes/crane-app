@@ -1,39 +1,40 @@
 # MCP Server (Crane App)
 
-Minimal notes to integrate the deployed MCP server.
-
 ## Endpoint
 - Path: `/api/mcp`
-- Transport: Streamable HTTP (supports SSE for streaming). Works with standard MCP clients.
-- Hosted inside React Router (`loader` + `action`) so it ships with every deployment.
+- Transport: Streamable HTTP (supports SSE for streaming); see `web/app/routes/api.mcp.ts`.
+- Hosted inside Remix route (`loader` + `action`) so it ships with every deployment.
 
 ## Server Info
 - Name: `Crane App MCP Server`
 - Version: `1.0.0`
 
-## Tools
+## Tools (all read-only, open-world)
 - `search_packages`
   - Input: `{ query: string; limit?: number }`
   - Action: Searches CRAN packages via `PackageService.searchPackages`.
-  - Response: includes `url` pointing to the package page (`/package/<name>`).
+  - Response (structuredContent): `{ searchType: "packages", query, combined, packages: { hits }, authors: { hits: [] } }`
+  - Metadata: toolInvocation labels, `openai/toolDefinition.readOnlyHint = true`, `openWorldHint = true`.
 - `search_authors`
   - Input: `{ query: string; limit?: number }`
   - Action: Searches authors via `AuthorService.searchAuthors`.
-  - Response: includes `url` pointing to the author page (`/author/<name>`).
+  - Response (structuredContent): `{ searchType: "authors", query, combined, packages: { hits: { combined: [] } }, authors: { hits } }`
+  - Metadata: same annotations as above.
 - `search_universal`
   - Input: `{ query: string }`
   - Action: Combined packages + authors via `SearchService.searchUniversal`.
-  - Response: each item has `url` to the package/author page.
+  - Response (structuredContent): `{ searchType: "universal", query, combined, packages: { hits }, authors: { hits } }`
+  - Metadata: same annotations as above.
+
+All tool responses also include `content` with a JSON string for debugging.
 
 ## Resources
 - `cran://package/{name}`
   - Description: Full details for a CRAN package.
-  - Data: Includes metadata, authors, maintainer, dependency relations, and download statistics (last month/year).
+  - Data: Includes metadata, authors, maintainer, dependency relations, download stats (month/year), and links back to site.
 - `cran://author/{name}`
   - Description: Full details for a package author.
-  - Data: Includes author metadata and a list of all authored packages with roles.
-
-Responses are returned as MCP tool results with `content: [{ type: "text", text: JSON.stringify(result, null, 2) }]`.
+  - Data: Includes author metadata and list of authored packages with roles and links.
 
 ## Client Connect (example)
 ```ts
@@ -43,8 +44,21 @@ import { WebSocket } from "ws"; // or fetch-based transport depending on client
 const client = new Client({ serverUrl: "https://<host>/api/mcp" });
 await client.connect();
 ```
-
 For raw HTTP/SSE clients, POST MCP JSON-RPC messages to `/api/mcp` and GET the same path to open the stream.
+
+## Deployment & CSP (for ChatGPT app submission)
+- MCP must be publicly reachable (no localhost/test endpoints).
+- Define CSP to allow fetches to Supabase/CRAN. Example:
+  - `connect-src`: your MCP host, Supabase API domains, CRAN logs.
+- Ensure CORS is permissive for `/api/mcp` (Streamable HTTP).
+
+## Submission checklist (OpenAI Apps Directory)
+- Verified organization; submit via https://platform.openai.com/apps-manage (Owner role).
+- Metadata: toolInvocation labels, `openai/toolDefinition.readOnlyHint = true`, `openWorldHint = true`.
+- Privacy policy URL + support contact.
+- Accurate app name/description/screenshots.
+- Tools labeled with readOnlyHint/openWorldHint; no destructive actions.
+- Global data residency (EU projects currently not accepted for submission).
 
 ## Dependencies
 - `@modelcontextprotocol/sdk`

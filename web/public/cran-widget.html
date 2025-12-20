@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crane Widget</title>
+    <style>
+      :root {
+        /* Radix Colors (Dark Mode exact values) */
+        /* Gray (Dark) */
+        --gray-1: #111111;
+        --gray-2: #191919;
+        --gray-3: #222222;
+        --gray-4: #2a2a2a;
+        --gray-5: #313131;
+        --gray-6: #3a3a3a;
+        --gray-7: #484848;
+        --gray-8: #606060;
+        --gray-9: #6e6e6e;
+        --gray-10: #7b7b7b;
+        --gray-11: #b4b4b4;
+        --gray-12: #eeeeee;
+
+        /* Iris (Dark) */
+        --iris-1: #13131e;
+        --iris-2: #171625;
+        --iris-3: #202248;
+        --iris-4: #262a65;
+        --iris-5: #303374;
+        --iris-6: #3d3e82;
+        --iris-7: #4a4a95;
+        --iris-8: #5958b1;
+        --iris-9: #5b5bd6;
+        --iris-10: #6e6ade;
+        --iris-11: #b1a9ff;
+        --iris-12: #e0dffe;
+
+        /* Jade (Dark) */
+        --jade-1: #0d1512;
+        --jade-2: #121c18;
+        --jade-3: #0f2e22;
+        --jade-4: #0b3b2c;
+        --jade-5: #114837;
+        --jade-6: #1b5745;
+        --jade-7: #246854;
+        --jade-8: #2a7e68;
+        --jade-9: #29a383;
+        --jade-10: #27b08b;
+        --jade-11: #1fd8a4;
+        --jade-12: #adf0d4;
+
+        /* Base Tokens */
+        --bg-app: var(--gray-1);
+        --bg-card: var(--gray-2);
+        --border-subtle: var(--gray-4);
+        --text-main: var(--gray-12);
+        --text-dim: var(--gray-11);
+
+        /* Typography */
+        --font-sans:
+          system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
+
+      /* Reset & Base */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg-app);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+        padding: 1.5rem;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      /* Layout Utilities */
+      .flex {
+        display: flex;
+      }
+      .flex-col {
+        flex-direction: column;
+      }
+      .items-center {
+        align-items: center;
+      }
+      .gap-2 {
+        gap: 0.5rem;
+      }
+      .gap-4 {
+        gap: 1rem;
+      }
+      .gap-1 {
+        gap: 0.25rem;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+
+      /* Typography Utilities */
+      .text-xs {
+        font-size: 0.75rem;
+      }
+      .text-sm {
+        font-size: 0.875rem;
+      }
+      .text-lg {
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+      .font-semibold {
+        font-weight: 600;
+      }
+      .text-dim {
+        color: var(--text-dim);
+      }
+
+      /* Components */
+      .header {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 1rem;
+      }
+
+      .header-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .info-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        transition: border-color 0.2s;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .info-card:hover {
+        border-color: var(--gray-6);
+      }
+
+      .info-card.variant-iris:hover {
+        border-color: var(--iris-8);
+      }
+      .info-card.variant-jade:hover {
+        border-color: var(--jade-8);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.125rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background-color: var(--gray-3);
+        color: var(--text-dim);
+        border: 1px solid var(--border-subtle);
+      }
+
+      /* Custom Gradients/Effects based on app design */
+      .gradient-text-iris {
+        background: linear-gradient(to right, var(--iris-11), var(--iris-9));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+
+      .gradient-text-jade {
+        background: linear-gradient(to right, var(--jade-11), var(--jade-9));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+
+      .icon-box {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--gray-3);
+      }
+
+      .variant-iris .icon-box {
+        background-color: rgba(91, 91, 214, 0.15);
+        color: var(--iris-11);
+      }
+      .variant-jade .icon-box {
+        background-color: rgba(41, 163, 131, 0.15);
+        color: var(--jade-11);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Content will be injected here -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          color: var(--text-dim);
+          padding: 20px;
+        "
+      >
+        Waiting for data...
+      </div>
+    </div>
+
+    <script>
+      // Mock Data for testing if opened directly
+      // window.data = { ... }
+
+      function render(data) {
+        const app = document.getElementById("app");
+
+        if (!data) {
+          app.innerHTML = '<div class="text-dim">No data available</div>';
+          return;
+        }
+
+        // Handle Tool Response format
+        // { searchType: 'packages' | 'authors' | 'universal', query: string, combined: Array }
+        // Or Resource format if applicable
+
+        let content = "";
+        const items = data.combined || [];
+        const query = data.query || "";
+        const type = data.searchType || "universal";
+
+        // Header
+        content += `
+        <div class="header">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="header-title">
+                ${type === "packages" ? "Package Results" : type === "authors" ? "Author Results" : "Search Results"}
+              </h1>
+              <p class="text-sm text-dim">
+                Found ${items.length} ${items.length === 1 ? "match" : "matches"} for "${query}"
+              </p>
+            </div>
+            <div class="pill">CRAN/E</div>
+          </div>
+        </div>
+      `;
+
+        // Grid
+        content += '<div class="card-grid">';
+
+        items.forEach((item) => {
+          const isAuthor = item.type === "author" || type === "authors"; // Helper logic
+          const variant = isAuthor ? "variant-jade" : "variant-iris";
+          const iconSvg = isAuthor
+            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+            : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22v-9"/></svg>`;
+
+          content += `
+          <a href="${item.url}" target="_blank" class="info-card ${variant}">
+            <div class="flex items-start justify-between">
+              <div class="icon-box">
+                ${iconSvg}
+              </div>
+              ${item.lastRelease ? `<span class="text-xs text-dim">${item.lastRelease.split("T")[0]}</span>` : ""}
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs tracking-wider uppercase text-dim">${isAuthor ? "Author" : "Package"}</span>
+              <span class="font-semibold text-lg ${isAuthor ? "gradient-text-jade" : "gradient-text-iris"}">
+                ${item.name}
+              </span>
+            </div>
+            ${item.title ? `<p class="text-sm text-dim" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.title}</p>` : ""}
+          </a>
+        `;
+        });
+
+        content += "</div>";
+        app.innerHTML = content;
+      }
+
+      // Listen for data from host (OpenAI Apps SDK / Skybridge / MCP)
+
+      // OpenAI Apps SDK
+      const SET_GLOBALS_EVENT_TYPE = "openai:set_globals";
+
+      function handleOpenAiGlobals(globals) {
+        // toolOutput contains the structured data returned by the tool
+        if (globals && globals.toolOutput) {
+          const data = globals.toolOutput;
+          // Handle case where data is wrapped in structuredContent or is the data itself
+          render(data.structuredContent || data);
+        }
+      }
+
+      window.addEventListener(SET_GLOBALS_EVENT_TYPE, (event) => {
+        handleOpenAiGlobals(event.detail.globals);
+      });
+
+      // Initial check for OpenAI globals
+      if (window.openai) {
+        handleOpenAiGlobals(window.openai);
+      }
+
+      // Standard pattern: window.addEventListener('message', ...)
+      window.addEventListener("message", (event) => {
+        // Basic validation
+        if (
+          event.data &&
+          (event.data.combined || event.data.structuredContent)
+        ) {
+          render(event.data.structuredContent || event.data);
+        }
+      });
+
+      // Also check if data was injected globally
+      if (window.widgetData) {
+        render(window.widgetData);
+      }
+    </script>
+  </body>
+</html>

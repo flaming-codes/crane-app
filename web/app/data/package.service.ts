@@ -1,6 +1,6 @@
 import { packageIdSchema, packageNameSchema } from "./package.shape";
 import { SitemapItem } from "./types";
-import { Tables } from "./supabase.types.generated";
+import { Database, Tables } from "./supabase.types.generated";
 import { supabase } from "./supabase.server";
 import { slog } from "../modules/observability.server";
 import { authorIdSchema } from "./author.shape";
@@ -27,11 +27,29 @@ type CacheKey = "sitemap-items" | "count-packages";
 
 type CacheValue = SitemapItem[] | number;
 
+type PackageSearchHit =
+  | {
+      name: string;
+      synopsis: string | null;
+      title?: string | null;
+      last_released_at?: string | null;
+    }
+  | {
+      name: string;
+      synopsis: string | null;
+      title?: string | null;
+      last_released_at?: string | null;
+      sources: Array<
+        [
+          /* source name */ string,
+          /* source data */
+          Database["public"]["Functions"]["match_package_embeddings"]["Returns"],
+        ]
+      >;
+    };
+
 type SearchResult = {
-  combined: Array<{
-    name: string;
-    synopsis: string;
-  } | null>;
+  combined: Array<PackageSearchHit | null>;
   isSemanticPreferred: boolean;
 };
 
@@ -380,7 +398,7 @@ export class PackageService {
         // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
         supabase
           .from("cran_packages")
-          .select("id,name,synopsis")
+          .select("id,name,synopsis,title,last_released_at")
           .ilike("name", query)
           .maybeSingle(),
         isSimilaritySearchEnabled
@@ -455,6 +473,10 @@ export class PackageService {
       .map((item) => ({
         name: item.name,
         synopsis: item.synopsis,
+        // @ts-expect-error - RPC might return title/last_released_at if updated, otherwise undefined
+        title: item.title,
+        // @ts-expect-error - RPC might return title/last_released_at if updated, otherwise undefined
+        last_released_at: item.last_released_at,
       }));
 
     // Group sources by package id and source name, so that multiple hits per source & package
@@ -474,7 +496,7 @@ export class PackageService {
       groupedSourcesByPackageIds.map(async (item) => {
         const { data, error } = await supabase
           .from("cran_packages")
-          .select("name,synopsis")
+          .select("name,synopsis,title,last_released_at")
           .eq("id", item.packageId)
           .maybeSingle();
 
@@ -486,6 +508,8 @@ export class PackageService {
         return {
           name: data.name,
           synopsis: data.synopsis,
+          title: data.title,
+          last_released_at: data.last_released_at,
           sources: Object.entries(item.sources),
         };
       }),
