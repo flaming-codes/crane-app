@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { PageContent } from "../modules/page-content";
 import { PageContentSection } from "../modules/page-content-section";
 import { AnchorLink, Anchors } from "../modules/anchors";
@@ -18,6 +18,7 @@ import { Header } from "../modules/header";
 import { mergeMeta } from "../modules/meta";
 import { useState } from "react";
 import { ClientOnly } from "remix-utils/client-only";
+import { MCP_VERSION } from "../mcp/config.server";
 
 const anchors = ["Overview", "Resources", "Tools", "Usage", "Integration"];
 
@@ -32,7 +33,16 @@ export const meta = mergeMeta(() => {
   ];
 });
 
+type LoaderData = {
+  mcpVersion: string;
+};
+
+export async function loader(): Promise<LoaderData> {
+  return { mcpVersion: MCP_VERSION };
+}
+
 export default function McpPage() {
+  const { mcpVersion } = useLoaderData<typeof loader>();
   const [copied, setCopied] = useState(false);
 
   return (
@@ -58,7 +68,7 @@ export default function McpPage() {
           className="gap-10"
         >
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="text-gray-normal space-y-6 text-lg leading-relaxed">
+            <div className="space-y-6 text-lg leading-relaxed text-gray-normal">
               <p>
                 CRAN/E provides a Model Context Protocol (MCP) server that
                 enables programmatic access to our comprehensive R package
@@ -68,24 +78,24 @@ export default function McpPage() {
               </p>
               <p>
                 The server is available at{" "}
-                <code className="bg-gray-2 dark:bg-gray-12 rounded px-2 py-1 text-sm">
+                <code className="px-2 py-1 text-sm rounded bg-gray-2 dark:bg-gray-12">
                   /api/mcp
                 </code>{" "}
                 and follows the Model Context Protocol specification for
                 seamless integration with AI-powered development workflows.
               </p>
             </div>
-            <div className="border-gray-6/30 from-slate-3/50 via-blue-2/40 text-gray-normal dark:border-gray-1/20 dark:from-slate-9/40 dark:via-blue-9/20 dark:to-gray-12/40 dark:text-gray-2 space-y-4 rounded-2xl border bg-linear-to-br to-white/60 p-6 text-base leading-relaxed">
+            <div className="p-6 space-y-4 text-base leading-relaxed border border-gray-6/30 from-slate-3/50 via-blue-2/40 text-gray-normal dark:border-gray-1/20 dark:from-slate-9/40 dark:via-blue-9/20 dark:to-gray-12/40 dark:text-gray-2 rounded-2xl bg-linear-to-br to-white/60">
               <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
                 Server Info
               </p>
-              <p className="text-gray-normal mt-1 text-xl font-semibold">
+              <p className="mt-1 text-xl font-semibold text-gray-normal">
                 CRAN/E MCP Server
               </p>
               <div className="space-y-2 text-sm">
                 <p>
                   <strong>Version:</strong>{" "}
-                  <span className="font-mono">1.0.0</span>
+                  <span className="font-mono">{mcpVersion}</span>
                 </p>
                 <p>
                   <strong>Endpoint:</strong>{" "}
@@ -94,7 +104,7 @@ export default function McpPage() {
               </div>
               <ClientOnly
                 fallback={
-                  <div className="hover:bg-slate-6 cursor-pointer rounded-full transition-colors">
+                  <div className="transition-colors rounded-full cursor-pointer hover:bg-slate-6">
                     <InfoPill
                       variant="slate"
                       label={<RiFileCopyLine size={16} />}
@@ -112,15 +122,15 @@ export default function McpPage() {
                       );
                       setCopied(true);
                       setTimeout(() => setCopied(false), 2000);
-                    } catch (err) {
-                      console.error("Failed to copy:", err);
+                    } catch {
+                      // Ignore copy errors
                     }
                   };
 
                   return (
-                    <div
+                    <button
                       onClick={handleCopyMcpUrl}
-                      className="hover:bg-slate-6 cursor-pointer rounded-full transition-colors"
+                      className="transition-colors rounded-full cursor-pointer hover:bg-slate-6"
                     >
                       <InfoPill
                         variant="slate"
@@ -128,7 +138,7 @@ export default function McpPage() {
                       >
                         {copied ? "Copied!" : "Copy MCP URL"}
                       </InfoPill>
-                    </div>
+                    </button>
                   );
                 }}
               </ClientOnly>
@@ -145,30 +155,30 @@ export default function McpPage() {
             CRAN/E web interface.
           </p>
           <div className="grid gap-6 md:grid-cols-2">
-            <div className="border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl border bg-white/80 p-6 shadow-lg">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
+              <div className="flex items-center gap-3 mb-4">
                 <RiPagesLine size={24} className="text-blue-500" />
                 <h3 className="text-lg font-semibold">Package Resource</h3>
               </div>
-              <p className="text-gray-normal mb-4">
+              <p className="mb-4 text-gray-normal">
                 Access detailed metadata for any CRAN package including
                 dependencies, authors, download statistics, and release
                 information.
               </p>
-              <div className="bg-gray-2 dark:bg-gray-12 rounded-lg p-3 font-mono text-sm">
+              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
                 cran://package/{"{name}"}
               </div>
             </div>
-            <div className="border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl border bg-white/80 p-6 shadow-lg">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
+              <div className="flex items-center gap-3 mb-4">
                 <RiUserLine size={24} className="text-green-500" />
                 <h3 className="text-lg font-semibold">Author Resource</h3>
               </div>
-              <p className="text-gray-normal mb-4">
+              <p className="mb-4 text-gray-normal">
                 Retrieve comprehensive author profiles with their associated
                 packages and contributions to the R ecosystem.
               </p>
-              <div className="bg-gray-2 dark:bg-gray-12 rounded-lg p-3 font-mono text-sm">
+              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
                 cran://author/{"{name}"}
               </div>
             </div>
@@ -184,16 +194,16 @@ export default function McpPage() {
             results.
           </p>
           <div className="space-y-6">
-            <div className="border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl border bg-white/80 p-6 shadow-lg">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
+              <div className="flex items-center gap-3 mb-4">
                 <RiSearchLine size={24} className="text-purple-500" />
                 <h3 className="text-lg font-semibold">search_packages</h3>
               </div>
-              <p className="text-gray-normal mb-4">
+              <p className="mb-4 text-gray-normal">
                 Search for R packages in the CRAN database. Returns package
                 metadata including name, title, description, and other details.
               </p>
-              <div className="bg-gray-2 dark:bg-gray-12 rounded-lg p-3 font-mono text-sm">
+              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
                 <div>Parameters:</div>
                 <div>- query (string): The search query string</div>
                 <div>
@@ -201,16 +211,16 @@ export default function McpPage() {
                 </div>
               </div>
             </div>
-            <div className="border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl border bg-white/80 p-6 shadow-lg">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
+              <div className="flex items-center gap-3 mb-4">
                 <RiUserLine size={24} className="text-green-500" />
                 <h3 className="text-lg font-semibold">search_authors</h3>
               </div>
-              <p className="text-gray-normal mb-4">
+              <p className="mb-4 text-gray-normal">
                 Search for R package authors. Returns author names and their
                 associated packages.
               </p>
-              <div className="bg-gray-2 dark:bg-gray-12 rounded-lg p-3 font-mono text-sm">
+              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
                 <div>Parameters:</div>
                 <div>- query (string): The search query string</div>
                 <div>
@@ -218,17 +228,17 @@ export default function McpPage() {
                 </div>
               </div>
             </div>
-            <div className="border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl border bg-white/80 p-6 shadow-lg">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
+              <div className="flex items-center gap-3 mb-4">
                 <RiTerminalLine size={24} className="text-orange-500" />
                 <h3 className="text-lg font-semibold">search_universal</h3>
               </div>
-              <p className="text-gray-normal mb-4">
+              <p className="mb-4 text-gray-normal">
                 Combined search for both R packages and authors. Use this when
-                the user's intent is ambiguous or when they want to see all
+                the user&apos;s intent is ambiguous or when they want to see all
                 matches.
               </p>
-              <div className="bg-gray-2 dark:bg-gray-12 rounded-lg p-3 font-mono text-sm">
+              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
                 <div>Parameters:</div>
                 <div>- query (string): The search query string</div>
               </div>
@@ -244,8 +254,8 @@ export default function McpPage() {
             to our server endpoint. The server will automatically register all
             available resources and tools for immediate use.
           </p>
-          <div className="bg-gray-2 dark:bg-gray-12 rounded-xl p-6 font-mono text-sm">
-            <div className="text-gray-dim mb-4"># MCP Server Configuration</div>
+          <div className="p-6 font-mono text-sm bg-gray-2 dark:bg-gray-12 rounded-xl">
+            <div className="mb-4 text-gray-dim"># MCP Server Configuration</div>
             <ClientOnly
               fallback={
                 <pre>
@@ -282,39 +292,39 @@ export default function McpPage() {
 
         <PageContentSection headline="Integration" fragment="integration">
           <p>
-            This MCP integration makes CRAN/E's data seamlessly accessible to
-            AI-powered development workflows, enabling:
+            This MCP integration makes CRAN/E&#39;s data seamlessly accessible
+            to AI-powered development workflows, enabling:
           </p>
-          <ul className="text-gray-normal ml-4 list-inside list-disc space-y-2">
+          <ul className="ml-4 space-y-2 list-disc list-inside text-gray-normal">
             <li>Smarter package discovery and recommendation</li>
             <li>Automated dependency analysis and management</li>
             <li>Enhanced R development experiences with AI assistance</li>
             <li>Real-time access to the latest CRAN package information</li>
             <li>Seamless integration with development tools and IDEs</li>
           </ul>
-          <div className="mt-6 flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mt-6">
             <ExternalLink href="https://modelcontextprotocol.io">
               <InfoPill variant="slate" label="Learn more">
                 About MCP
-                <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
+                <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
               </InfoPill>
             </ExternalLink>
             <ExternalLink href="https://code.visualstudio.com/docs/copilot/customization/mcp-servers">
               <InfoPill variant="slate" label="VS Code">
                 MCP Server Setup
-                <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
+                <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
               </InfoPill>
             </ExternalLink>
             <ExternalLink href="https://modelcontextprotocol.io/docs/develop/connect-remote-servers">
               <InfoPill variant="slate" label="Documentation">
                 Remote Servers
-                <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
+                <RiExternalLinkLine size={16} className="ml-2 text-gray-dim" />
               </InfoPill>
             </ExternalLink>
             <Link viewTransition to="/about">
               <InfoPill variant="sand" label="Visit">
                 About CRAN/E
-                <RiArrowRightSLine size={16} className="text-gray-dim ml-2" />
+                <RiArrowRightSLine size={16} className="ml-2 text-gray-dim" />
               </InfoPill>
             </Link>
           </div>

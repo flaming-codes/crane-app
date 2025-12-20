@@ -3,6 +3,7 @@ import {
   ResourceTemplate,
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { MCP_VERSION } from "./config.server";
 import { AuthorService } from "../data/author.service";
 import { PackageService } from "../data/package.service";
 import { SearchService } from "../data/search.service";
@@ -28,7 +29,7 @@ export function getMcpServer() {
 
   const server = new McpServer({
     name: "CRAN/E MCP Server",
-    version: "1.0.0",
+    version: MCP_VERSION,
   });
 
   server.registerResource(
