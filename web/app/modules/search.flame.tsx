@@ -10,7 +10,7 @@ export function FlameOfFame(props: { score: number; threshold?: number }) {
   return (
     <RiFireFill
       size={16}
-      className="animate-pulse text-ruby-9 animate-duration-1000"
+      className="text-ruby-9 animate-duration-1000 animate-pulse"
     />
   );
 }
