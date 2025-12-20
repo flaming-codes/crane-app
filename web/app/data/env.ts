@@ -5,6 +5,14 @@ export const envSchema = z.object({
   VITE_RELEASE_CHANNEL: z.string().optional(),
   VITE_PLAUSIBLE_SITE_ID: z.string().describe("Plausible Analytics Site ID"),
   VITE_PLAUSIBLE_API_KEY: z.string().describe("Plausible Analytics API Key"),
+  POSTHOG_API_KEY: z
+    .string()
+    .optional()
+    .describe("PostHog API key for server analytics"),
+  POSTHOG_HOST: z
+    .string()
+    .default("https://eu.i.posthog.com")
+    .describe("PostHog API host"),
   SUPABASE_URL: z.string().describe("Supabase Gateway-URL"),
   SUPABASE_ANON_KEY: z
     .string()
