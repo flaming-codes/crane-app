@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import {
   McpServer,
   ResourceTemplate,
@@ -12,9 +10,6 @@ import { BASE_URL } from "../modules/app";
 
 // Create a singleton instance
 let mcpServer: McpServer | null = null;
-
-const WIDGET_URI = "ui://widget/cran.html";
-const WIDGET_PATH = path.resolve("public", "cran-widget.html");
 
 function makeToolResponse(structured: unknown, textPayload?: unknown) {
   return {
@@ -32,42 +27,16 @@ export function getMcpServer() {
   if (mcpServer) return mcpServer;
 
   const server = new McpServer({
-    name: "Crane App MCP Server",
+    name: "CRAN/E MCP Server",
     version: "1.0.0",
   });
-
-  server.registerResource(
-    "cran_widget",
-    new ResourceTemplate(WIDGET_URI, { list: undefined }),
-    {
-      mimeType: "text/html+skybridge",
-      description: "ChatGPT widget for searching CRAN packages and authors",
-    },
-    async (uri) => {
-      // Read the widget HTML file dynamically to allow for hot-reloading during development
-      const widgetHtml = readFileSync(WIDGET_PATH, "utf8");
-
-      return {
-        contents: [
-          {
-            uri: uri.toString(),
-            mimeType: "text/html+skybridge",
-            text: widgetHtml,
-            _meta: {
-              "openai/widgetPrefersBorder": true,
-            },
-          },
-        ],
-      };
-    },
-  );
 
   server.registerResource(
     "package",
     new ResourceTemplate("cran://package/{name}", { list: undefined }),
     {
       mimeType: "application/json",
-      description: "Get full details for a specific CRAN package by name",
+      description: "Get full details for a specific CRAN/E package by name",
     },
     async (uri, { name }) => {
       const pkgName = String(name);
@@ -174,7 +143,6 @@ export function getMcpServer() {
           .describe("Maximum number of results to return (default: 20)"),
       }),
       _meta: {
-        "openai/outputTemplate": WIDGET_URI,
         "openai/toolInvocation/invoking": "Searching CRAN packages",
         "openai/toolInvocation/invoked": "Found CRAN packages",
         "openai/toolDefinition": {
@@ -216,7 +184,6 @@ export function getMcpServer() {
           .describe("Maximum number of results to return (default: 8)"),
       }),
       _meta: {
-        "openai/outputTemplate": WIDGET_URI,
         "openai/toolInvocation/invoking": "Searching authors",
         "openai/toolInvocation/invoked": "Found authors",
         "openai/toolDefinition": {
@@ -250,9 +217,8 @@ export function getMcpServer() {
         query: z.string().describe("The search query string"),
       }),
       _meta: {
-        "openai/outputTemplate": WIDGET_URI,
-        "openai/toolInvocation/invoking": "Searching CRAN",
-        "openai/toolInvocation/invoked": "CRAN results ready",
+        "openai/toolInvocation/invoking": "Searching CRAN/E",
+        "openai/toolInvocation/invoked": "CRAN/E results ready",
         "openai/toolDefinition": {
           readOnlyHint: true,
           openWorldHint: true,

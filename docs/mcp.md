@@ -1,6 +1,4 @@
-# MCP Server (Crane App) & ChatGPT Apps SDK Integration
-
-This document captures the live MCP surface and how it is wired for the ChatGPT Apps SDK (directory submission).
+# MCP Server (Crane App)
 
 ## Endpoint
 - Path: `/api/mcp`
@@ -11,19 +9,12 @@ This document captures the live MCP surface and how it is wired for the ChatGPT 
 - Name: `Crane App MCP Server`
 - Version: `1.0.0`
 
-## Widget (Apps SDK UI)
-- Resource: `ui://widget/cran.html`
-- File: `web/public/cran-widget.html`
-- MIME: `text/html+skybridge`
-- Purpose: Renders search UI and consumes `structuredContent` from tool responses via `window.openai.toolOutput` + `callTool`.
-- Meta: `_meta["openai/widgetPrefersBorder"] = true`
-
 ## Tools (all read-only, open-world)
 - `search_packages`
   - Input: `{ query: string; limit?: number }`
   - Action: Searches CRAN packages via `PackageService.searchPackages`.
   - Response (structuredContent): `{ searchType: "packages", query, combined, packages: { hits }, authors: { hits: [] } }`
-  - Metadata: `_meta.openai/outputTemplate = ui://widget/cran.html`, toolInvocation labels, `openai/toolDefinition.readOnlyHint = true`, `openWorldHint = true`.
+  - Metadata: toolInvocation labels, `openai/toolDefinition.readOnlyHint = true`, `openWorldHint = true`.
 - `search_authors`
   - Input: `{ query: string; limit?: number }`
   - Action: Searches authors via `AuthorService.searchAuthors`.
@@ -44,8 +35,6 @@ All tool responses also include `content` with a JSON string for debugging.
 - `cran://author/{name}`
   - Description: Full details for a package author.
   - Data: Includes author metadata and list of authored packages with roles and links.
-- `ui://widget/cran.html`
-  - Description: ChatGPT widget HTML used as output template for search tools.
 
 ## Client Connect (example)
 ```ts
@@ -59,18 +48,16 @@ For raw HTTP/SSE clients, POST MCP JSON-RPC messages to `/api/mcp` and GET the s
 
 ## Deployment & CSP (for ChatGPT app submission)
 - MCP must be publicly reachable (no localhost/test endpoints).
-- Define CSP to allow fetches to Supabase/CRAN and serving `ui://widget/cran.html`. Example:
+- Define CSP to allow fetches to Supabase/CRAN. Example:
   - `connect-src`: your MCP host, Supabase API domains, CRAN logs.
-  - `frame-ancestors`: `https://chat.openai.com`.
-  - `default-src` / `script-src`: self + any CDN you actually use for the widget (currently none besides inline).
 - Ensure CORS is permissive for `/api/mcp` (Streamable HTTP).
 
 ## Submission checklist (OpenAI Apps Directory)
 - Verified organization; submit via https://platform.openai.com/apps-manage (Owner role).
+- Metadata: toolInvocation labels, `openai/toolDefinition.readOnlyHint = true`, `openWorldHint = true`.
 - Privacy policy URL + support contact.
 - Accurate app name/description/screenshots.
 - Tools labeled with readOnlyHint/openWorldHint; no destructive actions.
-- Widget served at `ui://widget/cran.html` and bound via `_meta.openai/outputTemplate`.
 - Global data residency (EU projects currently not accepted for submission).
 
 ## Dependencies
