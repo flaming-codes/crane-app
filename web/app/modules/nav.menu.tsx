@@ -7,6 +7,7 @@ const menuItems = [
   // Main navigation
   { label: "Home", path: "/" },
   { label: "About", path: "/about" },
+  { label: "MCP", path: "/mcp" },
   { label: "Privacy", path: "/privacy" },
   { type: "separator" as const },
 

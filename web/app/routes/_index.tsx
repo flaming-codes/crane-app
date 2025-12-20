@@ -1,5 +1,6 @@
-import { data, useLoaderData } from "react-router";
+import { data, useLoaderData, Link } from "react-router";
 import { SyneLogo } from "../modules/svg";
+import { McpIcon } from "../modules/mcp-icon";
 import NavigationPage from "../modules/nav";
 import { randomInt } from "es-toolkit";
 import { Footer } from "../modules/footer";
@@ -81,6 +82,17 @@ export default function Index() {
                 )}
               </ClientOnly>{" "}
               to open search from anywhere
+            </p>
+            <p className="animate-fade animate-delay-300">
+              Use the{" "}
+              <Link
+                to="/mcp"
+                className="inline-flex items-center gap-1 font-bold opacity-85 hover:opacity-70"
+              >
+                <McpIcon />
+                remote MCP-server
+              </Link>{" "}
+              for agents
             </p>
           </div>
         </div>
