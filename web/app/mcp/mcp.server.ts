@@ -36,7 +36,7 @@ export function getMcpServer() {
     new ResourceTemplate("cran://package/{name}", { list: undefined }),
     {
       mimeType: "application/json",
-      description: "Get full details for a specific CRAN/E package by name",
+      description: "Get full details for a specific CRAN R-package by name",
     },
     async (uri, { name }) => {
       const pkgName = String(name);
