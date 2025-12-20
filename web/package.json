@@ -52,6 +52,7 @@
     "minisearch": "^7.2.0",
     "motion": "^12.23.24",
     "opentelemetry-instrumentation-remix": "^0.8.0",
+    "posthog-node": "^5.17.4",
     "radix-ui": "^1.4.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

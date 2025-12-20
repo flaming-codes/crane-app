@@ -48,7 +48,7 @@ export default function McpPage() {
   return (
     <>
       <Header
-        gradient="iris"
+        gradient="sand"
         headline="MCP Server"
         subline="Model Context Protocol for CRAN/E"
       />
@@ -65,46 +65,57 @@ export default function McpPage() {
         <PageContentSection
           headline="Overview"
           fragment="overview"
-          className="gap-10"
+          className="gap-8"
         >
-          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="space-y-6 text-lg leading-relaxed text-gray-normal">
-              <p>
-                CRAN/E provides a Model Context Protocol (MCP) server that
-                enables programmatic access to our comprehensive R package
-                database. This MCP server allows AI assistants and other tools
-                to directly query CRAN package information, author details, and
-                perform searches with real-time data.
-              </p>
-              <p>
-                The server is available at{" "}
-                <code className="px-2 py-1 text-sm rounded bg-gray-2 dark:bg-gray-12">
-                  /api/mcp
-                </code>{" "}
-                and follows the Model Context Protocol specification for
-                seamless integration with AI-powered development workflows.
-              </p>
-            </div>
-            <div className="p-6 space-y-4 text-base leading-relaxed border border-gray-6/30 from-slate-3/50 via-blue-2/40 text-gray-normal dark:border-gray-1/20 dark:from-slate-9/40 dark:via-blue-9/20 dark:to-gray-12/40 dark:text-gray-2 rounded-2xl bg-linear-to-br to-white/60">
-              <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
-                Server Info
-              </p>
-              <p className="mt-1 text-xl font-semibold text-gray-normal">
-                CRAN/E MCP Server
-              </p>
-              <div className="space-y-2 text-sm">
-                <p>
-                  <strong>Version:</strong>{" "}
-                  <span className="font-mono">{mcpVersion}</span>
-                </p>
-                <p>
-                  <strong>Endpoint:</strong>{" "}
-                  <span className="font-mono">/api/mcp</span>
-                </p>
-              </div>
+          <div className="space-y-4 text-lg leading-relaxed text-gray-normal">
+            <p>
+              CRAN/E provides a Model Context Protocol (MCP) server that enables
+              programmatic access to our comprehensive R package database. AI
+              assistants and tools can query packages, authors, and perform
+              searches with real-time data.
+            </p>
+            <p>
+              The server is available at{" "}
+              <code className="px-2 py-1 text-sm rounded bg-gray-2 dark:bg-gray-12">
+                /api/mcp
+              </code>{" "}
+              and follows the MCP specification for seamless integration.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
+              Quick MCP config
+            </p>
+            <div className="p-4 font-mono text-sm leading-relaxed border rounded-lg border-gray-6/40 dark:border-gray-1/20 bg-gray-2/80 dark:bg-gray-12/60">
               <ClientOnly
                 fallback={
-                  <div className="transition-colors rounded-full cursor-pointer hover:bg-slate-6">
+                  <pre>
+                    {`{
+  "cran-mcp": {
+    "type": "http",
+    "url": "https://crane.dev/api/mcp"
+  }
+}`}
+                  </pre>
+                }
+              >
+                {() => (
+                  <pre>
+                    {`{
+  "cran-mcp": {
+    "type": "http",
+    "url": "${window?.location?.origin || "https://crane.dev"}/api/mcp"
+  }
+}`}
+                  </pre>
+                )}
+              </ClientOnly>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-dim">
+              <ClientOnly
+                fallback={
+                  <div className="rounded-full cursor-pointer">
                     <InfoPill
                       variant="slate"
                       label={<RiFileCopyLine size={16} />}
@@ -142,6 +153,17 @@ export default function McpPage() {
                   );
                 }}
               </ClientOnly>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-gray-9">Endpoint:</span>
+                <code className="px-2 py-1 font-mono rounded bg-gray-2 dark:bg-gray-12">
+                  /api/mcp
+                </code>
+                <span className="text-gray-8">•</span>
+                <span className="text-gray-9">Version:</span>
+                <code className="px-2 py-1 font-mono rounded bg-gray-2 dark:bg-gray-12">
+                  {mcpVersion}
+                </code>
+              </div>
             </div>
           </div>
         </PageContentSection>
@@ -154,31 +176,29 @@ export default function McpPage() {
             access to CRAN data with enriched metadata and direct links to the
             CRAN/E web interface.
           </p>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
-              <div className="flex items-center gap-3 mb-4">
-                <RiPagesLine size={24} className="text-blue-500" />
-                <h3 className="text-lg font-semibold">Package Resource</h3>
+          <div className="space-y-4">
+            <div className="p-4 border rounded-lg border-gray-6/40 dark:border-gray-1/20 dark:bg-gray-12/40 bg-white/60">
+              <div className="flex items-center gap-2 mb-2 text-base font-semibold text-gray-11 dark:text-gray-3">
+                <RiPagesLine size={20} /> Package resource
               </div>
-              <p className="mb-4 text-gray-normal">
+              <p className="text-gray-normal">
                 Access detailed metadata for any CRAN package including
                 dependencies, authors, download statistics, and release
                 information.
               </p>
-              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
+              <div className="inline-block px-3 py-2 mt-3 font-mono text-sm rounded bg-gray-2 dark:bg-gray-12">
                 cran://package/{"{name}"}
               </div>
             </div>
-            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
-              <div className="flex items-center gap-3 mb-4">
-                <RiUserLine size={24} className="text-green-500" />
-                <h3 className="text-lg font-semibold">Author Resource</h3>
+            <div className="p-4 border rounded-lg border-gray-6/40 dark:border-gray-1/20 dark:bg-gray-12/40 bg-white/60">
+              <div className="flex items-center gap-2 mb-2 text-base font-semibold text-gray-11 dark:text-gray-3">
+                <RiUserLine size={20} /> Author resource
               </div>
-              <p className="mb-4 text-gray-normal">
+              <p className="text-gray-normal">
                 Retrieve comprehensive author profiles with their associated
                 packages and contributions to the R ecosystem.
               </p>
-              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
+              <div className="inline-block px-3 py-2 mt-3 font-mono text-sm rounded bg-gray-2 dark:bg-gray-12">
                 cran://author/{"{name}"}
               </div>
             </div>
@@ -193,54 +213,41 @@ export default function McpPage() {
             querying the CRAN database with flexible options and real-time
             results.
           </p>
-          <div className="space-y-6">
-            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
-              <div className="flex items-center gap-3 mb-4">
-                <RiSearchLine size={24} className="text-purple-500" />
-                <h3 className="text-lg font-semibold">search_packages</h3>
+          <div className="space-y-4">
+            <div className="p-4 border rounded-lg border-gray-6/40 dark:border-gray-1/20 dark:bg-gray-12/40 bg-white/60">
+              <div className="flex items-center gap-2 mb-2 font-semibold text-gray-11 dark:text-gray-3">
+                <RiSearchLine size={20} /> search_packages
               </div>
-              <p className="mb-4 text-gray-normal">
-                Search for R packages in the CRAN database. Returns package
-                metadata including name, title, description, and other details.
+              <p className="text-gray-normal">
+                Search for R packages in the CRAN database. Returns name, title,
+                description, and other metadata.
               </p>
-              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
-                <div>Parameters:</div>
-                <div>- query (string): The search query string</div>
-                <div>
-                  - limit (number, optional): Maximum results (default: 20)
-                </div>
+              <div className="inline-block px-3 py-2 mt-3 font-mono text-sm rounded bg-gray-2 dark:bg-gray-12">
+                query (string) · limit (optional, default 20)
               </div>
             </div>
-            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
-              <div className="flex items-center gap-3 mb-4">
-                <RiUserLine size={24} className="text-green-500" />
-                <h3 className="text-lg font-semibold">search_authors</h3>
+            <div className="p-4 border rounded-lg border-gray-6/40 dark:border-gray-1/20 dark:bg-gray-12/40 bg-white/60">
+              <div className="flex items-center gap-2 mb-2 font-semibold text-gray-11 dark:text-gray-3">
+                <RiUserLine size={20} /> search_authors
               </div>
-              <p className="mb-4 text-gray-normal">
+              <p className="text-gray-normal">
                 Search for R package authors. Returns author names and their
                 associated packages.
               </p>
-              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
-                <div>Parameters:</div>
-                <div>- query (string): The search query string</div>
-                <div>
-                  - limit (number, optional): Maximum results (default: 8)
-                </div>
+              <div className="inline-block px-3 py-2 mt-3 font-mono text-sm rounded bg-gray-2 dark:bg-gray-12">
+                query (string) · limit (optional, default 8)
               </div>
             </div>
-            <div className="p-6 border shadow-lg border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 rounded-xl bg-white/80">
-              <div className="flex items-center gap-3 mb-4">
-                <RiTerminalLine size={24} className="text-orange-500" />
-                <h3 className="text-lg font-semibold">search_universal</h3>
+            <div className="p-4 border rounded-lg border-gray-6/40 dark:border-gray-1/20 dark:bg-gray-12/40 bg-white/60">
+              <div className="flex items-center gap-2 mb-2 font-semibold text-gray-11 dark:text-gray-3">
+                <RiTerminalLine size={20} /> search_universal
               </div>
-              <p className="mb-4 text-gray-normal">
-                Combined search for both R packages and authors. Use this when
-                the user&apos;s intent is ambiguous or when they want to see all
-                matches.
+              <p className="text-gray-normal">
+                Combined search for both packages and authors when intent is
+                ambiguous or a full match list is desired.
               </p>
-              <div className="p-3 font-mono text-sm rounded-lg bg-gray-2 dark:bg-gray-12">
-                <div>Parameters:</div>
-                <div>- query (string): The search query string</div>
+              <div className="inline-block px-3 py-2 mt-3 font-mono text-sm rounded bg-gray-2 dark:bg-gray-12">
+                query (string)
               </div>
             </div>
           </div>
@@ -249,43 +256,23 @@ export default function McpPage() {
         <Separator />
 
         <PageContentSection headline="Usage" fragment="usage">
-          <p>
-            To use the CRAN/E MCP server, configure your MCP client to connect
-            to our server endpoint. The server will automatically register all
-            available resources and tools for immediate use.
-          </p>
-          <div className="p-6 font-mono text-sm bg-gray-2 dark:bg-gray-12 rounded-xl">
-            <div className="mb-4 text-gray-dim"># MCP Server Configuration</div>
-            <ClientOnly
-              fallback={
-                <pre>
-                  {`{
-  "cran-mcp": {
-    "type": "http",
-    "url": "https://crane.dev/api/mcp"
-  }
-}`}
-                </pre>
-              }
-            >
-              {() => (
-                <pre>
-                  {`{
-  "cran-mcp": {
-    "type": "http",
-    "url": "${window?.location?.origin || "https://crane.dev"}/api/mcp"
-  }
-}`}
-                </pre>
-              )}
-            </ClientOnly>
+          <div className="space-y-4 text-gray-normal">
+            <p>
+              Configure your MCP client with the JSON above. The server will
+              register all resources and tools for immediate use.
+            </p>
+            <ul className="ml-4 space-y-2 list-disc list-inside">
+              <li>Add the MCP entry to your client configuration.</li>
+              <li>
+                Connect to <code className="font-mono">/api/mcp</code>.
+              </li>
+              <li>Call the resources and tools as needed.</li>
+            </ul>
+            <p>
+              Responses include enriched metadata with direct URLs to CRAN/E
+              pages for quick reference.
+            </p>
           </div>
-          <p className="mt-6">
-            Once connected, you can immediately start using the resources and
-            tools to query CRAN data programmatically. All responses include
-            enriched metadata with direct URLs to the corresponding CRAN/E web
-            pages for easy reference.
-          </p>
         </PageContentSection>
 
         <Separator />

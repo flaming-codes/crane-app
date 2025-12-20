@@ -4,7 +4,8 @@ import { cva, VariantProps } from "cva";
 import { ReactNode } from "react";
 import { clsx } from "clsx";
 const BASE_ITEMS: Array<{ label: string; href: string }> = [
-  { label: "About & MCP", href: "/about" },
+  { label: "About", href: "/about" },
+  { label: "MCP", href: "/mcp" },
   { label: "Privacy", href: "/privacy" },
   { label: "Statistics", href: "/statistic" },
   { label: "Newsroom", href: "/press/news" },
