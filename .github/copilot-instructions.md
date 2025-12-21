@@ -38,6 +38,10 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - **Other scripts:** `npm run format` (Prettier + tailwind plugin), `npm run licenses.build` (regenerates licenses), `npm run db.types` (requires Supabase CLI + creds to generate DB types).
 - No dedicated test suite is defined; validation relies on lint/typecheck/build.
 
+### Quality gate
+- Before committing, run the package.json scripts from `/web`: `npm run lint`, `npm run typecheck`, and `npm run format`.
+- Lint currently reports existing violations; still run it and keep any files you touch lint-clean (fix new lint errors you introduce).
+
 ### CI / workflows
 - GitHub Actions workflows present: a Dependabot updates workflow entry and a “Copilot coding agent” dynamic workflow (automation for agent tasks, not standard CI). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
 
