@@ -3,12 +3,14 @@
 ### Global Code Quality Rules
 
 **DRY (Don't Repeat Yourself)**
+
 - Extract repeated logic into reusable functions or utilities
 - Use shared service classes for common data access patterns
 - Leverage TypeScript generics and type helpers to avoid code duplication
 - When you notice similar code in multiple places, refactor to a shared module
 
 **Modular Architecture**
+
 - Keep files focused and single-purpose (avoid monolithic files)
 - Split large components into smaller, composable pieces
 - Organize code by feature/domain in appropriate directories
@@ -16,17 +18,20 @@
 - UI components go in `/web/app/modules`, services in `/web/app/data`
 
 **Concise Documentation**
+
 - Write JSDoc comments that are 1-2 lines maximum
 - Focus on "why" and non-obvious behavior, not "what" (code should be self-documenting)
 - Use TypeScript types to document interfaces and contracts
 - Example: `/** Fetches package data with 6-hour cache TTL. */`
 
 ### What this repo is
+
 - Frontend for **CRAN/E** (pronounced “CRANE,” like the bird), a PWA that searches CRAN (Comprehensive R Archive Network — singular “Archive” in the official name) packages/authors. Live at https://cran-e.com.
 - Tech: TypeScript + React Router v7 (Vite build), Tailwind CSS, Remix-style file-based routes, Supabase data, MCP endpoint. No backend outside the Remix server build.
 - Primary code lives in `/web`; the repo root also contains docs/CHANGELOG/README files.
 
 ### Repo layout (where to look first)
+
 - Root files: `README.md`, `CHANGELOG.md`, `docs/mcp.md` (MCP server details), `tailwind.config.js`.
 - Main project: `/web`
   - `package.json` scripts (build/dev/lint/typecheck), `.nvmrc` (v23.3.0, Node >=20), `.npmrc` (`legacy-peer-deps = true`), `.env.example`.
@@ -38,6 +43,7 @@
   - Generated: `.react-router/types` (from `react-router typegen`), `app/licenses.json` (postinstall).
 
 ### Environment & prerequisites
+
 - Use Node **>=20** (repo suggests v23.3.0 via `.nvmrc`). Package manager: **npm**.
 - `.npmrc` forces `legacy-peer-deps`; keep it to avoid install conflicts.
 - Env vars (see `.env.example`, validated by `app/data/env.ts`):
@@ -46,7 +52,9 @@
   - For local dev/tests, set dummy non-empty strings to satisfy the schema.
 
 ### Commands (locally verified)
+
 Run from `/web` unless noted. Always `npm install` first (postinstall regenerates `app/licenses.json`; use `git restore web/app/licenses.json` before committing if you don’t want that change).
+
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json` (restorable via `git restore web/app/licenses.json`).
 - **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo.
   - Expect non-zero exit until the baseline is cleaned up; keep new changes lint-clean and plan a dedicated cleanup if a full pass is required.
@@ -60,13 +68,27 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - No dedicated test suite is defined; validation relies on lint/typecheck/build.
 
 ### Quality gate
+
 - Before committing, run the package.json scripts from `/web`: `npm run lint`, `npm run typecheck`, and `npm run format`.
 - Lint currently reports existing violations; still run it and keep any files you touch lint-clean (fix new lint errors you introduce).
 
+### Git / Versioning Guidelines
+
+**Use Conventional Commits for all changes**
+
+- Format: `<type>[optional scope]: <description>`
+- **Types:** `feat:` (new feature), `fix:` (bug fix), `docs:` (documentation), `style:` (formatting), `refactor:` (code change without feature), `test:` (tests), `chore:` (maintenance)
+- **Examples:** `feat: add package search autocomplete`, `fix: resolve author profile loading issue`, `docs: update MCP server README`
+- Keep descriptions under 72 characters, use imperative mood ("add" not "added")
+- Add optional scope after type: `feat(ui): add dark mode toggle`, `fix(api): handle empty search results`
+- For breaking changes: add `!` before colon: `feat!: remove legacy search endpoint`
+
 ### CI / workflows
+
 - GitHub Actions workflows present: a Dependabot updates workflow entry and a “Copilot coding agent” dynamic workflow (automation for agent tasks, not standard CI). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
 
 ### Working effectively
+
 - Key configs for editing: lint rules (`.eslintrc.cjs`), formatter (`.prettierrc`), path aliases (`tsconfig.json` uses `~/*`), Vite/React Router config (`vite.config.ts`).
 - Layout/routes highlights:
   - `app/root.tsx` sets the HTML shell/meta/Plausible injection + footer toggle.
@@ -77,4 +99,5 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - Avoid committing build artifacts (`web/build`) or regenerated `app/licenses.json` unless intentionally updated; clean with `rm -rf web/build` and `git restore web/app/licenses.json`.
 
 ### Trust these notes
+
 Follow the commands and file locations above; only search further if something here seems wrong or incomplete.
