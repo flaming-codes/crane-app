@@ -1,0 +1,20 @@
+{
+  "name": "crane-app",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flaming-codes/crane-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/flaming-codes/crane-app/issues"
+  },
+  "homepage": "https://github.com/flaming-codes/crane-app#readme",
+  "dependencies": {
+    "@fission-ai/openspec": "^0.16.0"
+  }
+}
