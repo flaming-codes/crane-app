@@ -1,5 +1,26 @@
 ## Copilot onboarding for `flaming-codes/crane-app`
 
+### Global Code Quality Rules
+
+**DRY (Don't Repeat Yourself)**
+- Extract repeated logic into reusable functions or utilities
+- Use shared service classes for common data access patterns
+- Leverage TypeScript generics and type helpers to avoid code duplication
+- When you notice similar code in multiple places, refactor to a shared module
+
+**Modular Architecture**
+- Keep files focused and single-purpose (avoid monolithic files)
+- Split large components into smaller, composable pieces
+- Organize code by feature/domain in appropriate directories
+- Each module should have a clear, well-defined responsibility
+- UI components go in `/web/app/modules`, services in `/web/app/data`
+
+**Concise Documentation**
+- Write JSDoc comments that are 1-2 lines maximum
+- Focus on "why" and non-obvious behavior, not "what" (code should be self-documenting)
+- Use TypeScript types to document interfaces and contracts
+- Example: `/** Fetches package data with 6-hour cache TTL. */`
+
 ### What this repo is
 - Frontend for **CRAN/E** (pronounced “CRANE,” like the bird), a PWA that searches CRAN (Comprehensive R Archive Network — singular “Archive” in the official name) packages/authors. Live at https://cran-e.com.
 - Tech: TypeScript + React Router v7 (Vite build), Tailwind CSS, Remix-style file-based routes, Supabase data, MCP endpoint. No backend outside the Remix server build.
