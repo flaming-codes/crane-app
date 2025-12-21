@@ -12,6 +12,12 @@ const meta: Meta<typeof ContactPill> = {
         roles: ["aut", "cre"],
         link: "https://hadley.nz",
     },
+    argTypes: {
+        roles: {
+            control: "check",
+            options: ["aut", "cre", "ctb", "rev", "cph", "com", "ths", "trl"],
+        },
+    },
 };
 
 export default meta;

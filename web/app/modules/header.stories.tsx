@@ -13,6 +13,20 @@ const meta: Meta<typeof Header> = {
         subline: "Search for R packages, authors, and more.",
         gradient: "iris",
     },
+    argTypes: {
+        gradient: {
+            control: "select",
+            options: [
+                "iris",
+                "ruby",
+                "jade",
+                "bronze",
+                "sand",
+                "amethyst",
+                "opal",
+            ],
+        },
+    },
 };
 
 export default meta;

@@ -9,6 +9,12 @@ const meta: Meta<typeof Footer> = {
     parameters: {
         layout: "fullscreen",
     },
+    argTypes: {
+        variant: {
+            control: "select",
+            options: ["start", "page"],
+        },
+    },
 };
 
 export default meta;

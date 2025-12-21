@@ -9,6 +9,16 @@ const meta: Meta<typeof Tag> = {
         size: "xs",
         borderGradients: "iris",
     },
+    argTypes: {
+        size: {
+            control: "select",
+            options: ["xs", "sm"],
+        },
+        borderGradients: {
+            control: "select",
+            options: ["iris", "jade"],
+        },
+    },
 };
 
 export default meta;

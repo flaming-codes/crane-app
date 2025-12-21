@@ -17,6 +17,24 @@ const meta: Meta<typeof InfoCard> = {
         ),
         variant: "iris",
     },
+    argTypes: {
+        variant: {
+            control: "select",
+            options: [
+                "none",
+                "iris",
+                "ruby",
+                "jade",
+                "bronze",
+                "sand",
+                "amethyst",
+            ],
+        },
+        icon: {
+            control: "select",
+            options: ["external", "internal"],
+        },
+    },
 };
 
 export default meta;

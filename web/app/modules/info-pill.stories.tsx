@@ -10,6 +10,24 @@ const meta: Meta<typeof InfoPill> = {
         variant: "iris",
         size: "md",
     },
+    argTypes: {
+        size: {
+            control: "select",
+            options: ["xs", "sm", "md", "lg"],
+        },
+        variant: {
+            control: "select",
+            options: [
+                "iris",
+                "ruby",
+                "jade",
+                "slate",
+                "sand",
+                "amethyst",
+                "opal",
+            ],
+        },
+    },
 };
 
 export default meta;
