@@ -2,12 +2,26 @@ import { composeIndexOGImage } from "../modules/meta-og-image.server";
 import { ENV } from "../data/env";
 import { minutesToSeconds } from "date-fns";
 import { LoaderFunctionArgs } from "react-router";
+import { PackageService } from "../data/package.service";
+import { AuthorService } from "../data/author.service";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { origin } = new URL(request.url);
 
+  const [packageRes, authorRes] = await Promise.allSettled([
+    PackageService.getTotalPackagesCount(),
+    AuthorService.getTotalAuthorsCount(),
+  ]);
+
+  const packageCount = packageRes.status === "fulfilled" ? packageRes.value : 0;
+  const authorCount = authorRes.status === "fulfilled" ? authorRes.value : 0;
+  const version = ENV.npm_package_version;
+
   const png = await composeIndexOGImage({
     requestUrl: origin,
+    packageCount: Intl.NumberFormat().format(packageCount),
+    authorCount: Intl.NumberFormat().format(authorCount),
+    version,
   });
 
   // Respond with the PNG buffer

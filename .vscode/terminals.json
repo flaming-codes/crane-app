@@ -1,15 +1,15 @@
 {
- "autorun": true,
- "autokill": true,
- "restore": false,
- "terminals": [
-  {
-   "name": "app",
-   "icon": "code",
-   "color": "terminal.ansiCyan",
-   "commands": ["cd web", "nvm use", "npm i", "npm run dev"],
-   "open": true,
-   "focus": true
-  }
- ]
+  "autorun": true,
+  "autokill": true,
+  "restore": false,
+  "terminals": [
+    {
+      "name": "app",
+      "icon": "code",
+      "color": "terminal.ansiCyan",
+      "commands": ["cd web", "nvm use", "npm i --include=dev", "npm run dev"],
+      "open": true,
+      "focus": true
+    }
+  ]
 }
