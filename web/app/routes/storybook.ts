@@ -1,5 +1,5 @@
 import { redirect } from "react-router";
 
 export const loader = () => {
-    return redirect("/storybook/index.html");
+  return redirect("/storybook/index.html");
 };
