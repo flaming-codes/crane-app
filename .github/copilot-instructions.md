@@ -1,7 +1,7 @@
 ## Copilot onboarding for `flaming-codes/crane-app`
 
 ### What this repo is
-- Frontend for **CRAN/E** (pronounced “CRANE”), a PWA that searches CRAN (Comprehensive R Archive Network — singular “Archive” in the official name) packages/authors. Live at https://cran-e.com.
+- Frontend for **CRAN/E** (pronounced “CRANE,” like the bird), a PWA that searches CRAN (Comprehensive R Archive Network — singular “Archive” in the official name) packages/authors. Live at https://cran-e.com.
 - Tech: TypeScript + React Router v7 (Vite build), Tailwind CSS, Remix-style file-based routes, Supabase data, MCP endpoint. No backend outside the Remix server build.
 - Primary code lives in `/web`; the repo root also contains docs/CHANGELOG/README files.
 
@@ -29,6 +29,7 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json` (restorable via `git restore web/app/licenses.json`).
 - **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo.
   - Expect non-zero exit until the baseline is cleaned up; keep new changes lint-clean and plan a dedicated cleanup if a full pass is required.
+  - Existing violations are mostly `no-explicit-any`, stray `console` usage, and accessibility rules; prioritize those if tackling the baseline.
   - For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
 - **Typecheck:** `npm run typecheck` (runs `react-router typegen` then `tsc`, success).
 - **Build:** `npm run build` (Vite/React Router prod build, succeeds; creates `web/build`).
@@ -38,7 +39,7 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - No dedicated test suite is defined; validation relies on lint/typecheck/build.
 
 ### CI / workflows
-- GitHub Actions workflows present: Dependabot updates and “Copilot coding agent” (dynamic). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
+- GitHub Actions workflows present: Dependabot updates and a “Copilot coding agent” dynamic workflow (automation for agent tasks, not standard CI). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
 
 ### Working effectively
 - Key configs for editing: lint rules (`.eslintrc.cjs`), formatter (`.prettierrc`), path aliases (`tsconfig.json` uses `~/*`), Vite/React Router config (`vite.config.ts`).
