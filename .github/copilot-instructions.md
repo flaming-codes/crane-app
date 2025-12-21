@@ -27,7 +27,9 @@
 ### Commands (locally verified)
 Run from `/web` unless noted. Always `npm install` first (postinstall regenerates `app/licenses.json`; use `git restore web/app/licenses.json` before committing if you don’t want that change).
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json` (restorable via `git restore web/app/licenses.json`).
-- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until the baseline is cleaned up; ensure your changes don’t add new lint errors and plan a dedicated cleanup if a full lint pass is required. For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
+- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo.
+  - Expect non-zero exit until the baseline is cleaned up; keep new changes lint-clean and plan a dedicated cleanup if a full pass is required.
+  - For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
 - **Typecheck:** `npm run typecheck` (runs `react-router typegen` then `tsc`, success).
 - **Build:** `npm run build` (Vite/React Router prod build, succeeds; creates `web/build`).
 - **Dev server:** `npm run dev` (React Router dev, Vite-based).
@@ -40,7 +42,11 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 
 ### Working effectively
 - Key configs for editing: lint rules (`.eslintrc.cjs`), formatter (`.prettierrc`), path aliases (`tsconfig.json` uses `~/*`), Vite/React Router config (`vite.config.ts`).
-- Layout: `app/root.tsx` defines HTML shell/meta/plausible injection + footer toggle. Layout route `_page.tsx` wraps subpages; `_index.tsx` is home search UI; `_page.package.*` handles package detail/OG images; `_page.author.*` handles author pages; `_page.statistic.*` for stats; `api.search._index.ts` provides search JSON; `api.mcp.ts` hosts the MCP server endpoint.
+- Layout/routes highlights:
+  - `app/root.tsx` sets the HTML shell/meta/Plausible injection + footer toggle.
+  - `_page.tsx` is the layout wrapper; `_index.tsx` is the home search UI.
+  - `_page.package.*` handles package detail + OG images; `_page.author.*` handles author pages; `_page.statistic.*` covers stats pages.
+  - API-style routes include `api.search._index.ts` (search JSON) and `api.mcp.ts` (MCP endpoint).
 - Public assets & PWA: `public/manifest.webmanifest`, icons under `public/icons`.
 - Avoid committing build artifacts (`web/build`) or regenerated `app/licenses.json` unless intentionally updated; clean with `rm -rf web/build` and `git restore web/app/licenses.json`.
 
