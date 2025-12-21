@@ -27,7 +27,7 @@
 ### Commands (locally verified)
 Run from `/web` unless noted. Always `npm install` first (postinstall regenerates `app/licenses.json`; use `git restore web/app/licenses.json` before committing if you don’t want that change).
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json` (restorable via `git restore web/app/licenses.json`).
-- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until fixed; ensure your changes don’t add new lint errors. For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
+- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until the baseline is cleaned up; ensure your changes don’t add new lint errors. For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
 - **Typecheck:** `npm run typecheck` (runs `react-router typegen` then `tsc`, success).
 - **Build:** `npm run build` (Vite/React Router prod build, succeeds; creates `web/build`).
 - **Dev server:** `npm run dev` (React Router dev, Vite-based).
@@ -36,7 +36,7 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - No dedicated test suite is defined; validation relies on lint/typecheck/build.
 
 ### CI / workflows
-- GitHub Actions workflows present: Dependabot updates and “Copilot coding agent” (dynamic). No standard push/PR CI for lint/build; rely on local commands above.
+- GitHub Actions workflows present: Dependabot updates and “Copilot coding agent” (dynamic). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
 
 ### Working effectively
 - Key configs for editing: lint rules (`.eslintrc.cjs`), formatter (`.prettierrc`), path aliases (`tsconfig.json` uses `~/*`), Vite/React Router config (`vite.config.ts`).
