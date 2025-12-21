@@ -2,6 +2,34 @@ import { PackageService } from "../data/package.service";
 import { BASE_URL } from "../modules/app";
 
 /**
+ * Type definition for enriched package data returned by the enrichment function.
+ */
+export type EnrichedPackageData = {
+  name: string;
+  title: string | null;
+  description: string | null;
+  synopsis: string | null;
+  version: string | null;
+  url: string;
+  lastRelease: string;
+  authors: Array<{ name: string; url: string }>;
+  maintainer: { name: string; url: string } | null;
+  relations: Record<string, unknown>;
+  statistics: {
+    downloads: {
+      lastMonth: number;
+      lastYear: number;
+      history: unknown;
+    };
+    isTrending: boolean;
+  };
+  license: unknown;
+  needs_compilation: boolean | null;
+  r_version: string | null;
+  last_released_at: string;
+};
+
+/**
  * Enriches a list of package names with detailed metadata.
  * This follows the DRY principle by extracting the enrichment logic
  * used by both the MCP server search tools.
@@ -16,32 +44,6 @@ export async function enrichPackageSearchResults(
 ) {
   // Limit the number of packages to process
   const limitedPackageNames = packageNames.slice(0, limit);
-
-  // Define the return type for the enriched package
-  type EnrichedPackageData = {
-    name: string;
-    title: string | null;
-    description: string | null;
-    synopsis: string | null;
-    version: string | null;
-    url: string;
-    lastRelease: string;
-    authors: Array<{ name: string; url: string }>;
-    maintainer: { name: string; url: string } | null;
-    relations: Record<string, unknown>;
-    statistics: {
-      downloads: {
-        lastMonth: number;
-        lastYear: number;
-        history: unknown;
-      };
-      isTrending: boolean;
-    };
-    license: unknown;
-    needs_compilation: boolean | null;
-    r_version: string | null;
-    last_released_at: string;
-  };
 
   // Fetch enriched data for each package in parallel
   const enrichedPackages = await Promise.allSettled(

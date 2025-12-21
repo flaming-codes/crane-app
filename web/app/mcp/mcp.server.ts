@@ -142,7 +142,7 @@ export function getMcpServer() {
         limit: z
           .number()
           .optional()
-          .describe("Maximum number of results to return (default: 10, max: 10)"),
+          .describe("Maximum number of results to return (max: 10)"),
       }),
       _meta: {
         "openai/toolInvocation/invoking": "Searching CRAN packages",
