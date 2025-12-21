@@ -19,12 +19,15 @@
 ### Environment & prerequisites
 - Use Node **>=20** (repo suggests v23.3.0 via `.nvmrc`). Package manager: **npm**.
 - `.npmrc` forces `legacy-peer-deps`; keep it to avoid install conflicts.
-- Env vars (see `.env.example`, validated by `app/data/env.ts`): `VITE_PLAUSIBLE_SITE_ID`, `VITE_PLAUSIBLE_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` are required; others optional (`POSTHOG_*`, `GOOGLE_GENERATIVE_AI_API_KEY`, `OTEL_*`, `VITE_RELEASE_CHANNEL`). For local dev/tests, set dummy non-empty strings to satisfy the schema.
+- Env vars (see `.env.example`, validated by `app/data/env.ts`):
+  - **Required:** `VITE_PLAUSIBLE_SITE_ID`, `VITE_PLAUSIBLE_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`.
+  - **Optional:** `POSTHOG_*`, `GOOGLE_GENERATIVE_AI_API_KEY`, `OTEL_*`, `VITE_RELEASE_CHANNEL`.
+  - For local dev/tests, set dummy non-empty strings to satisfy the schema.
 
 ### Commands (locally verified)
 Run from `/web` unless noted. Always `npm install` first (postinstall regenerates `app/licenses.json`; revert if you don’t want to commit it).
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json`.
-- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until fixed; ensure your changes don’t add new lint errors.
+- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until fixed; ensure your changes don’t add new lint errors. For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
 - **Typecheck:** `npm run typecheck` (runs `react-router typegen` then `tsc`, success).
 - **Build:** `npm run build` (Vite/React Router prod build, succeeds; creates `web/build`).
 - **Dev server:** `npm run dev` (React Router dev, Vite-based).
@@ -39,7 +42,7 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - Key configs for editing: lint rules (`.eslintrc.cjs`), formatter (`.prettierrc`), path aliases (`tsconfig.json` uses `~/*`), Vite/React Router config (`vite.config.ts`).
 - Layout: `app/root.tsx` defines HTML shell/meta/plausible injection + footer toggle. Layout route `_page.tsx` wraps subpages; `_index.tsx` is home search UI; `_page.package.*` handles package detail/OG images; `_page.author.*` handles author pages; `_page.statistic.*` for stats; `api.search._index.ts` provides search JSON; `api.mcp.ts` hosts the MCP server endpoint.
 - Public assets & PWA: `public/manifest.webmanifest`, icons under `public/icons`.
-- Avoid committing build artifacts (`web/build`) or regenerated `app/licenses.json` unless intentionally updated; clean with `rm -rf web/build` and `git checkout -- web/app/licenses.json`.
+- Avoid committing build artifacts (`web/build`) or regenerated `app/licenses.json` unless intentionally updated; clean with `rm -rf web/build` and `git restore web/app/licenses.json`.
 
 ### Trust these notes
 Follow the commands and file locations above; only search further if something here seems wrong or incomplete.
