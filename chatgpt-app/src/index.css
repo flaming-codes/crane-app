@@ -3,11 +3,14 @@
 @source "../node_modules/@openai/apps-sdk-ui";
 
 :root {
-  font-family: "Söhne", "Inter", system-ui, -apple-system, sans-serif;
-  color: rgb(12, 18, 26);
-  background: #f7f7f8;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-surface);
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   min-height: 100vh;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
