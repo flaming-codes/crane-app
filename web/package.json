@@ -10,6 +10,7 @@
     "postuninstall": "npm run licenses.build",
     "build": "react-router build",
     "dev": "react-router dev",
+    "dev.mcp": "npx @modelcontextprotocol/inspector",
     "preview": "npm run build && dotenv -- npm run start",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "react-router-serve ./build/server/index.js",
