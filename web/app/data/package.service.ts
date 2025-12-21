@@ -21,6 +21,8 @@ import { PackageInsightService } from "./package-insight.service.server";
 // import { embed } from "ai";
 // import { google } from "@ai-sdk/google";
 
+const MAX_SEARCH_QUERY_LENGTH = 255;
+
 type Package = Tables<"cran_packages">;
 
 type CacheKey = "sitemap-items" | "count-packages";
@@ -349,16 +351,17 @@ export class PackageService {
     options?: { limit?: number; permutations?: number },
   ) {
     const { limit = 20 } = options || {};
+    const normalizedQuery = query.trim().slice(0, MAX_SEARCH_QUERY_LENGTH);
 
-    const isSimilaritySearchEnabled = query.length >= 3;
-    const cacheKey = query.toLowerCase();
+    const isSimilaritySearchEnabled = normalizedQuery.length >= 3;
+    const cacheKey = normalizedQuery.toLowerCase();
 
     const cached = this.cachedHits.get(cacheKey);
     if (cached) {
       return cached;
     }
 
-    const rephrasedQuery = query;
+    const rephrasedQuery = normalizedQuery;
     let queryEmbedding = "";
     if (isSimilaritySearchEnabled) {
       // console.log("---->", query);
@@ -392,14 +395,14 @@ export class PackageService {
     const [packageFTS, packageExact, embeddingSimilarity, embeddingFTS] =
       await Promise.all([
         supabase.rpc("find_closest_packages", {
-          search_term: query,
+          search_term: normalizedQuery,
           result_limit: limit,
         }),
         // ! ilike is expensive, but we want to make sure we get the exact match w/o case sensitivity.
         supabase
           .from("cran_packages")
           .select("id,name,synopsis,title,last_released_at")
-          .ilike("name", query)
+          .ilike("name", normalizedQuery)
           .maybeSingle(),
         isSimilaritySearchEnabled
           ? supabase.rpc("match_package_embeddings", {
@@ -409,7 +412,7 @@ export class PackageService {
             })
           : null,
         supabase.rpc("find_closest_package_embeddings", {
-          search_term: query,
+          search_term: normalizedQuery,
           result_limit: limit,
         }),
       ]);
