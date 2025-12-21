@@ -1,7 +1,7 @@
 ## Copilot onboarding for `flaming-codes/crane-app`
 
 ### What this repo is
-- Frontend for **CRAN/E** (pronounced “CRANE”), a PWA that searches CRAN (Comprehensive R Archive Network) packages/authors. Live at https://cran-e.com.
+- Frontend for **CRAN/E** (pronounced “CRANE”), a PWA that searches CRAN (Comprehensive R Archive Network — singular “Archive” in the official name) packages/authors. Live at https://cran-e.com.
 - Tech: TypeScript + React Router v7 (Vite build), Tailwind CSS, Remix-style file-based routes, Supabase data, MCP endpoint. No backend outside the Remix server build.
 - Primary code lives in `/web`; the repo root also contains docs/CHANGELOG/README files.
 
@@ -27,7 +27,7 @@
 ### Commands (locally verified)
 Run from `/web` unless noted. Always `npm install` first (postinstall regenerates `app/licenses.json`; use `git restore web/app/licenses.json` before committing if you don’t want that change).
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json` (restorable via `git restore web/app/licenses.json`).
-- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until the baseline is cleaned up; ensure your changes don’t add new lint errors. For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
+- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until the baseline is cleaned up; ensure your changes don’t add new lint errors and plan a dedicated cleanup if a full lint pass is required. For iterative work, lint just the files you touch (e.g., `npx eslint app/routes/yourfile.tsx --fix`) to keep new code clean.
 - **Typecheck:** `npm run typecheck` (runs `react-router typegen` then `tsc`, success).
 - **Build:** `npm run build` (Vite/React Router prod build, succeeds; creates `web/build`).
 - **Dev server:** `npm run dev` (React Router dev, Vite-based).
