@@ -1,73 +1,43 @@
-# React + TypeScript + Vite
+# chatgpt-app: single-file UI for MCP visuals
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Goals
 
-Currently, two official plugins are available:
+- Build a small React + TypeScript + Tailwind app using OpenAI Apps UI components.
+- Produce **one self-contained HTML** (inline JS + CSS) via Vite for embedding in `web/app/mcp/mcp.server.ts` flows.
+- Default to minified output suitable for transport/storage; no external asset dependencies unless explicitly allowed.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech stack
 
-## React Compiler
+- Vite (React + TS)
+- Tailwind CSS
+- OpenAI Apps UI component library
+- `vite-plugin-singlefile` for inlining
+- Optional post-step: `html-minifier-terser` for extra HTML minification
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Build strategy (single-file + minify)
 
-## Expanding the ESLint configuration
+- Vite plugins: `react()`, Tailwind, `viteSingleFile({ removeViteModuleLoader: true })`.
+- Build opts: `cssCodeSplit: false`; `assetsInlineLimit` high (e.g., `100_000_000`); `rollupOptions.output.inlineDynamicImports = true`; `manualChunks: undefined`.
+- Minification: keep Vite `build.minify: "esbuild"` (JS/CSS). Optionally run `html-minifier-terser` on `dist/index.html` for whitespace/comment stripping.
+- Asset policy: prefer inlining fonts/icons or allow CDN fetches if acceptable. Avoid public/`assets/` leftovers.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Outputs
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Primary artifact: `chatgpt-app/dist/index.html` (single file, minified JS/CSS inline). To be read/served by MCP tooling.
+- No additional assets expected; fail build if extra files appear.
+- Included in git for easier deployment for now, to avoid change to monorepo.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Dev + testing
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `npm run dev` for iteration.
+- `npm run build` then verify only `dist/index.html` exists and is self-contained.
+- Smoke test: load `dist/index.html` directly in browser (file://) to confirm no network fetches unless intentional.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Initial UI
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Simple “Hello, world” view using an Apps UI component (e.g., Button) to validate bundle and styling.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Open questions / follow-ups
+
+- Confirm whether external font/icon requests are acceptable; if not, inline alternatives or data URIs.
+- Decide on optional HTML post-minification step (enable if size is critical).

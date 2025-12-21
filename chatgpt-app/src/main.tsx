@@ -17,5 +17,5 @@ mediaQuery?.addEventListener("change", applySystemTheme);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );
