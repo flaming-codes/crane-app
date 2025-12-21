@@ -237,6 +237,30 @@ export function getMcpServer() {
     },
   );
 
+  server.registerTool(
+    "search_related_packages",
+    {
+      description:
+        "Find packages related to a seed package by reusing its title and description. Input should typically be a package name.",
+      inputSchema: z.object({
+        query: z.string().describe("The package name or query string"),
+      }),
+      _meta: {
+        "openai/toolInvocation/invoking": "Searching related packages",
+        "openai/toolInvocation/invoked": "Related packages ready",
+        "openai/toolDefinition": {
+          readOnlyHint: true,
+          openWorldHint: true,
+        },
+      },
+    },
+    async ({ query }) => {
+      const results = await SearchService.searchRelatedPackages(query);
+      const structured = { ...results };
+      return makeToolResponse(structured, results);
+    },
+  );
+
   mcpServer = server;
   return mcpServer;
 }
