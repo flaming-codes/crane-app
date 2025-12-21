@@ -14,5 +14,11 @@ const config: StorybookConfig = {
     "storybook-addon-remix-react-router"
   ],
   "framework": "@storybook/react-vite",
+  async viteFinal(config) {
+    const { mergeConfig } = await import('vite');
+    return mergeConfig(config, {
+      base: '/storybook/',
+    });
+  },
 };
 export default config;

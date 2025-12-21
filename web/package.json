@@ -20,7 +20,7 @@
     "licenses.build": "npx --yes license-report --output=json > ./app/licenses.json",
     "db.types": "npx supabase gen types typescript --local > app/data/db.types.generated.ts",
     "storybook": "STORYBOOK=true storybook dev -p 6006",
-    "build-storybook": "STORYBOOK=true storybook build"
+    "build-storybook": "STORYBOOK=true storybook build -o public/storybook"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.42",
