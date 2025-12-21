@@ -4,6 +4,13 @@ import { BASE_URL } from "../modules/app";
 import { slog } from "../modules/observability.server";
 import type { Database } from "./supabase.types.generated";
 
+const MAX_QUERY_LENGTH = 512;
+const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
+const withPackageUrl = (name: string) =>
+  `${BASE_URL}/package/${encodeURIComponent(name)}`;
+const withAuthorUrl = (name: string) =>
+  `${BASE_URL}/author/${encodeURIComponent(name)}`;
+
 export type PackageCombinedHit = {
   type: "package";
   name: string;
@@ -29,6 +36,14 @@ export type AuthorCombinedHit = {
 
 export type CombinedSearchHit = PackageCombinedHit | AuthorCombinedHit;
 
+type PackageSearchCombinedHit = {
+  name: string;
+  synopsis: string | null;
+  title?: string | null;
+  last_released_at?: string | null;
+  sources?: PackageCombinedHit["sources"];
+};
+
 export type RelatedPackageSeed = {
   name: string;
   synopsis: string | null;
@@ -48,7 +63,7 @@ export type RelatedPackageSearchResult = {
 
 export class SearchService {
   static async searchUniversal(query: string) {
-    const normalizedQuery = query.trim().slice(0, 512);
+    const normalizedQuery = query.trim().slice(0, MAX_QUERY_LENGTH);
 
     const [packages, authors] = await Promise.allSettled([
       PackageService.searchPackages(normalizedQuery),
@@ -73,12 +88,6 @@ export class SearchService {
 
     // Re-sort the hits by 'includes' of name and synopsis
     const resortQuery = normalizedQuery.toLowerCase();
-    const withPackageUrl = (name: string) =>
-      `${BASE_URL}/package/${encodeURIComponent(name)}`;
-    const withAuthorUrl = (name: string) =>
-      `${BASE_URL}/author/${encodeURIComponent(name)}`;
-
-    const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
 
     const packageCombined: PackageCombinedHit[] = packageHits.combined
       .filter(nonNull)
@@ -156,19 +165,104 @@ export class SearchService {
   static async searchRelatedPackages(
     query: string,
   ): Promise<RelatedPackageSearchResult> {
-    const normalizedQuery = query.trim().slice(0, 512);
-    const initialPackageSearch = await PackageService.searchPackages(
-      normalizedQuery,
-      { limit: 1 },
-    );
+    const normalizedQuery = query.trim().slice(0, MAX_QUERY_LENGTH);
+    try {
+      const initialPackageSearch = await PackageService.searchPackages(
+        normalizedQuery,
+        { limit: 1 },
+      );
 
-    const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
-    const seedHit = initialPackageSearch.combined.find(nonNull);
+      const isNonEmptyString = (part: unknown): part is string =>
+        typeof part === "string" && part.trim().length > 0;
+      const seedHit = initialPackageSearch.combined.find(nonNull);
 
-    const withPackageUrl = (name: string) =>
-      `${BASE_URL}/package/${encodeURIComponent(name)}`;
+      if (!seedHit) {
+        return {
+          searchType: "related-packages",
+          query: normalizedQuery,
+          relatedQuery: "",
+          seed: null,
+          combined: [],
+          isSemanticPreferred: false,
+        };
+      }
 
-    if (!seedHit) {
+      const seedPackageData =
+        await PackageService.getPackageByName(seedHit.name);
+      const relatedQueryBase = [
+        seedHit.title,
+        seedPackageData?.title,
+        seedPackageData?.description,
+        seedPackageData?.synopsis,
+      ]
+        .filter(isNonEmptyString)
+        .join(" ")
+        .trim()
+        .slice(0, MAX_QUERY_LENGTH);
+
+      const hasValidRelatedQuery = relatedQueryBase.length > 0;
+      const searchQuery = hasValidRelatedQuery
+        ? relatedQueryBase
+        : normalizedQuery;
+
+      const relatedPackagesSearch =
+        await PackageService.searchPackages(searchQuery);
+
+      const hasSources = (
+        hit: PackageSearchCombinedHit,
+      ): hit is PackageSearchCombinedHit & {
+        sources: NonNullable<PackageCombinedHit["sources"]>;
+      } => hit.sources != null;
+
+      const candidates: PackageSearchCombinedHit[] =
+        relatedPackagesSearch.combined
+          .filter(nonNull)
+          .filter((item) => item.name !== seedHit.name)
+          .map((item) => ({
+            name: item.name,
+            synopsis: item.synopsis ?? null,
+            title: item.title,
+            last_released_at: item.last_released_at,
+            sources: Array.isArray(
+              (item as { sources?: PackageCombinedHit["sources"] }).sources,
+            )
+              ? (
+                  item as { sources?: PackageCombinedHit["sources"] }
+                ).sources
+              : undefined,
+          }));
+
+      const combined: PackageCombinedHit[] = candidates.map((candidate) => ({
+        type: "package" as const,
+        name: candidate.name,
+        synopsis: candidate.synopsis ?? null,
+        title: candidate.title,
+        last_released_at: candidate.last_released_at,
+        url: withPackageUrl(candidate.name),
+        sources: hasSources(candidate) ? candidate.sources : undefined,
+      }));
+
+      const seed: RelatedPackageSeed = {
+        name: seedHit.name,
+        synopsis: seedHit.synopsis ?? null,
+        title: seedPackageData?.title ?? seedHit.title ?? null,
+        description: seedPackageData?.description ?? null,
+        url: withPackageUrl(seedHit.name),
+      };
+
+      return {
+        searchType: "related-packages",
+        query: normalizedQuery,
+        relatedQuery: searchQuery,
+        seed,
+        combined,
+        isSemanticPreferred: relatedPackagesSearch.isSemanticPreferred,
+      };
+    } catch (error) {
+      slog.error("Failed to search related packages", {
+        error,
+        query: normalizedQuery,
+      });
       return {
         searchType: "related-packages",
         query: normalizedQuery,
@@ -178,50 +272,5 @@ export class SearchService {
         isSemanticPreferred: false,
       };
     }
-
-    const seedPackageData = await PackageService.getPackageByName(seedHit.name);
-    const relatedQuery = [
-      seedHit.title,
-      seedPackageData?.title,
-      seedPackageData?.description,
-      seedPackageData?.synopsis,
-    ]
-      .filter((part): part is string => Boolean(part && part.trim()))
-      .join(" ")
-      .trim()
-      .slice(0, 512) || normalizedQuery;
-
-    const relatedPackagesSearch =
-      await PackageService.searchPackages(relatedQuery);
-
-    const combined: PackageCombinedHit[] = relatedPackagesSearch.combined
-      .filter(nonNull)
-      .filter((item) => item.name !== seedHit.name)
-      .map((item) => ({
-        type: "package" as const,
-        name: item.name,
-        synopsis: item.synopsis ?? null,
-        title: item.title,
-        last_released_at: item.last_released_at,
-        url: withPackageUrl(item.name),
-        sources: "sources" in item ? item.sources : undefined,
-      }));
-
-    const seed: RelatedPackageSeed = {
-      name: seedHit.name,
-      synopsis: seedHit.synopsis ?? null,
-      title: seedPackageData?.title ?? seedHit.title ?? null,
-      description: seedPackageData?.description ?? null,
-      url: withPackageUrl(seedHit.name),
-    };
-
-    return {
-      searchType: "related-packages",
-      query: normalizedQuery,
-      relatedQuery,
-      seed,
-      combined,
-      isSemanticPreferred: relatedPackagesSearch.isSemanticPreferred,
-    };
   }
 }
