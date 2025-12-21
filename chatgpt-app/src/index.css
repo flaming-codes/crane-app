@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "@openai/apps-sdk-ui/css";
+@source "../node_modules/@openai/apps-sdk-ui";
+
+:root {
+  font-family: "Söhne", "Inter", system-ui, -apple-system, sans-serif;
+  color: rgb(12, 18, 26);
+  background: #f7f7f8;
+}
+
+body {
+  min-height: 100vh;
+}

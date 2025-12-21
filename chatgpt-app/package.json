@@ -1,0 +1,36 @@
+{
+  "name": "chatgpt-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build && npm run minify:html",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "minify:html": "html-minifier-terser dist/index.html --collapse-whitespace --remove-comments --minify-css true --minify-js true -o dist/index.html"
+  },
+  "dependencies": {
+    "@openai/apps-sdk-ui": "^0.0.8",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "html-minifier-terser": "^7.2.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4",
+    "vite-plugin-singlefile": "^0.10.1"
+  }
+}
