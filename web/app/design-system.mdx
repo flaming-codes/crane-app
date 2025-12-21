@@ -1,0 +1,46 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design System" />
+
+# Design System
+
+A minimal guide to the visual language of CRAN/E.
+
+## Colors
+
+We use a curated palette from Radix Colors, integrated into Tailwind CSS v4.
+
+### Accents
+
+| Color | Name   | CSS variable          |
+| :---- | :----- | :-------------------- |
+| Iris  | Iris 9 | `var(--color-iris-9)` |
+| Jade  | Jade 9 | `var(--color-jade-9)` |
+| Ruby  | Ruby 9 | `var(--color-ruby-9)` |
+
+---
+
+## Typography
+
+We use a system-native font stack for maximum performance and a professional look.
+
+**Primary Stack:** `system-ui, ui-sans-serif, Helvetica, sans-serif`
+
+- **4xl**: The quick brown fox
+- **2xl bold**: The quick brown fox
+- **lg**: The quick brown fox
+- **base**: The quick brown fox
+- **sm dim**: The quick brown fox
+
+---
+
+## Layout
+
+We use the **Content Grid** system to manage responsive widths.
+
+| Class          | Width  | Usage                             |
+| :------------- | :----- | :-------------------------------- |
+| `content-grid` | 100%   | Container with horizontal padding |
+| `content`      | 900px  | Standard readable text width      |
+| `breakout`     | 1200px | Image or wide table breakout      |
+| `full-width`   | 100%   | Edge-to-edge content              |

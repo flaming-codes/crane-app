@@ -5,3 +5,8 @@ node_modules
 .env
 
 .react-router/
+
+*storybook.log
+storybook-static
+/public/storybook
+
