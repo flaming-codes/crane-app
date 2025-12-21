@@ -1,32 +1,37 @@
 import { PackageService } from "../data/package.service";
 import { BASE_URL } from "../modules/app";
+import { Tables } from "../data/supabase.types.generated";
+import { CranDownloadsResponse } from "../data/package-insight.shape";
 
 /**
  * Type definition for enriched package data returned by the enrichment function.
+ * Uses database types to avoid duplication and drift.
  */
-export type EnrichedPackageData = {
-  name: string;
-  title: string | null;
-  description: string | null;
-  synopsis: string | null;
-  version: string | null;
+export type EnrichedPackageData = Pick<
+  Tables<"cran_packages">,
+  | "name"
+  | "title"
+  | "description"
+  | "synopsis"
+  | "version"
+  | "licenses"
+  | "needs_compilation"
+  | "r_version"
+  | "last_released_at"
+> & {
   url: string;
   lastRelease: string;
-  authors: Array<{ name: string; url: string }>;
-  maintainer: { name: string; url: string } | null;
+  authors: Array<Pick<Tables<"authors">, "name"> & { url: string }>;
+  maintainer: (Pick<Tables<"authors">, "name"> & { url: string }) | null;
   relations: Record<string, unknown>;
   statistics: {
     downloads: {
       lastMonth: number;
       lastYear: number;
-      history: unknown;
+      history: CranDownloadsResponse;
     };
     isTrending: boolean;
   };
-  license: unknown;
-  needs_compilation: boolean | null;
-  r_version: string | null;
-  last_released_at: string;
 };
 
 /**
@@ -71,6 +76,10 @@ export async function enrichPackageSearchResults(
         description: pkg.description,
         synopsis: pkg.synopsis,
         version: pkg.version,
+        licenses: pkg.licenses,
+        needs_compilation: pkg.needs_compilation,
+        r_version: pkg.r_version,
+        last_released_at: pkg.last_released_at,
         url: `${BASE_URL}/package/${encodeURIComponent(pkg.name)}`,
         lastRelease,
         authors: authorsList.map((a) => ({
@@ -92,10 +101,6 @@ export async function enrichPackageSearchResults(
           },
           isTrending,
         },
-        license: pkg.licenses,
-        needs_compilation: pkg.needs_compilation,
-        r_version: pkg.r_version,
-        last_released_at: pkg.last_released_at,
       };
     }),
   );
