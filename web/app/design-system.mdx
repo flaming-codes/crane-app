@@ -1,0 +1,59 @@
+import { Tag } from "./modules/tag";
+
+# Design System
+
+A minimal guide to the visual language of CRAN/E.
+
+## Colors
+
+We use a curated palette from Radix Colors, integrated into Tailwind CSS v4.
+
+### Accents
+<div className="flex gap-4 my-6">
+  <div className="flex flex-col items-center gap-2">
+    <div className="w-20 h-20 rounded-xl bg-[var(--color-iris-9)] shadow-lg" />
+    <Tag borderGradients="iris">Iris</Tag>
+  </div>
+  <div className="flex flex-col items-center gap-2">
+    <div className="w-20 h-20 rounded-xl bg-[var(--color-jade-9)] shadow-lg" />
+    <Tag borderGradients="jade">Jade</Tag>
+  </div>
+  <div className="flex flex-col items-center gap-2">
+    <div className="w-20 h-20 rounded-xl bg-[var(--color-ruby-9)] shadow-lg" />
+    <Tag borderGradients="jade" className="!from-ruby-7 !to-ruby-9">Ruby</Tag>
+  </div>
+</div>
+
+---
+
+## Typography
+
+We use a system-native font stack for maximum performance and a professional look.
+
+**Primary Stack:** `system-ui, ui-sans-serif, Helvetica, sans-serif`
+
+<div className="space-y-4 my-8 p-6 bg-gray-1 dark:bg-gray-12 rounded-2xl border border-gray-4 dark:border-gray-11">
+  <div className="text-4xl">The quick brown fox (4xl)</div>
+  <div className="text-2xl font-bold">The quick brown fox (2xl bold)</div>
+  <div className="text-lg">The quick brown fox (lg)</div>
+  <div className="text-base">The quick brown fox (base)</div>
+  <div className="text-sm text-gray-dim">The quick brown fox (sm dim)</div>
+</div>
+
+---
+
+## Layout
+
+We use the **Content Grid** system to manage responsive widths.
+
+| Class | Width | Usage |
+| :--- | :--- | :--- |
+| `content-grid` | 100% | Container with horizontal padding |
+| `content` | 900px | Standard readable text width |
+| `breakout` | 1200px | Image or wide table breakout |
+| `full-width` | 100% | Edge-to-edge content |
+
+---
+
+> [!NOTE]
+> All styles are defined in `app/tailwind.css`.
