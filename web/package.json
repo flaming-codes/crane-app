@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "version": "3.0.0",
-  "mcpVersion": "1.0.0",
+  "mcpVersion": "1.1.0",
   "scripts": {
     "postinstall": "npm run licenses.build",
     "postuninstall": "npm run licenses.build",
