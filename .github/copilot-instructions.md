@@ -1,7 +1,7 @@
 ## Copilot onboarding for `flaming-codes/crane-app`
 
 ### What this repo is
-- Frontend for **CRAN/E**, a PWA that searches CRAN packages/authors. Live at https://cran-e.com.
+- Frontend for **CRAN/E** (pronounced “CRANE”), a PWA that searches CRAN packages/authors. Live at https://cran-e.com.
 - Tech: TypeScript + React Router v7 (Vite build), Tailwind CSS, Remix-style file-based routes, Supabase data, MCP endpoint. No backend outside the Remix server build.
 - Primary code lives in `/web`; repo root also has docs/CHANGELOG/README.
 
@@ -21,10 +21,10 @@
 - `.npmrc` forces `legacy-peer-deps`; keep it to avoid install conflicts.
 - Env vars (see `.env.example`, validated by `app/data/env.ts`): `VITE_PLAUSIBLE_SITE_ID`, `VITE_PLAUSIBLE_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` are required; others optional (`POSTHOG_*`, `GOOGLE_GENERATIVE_AI_API_KEY`, `OTEL_*`, `VITE_RELEASE_CHANNEL`). For local dev/tests, set dummy non-empty strings to satisfy the schema.
 
-### Commands (validated 2025-12-21)
+### Commands (locally verified)
 Run from `/web` unless noted. Always `npm install` first (postinstall regenerates `app/licenses.json`; revert if you don’t want to commit it).
 - **Install:** `npm install` (19s). Works with provided lockfile; uses `license-report` postinstall to refresh `app/licenses.json`.
-- **Lint:** `npm run lint` → currently **fails** on existing repo issues (`no-explicit-any` in `app/data/package.service.ts`, console/unescaped entities/a11y in `app/routes/_page.about._index.tsx`). Expect non-zero exit until fixed; ensure your changes don’t add new lint errors.
+- **Lint:** `npm run lint` → currently **fails** due to pre-existing lint violations in the repo. Expect non-zero exit until fixed; ensure your changes don’t add new lint errors.
 - **Typecheck:** `npm run typecheck` (runs `react-router typegen` then `tsc`, success).
 - **Build:** `npm run build` (Vite/React Router prod build, succeeds; creates `web/build`).
 - **Dev server:** `npm run dev` (React Router dev, Vite-based).
