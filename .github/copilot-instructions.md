@@ -8,7 +8,7 @@
 ### Repo layout (where to look first)
 - Root files: `README.md`, `CHANGELOG.md`, `docs/mcp.md` (MCP server details), `tailwind.config.js`.
 - Main project: `/web`
-  - `package.json` scripts (build/dev/lint/typecheck), `.nvmrc` (v23.3.0, Node >=20), `.npmrc` (`legacy-peer-deps=true`), `.env.example`.
+  - `package.json` scripts (build/dev/lint/typecheck), `.nvmrc` (v23.3.0, Node >=20), `.npmrc` (`legacy-peer-deps = true`), `.env.example`.
   - Config: `tsconfig.json`, `.eslintrc.cjs`, `eslint.config.mjs`, `.prettierrc`, `vite.config.ts`, `tailwind.css`.
   - Entrypoints: `app/entry.client.tsx`, `app/entry.server.tsx`, `app/root.tsx`.
   - Routing: `app/routes.ts` + file-based routes under `app/routes` (`_index.tsx` home, `_page.*` layouts/pages, `api.search._index.ts`, `api.mcp.ts`, `*.og` for OG images, sitemap/xml routes).
@@ -39,7 +39,7 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - No dedicated test suite is defined; validation relies on lint/typecheck/build.
 
 ### CI / workflows
-- GitHub Actions workflows present: Dependabot updates and a “Copilot coding agent” dynamic workflow (automation for agent tasks, not standard CI). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
+- GitHub Actions workflows present: a Dependabot updates workflow entry and a “Copilot coding agent” dynamic workflow (automation for agent tasks, not standard CI). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
 
 ### Working effectively
 - Key configs for editing: lint rules (`.eslintrc.cjs`), formatter (`.prettierrc`), path aliases (`tsconfig.json` uses `~/*`), Vite/React Router config (`vite.config.ts`).
