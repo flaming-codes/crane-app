@@ -8,6 +8,7 @@ import { AuthorService } from "../data/author.service";
 import { PackageService } from "../data/package.service";
 import { SearchService } from "../data/search.service";
 import { BASE_URL } from "../modules/app";
+import { enrichPackageSearchResults } from "./package-enrichment.server";
 
 // Create a singleton instance
 let mcpServer: McpServer | null = null;
@@ -141,7 +142,7 @@ export function getMcpServer() {
         limit: z
           .number()
           .optional()
-          .describe("Maximum number of results to return (default: 20)"),
+          .describe("Maximum number of results to return (default: 10, max: 10)"),
       }),
       _meta: {
         "openai/toolInvocation/invoking": "Searching CRAN packages",
@@ -152,23 +153,30 @@ export function getMcpServer() {
         },
       },
     },
-    async ({ query, limit }) => {
-      const results = await PackageService.searchPackages(query, { limit });
+    async ({ query, limit = 10 }) => {
+      // Limit to maximum 10 packages
+      const effectiveLimit = Math.min(limit, 10);
+      const results = await PackageService.searchPackages(query, { limit: effectiveLimit });
       const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
-      const withLinks = {
-        ...results,
-        combined: (results.combined ?? []).filter(nonNull).map((item) => ({
-          ...item,
-          url: `${BASE_URL}/package/${encodeURIComponent(item.name)}`,
-          type: "package" as const,
-        })),
-      };
+      
+      // Extract package names from search results
+      const packageNames = (results.combined ?? [])
+        .filter(nonNull)
+        .map((item) => item.name)
+        .slice(0, effectiveLimit);
+      
+      // Enrich packages with detailed data
+      const enrichedPackages = await enrichPackageSearchResults(packageNames, effectiveLimit);
+      
       const structured = {
         searchType: "packages" as const,
         query,
-        combined: withLinks.combined,
+        combined: enrichedPackages.map((item) => ({
+          ...item,
+          type: "package" as const,
+        })),
       };
-      return makeToolResponse(structured, withLinks);
+      return makeToolResponse(structured);
     },
   );
 
@@ -228,12 +236,37 @@ export function getMcpServer() {
     },
     async ({ query }) => {
       const results = await SearchService.searchUniversal(query);
+      
+      // Limit to 10 results and enrich packages
+      const limitedResults = results.combined.slice(0, 10);
+      
+      // Separate packages and authors
+      const packageNames = limitedResults
+        .filter((item) => item.type === "package")
+        .map((item) => item.name);
+      
+      // Enrich packages with detailed data
+      const enrichedPackages = await enrichPackageSearchResults(packageNames, 10);
+      
+      // Create a map for quick lookup
+      const enrichedMap = new Map(
+        enrichedPackages.map((pkg) => [pkg.name, pkg])
+      );
+      
+      // Merge enriched packages with authors, preserving order
+      const enrichedCombined = limitedResults.map((item) => {
+        if (item.type === "package") {
+          return enrichedMap.get(item.name) || item;
+        }
+        return item;
+      }).filter(Boolean);
+      
       const structured = {
-        ...results,
         searchType: "universal" as const,
         query,
+        combined: enrichedCombined,
       };
-      return makeToolResponse(structured, results);
+      return makeToolResponse(structured);
     },
   );
 
