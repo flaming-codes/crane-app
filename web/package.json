@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "npm run licenses.build",
     "postuninstall": "npm run licenses.build",
-    "build": "react-router build",
+    "build": "npm run build-storybook && react-router build",
     "dev": "react-router dev",
     "dev.mcp": "npx @modelcontextprotocol/inspector",
     "preview": "npm run build && dotenv -- npm run start",
