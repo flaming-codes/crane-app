@@ -187,8 +187,9 @@ export class SearchService {
         };
       }
 
-      const seedPackageData =
-        await PackageService.getPackageByName(seedHit.name);
+      const seedPackageData = await PackageService.getPackageByName(
+        seedHit.name,
+      );
       const relatedQueryBase = [
         seedHit.title,
         seedPackageData?.title,
@@ -226,9 +227,7 @@ export class SearchService {
             sources: Array.isArray(
               (item as { sources?: PackageCombinedHit["sources"] }).sources,
             )
-              ? (
-                  item as { sources?: PackageCombinedHit["sources"] }
-                ).sources
+              ? (item as { sources?: PackageCombinedHit["sources"] }).sources
               : undefined,
           }));
 
