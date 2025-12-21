@@ -213,7 +213,7 @@ export function getMcpServer() {
         query,
         combined: withLinks,
       };
-      return makeToolResponse(structured, withLinks);
+      return makeToolResponse(structured);
     },
   );
 
