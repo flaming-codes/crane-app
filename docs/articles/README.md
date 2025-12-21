@@ -138,7 +138,7 @@ The article follows the CRAN/E article schema:
 
 ## Notes
 
-- The article date is set to December 21, 2025 - adjust as needed
+- **⚠️ IMPORTANT:** The article date is currently set to December 21, 2025. This is a placeholder date that **must be updated** to the actual publication date before inserting into the database. Update both the JSON file and SQL script with the correct date.
 - The publish_state is set to 'published' - change to 'draft' if you want to preview first
 - All internal links use relative paths (e.g., `/mcp`, `/about`)
 - External links are properly marked for MCP documentation and related resources

@@ -130,9 +130,14 @@ docs/articles/
 
 ## Customization Options
 
-Before publishing, you may want to adjust:
+Before publishing, you **must** adjust:
 
-1. **Publication Date:** Currently set to 2025-12-21. Update in both JSON and SQL files.
+1. **⚠️ Publication Date (REQUIRED):** Currently set to 2025-12-21, which is a **placeholder**. Update to the actual publication date in:
+   - `docs/articles/mcp-server-release-3.0.0.json` (line 8: `created_at` field)
+   - `docs/articles/insert-mcp-article.sql` (line 19: `created_at` value)
+
+Optional adjustments:
+
 2. **Author Name:** Currently "CRAN/E Team" with slug "crane-team". Modify if needed.
 3. **Publish State:** Set to "published". Change to "draft" if you want to preview first.
 4. **External Links:** Verify URLs are correct (currently using cran-e.com and crane.dev).
