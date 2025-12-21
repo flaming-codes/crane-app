@@ -3,7 +3,7 @@
 ### What this repo is
 - Frontend for **CRAN/E** (pronounced “CRANE”), a PWA that searches CRAN (Comprehensive R Archive Network) packages/authors. Live at https://cran-e.com.
 - Tech: TypeScript + React Router v7 (Vite build), Tailwind CSS, Remix-style file-based routes, Supabase data, MCP endpoint. No backend outside the Remix server build.
-- Primary code lives in `/web`; repo root also has docs/CHANGELOG/README.
+- Primary code lives in `/web`; the repo root also contains docs/CHANGELOG/README files.
 
 ### Repo layout (where to look first)
 - Root files: `README.md`, `CHANGELOG.md`, `docs/mcp.md` (MCP server details), `tailwind.config.js`.
