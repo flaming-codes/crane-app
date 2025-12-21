@@ -6,6 +6,8 @@ This directory contains the article content for the CRAN/E 3.0.0 release announc
 
 - **mcp-server-release-3.0.0.json** - Complete article content in JSON format matching the press_articles schema
 - **insert-mcp-article.sql** - SQL script to insert the article into the Supabase database
+- **validate-article.mjs** - Node.js validation script to verify article structure
+- **README.md** - This documentation file
 
 ## Article Overview
 
@@ -26,6 +28,22 @@ The article covers:
 - Benefits for developers
 - Technical implementation details
 - Getting started guide
+
+## Validation
+
+Before inserting the article, you can validate its structure:
+
+```bash
+cd docs/articles
+node validate-article.mjs
+```
+
+This will check:
+- Required fields are present
+- Field types are correct
+- Section structure is valid
+- Author information is complete
+- Dates are properly formatted
 
 ## How to Add This Article to CRAN/E
 
