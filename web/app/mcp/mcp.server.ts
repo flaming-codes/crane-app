@@ -156,18 +156,23 @@ export function getMcpServer() {
     async ({ query, limit = 10 }) => {
       // Limit to maximum 10 packages
       const effectiveLimit = Math.min(limit, 10);
-      const results = await PackageService.searchPackages(query, { limit: effectiveLimit });
+      const results = await PackageService.searchPackages(query, {
+        limit: effectiveLimit,
+      });
       const nonNull = <T>(item: T): item is NonNullable<T> => item != null;
-      
+
       // Extract package names from search results
       const packageNames = (results.combined ?? [])
         .filter(nonNull)
         .map((item) => item.name)
         .slice(0, effectiveLimit);
-      
+
       // Enrich packages with detailed data
-      const enrichedPackages = await enrichPackageSearchResults(packageNames, effectiveLimit);
-      
+      const enrichedPackages = await enrichPackageSearchResults(
+        packageNames,
+        effectiveLimit,
+      );
+
       const structured = {
         searchType: "packages" as const,
         query,
@@ -236,31 +241,36 @@ export function getMcpServer() {
     },
     async ({ query }) => {
       const results = await SearchService.searchUniversal(query);
-      
+
       // Limit to 10 results and enrich packages
       const limitedResults = results.combined.slice(0, 10);
-      
+
       // Separate packages and authors
       const packageNames = limitedResults
         .filter((item) => item.type === "package")
         .map((item) => item.name);
-      
+
       // Enrich packages with detailed data
-      const enrichedPackages = await enrichPackageSearchResults(packageNames, 10);
-      
+      const enrichedPackages = await enrichPackageSearchResults(
+        packageNames,
+        10,
+      );
+
       // Create a map for quick lookup
       const enrichedMap = new Map(
-        enrichedPackages.map((pkg) => [pkg.name, pkg])
+        enrichedPackages.map((pkg) => [pkg.name, pkg]),
       );
-      
+
       // Merge enriched packages with authors, preserving order
-      const enrichedCombined = limitedResults.map((item) => {
-        if (item.type === "package") {
-          return enrichedMap.get(item.name) || item;
-        }
-        return item;
-      }).filter(Boolean);
-      
+      const enrichedCombined = limitedResults
+        .map((item) => {
+          if (item.type === "package") {
+            return enrichedMap.get(item.name) || item;
+          }
+          return item;
+        })
+        .filter(Boolean);
+
       const structured = {
         searchType: "universal" as const,
         query,

@@ -52,57 +52,60 @@ export async function enrichPackageSearchResults(
 
   // Fetch enriched data for each package in parallel
   const enrichedPackages = await Promise.allSettled(
-    limitedPackageNames.map(async (name): Promise<EnrichedPackageData | null> => {
-      const enrichedData = await PackageService.getEnrichedPackageByName(name);
-      if (!enrichedData) {
-        return null;
-      }
+    limitedPackageNames.map(
+      async (name): Promise<EnrichedPackageData | null> => {
+        const enrichedData =
+          await PackageService.getEnrichedPackageByName(name);
+        if (!enrichedData) {
+          return null;
+        }
 
-      const {
-        pkg,
-        groupedRelations,
-        authorsList,
-        maintainer,
-        dailyDownloads,
-        totalMonthDownloads,
-        totalYearDownloads,
-        isTrending,
-        lastRelease,
-      } = enrichedData;
-
-      return {
-        name: pkg.name,
-        title: pkg.title,
-        description: pkg.description,
-        synopsis: pkg.synopsis,
-        version: pkg.version,
-        licenses: pkg.licenses,
-        needs_compilation: pkg.needs_compilation,
-        r_version: pkg.r_version,
-        last_released_at: pkg.last_released_at,
-        url: `${BASE_URL}/package/${encodeURIComponent(pkg.name)}`,
-        lastRelease,
-        authors: authorsList.map((a) => ({
-          name: a.name,
-          url: `${BASE_URL}/author/${encodeURIComponent(a.name)}`,
-        })),
-        maintainer: maintainer
-          ? {
-              name: maintainer.name,
-              url: `${BASE_URL}/author/${encodeURIComponent(maintainer.name)}`,
-            }
-          : null,
-        relations: groupedRelations,
-        statistics: {
-          downloads: {
-            lastMonth: totalMonthDownloads,
-            lastYear: totalYearDownloads,
-            history: dailyDownloads,
-          },
+        const {
+          pkg,
+          groupedRelations,
+          authorsList,
+          maintainer,
+          dailyDownloads,
+          totalMonthDownloads,
+          totalYearDownloads,
           isTrending,
-        },
-      };
-    }),
+          lastRelease,
+        } = enrichedData;
+
+        return {
+          name: pkg.name,
+          title: pkg.title,
+          description: pkg.description,
+          synopsis: pkg.synopsis,
+          version: pkg.version,
+          licenses: pkg.licenses,
+          needs_compilation: pkg.needs_compilation,
+          r_version: pkg.r_version,
+          last_released_at: pkg.last_released_at,
+          url: `${BASE_URL}/package/${encodeURIComponent(pkg.name)}`,
+          lastRelease,
+          authors: authorsList.map((a) => ({
+            name: a.name,
+            url: `${BASE_URL}/author/${encodeURIComponent(a.name)}`,
+          })),
+          maintainer: maintainer
+            ? {
+                name: maintainer.name,
+                url: `${BASE_URL}/author/${encodeURIComponent(maintainer.name)}`,
+              }
+            : null,
+          relations: groupedRelations,
+          statistics: {
+            downloads: {
+              lastMonth: totalMonthDownloads,
+              lastYear: totalYearDownloads,
+              history: dailyDownloads,
+            },
+            isTrending,
+          },
+        };
+      },
+    ),
   );
 
   // Filter out rejected promises and null values
