@@ -40,6 +40,7 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 
 ### Quality gate
 - Before committing, run the package.json scripts from `/web`: `npm run lint`, `npm run typecheck`, and `npm run format`.
+- Lint currently reports existing violations; still run it and keep any files you touch lint-clean (fix new lint errors you introduce).
 
 ### CI / workflows
 - GitHub Actions workflows present: a Dependabot updates workflow entry and a “Copilot coding agent” dynamic workflow (automation for agent tasks, not standard CI). No standard push/PR CI for lint/build, so run lint/typecheck/build locally before submitting changes.
