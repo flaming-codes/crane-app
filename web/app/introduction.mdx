@@ -1,36 +1,27 @@
-import { InfoCard } from "./modules/info-card";
-import { InfoPill } from "./modules/info-pill";
-import { McpIcon } from "./modules/mcp-icon";
-import { Header } from "./modules/header";
+import { Meta } from "@storybook/addon-docs/blocks";
 import { SyneLogo } from "./modules/svg";
 
-# Introduction
+<Meta title="Introduction" />
 
 <div className="flex justify-center my-12">
-  <SyneLogo className="w-1/2 text-gray-normal" />
+  <SyneLogo className="w-1/2 text-black" />
 </div>
+
+# Introduction
 
 Welcome to **CRAN/E** (The Comprehensive R Archive Network, Enhanced). This is our component library and design system documentation.
 
 ## At a Glance
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-  <InfoCard variant="iris">
-    <h3 className="text-lg font-bold">Fast Search</h3>
-    <p className="text-sm opacity-80">Lightning-fast indexing and retrieval for tens of thousands of R packages.</p>
-  </InfoCard>
-  <InfoCard variant="jade">
-    <h3 className="text-lg font-bold">Modern PWA</h3>
-    <p className="text-sm opacity-80">Built with React Router v7 and Tailwind CSS v4 for a smooth, app-like experience.</p>
-  </InfoCard>
-</div>
+- **Fast Search**: Lightning-fast indexing and retrieval for tens of thousands of R packages.
+- **Modern PWA**: Built with React Router v7 and Tailwind CSS v4 for a smooth, app-like experience.
 
 ## Key Technologies
 
-- <InfoPill variant="iris" size="sm">React Router v7</InfoPill> - Modern routing and data loading.
-- <InfoPill variant="jade" size="sm">Tailwind CSS v4</InfoPill> - Utility-first styling with native CSS variables.
-- <InfoPill variant="sand" size="sm">Radix UI</InfoPill> - Unstyled, accessible UI primitives.
-- <InfoPill variant="slate" size="sm"><McpIcon className="inline mr-1" /> MCP</InfoPill> - Model Context Protocol for AI integrations.
+- **React Router v7**: Modern routing and data loading.
+- **Tailwind CSS v4**: Utility-first styling with native CSS variables.
+- **Radix UI**: Unstyled, accessible UI primitives.
+- **MCP**: Model Context Protocol for AI integrations.
 
 ---
 
@@ -40,8 +31,3 @@ Our components are located in `app/modules`. They are designed to be:
 1. **Framework-agnostic** where possible.
 2. **Accessible** out of the box.
 3. **Themable** with dark mode support.
-
----
-
-> [!TIP]
-> Use the sidebar to explore individual components and their variants.
