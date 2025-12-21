@@ -89,8 +89,8 @@ export default function Index() {
                 to="/mcp"
                 className="inline-flex items-center gap-1 font-bold opacity-85 hover:opacity-70"
               >
-                <McpIcon />
-                remote MCP-server
+                <McpIcon className="size-4 shrink-0" />
+                <span className="translate-y-[2px]">remote MCP-server</span>
               </Link>{" "}
               for agents
             </p>
