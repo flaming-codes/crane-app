@@ -3,7 +3,7 @@ import { Footer } from "./footer";
 import { withRouter } from "storybook-addon-remix-react-router";
 
 const meta: Meta<typeof Footer> = {
-    title: "Modules/Footer",
+    title: "Modules/PageLayout/Footer",
     component: Footer,
     decorators: [withRouter],
     parameters: {

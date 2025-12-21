@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ExternalLink } from "./external-link";
 
 const meta: Meta<typeof ExternalLink> = {
-    title: "Modules/ExternalLink",
+    title: "Modules/Links/ExternalLink",
     component: ExternalLink,
     parameters: {
         layout: "centered",

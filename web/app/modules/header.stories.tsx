@@ -3,7 +3,7 @@ import { Header } from "./header";
 import { SyneLogo as Logo } from "./svg";
 
 const meta: Meta<typeof Header> = {
-    title: "Modules/Header",
+    title: "Modules/PageLayout/Header",
     component: Header,
     parameters: {
         layout: "fullscreen",

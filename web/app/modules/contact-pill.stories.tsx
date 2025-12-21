@@ -3,7 +3,7 @@ import { ContactPill } from "./contact-pill";
 import { withRouter } from "storybook-addon-remix-react-router";
 
 const meta: Meta<typeof ContactPill> = {
-    title: "Modules/ContactPill",
+    title: "Modules/Pills/ContactPill",
     component: ContactPill,
     decorators: [withRouter],
     args: {

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { InfoCard } from "./info-card";
 
 const meta: Meta<typeof InfoCard> = {
-    title: "Modules/InfoCard",
+    title: "Modules/Cards/InfoCard",
     component: InfoCard,
     parameters: {
         layout: "padded",

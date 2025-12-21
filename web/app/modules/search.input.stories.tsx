@@ -4,7 +4,7 @@ import { fn } from "@storybook/test";
 import { RiMenuLine } from "@remixicon/react";
 
 const meta: Meta<typeof SearchInput> = {
-    title: "Modules/SearchInput",
+    title: "Modules/Search/SearchInput",
     component: SearchInput,
     args: {
         input: "",

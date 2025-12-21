@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { SyneLogo } from "./svg";
 
 const meta: Meta<typeof SyneLogo> = {
-    title: "Modules/SyneLogo",
+    title: "Modules/Icons/SyneLogo",
     component: SyneLogo,
     parameters: {
         layout: "centered",

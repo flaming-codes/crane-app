@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { InfoPill } from "./info-pill";
 
 const meta: Meta<typeof InfoPill> = {
-    title: "Modules/InfoPill",
+    title: "Modules/Pills/InfoPill",
     component: InfoPill,
     args: {
         label: "Version",

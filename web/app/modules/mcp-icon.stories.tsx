@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { McpIcon } from "./mcp-icon";
 
 const meta: Meta<typeof McpIcon> = {
-    title: "Modules/McpIcon",
+    title: "Modules/Icons/McpIcon",
     component: McpIcon,
     parameters: {
         layout: "centered",

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ProvidedByLabel, DataProvidedByCRANLabel } from "./provided-by-label";
 
 const meta: Meta<typeof ProvidedByLabel> = {
-    title: "Modules/ProvidedByLabel",
+    title: "Modules/UI/ProvidedByLabel",
     component: ProvidedByLabel,
     args: {
         source: "Google Gemini",

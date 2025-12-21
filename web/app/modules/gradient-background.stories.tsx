@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { GradientBackground } from "./gradient-background";
 
 const meta: Meta<typeof GradientBackground> = {
-    title: "Modules/GradientBackground",
+    title: "Modules/PageLayout/GradientBackground",
     component: GradientBackground,
     parameters: {
         layout: "fullscreen",
