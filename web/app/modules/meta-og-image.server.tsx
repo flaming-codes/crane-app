@@ -4,21 +4,18 @@ import { Resvg } from "@resvg/resvg-js";
 import { CSSProperties, ReactNode } from "react";
 import type { SatoriOptions } from "satori";
 import satori from "satori";
-import { SyneLogo } from "./svg";
-import { McpIcon } from "./mcp-icon";
-import { gradients } from "./gradients.server";
 import { randomInt } from "es-toolkit";
+import { SyneLogo } from "./svg";
 
 const OG_IMAGE_HEIGHT = 630;
 const OG_IMAGE_WIDTH = 1200;
 
-function getRegularSans(baseUrl: string) {
-  return fetch(new URL(`${baseUrl}/fonts/Inter-Regular.ttf`)).then(
-    async (res) => {
-      return res.arrayBuffer();
-    },
-  );
-}
+// Satori has limited gradient support; use simple linear gradients that match the OG design palette.
+const SAFE_LINEAR_GRADIENTS = [
+  "linear-gradient(135deg, #5a1f0e 0%, #0b0b0b 70%, #000 100%)",
+  "linear-gradient(135deg, #6c6400 0%, #0b0b0b 70%, #000 100%)",
+  "linear-gradient(135deg, #0c5a54 0%, #0b0b0b 70%, #000 100%)",
+];
 
 async function getBaseOptions(
   requestUrl: string,
@@ -39,6 +36,14 @@ async function getBaseOptions(
     ],
     ...partial,
   };
+}
+
+function getRegularSans(baseUrl: string) {
+  return fetch(new URL(`${baseUrl}/fonts/Inter-Regular.ttf`)).then(
+    async (res) => {
+      return res.arrayBuffer();
+    },
+  );
 }
 
 function OGImage({
@@ -101,7 +106,8 @@ export async function composeIndexOGImage(params: {
     version = "3.0.0",
   } = params;
 
-  const gradient = gradients[randomInt(0, gradients.length)];
+  const gradient =
+    SAFE_LINEAR_GRADIENTS[randomInt(0, SAFE_LINEAR_GRADIENTS.length)];
 
   const svg = await satori(
     <div
@@ -149,59 +155,20 @@ export async function composeIndexOGImage(params: {
           justifyContent: "center",
           height: "100%",
           width: "100%",
-          zIndex: 10,
+          color: "white",
         }}
       >
         <SyneLogo style={{ width: 600, color: "white" }} />
         <p
           style={{
-            fontSize: 32,
+            fontSize: 26,
             color: "#d1d5db", // gray-300
             marginTop: 40,
             textAlign: "center",
           }}
         >
-          Search for {packageCount} R packages and {authorCount} authors hosted
-          on CRAN
+          Search for {packageCount} R packages and {authorCount} authors
         </p>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            marginTop: 80,
-            fontSize: 22,
-            color: "#9ca3af", // gray-400
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            Click on the
-            <span style={{ color: "white", marginLeft: 6 }}>
-              top search bar
-            </span>
-            <span style={{ marginLeft: 6 }}>to start searching</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            Or press
-            <span style={{ color: "white", marginLeft: 6 }}>⌘ + K</span>
-            <span style={{ marginLeft: 6 }}>to open search from anywhere</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            Use the
-            <McpIcon
-              style={{
-                width: 24,
-                height: 24,
-                marginLeft: 8,
-                marginRight: 8,
-                color: "white",
-              }}
-            />
-            <span style={{ color: "white" }}>remote MCP-server</span>
-            <span style={{ marginLeft: 6 }}>for agents</span>
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
@@ -217,12 +184,6 @@ export async function composeIndexOGImage(params: {
           color: "#6b7280", // gray-500
         }}
       >
-        <span>About</span>
-        <span>MCP</span>
-        <span>Privacy</span>
-        <span>Statistics</span>
-        <span>Newsroom</span>
-        <span>Magazine</span>
         <span style={{ color: "#4b5563" }}>v{version}</span>
       </div>
     </div>,
