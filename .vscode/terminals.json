@@ -10,6 +10,14 @@
       "commands": ["cd web", "nvm use", "npm i --include=dev", "npm run dev"],
       "open": true,
       "focus": true
+    },
+    {
+      "name": "storybook",
+      "icon": "book",
+      "color": "terminal.ansiMagenta",
+      "commands": ["cd web", "nvm use", "npm i --include=dev", "npm run dev.storybook"],
+      "open": true,
+      "focus": false
     }
   ]
 }
