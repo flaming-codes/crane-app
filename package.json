@@ -15,6 +15,10 @@
   },
   "homepage": "https://github.com/flaming-codes/crane-app#readme",
   "dependencies": {
-    "@fission-ai/openspec": "^0.16.0"
+    "@fission-ai/openspec": "^0.16.0",
+    "better-sqlite3": "^12.5.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13"
   }
 }
