@@ -1,5 +1,21 @@
-import { Link, useLoaderData, Form, useSearchParams } from "react-router";
+import { Link, useLoaderData, Form } from "react-router";
 import { db } from "../db/client.server";
+import {
+  DataTable,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+  TableContainer,
+  Button,
+  TextInput,
+  Select,
+  SelectItem,
+  Grid,
+  Column,
+} from "@carbon/react";
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
@@ -62,101 +78,124 @@ export async function loader({ request }: { request: Request }) {
 export default function Logs() {
   const { logs, filters } = useLoaderData<typeof loader>();
 
+  const headers = [
+    { key: "timestamp", header: "Time" },
+    { key: "severity", header: "Severity" },
+    { key: "service", header: "Service" },
+    { key: "body", header: "Body" },
+    { key: "traceId", header: "Trace" },
+  ];
+
+  const rows = logs.map((log: any) => ({
+    id: `${log.timestamp_ns}-${log.body.substring(0, 10)}`,
+    timestamp: new Date(
+      Number(BigInt(log.timestamp_ns) / 1000000n)
+    ).toLocaleString(),
+    severity: log.severity_text,
+    service: log.service_name,
+    body: log.body,
+    traceId: log.trace_id,
+  }));
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Logs</h1>
 
-      <Form className="mb-6 flex gap-4 items-end flex-wrap">
-        <div>
-          <label className="block text-sm font-medium">Service</label>
-          <input
-            name="service"
-            defaultValue={filters.service || ""}
-            className="border p-1 rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Trace ID</label>
-          <input
-            name="traceId"
-            defaultValue={filters.traceId || ""}
-            className="border p-1 rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Severity</label>
-          <select
-            name="severity"
-            defaultValue={filters.severity || ""}
-            className="border p-1 rounded"
-          >
-            <option value="">All</option>
-            <option value="INFO">INFO</option>
-            <option value="WARN">WARN</option>
-            <option value="ERROR">ERROR</option>
-            <option value="DEBUG">DEBUG</option>
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-1 rounded"
-        >
-          Filter
-        </button>
+      <Form className="mb-6">
+        <Grid className="pl-0">
+          <Column lg={4} md={4} sm={4}>
+            <TextInput
+              id="service"
+              labelText="Service"
+              name="service"
+              defaultValue={filters.service || ""}
+            />
+          </Column>
+          <Column lg={4} md={4} sm={4}>
+            <TextInput
+              id="traceId"
+              labelText="Trace ID"
+              name="traceId"
+              defaultValue={filters.traceId || ""}
+            />
+          </Column>
+          <Column lg={4} md={4} sm={4}>
+            <Select
+              id="severity"
+              labelText="Severity"
+              name="severity"
+              defaultValue={filters.severity || ""}
+            >
+              <SelectItem value="" text="All" />
+              <SelectItem value="INFO" text="INFO" />
+              <SelectItem value="WARN" text="WARN" />
+              <SelectItem value="ERROR" text="ERROR" />
+              <SelectItem value="DEBUG" text="DEBUG" />
+            </Select>
+          </Column>
+          <Column lg={4} md={4} sm={4} className="flex items-end">
+            <Button type="submit">Filter</Button>
+          </Column>
+        </Grid>
       </Form>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 text-left w-48">Time</th>
-              <th className="p-2 text-left w-24">Severity</th>
-              <th className="p-2 text-left w-32">Service</th>
-              <th className="p-2 text-left">Body</th>
-              <th className="p-2 text-left w-32">Trace</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map((log: any) => (
-              <tr
-                key={`${log.timestamp_ns}-${log.body.substring(0, 10)}`}
-                className="border-t hover:bg-gray-50"
-              >
-                <td className="p-2 whitespace-nowrap">
-                  {new Date(
-                    Number(BigInt(log.timestamp_ns) / 1000000n),
-                  ).toLocaleString()}
-                </td>
-                <td
-                  className={`p-2 font-bold ${
-                    log.severity_text === "ERROR"
-                      ? "text-red-600"
-                      : log.severity_text === "WARN"
-                        ? "text-yellow-600"
-                        : "text-gray-600"
-                  }`}
-                >
-                  {log.severity_text}
-                </td>
-                <td className="p-2">{log.service_name}</td>
-                <td className="p-2 font-mono whitespace-pre-wrap break-all max-w-xl">
-                  {log.body}
-                </td>
-                <td className="p-2 font-mono text-xs">
-                  {log.trace_id && (
-                    <Link
-                      to={`/traces/${log.trace_id}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {log.trace_id.substring(0, 8)}...
-                    </Link>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable rows={rows} headers={headers}>
+        {({ rows, headers, getHeaderProps, getRowProps }) => (
+          <TableContainer title="Logs">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeader {...getHeaderProps({ header })}>
+                      {header.header}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow {...getRowProps({ row })}>
+                    {row.cells.map((cell) => {
+                      if (cell.info.header === "traceId") {
+                        const traceId = cell.value;
+                        return (
+                          <TableCell key={cell.id}>
+                            {traceId && (
+                              <Link
+                                to={`/traces/${traceId}`}
+                                className="text-blue-600 hover:underline"
+                              >
+                                {traceId.substring(0, 8)}...
+                              </Link>
+                            )}
+                          </TableCell>
+                        );
+                      }
+                      if (cell.info.header === "severity") {
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={
+                              cell.value === "ERROR"
+                                ? "text-red-600 font-bold"
+                                : cell.value === "WARN"
+                                  ? "text-yellow-600 font-bold"
+                                  : "text-gray-600"
+                            }
+                          >
+                            {cell.value}
+                          </TableCell>
+                        );
+                      }
+                      return <TableCell key={cell.id}>{cell.value}</TableCell>;
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </DataTable>
     </div>
   );
 }

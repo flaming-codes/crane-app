@@ -10,6 +10,9 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@carbon/icons-react": "^11.71.0",
+    "@carbon/react": "^1.97.0",
+    "@carbon/styles": "^1.96.0",
     "@react-router/node": "7.10.1",
     "@react-router/serve": "7.10.1",
     "isbot": "^5.1.31",

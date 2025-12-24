@@ -1,12 +1,13 @@
-import {
-  Link,
-  useLoaderData,
-  Form,
-  useSearchParams,
-  useSubmit,
-} from "react-router";
+import { Link, useLoaderData, Form, useSubmit } from "react-router";
 import { db } from "../db/client.server";
-import { useEffect, useState } from "react";
+import {
+  Grid,
+  Column,
+  Select,
+  SelectItem,
+  TextInput,
+  Tile,
+} from "@carbon/react";
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
@@ -16,7 +17,7 @@ export async function loader({ request }: { request: Request }) {
   // Get all metric names for the dropdown
   const names = db
     .prepare(
-      "SELECT DISTINCT metric_name FROM metric_points ORDER BY metric_name",
+      "SELECT DISTINCT metric_name FROM metric_points ORDER BY metric_name"
     )
     .all()
     .map((n: any) => n.metric_name);
@@ -111,44 +112,41 @@ export default function Metrics() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Metrics</h1>
 
-      <Form
-        className="mb-6 flex gap-4 items-end"
-        onChange={(e) => submit(e.currentTarget)}
-      >
-        <div>
-          <label className="block text-sm font-medium">Metric Name</label>
-          <select
-            name="name"
-            defaultValue={filters.metricName || ""}
-            className="border p-1 rounded w-64"
-          >
-            <option value="">Select a metric...</option>
-            {names.map((n: string) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Service</label>
-          <input
-            name="service"
-            defaultValue={filters.service || ""}
-            className="border p-1 rounded"
-            placeholder="Optional"
-          />
-        </div>
+      <Form className="mb-6" onChange={(e) => submit(e.currentTarget)}>
+        <Grid className="pl-0">
+          <Column lg={4} md={4} sm={4}>
+            <Select
+              id="name"
+              labelText="Metric Name"
+              name="name"
+              defaultValue={filters.metricName || ""}
+            >
+              <SelectItem value="" text="Select a metric..." />
+              {names.map((n: string) => (
+                <SelectItem key={n} value={n} text={n} />
+              ))}
+            </Select>
+          </Column>
+          <Column lg={4} md={4} sm={4}>
+            <TextInput
+              id="service"
+              labelText="Service"
+              name="service"
+              defaultValue={filters.service || ""}
+              placeholder="Optional"
+            />
+          </Column>
+        </Grid>
       </Form>
 
       {filters.metricName && points.length === 0 && (
-        <div className="text-gray-500">
+        <div className="text-gray-500 mt-4">
           No data found for this metric in the last hour.
         </div>
       )}
 
       {points.length > 0 && (
-        <div className="border rounded bg-white p-4">
+        <Tile className="mt-4">
           <h2 className="font-bold mb-2">{filters.metricName}</h2>
           <svg
             width="100%"
@@ -162,18 +160,18 @@ export default function Metrics() {
               y1={height - padding}
               x2={width - padding}
               y2={height - padding}
-              stroke="#ccc"
+              stroke="#e0e0e0"
             />
             <line
               x1={padding}
               y1={padding}
               x2={padding}
               y2={height - padding}
-              stroke="#ccc"
+              stroke="#e0e0e0"
             />
 
             {/* Data Line */}
-            <path d={chartPath} fill="none" stroke="#3b82f6" strokeWidth="2" />
+            <path d={chartPath} fill="none" stroke="#0f62fe" strokeWidth="2" />
 
             {/* Labels (simplified) */}
             <text
@@ -181,6 +179,7 @@ export default function Metrics() {
               y={height - padding + 20}
               fontSize="10"
               textAnchor="middle"
+              fill="#525252"
             >
               {new Date(minTime).toLocaleTimeString()}
             </text>
@@ -189,6 +188,7 @@ export default function Metrics() {
               y={height - padding + 20}
               fontSize="10"
               textAnchor="middle"
+              fill="#525252"
             >
               {new Date(maxTime).toLocaleTimeString()}
             </text>
@@ -197,17 +197,24 @@ export default function Metrics() {
               y={height - padding}
               fontSize="10"
               textAnchor="end"
+              fill="#525252"
             >
               {minValue.toFixed(2)}
             </text>
-            <text x={padding - 5} y={padding} fontSize="10" textAnchor="end">
+            <text
+              x={padding - 5}
+              y={padding}
+              fontSize="10"
+              textAnchor="end"
+              fill="#525252"
+            >
               {maxValue.toFixed(2)}
             </text>
           </svg>
           <div className="mt-2 text-xs text-gray-500 text-center">
             Showing {points.length} data points from last hour
           </div>
-        </div>
+        </Tile>
       )}
     </div>
   );

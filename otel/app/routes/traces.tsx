@@ -1,5 +1,22 @@
-import { Link, useLoaderData, Form, useSearchParams } from "react-router";
+import { Link, useLoaderData, Form } from "react-router";
 import { db } from "../db/client.server";
+import {
+  DataTable,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+  TableContainer,
+  Button,
+  TextInput,
+  Select,
+  SelectItem,
+  Grid,
+  Column,
+  Tag,
+} from "@carbon/react";
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
@@ -49,88 +66,118 @@ export async function loader({ request }: { request: Request }) {
 
 export default function Traces() {
   const { traces, filters } = useLoaderData<typeof loader>();
-  const [searchParams] = useSearchParams();
+
+  const headers = [
+    { key: "traceId", header: "Trace ID" },
+    { key: "timestamp", header: "Time" },
+    { key: "service", header: "Service" },
+    { key: "rootSpan", header: "Root Span" },
+    { key: "duration", header: "Duration (ms)" },
+    { key: "spanCount", header: "Spans" },
+    { key: "hasError", header: "Errors" },
+  ];
+
+  const rows = traces.map((trace: any) => ({
+    id: trace.trace_id,
+    traceId: trace.trace_id,
+    timestamp: new Date(
+      Number(BigInt(trace.start_time_ns) / 1000000n)
+    ).toLocaleString(),
+    service: trace.service_name,
+    rootSpan: trace.root_span_name,
+    duration: trace.duration_ms.toFixed(2),
+    spanCount: trace.span_count,
+    hasError: trace.has_error,
+  }));
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Traces</h1>
 
-      <Form className="mb-6 flex gap-4 items-end">
-        <div>
-          <label className="block text-sm font-medium">Service</label>
-          <input
-            name="service"
-            defaultValue={filters.service || ""}
-            className="border p-1 rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Has Error</label>
-          <select
-            name="hasError"
-            defaultValue={filters.hasError || ""}
-            className="border p-1 rounded"
-          >
-            <option value="">All</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-1 rounded"
-        >
-          Filter
-        </button>
+      <Form className="mb-6">
+        <Grid className="pl-0">
+          <Column lg={4} md={4} sm={4}>
+            <TextInput
+              id="service"
+              labelText="Service"
+              name="service"
+              defaultValue={filters.service || ""}
+            />
+          </Column>
+          <Column lg={4} md={4} sm={4}>
+            <Select
+              id="hasError"
+              labelText="Has Error"
+              name="hasError"
+              defaultValue={filters.hasError || ""}
+            >
+              <SelectItem value="" text="All" />
+              <SelectItem value="true" text="Yes" />
+              <SelectItem value="false" text="No" />
+            </Select>
+          </Column>
+          <Column lg={4} md={4} sm={4} className="flex items-end">
+            <Button type="submit">Filter</Button>
+          </Column>
+        </Grid>
       </Form>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 text-left">Trace ID</th>
-              <th className="p-2 text-left">Time</th>
-              <th className="p-2 text-left">Service</th>
-              <th className="p-2 text-left">Root Span</th>
-              <th className="p-2 text-right">Duration (ms)</th>
-              <th className="p-2 text-center">Spans</th>
-              <th className="p-2 text-center">Errors</th>
-            </tr>
-          </thead>
-          <tbody>
-            {traces.map((trace: any) => (
-              <tr key={trace.trace_id} className="border-t hover:bg-gray-50">
-                <td className="p-2 font-mono text-sm">
-                  <Link
-                    to={`/traces/${trace.trace_id}`}
-                    className="text-blue-600 hover:underline"
-                  >
-                    {trace.trace_id.substring(0, 8)}...
-                  </Link>
-                </td>
-                <td className="p-2 text-sm">
-                  {new Date(
-                    Number(BigInt(trace.start_time_ns) / 1000000n),
-                  ).toLocaleString()}
-                </td>
-                <td className="p-2">{trace.service_name}</td>
-                <td className="p-2">{trace.root_span_name}</td>
-                <td className="p-2 text-right">
-                  {trace.duration_ms.toFixed(2)}
-                </td>
-                <td className="p-2 text-center">{trace.span_count}</td>
-                <td className="p-2 text-center">
-                  {trace.has_error ? (
-                    <span className="text-red-500 font-bold">Yes</span>
-                  ) : (
-                    <span className="text-gray-400">No</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable rows={rows} headers={headers}>
+        {({ rows, headers, getHeaderProps, getRowProps }) => (
+          <TableContainer title="Traces">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeader {...getHeaderProps({ header })}>
+                      {header.header}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow {...getRowProps({ row })}>
+                    {row.cells.map((cell) => {
+                      if (cell.info.header === "traceId") {
+                        return (
+                          <TableCell key={cell.id}>
+                            <Link
+                              to={`/traces/${cell.value}`}
+                              className="text-blue-600 hover:underline"
+                            >
+                              {cell.value.substring(0, 8)}...
+                            </Link>
+                          </TableCell>
+                        );
+                      }
+                      if (cell.info.header === "hasError") {
+                        return (
+                          <TableCell key={cell.id}>
+                            {cell.value ? (
+                              <Tag type="red">Yes</Tag>
+                            ) : (
+                              <Tag type="gray">No</Tag>
+                            )}
+                          </TableCell>
+                        );
+                      }
+                      if (cell.info.header === "duration") {
+                        return (
+                          <TableCell key={cell.id} className="text-right">
+                            {cell.value}
+                          </TableCell>
+                        );
+                      }
+                      return <TableCell key={cell.id}>{cell.value}</TableCell>;
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </DataTable>
     </div>
   );
 }

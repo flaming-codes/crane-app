@@ -9,7 +9,9 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import "@carbon/styles/css/styles.css";
 import "./app.css";
+import { Shell } from "./components/Shell";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,23 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <nav className="bg-gray-800 text-white p-4 mb-4">
-          <div className="container mx-auto flex gap-4">
-            <Link to="/" className="font-bold">
-              Telemetry
-            </Link>
-            <Link to="/traces" className="hover:text-gray-300">
-              Traces
-            </Link>
-            <Link to="/logs" className="hover:text-gray-300">
-              Logs
-            </Link>
-            <Link to="/metrics" className="hover:text-gray-300">
-              Metrics
-            </Link>
-          </div>
-        </nav>
-        <div className="container mx-auto">{children}</div>
+        <Shell>{children}</Shell>
         <ScrollRestoration />
         <Scripts />
       </body>

@@ -8,9 +8,10 @@
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  background-color: #f4f4f4; /* Gray 10 */
 
   @media (prefers-color-scheme: dark) {
+    background-color: #161616; /* Gray 100 */
     color-scheme: dark;
   }
 }

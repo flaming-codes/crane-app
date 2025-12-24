@@ -1,5 +1,15 @@
 import { useLoaderData, Link } from "react-router";
 import { db } from "../db/client.server";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Tile,
+  Tag,
+  Accordion,
+  AccordionItem,
+  Grid,
+  Column,
+} from "@carbon/react";
 
 export async function loader({ params }: { params: { traceId: string } }) {
   const { traceId } = params;
@@ -9,7 +19,7 @@ export async function loader({ params }: { params: { traceId: string } }) {
     .get(traceId) as any;
   const spans = db
     .prepare(
-      "SELECT * FROM spans WHERE trace_id = ? ORDER BY start_time_ns ASC",
+      "SELECT * FROM spans WHERE trace_id = ? ORDER BY start_time_ns ASC"
     )
     .all(traceId) as any[];
 
@@ -41,23 +51,41 @@ export default function TraceDetail() {
   return (
     <div className="p-4">
       <div className="mb-4">
-        <Link to="/traces" className="text-blue-600 hover:underline">
-          &larr; Back to Traces
-        </Link>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <Link to="/traces">Traces</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem isCurrentPage>{trace.trace_id}</BreadcrumbItem>
+        </Breadcrumb>
       </div>
 
       <h1 className="text-2xl font-bold mb-2">Trace: {trace.trace_id}</h1>
-      <div className="flex gap-4 text-sm text-gray-600 mb-6">
-        <div>Service: {trace.service_name}</div>
-        <div>
-          Start: {new Date(Number(traceStart / 1000000n)).toLocaleString()}
+      <Tile className="mb-6">
+        <div className="flex gap-8 text-sm text-gray-600">
+          <div>
+            <span className="font-semibold block text-gray-900">Service</span>
+            {trace.service_name}
+          </div>
+          <div>
+            <span className="font-semibold block text-gray-900">Start</span>
+            {new Date(Number(traceStart / 1000000n)).toLocaleString()}
+          </div>
+          <div>
+            <span className="font-semibold block text-gray-900">Duration</span>
+            {trace.duration_ms.toFixed(2)}ms
+          </div>
+          <div>
+            <span className="font-semibold block text-gray-900">Spans</span>
+            {trace.span_count}
+          </div>
+          <div>
+            <span className="font-semibold block text-gray-900">Errors</span>
+            {trace.error_count}
+          </div>
         </div>
-        <div>Duration: {trace.duration_ms.toFixed(2)}ms</div>
-        <div>Spans: {trace.span_count}</div>
-        <div>Errors: {trace.error_count}</div>
-      </div>
+      </Tile>
 
-      <div className="border rounded bg-white p-4 overflow-x-auto">
+      <Tile className="overflow-x-auto mb-8">
         <h2 className="font-bold mb-4">Waterfall</h2>
         <div className="relative min-w-[800px]">
           {spans.map((span: any) => {
@@ -96,27 +124,38 @@ export default function TraceDetail() {
             );
           })}
         </div>
-      </div>
+      </Tile>
 
       <div className="mt-8">
         <h2 className="font-bold mb-4">Span Details</h2>
-        {spans.map((span: any) => (
-          <details key={span.span_id} className="mb-2 border rounded p-2">
-            <summary className="cursor-pointer font-mono text-sm">
-              {span.span_name}{" "}
-              <span className="text-gray-500">({span.span_id})</span>
-            </summary>
-            <div className="mt-2 pl-4 text-sm">
+        <Accordion>
+          {spans.map((span: any) => (
+            <AccordionItem
+              key={span.span_id}
+              title={
+                <span className="flex gap-2 items-center">
+                  <span className="font-mono text-sm">{span.span_name}</span>
+                  <span className="text-gray-500 text-xs">
+                    ({span.span_id})
+                  </span>
+                  {span.status_code === 2 && (
+                    <Tag type="red" size="sm">
+                      Error
+                    </Tag>
+                  )}
+                </span>
+              }
+            >
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <h3 className="font-bold">Attributes</h3>
+                  <h3 className="font-bold mb-2">Attributes</h3>
                   <pre className="bg-gray-50 p-2 rounded text-xs overflow-auto">
                     {JSON.stringify(span.attributes, null, 2)}
                   </pre>
                 </div>
                 <div>
-                  <h3 className="font-bold">Metadata</h3>
-                  <ul className="list-disc pl-4">
+                  <h3 className="font-bold mb-2">Metadata</h3>
+                  <ul className="list-disc pl-4 text-sm">
                     <li>Kind: {span.span_kind}</li>
                     <li>
                       Status: {span.status_code} {span.status_message}
@@ -125,9 +164,9 @@ export default function TraceDetail() {
                   </ul>
                 </div>
               </div>
-            </div>
-          </details>
-        ))}
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </div>
   );
