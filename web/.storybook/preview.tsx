@@ -24,7 +24,6 @@ const WithColorScheme: Decorator = (Story, context) => {
 
 const preview: Preview = {
   decorators: [WithColorScheme],
-  decorators: [withColorScheme],
   parameters: {
     controls: {
       matchers: {
