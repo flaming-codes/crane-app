@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Heatmap } from "./charts.heatmap";
 import { format, subDays } from "date-fns";
 

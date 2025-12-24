@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LicenseTable } from "./licenses";
 
 const meta: Meta<typeof LicenseTable> = {

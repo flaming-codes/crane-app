@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Tag } from "./tag";
 
 const meta: Meta<typeof Tag> = {
@@ -29,8 +29,12 @@ export const Default: Story = {};
 export const Sizes: Story = {
   render: (args) => (
     <div className="flex items-center gap-2">
-      <Tag {...args} size="xs" children="XS Tag" />
-      <Tag {...args} size="sm" children="SM Tag" />
+      <Tag {...args} size="xs">
+        XS Tag
+      </Tag>
+      <Tag {...args} size="sm">
+        SM Tag
+      </Tag>
     </div>
   ),
 };
@@ -38,8 +42,12 @@ export const Sizes: Story = {
 export const Gradients: Story = {
   render: (args) => (
     <div className="flex gap-2">
-      <Tag {...args} borderGradients="iris" children="Iris" />
-      <Tag {...args} borderGradients="jade" children="Jade" />
+      <Tag {...args} borderGradients="iris">
+        Iris
+      </Tag>
+      <Tag {...args} borderGradients="jade">
+        Jade
+      </Tag>
     </div>
   ),
 };

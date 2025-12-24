@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProvidedByLabel, DataProvidedByCRANLabel } from "./provided-by-label";
 
 const meta: Meta<typeof ProvidedByLabel> = {

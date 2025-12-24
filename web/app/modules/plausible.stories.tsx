@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PlausibleChoicePillButton } from "./plausible";
 
 const meta: Meta<typeof PlausibleChoicePillButton> = {

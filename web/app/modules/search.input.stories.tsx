@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SearchInput } from "./search.input";
 import { fn } from "@storybook/test";
 import { RiMenuLine } from "@remixicon/react";

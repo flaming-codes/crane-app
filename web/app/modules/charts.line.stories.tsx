@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LineGraph } from "./charts.line";
 import { format, subDays } from "date-fns";
 

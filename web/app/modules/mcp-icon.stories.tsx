@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { McpIcon } from "./mcp-icon";
 
 const meta: Meta<typeof McpIcon> = {

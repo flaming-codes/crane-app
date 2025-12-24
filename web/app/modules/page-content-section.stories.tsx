@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PageContentSection } from "./page-content-section";
 
 const meta: Meta<typeof PageContentSection> = {
