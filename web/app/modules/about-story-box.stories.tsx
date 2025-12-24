@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { AboutStoryBox } from "./about-story-box";
 
-const meta: Meta<typeof AboutStoryBox> = {
+const meta = preview.meta({
   title: "Modules/Cards/AboutStoryBox",
   component: AboutStoryBox,
   parameters: {
@@ -30,9 +30,6 @@ const meta: Meta<typeof AboutStoryBox> = {
       </>
     ),
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof AboutStoryBox>;
-
-export const Default: Story = {};
+export const Default = meta.story();

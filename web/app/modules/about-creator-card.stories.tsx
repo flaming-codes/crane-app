@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { AboutCreatorCard } from "./about-creator-card";
 import { RiLinkedinFill } from "@remixicon/react";
 
-const meta: Meta<typeof AboutCreatorCard> = {
+const meta = preview.meta({
   title: "Modules/Cards/AboutCreatorCard",
   component: AboutCreatorCard,
   parameters: {
@@ -26,14 +26,11 @@ const meta: Meta<typeof AboutCreatorCard> = {
       },
     ],
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof AboutCreatorCard>;
+export const Lukas = meta.story();
 
-export const Lukas: Story = {};
-
-export const Tom: Story = {
+export const Tom = meta.story({
   args: {
     name: "Tom Schönmann",
     portrait: "/images/we/tom_v2.webp",
@@ -52,4 +49,4 @@ export const Tom: Story = {
       },
     ],
   },
-};
+});

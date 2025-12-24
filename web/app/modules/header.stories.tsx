@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { Header } from "./header";
 import { SyneLogo as Logo } from "./svg";
 
-const meta: Meta<typeof Header> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/Header",
   component: Header,
   parameters: {
@@ -19,33 +19,30 @@ const meta: Meta<typeof Header> = {
       options: ["iris", "ruby", "jade", "bronze", "sand", "amethyst", "opal"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Header>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const WithOrnament: Story = {
+export const WithOrnament = Default.extend({
   args: {
     ornament: <Logo className="h-32 w-32 text-white/10" />,
   },
-};
+});
 
-export const RubyGradient: Story = {
+export const RubyGradient = Default.extend({
   args: {
     gradient: "ruby",
   },
-};
+});
 
-export const JadeGradient: Story = {
+export const JadeGradient = Default.extend({
   args: {
     gradient: "jade",
   },
-};
+});
 
-export const SandGradient: Story = {
+export const SandGradient = Default.extend({
   args: {
     gradient: "sand",
   },
-};
+});

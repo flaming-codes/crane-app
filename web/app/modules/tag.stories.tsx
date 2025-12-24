@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { Tag } from "./tag";
 
-const meta: Meta<typeof Tag> = {
+const meta = preview.meta({
   title: "Modules/UI/Tag",
   component: Tag,
   args: {
@@ -19,14 +19,11 @@ const meta: Meta<typeof Tag> = {
       options: ["iris", "jade"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Tag>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const Sizes: Story = {
+export const Sizes = meta.story({
   render: (args) => (
     <div className="flex items-center gap-2">
       <Tag {...args} size="xs">
@@ -37,9 +34,9 @@ export const Sizes: Story = {
       </Tag>
     </div>
   ),
-};
+});
 
-export const Gradients: Story = {
+export const Gradients = meta.story({
   render: (args) => (
     <div className="flex gap-2">
       <Tag {...args} borderGradients="iris">
@@ -50,4 +47,4 @@ export const Gradients: Story = {
       </Tag>
     </div>
   ),
-};
+});

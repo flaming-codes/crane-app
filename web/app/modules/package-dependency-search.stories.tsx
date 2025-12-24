@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { PackageDependencySearch } from "./package-dependency-search";
 import { PackageDependency } from "../data/types";
 
@@ -14,7 +14,7 @@ const createDeps = (count: number, prefix: string): PackageDependency[] => {
   }));
 };
 
-const meta: Meta<typeof PackageDependencySearch> = {
+const meta = preview.meta({
   title: "Modules/Search/PackageDependencySearch",
   component: PackageDependencySearch,
   parameters: {
@@ -27,14 +27,11 @@ const meta: Meta<typeof PackageDependencySearch> = {
       suggests: createDeps(2, "suggests"),
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PackageDependencySearch>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const ManyDependencies: Story = {
+export const ManyDependencies = meta.story({
   args: {
     relations: {
       depends: createDeps(10, "depends"),
@@ -45,19 +42,19 @@ export const ManyDependencies: Story = {
       reverse_depends: createDeps(5, "rev_depends"),
     },
   },
-};
+});
 
-export const OnlyReverseDependencies: Story = {
+export const OnlyReverseDependencies = meta.story({
   args: {
     relations: {
       reverse_imports: createDeps(12, "rev_imports"),
       reverse_suggests: createDeps(8, "rev_suggests"),
     },
   },
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     relations: {},
   },
-};
+});

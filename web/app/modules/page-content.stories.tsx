@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { PageContent } from "./page-content";
 import { PageContentSection } from "./page-content-section";
 
-const meta: Meta<typeof PageContent> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/PageContent",
   component: PageContent,
   parameters: {
     layout: "fullscreen",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PageContent>;
-
-export const Default: Story = {
+export const Default = meta.story({
   render: (args) => (
     <div className="min-h-screen bg-white dark:bg-black">
       <PageContent {...args}>
@@ -35,4 +32,4 @@ export const Default: Story = {
       </PageContent>
     </div>
   ),
-};
+});

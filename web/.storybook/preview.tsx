@@ -1,4 +1,8 @@
-import type { Preview, Decorator } from "@storybook/react-vite";
+import addonThemes from "@storybook/addon-themes";
+import addonDocs from "@storybook/addon-docs";
+import addonA11y from "@storybook/addon-a11y";
+import { definePreview } from "@storybook/react-vite";
+import type { Decorator } from "@storybook/react-vite";
 import { useEffect } from "react";
 import "../app/tailwind.css";
 
@@ -22,8 +26,9 @@ const WithColorScheme: Decorator = (Story, context) => {
   return <Story />;
 };
 
-const preview: Preview = {
+export default definePreview({
   decorators: [WithColorScheme],
+
   parameters: {
     controls: {
       matchers: {
@@ -39,18 +44,18 @@ const preview: Preview = {
     },
     backgrounds: {
       default: "light",
-      values: [
-        {
+      options: {
+        light: {
           name: "light",
           value: "#ffffff",
         },
-        {
+        dark: {
           name: "dark",
           value: "#000000",
         },
-      ],
+      },
     },
   },
-};
 
-export default preview;
+  addons: [addonA11y(), addonDocs(), addonThemes()],
+});

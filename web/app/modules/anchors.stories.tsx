@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { Anchors, AnchorLink } from "./anchors";
 import { withRouter } from "storybook-addon-remix-react-router";
 
-const meta: Meta<typeof Anchors> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/Anchors",
   component: Anchors,
   decorators: [withRouter],
@@ -12,12 +12,9 @@ const meta: Meta<typeof Anchors> = {
   args: {
     anchorIds: ["section-1", "section-2", "section-3"],
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Anchors>;
-
-export const Default: Story = {
+export const Default = meta.story({
   render: (args) => (
     <div className="relative">
       <div className="flex h-[60px] items-center justify-center border-b bg-gray-100">
@@ -50,4 +47,4 @@ export const Default: Story = {
       </div>
     </div>
   ),
-};
+});

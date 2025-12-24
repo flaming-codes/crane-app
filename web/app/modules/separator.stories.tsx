@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { Separator } from "./separator";
 
-const meta: Meta<typeof Separator> = {
+const meta = preview.meta({
   title: "Modules/UI/Separator",
   component: Separator,
   decorators: [
@@ -15,9 +15,6 @@ const meta: Meta<typeof Separator> = {
       </div>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Separator>;
-
-export const Default: Story = {};
+export const Default = meta.story();

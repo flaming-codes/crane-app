@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { GradientBackground } from "./gradient-background";
 
-const meta: Meta<typeof GradientBackground> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/GradientBackground",
   component: GradientBackground,
   parameters: {
@@ -18,19 +18,16 @@ const meta: Meta<typeof GradientBackground> = {
       </div>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof GradientBackground>;
-
-export const Iris: Story = {
+export const Iris = meta.story({
   args: {
     gradient: "linear-gradient(to bottom, #748B99, #00000000)", // Example iris-ish gradient
   },
-};
+});
 
-export const Sand: Story = {
+export const Sand = meta.story({
   args: {
     gradient: "linear-gradient(to bottom, #dcb886, #00000000)",
   },
-};
+});

@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { ExternalLinkPill } from "./external-link-pill";
 import { RiGithubLine, RiExternalLinkLine } from "@remixicon/react";
 
-const meta: Meta<typeof ExternalLinkPill> = {
+const meta = preview.meta({
   title: "Modules/Links/ExternalLinkPill",
   component: ExternalLinkPill,
   parameters: {
@@ -12,23 +12,20 @@ const meta: Meta<typeof ExternalLinkPill> = {
     href: "https://example.com",
     children: "Visit Example",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ExternalLinkPill>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const WithIcon: Story = {
+export const WithIcon = meta.story({
   args: {
     icon: <RiExternalLinkLine size={18} />,
   },
-};
+});
 
-export const GithubLink: Story = {
+export const GithubLink = meta.story({
   args: {
     icon: <RiGithubLine size={18} />,
     children: "GitHub Repository",
     href: "https://github.com",
   },
-};
+});

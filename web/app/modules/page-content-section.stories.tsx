@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import preview from "../../.storybook/preview";
 import { PageContentSection } from "./page-content-section";
 
-const meta: Meta<typeof PageContentSection> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/PageContentSection",
   component: PageContentSection,
   parameters: {
@@ -22,14 +22,11 @@ const meta: Meta<typeof PageContentSection> = {
       options: [undefined, "prose"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PageContentSection>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const ProseVariant: Story = {
+export const ProseVariant = meta.story({
   args: {
     variant: "prose",
     children: (
@@ -39,10 +36,10 @@ export const ProseVariant: Story = {
       </p>
     ),
   },
-};
+});
 
-export const WithoutSubline: Story = {
+export const WithoutSubline = meta.story({
   args: {
     subline: undefined,
   },
-};
+});
