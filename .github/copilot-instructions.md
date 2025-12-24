@@ -24,6 +24,13 @@
 - Use TypeScript types to document interfaces and contracts
 - Example: `/** Fetches package data with 6-hour cache TTL. */`
 
+### Quality gate
+
+- Before committing, run the package.json scripts from `/web`:
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run format`.
+
 ### What this repo is
 
 - Frontend for **CRAN/E** (pronounced “CRANE,” like the bird), a PWA that searches CRAN (Comprehensive R Archive Network — singular “Archive” in the official name) packages/authors. Live at https://cran-e.com.
@@ -66,11 +73,6 @@ Run from `/web` unless noted. Always `npm install` first (postinstall regenerate
 - **Preview/Start:** `npm run preview` runs build then `npm run start` (served via `react-router-serve ./build/server/index.js`). Ensure env vars are set before serving.
 - **Other scripts:** `npm run format` (Prettier + tailwind plugin), `npm run licenses.build` (regenerates licenses), `npm run db.types` (requires Supabase CLI + creds to generate DB types).
 - No dedicated test suite is defined; validation relies on lint/typecheck/build.
-
-### Quality gate
-
-- Before committing, run the package.json scripts from `/web`: `npm run lint`, `npm run typecheck`, and `npm run format`.
-- Lint currently reports existing violations; still run it and keep any files you touch lint-clean (fix new lint errors you introduce).
 
 ### Git / Versioning Guidelines
 

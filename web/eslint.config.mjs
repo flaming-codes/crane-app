@@ -31,6 +31,8 @@ export default [
       ".react-router",
       "node_modules",
       ".gitignore",
+      "storybook-static",
+      "public/storybook",
     ],
   },
   ...compat.extends("eslint:recommended"),

@@ -34,8 +34,8 @@ export const ProseVariant: Story = {
     variant: "prose",
     children: (
       <p>
-        This content is styled as prose. It's meant for larger bodies of text
-        that require comfortable reading width and line height.
+        This content is styled as prose. It&apos;s meant for larger bodies of
+        text that require comfortable reading width and line height.
       </p>
     ),
   },

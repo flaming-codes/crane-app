@@ -87,6 +87,7 @@ export default function PrivacyPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error("Failed to copy:", err);
     }
   };
@@ -145,7 +146,7 @@ export default function PrivacyPage() {
                 key={creator.name}
                 className="group border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 overflow-hidden rounded-3xl border bg-white/80 shadow-[0_35px_120px_-60px_rgba(15,23,42,0.9)] backdrop-blur-xl"
               >
-                <div className="relative h-[360px] w-full overflow-hidden lg:h-[420px]">
+                <div className="relative h-90 w-full overflow-hidden lg:h-105">
                   <img
                     src={creator.portrait}
                     alt={`Portrait of ${creator.name}`}
@@ -248,7 +249,7 @@ export default function PrivacyPage() {
             </li>
           </ul>
           <p>
-            This integration makes CRAN/E's data seamlessly accessible to
+            This integration makes CRAN/E&apos;s data seamlessly accessible to
             AI-powered development workflows, enabling smarter package
             discovery, automated dependency analysis, and enhanced R development
             experiences.
@@ -260,14 +261,15 @@ export default function PrivacyPage() {
                 <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
               </InfoPill>
             </ExternalLink>
-            <div
+            <button
+              type="button"
               onClick={handleCopyMcpUrl}
               className="hover:bg-slate-6 cursor-pointer rounded-full transition-colors"
             >
               <InfoPill variant="slate" label={<RiFileCopyLine size={16} />}>
                 {copied ? "Copied!" : "Copy MCP URL"}
               </InfoPill>
-            </div>
+            </button>
           </div>
         </PageContentSection>
 

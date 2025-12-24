@@ -60,7 +60,16 @@ type EnrichedPackage = {
   relations: Awaited<
     ReturnType<typeof PackageService.getPackageRelationsByPackageId>
   >;
-  groupedRelations: ReturnType<typeof groupBy<any, string>>;
+  groupedRelations: ReturnType<
+    typeof groupBy<
+      NonNullable<
+        Awaited<
+          ReturnType<typeof PackageService.getPackageRelationsByPackageId>
+        >
+      >[number],
+      string
+    >
+  >;
   authorsData: Awaited<ReturnType<typeof AuthorService.getAuthorsByPackageId>>;
   authorsList: Array<Tables<"authors"> & { roles: string[] }>;
   maintainer: (Tables<"authors"> & { roles: string[] }) | undefined;

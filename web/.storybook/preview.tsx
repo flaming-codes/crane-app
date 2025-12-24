@@ -7,7 +7,7 @@ import "../app/tailwind.css";
  * This app uses `@custom-variant dark (@media (prefers-color-scheme: dark))`
  * so we need to set the color-scheme CSS property to trigger the media query.
  */
-const withColorScheme: Decorator = (Story, context) => {
+const WithColorScheme: Decorator = (Story, context) => {
   const backgroundValue = context.globals.backgrounds?.value;
   const isDark = backgroundValue === "#000000";
 
@@ -23,7 +23,7 @@ const withColorScheme: Decorator = (Story, context) => {
 };
 
 const preview: Preview = {
-  tags: ["autodocs"],
+  decorators: [WithColorScheme],
   decorators: [withColorScheme],
   parameters: {
     controls: {
