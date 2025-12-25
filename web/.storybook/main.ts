@@ -1,7 +1,7 @@
-import type { StorybookConfig } from "@storybook/react-vite";
+import { defineMain } from "@storybook/react-vite/node";
 import remarkGfm from "remark-gfm";
 
-const config: StorybookConfig = {
+export default defineMain({
   stories: ["../app/**/*.mdx", "../app/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     "@chromatic-com/storybook",
@@ -28,5 +28,4 @@ const config: StorybookConfig = {
       base: "/storybook/",
     });
   },
-};
-export default config;
+});

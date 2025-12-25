@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { SyneLogo } from "./svg";
 
-const meta: Meta<typeof SyneLogo> = {
+const meta = preview.meta({
   title: "Modules/Icons/SyneLogo",
   component: SyneLogo,
   parameters: {
@@ -11,32 +11,29 @@ const meta: Meta<typeof SyneLogo> = {
     className: { control: "text" },
     style: { control: "object" },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SyneLogo>;
-
-export const Default: Story = {
+export const Default = meta.story({
   args: {
     className: "h-32",
   },
-};
+});
 
-export const CustomColor: Story = {
+export const CustomColor = meta.story({
   args: {
     className: "h-32 text-blue-500",
   },
-};
+});
 
-export const Large: Story = {
+export const Large = meta.story({
   args: {
     className: "h-64",
   },
-};
+});
 
-export const WithCustomStyle: Story = {
+export const WithCustomStyle = meta.story({
   args: {
     style: { color: "var(--iris-9)" },
     className: "h-32",
   },
-};
+});

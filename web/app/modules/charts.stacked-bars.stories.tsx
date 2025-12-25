@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { StackedBarsChart } from "./charts.stacked-bars";
 
-const meta: Meta<typeof StackedBarsChart> = {
+const meta = preview.meta({
   title: "Modules/Charts/StackedBarsChart",
   component: StackedBarsChart,
   parameters: {
@@ -15,14 +15,11 @@ const meta: Meta<typeof StackedBarsChart> = {
       { label: "Category C", value: 20 },
     ],
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof StackedBarsChart>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const ManyItems: Story = {
+export const ManyItems = meta.story({
   args: {
     total: 500,
     data: [
@@ -34,11 +31,11 @@ export const ManyItems: Story = {
       { label: "Item 6", value: 100 },
     ],
   },
-};
+});
 
-export const SingleItem: Story = {
+export const SingleItem = meta.story({
   args: {
     total: 100,
     data: [{ label: "Only Item", value: 80 }],
   },
-};
+});

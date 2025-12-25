@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { ExternalLink } from "./external-link";
 
-const meta: Meta<typeof ExternalLink> = {
+const meta = preview.meta({
   title: "Modules/Links/ExternalLink",
   component: ExternalLink,
   parameters: {
@@ -12,9 +12,6 @@ const meta: Meta<typeof ExternalLink> = {
     children: "Visit Example.com",
     className: "text-blue-600 hover:underline",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ExternalLink>;
-
-export const Default: Story = {};
+export const Default = meta.story();

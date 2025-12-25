@@ -1,14 +1,16 @@
 import preview from "../../.storybook/preview";
-import { NavMenu } from "./nav.menu";
 import { withRouter } from "storybook-addon-remix-react-router";
+import AboutPage from "./_page.about._index";
 
 const meta = preview.meta({
-  title: "Modules/Navigation/NavMenu",
-  component: NavMenu,
+  title: "Routes/AboutPage",
+  component: AboutPage,
   decorators: [withRouter],
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
 });
 
-export const Default = meta.story();
+export const Default = meta.story({
+  render: () => <AboutPage />,
+});

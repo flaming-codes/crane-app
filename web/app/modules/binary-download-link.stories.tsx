@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { BinaryDownloadLink } from "./binary-download-link";
 
-const meta: Meta<typeof BinaryDownloadLink> = {
+const meta = preview.meta({
   title: "Modules/Links/BinaryDownloadLink",
   component: BinaryDownloadLink,
   parameters: {
@@ -24,35 +24,27 @@ const meta: Meta<typeof BinaryDownloadLink> = {
       options: ["iris", "ruby"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BinaryDownloadLink>;
+export const MacOS = meta.story();
 
-export const MacOS: Story = {
-  args: {
-    os: "macOS",
-    arch: "arm64",
-  },
-};
-
-export const Windows: Story = {
+export const Windows = MacOS.extend({
   args: {
     os: "Windows",
     arch: "x86_64",
   },
-};
+});
 
-export const RubyVariant: Story = {
+export const RubyVariant = MacOS.extend({
   args: {
     variant: "ruby",
   },
-};
+});
 
-export const OldSource: Story = {
+export const OldSource = MacOS.extend({
   args: {
     os: "Old Source",
     arch: "src",
     headline: "old_package_src",
   },
-};
+});

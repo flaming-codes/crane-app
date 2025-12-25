@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { Footer } from "./footer";
 import { withRouter } from "storybook-addon-remix-react-router";
 
-const meta: Meta<typeof Footer> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/Footer",
   component: Footer,
   decorators: [withRouter],
@@ -15,19 +15,16 @@ const meta: Meta<typeof Footer> = {
       options: ["start", "page"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Footer>;
-
-export const Default: Story = {
+export const Default = meta.story({
   args: {
     variant: "page",
   },
-};
+});
 
-export const Start: Story = {
+export const Start = meta.story({
   args: {
     variant: "start",
   },
-};
+});

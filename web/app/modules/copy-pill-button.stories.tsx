@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { CopyPillButton } from "./copy-pill-button";
 
-const meta: Meta<typeof CopyPillButton> = {
+const meta = preview.meta({
   title: "Modules/Buttons/CopyPillButton",
   component: CopyPillButton,
   parameters: {
@@ -11,16 +11,13 @@ const meta: Meta<typeof CopyPillButton> = {
     textToCopy: "npm install foo",
     children: "npm install foo",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof CopyPillButton>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const CustomText: Story = {
+export const CustomText = meta.story({
   args: {
     children: "Copy this text",
     textToCopy: "Hidden text to copy",
   },
-};
+});

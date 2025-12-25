@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { McpIcon } from "./mcp-icon";
 
-const meta: Meta<typeof McpIcon> = {
+const meta = preview.meta({
   title: "Modules/Icons/McpIcon",
   component: McpIcon,
   parameters: {
     layout: "centered",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof McpIcon>;
-
-export const Default: Story = {
+export const Default = meta.story({
   args: {
     className: "w-16 h-16",
   },
-};
+});
