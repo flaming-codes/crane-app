@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { Heatmap } from "./charts.heatmap";
 import { format, subDays } from "date-fns";
 
@@ -17,7 +17,7 @@ const generateDownloads = (days: number) => {
   });
 };
 
-const meta: Meta<typeof Heatmap> = {
+const meta = preview.meta({
   title: "Modules/Charts/Heatmap",
   component: Heatmap,
   parameters: {
@@ -28,27 +28,24 @@ const meta: Meta<typeof Heatmap> = {
     end: formattedToday,
     downloads: generateDownloads(61), // 60 days back + today
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Heatmap>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const LowActivity: Story = {
+export const LowActivity = meta.story({
   args: {
     downloads: generateDownloads(61).map((d) => ({
       ...d,
       downloads: Math.random() > 0.8 ? 50 : 0,
     })),
   },
-};
+});
 
-export const HighActivity: Story = {
+export const HighActivity = meta.story({
   args: {
     downloads: generateDownloads(61).map((d) => ({
       ...d,
       downloads: Math.floor(Math.random() * 5000) + 2000,
     })),
   },
-};
+});

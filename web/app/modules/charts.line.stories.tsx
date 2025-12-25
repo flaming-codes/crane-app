@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { LineGraph } from "./charts.line";
 import { format, subDays } from "date-fns";
 
@@ -15,7 +15,7 @@ const generateData = (days: number) => {
   });
 };
 
-const meta: Meta<typeof LineGraph> = {
+const meta = preview.meta({
   title: "Modules/Charts/LineGraph",
   component: LineGraph,
   parameters: {
@@ -26,22 +26,19 @@ const meta: Meta<typeof LineGraph> = {
     height: 400,
     padding: 16,
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof LineGraph>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const LongDuration: Story = {
+export const LongDuration = meta.story({
   args: {
     data: generateData(90),
   },
-};
+});
 
-export const SmallHeight: Story = {
+export const SmallHeight = meta.story({
   args: {
     height: 200,
     data: generateData(14),
   },
-};
+});

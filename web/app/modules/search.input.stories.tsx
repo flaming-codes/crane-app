@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { SearchInput } from "./search.input";
 import { fn } from "@storybook/test";
 import { RiMenuLine } from "@remixicon/react";
 
-const meta: Meta<typeof SearchInput> = {
+const meta = preview.meta({
   title: "Modules/Search/SearchInput",
   component: SearchInput,
   args: {
@@ -13,27 +13,24 @@ const meta: Meta<typeof SearchInput> = {
     onChange: fn(),
     inputRef: { current: null },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SearchInput>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const Focused: Story = {
+export const Focused = meta.story({
   args: {
     isFocused: true,
   },
-};
+});
 
-export const WithInput: Story = {
+export const WithInput = meta.story({
   args: {
     isFocused: true,
     input: "ggplot2",
   },
-};
+});
 
-export const WithActions: Story = {
+export const WithActions = meta.story({
   args: {
     actions: (
       <button className="text-gray-dim hover:text-gray-normal p-2">
@@ -41,4 +38,4 @@ export const WithActions: Story = {
       </button>
     ),
   },
-};
+});

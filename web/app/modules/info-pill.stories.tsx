@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { InfoPill } from "./info-pill";
 
-const meta: Meta<typeof InfoPill> = {
+const meta = preview.meta({
   title: "Modules/Pills/InfoPill",
   component: InfoPill,
   args: {
@@ -20,14 +20,11 @@ const meta: Meta<typeof InfoPill> = {
       options: ["iris", "ruby", "jade", "slate", "sand", "amethyst", "opal"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof InfoPill>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const Sizes: Story = {
+export const Sizes = meta.story({
   render: (args) => (
     <div className="flex flex-col gap-4">
       <InfoPill {...args} size="xs" />
@@ -36,9 +33,9 @@ export const Sizes: Story = {
       <InfoPill {...args} size="lg" />
     </div>
   ),
-};
+});
 
-export const Variants: Story = {
+export const Variants = meta.story({
   render: (args) => (
     <div className="flex flex-wrap gap-4">
       <InfoPill {...args} variant="iris" />
@@ -50,4 +47,4 @@ export const Variants: Story = {
       <InfoPill {...args} variant="opal" />
     </div>
   ),
-};
+});

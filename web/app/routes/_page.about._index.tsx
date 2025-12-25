@@ -18,6 +18,8 @@ import { PlausibleChoicePillButton } from "../modules/plausible";
 import { mergeMeta } from "../modules/meta";
 import { LicenseTable } from "../modules/licenses";
 import { useState } from "react";
+import { AboutCreatorCard } from "../modules/about-creator-card";
+import { AboutStoryBox } from "../modules/about-story-box";
 
 const anchors = [
   "Creators",
@@ -87,6 +89,7 @@ export default function PrivacyPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error("Failed to copy:", err);
     }
   };
@@ -141,67 +144,13 @@ export default function PrivacyPage() {
         >
           <div className="grid gap-10 xl:grid-cols-2">
             {creatorSpotlight.map((creator) => (
-              <article
-                key={creator.name}
-                className="group border-gray-6/30 dark:border-gray-1/20 dark:bg-gray-12/40 overflow-hidden rounded-3xl border bg-white/80 shadow-[0_35px_120px_-60px_rgba(15,23,42,0.9)] backdrop-blur-xl"
-              >
-                <div className="relative h-[360px] w-full overflow-hidden lg:h-[420px]">
-                  <img
-                    src={creator.portrait}
-                    alt={`Portrait of ${creator.name}`}
-                    className="size-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-                  <div className="from-gray-12/80 via-gray-12/20 dark:from-gray-12/80 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent" />
-                  <div className="dark:bg-gray-12/60 border-gray-6/40 dark:border-gray-1/40 absolute inset-x-0 bottom-0 flex flex-col gap-1 border-t bg-white/5 px-8 pt-5 pb-5 text-white backdrop-blur-md">
-                    <p className="text-2xl leading-tight font-semibold">
-                      {creator.name}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-6 p-8">
-                  <p className="text-gray-normal text-lg leading-relaxed">
-                    {creator.tagline}
-                  </p>
-                  <div className="text-gray-normal space-y-4 text-base leading-relaxed">
-                    {creator.bio.map((paragraph, index) => (
-                      <p key={`${creator.name}-bio-${index}`}>{paragraph}</p>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {creator.focusAreas.map((focus) => (
-                      <span
-                        key={`${creator.name}-${focus}`}
-                        className="border-gray-6/40 text-gray-dim dark:border-gray-1/40 dark:bg-gray-12/20 dark:text-gray-3 rounded-full border bg-white/60 px-4 py-1 text-xs tracking-[0.2em] uppercase"
-                      >
-                        {focus}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {creator.links.map((link) => (
-                      <ExternalLink key={link.href} href={link.href}>
-                        <InfoPill variant="sand" label={link.icon}>
-                          {link.copy}
-                          <RiExternalLinkLine
-                            size={16}
-                            className="text-gray-dim ml-2"
-                          />
-                        </InfoPill>
-                      </ExternalLink>
-                    ))}
-                  </div>
-                </div>
-              </article>
+              <AboutCreatorCard key={creator.name} {...creator} />
             ))}
           </div>
-          <div className="border-gray-6/30 from-sand-3/50 via-amber-2/40 text-gray-normal dark:border-gray-1/20 dark:from-sand-9/40 dark:via-amber-9/20 dark:to-gray-12/40 dark:text-gray-2 space-y-4 rounded-2xl border bg-linear-to-br to-white/60 p-8 text-base leading-relaxed shadow-[0_25px_90px_-60px_rgba(15,23,42,0.75)]">
-            <p className="text-gray-dim text-xs font-semibold tracking-[0.35em] uppercase">
-              Our story
-            </p>
-            <p className="text-gray-normal mt-1 text-2xl font-semibold">
-              Two developers from Austria passionate about coding.
-            </p>
+          <AboutStoryBox
+            title="Our story"
+            headline="Two developers from Austria passionate about coding."
+          >
             <p>
               Our names are Lukas and Tom and we&apos;re two developers from
               Austria. Our passion for coding (the one in R, the other in
@@ -218,7 +167,7 @@ export default function PrivacyPage() {
               Our main focus was ease of use and accessibility, especially for
               lightning fast searches.
             </p>
-          </div>
+          </AboutStoryBox>
         </PageContentSection>
 
         <Separator />
@@ -248,7 +197,7 @@ export default function PrivacyPage() {
             </li>
           </ul>
           <p>
-            This integration makes CRAN/E's data seamlessly accessible to
+            This integration makes CRAN/E&apos;s data seamlessly accessible to
             AI-powered development workflows, enabling smarter package
             discovery, automated dependency analysis, and enhanced R development
             experiences.
@@ -260,14 +209,15 @@ export default function PrivacyPage() {
                 <RiExternalLinkLine size={16} className="text-gray-dim ml-2" />
               </InfoPill>
             </ExternalLink>
-            <div
+            <button
+              type="button"
               onClick={handleCopyMcpUrl}
               className="hover:bg-slate-6 cursor-pointer rounded-full transition-colors"
             >
               <InfoPill variant="slate" label={<RiFileCopyLine size={16} />}>
                 {copied ? "Copied!" : "Copy MCP URL"}
               </InfoPill>
-            </div>
+            </button>
           </div>
         </PageContentSection>
 

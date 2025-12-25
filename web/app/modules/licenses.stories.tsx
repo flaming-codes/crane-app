@@ -1,15 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { LicenseTable } from "./licenses";
 
-const meta: Meta<typeof LicenseTable> = {
+const meta = preview.meta({
   title: "Modules/Tables/LicenseTable",
   component: LicenseTable,
   parameters: {
     layout: "padded",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof LicenseTable>;
-
-export const Default: Story = {};
+export const Default = meta.story();

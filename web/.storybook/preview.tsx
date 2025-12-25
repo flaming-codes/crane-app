@@ -1,4 +1,8 @@
-import type { Preview, Decorator } from "@storybook/react-vite";
+import addonThemes from "@storybook/addon-themes";
+import addonDocs from "@storybook/addon-docs";
+import addonA11y from "@storybook/addon-a11y";
+import { definePreview } from "@storybook/react-vite";
+import type { Decorator } from "@storybook/react-vite";
 import { useEffect } from "react";
 import "../app/tailwind.css";
 
@@ -7,7 +11,7 @@ import "../app/tailwind.css";
  * This app uses `@custom-variant dark (@media (prefers-color-scheme: dark))`
  * so we need to set the color-scheme CSS property to trigger the media query.
  */
-const withColorScheme: Decorator = (Story, context) => {
+const WithColorScheme: Decorator = (Story, context) => {
   const backgroundValue = context.globals.backgrounds?.value;
   const isDark = backgroundValue === "#000000";
 
@@ -22,9 +26,9 @@ const withColorScheme: Decorator = (Story, context) => {
   return <Story />;
 };
 
-const preview: Preview = {
-  tags: ["autodocs"],
-  decorators: [withColorScheme],
+export default definePreview({
+  decorators: [WithColorScheme],
+
   parameters: {
     controls: {
       matchers: {
@@ -40,18 +44,18 @@ const preview: Preview = {
     },
     backgrounds: {
       default: "light",
-      values: [
-        {
+      options: {
+        light: {
           name: "light",
           value: "#ffffff",
         },
-        {
+        dark: {
           name: "dark",
           value: "#000000",
         },
-      ],
+      },
     },
   },
-};
 
-export default preview;
+  addons: [addonA11y(), addonDocs(), addonThemes()],
+});

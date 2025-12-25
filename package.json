@@ -13,6 +13,9 @@
   "bugs": {
     "url": "https://github.com/flaming-codes/crane-app/issues"
   },
+  "scripts": {
+    "openspec.list": "npx openspec list"
+  },
   "homepage": "https://github.com/flaming-codes/crane-app#readme",
   "dependencies": {
     "@fission-ai/openspec": "^0.16.0",

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { Prose } from "./prose";
 
-const meta: Meta<typeof Prose> = {
+const meta = preview.meta({
   title: "Modules/Typography/Prose",
   component: Prose,
   parameters: {
@@ -10,14 +10,11 @@ const meta: Meta<typeof Prose> = {
   args: {
     html: "<p>This is a paragraph with <strong>bold text</strong> and <em>italic text</em>. It may also contain <a href='#'>links</a>.</p>",
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Prose>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const LongText: Story = {
+export const LongText = meta.story({
   args: {
     html: `
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -29,4 +26,4 @@ export const LongText: Story = {
       <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     `,
   },
-};
+});

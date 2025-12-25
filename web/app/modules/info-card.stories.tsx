@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { InfoCard } from "./info-card";
 
-const meta: Meta<typeof InfoCard> = {
+const meta = preview.meta({
   title: "Modules/Cards/InfoCard",
   component: InfoCard,
   parameters: {
@@ -27,34 +27,31 @@ const meta: Meta<typeof InfoCard> = {
       options: ["external", "internal"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof InfoCard>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const ExternalIcon: Story = {
+export const ExternalIcon = Default.extend({
   args: {
     icon: "external",
   },
-};
+});
 
-export const InternalIcon: Story = {
+export const InternalIcon = Default.extend({
   args: {
     icon: "internal",
   },
-};
+});
 
-export const RubyVariant: Story = {
+export const RubyVariant = Default.extend({
   args: {
     variant: "ruby",
   },
-};
+});
 
-export const SandVariant: Story = {
+export const SandVariant = Default.extend({
   args: {
     variant: "sand",
     icon: "internal",
   },
-};
+});

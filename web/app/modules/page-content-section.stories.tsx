@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "../../.storybook/preview";
 import { PageContentSection } from "./page-content-section";
 
-const meta: Meta<typeof PageContentSection> = {
+const meta = preview.meta({
   title: "Modules/PageLayout/PageContentSection",
   component: PageContentSection,
   parameters: {
@@ -22,27 +22,24 @@ const meta: Meta<typeof PageContentSection> = {
       options: [undefined, "prose"],
     },
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PageContentSection>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const ProseVariant: Story = {
+export const ProseVariant = meta.story({
   args: {
     variant: "prose",
     children: (
       <p>
-        This content is styled as prose. It's meant for larger bodies of text
-        that require comfortable reading width and line height.
+        This content is styled as prose. It&apos;s meant for larger bodies of
+        text that require comfortable reading width and line height.
       </p>
     ),
   },
-};
+});
 
-export const WithoutSubline: Story = {
+export const WithoutSubline = meta.story({
   args: {
     subline: undefined,
   },
-};
+});
