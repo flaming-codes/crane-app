@@ -1,13 +1,30 @@
 import { Link, useLoaderData, Form, useSubmit } from "react-router";
 import { db } from "../db/client.server";
 import {
-  Grid,
-  Column,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import {
   Select,
+  SelectContent,
   SelectItem,
-  TextInput,
-  Tile,
-} from "@carbon/react";
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { Search } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
@@ -70,151 +87,92 @@ export default function Metrics() {
   const { names, points, filters } = useLoaderData<typeof loader>();
   const submit = useSubmit();
 
-  // Simple SVG Line Chart
-  const width = 800;
-  const height = 300;
-  const padding = 40;
-
-  let chartPath = "";
-  let minTime = 0;
-  let maxTime = 0;
-  let minValue = 0;
-  let maxValue = 0;
-
-  if (points.length > 1) {
-    minTime = Math.min(...points.map((p) => p.timestamp));
-    maxTime = Math.max(...points.map((p) => p.timestamp));
-    minValue = Math.min(...points.map((p) => p.value));
-    maxValue = Math.max(...points.map((p) => p.value));
-
-    // Add some padding to value range
-    const valueRange = maxValue - minValue || 1;
-    minValue -= valueRange * 0.1;
-    maxValue += valueRange * 0.1;
-
-    const timeRange = maxTime - minTime;
-    const plotWidth = width - padding * 2;
-    const plotHeight = height - padding * 2;
-
-    chartPath = points
-      .map((p, i) => {
-        const x = padding + ((p.timestamp - minTime) / timeRange) * plotWidth;
-        const y =
-          height -
-          padding -
-          ((p.value - minValue) / (maxValue - minValue)) * plotHeight;
-        return `${i === 0 ? "M" : "L"} ${x},${y}`;
-      })
-      .join(" ");
-  }
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Metrics</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Metrics</h1>
+      </div>
 
-      <Form className="mb-6" onChange={(e) => submit(e.currentTarget)}>
-        <Grid className="pl-0">
-          <Column lg={4} md={4} sm={4}>
-            <Select
-              id="name"
-              labelText="Metric Name"
-              name="name"
-              defaultValue={filters.metricName || ""}
-            >
-              <SelectItem value="" text="Select a metric..." />
-              {names.map((n: string) => (
-                <SelectItem key={n} value={n} text={n} />
-              ))}
-            </Select>
-          </Column>
-          <Column lg={4} md={4} sm={4}>
-            <TextInput
-              id="service"
-              labelText="Service"
-              name="service"
-              defaultValue={filters.service || ""}
-              placeholder="Optional"
-            />
-          </Column>
-        </Grid>
-      </Form>
-
-      {filters.metricName && points.length === 0 && (
-        <div className="text-gray-500 mt-4">
-          No data found for this metric in the last hour.
-        </div>
-      )}
-
-      {points.length > 0 && (
-        <Tile className="mt-4">
-          <h2 className="font-bold mb-2">{filters.metricName}</h2>
-          <svg
-            width="100%"
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
-            className="overflow-visible"
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form
+            method="get"
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
           >
-            {/* Axes */}
-            <line
-              x1={padding}
-              y1={height - padding}
-              x2={width - padding}
-              y2={height - padding}
-              stroke="#e0e0e0"
-            />
-            <line
-              x1={padding}
-              y1={padding}
-              x2={padding}
-              y2={height - padding}
-              stroke="#e0e0e0"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Metric Name</label>
+              <Select name="name" defaultValue={filters.metricName || ""}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select metric..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {names.map((name: string) => (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Service</label>
+              <Input
+                name="service"
+                defaultValue={filters.service || ""}
+                placeholder="Filter by service..."
+              />
+            </div>
+            <div className="flex items-end">
+              <Button type="submit" className="w-full">
+                <Search className="mr-2 h-4 w-4" />
+                Search
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
 
-            {/* Data Line */}
-            <path d={chartPath} fill="none" stroke="#0f62fe" strokeWidth="2" />
-
-            {/* Labels (simplified) */}
-            <text
-              x={padding}
-              y={height - padding + 20}
-              fontSize="10"
-              textAnchor="middle"
-              fill="#525252"
-            >
-              {new Date(minTime).toLocaleTimeString()}
-            </text>
-            <text
-              x={width - padding}
-              y={height - padding + 20}
-              fontSize="10"
-              textAnchor="middle"
-              fill="#525252"
-            >
-              {new Date(maxTime).toLocaleTimeString()}
-            </text>
-            <text
-              x={padding - 5}
-              y={height - padding}
-              fontSize="10"
-              textAnchor="end"
-              fill="#525252"
-            >
-              {minValue.toFixed(2)}
-            </text>
-            <text
-              x={padding - 5}
-              y={padding}
-              fontSize="10"
-              textAnchor="end"
-              fill="#525252"
-            >
-              {maxValue.toFixed(2)}
-            </text>
-          </svg>
-          <div className="mt-2 text-xs text-gray-500 text-center">
-            Showing {points.length} data points from last hour
-          </div>
-        </Tile>
+      {filters.metricName && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{filters.metricName}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[400px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={points}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="timestamp"
+                    tickFormatter={(time) => new Date(time).toLocaleTimeString()}
+                    minTickGap={50}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    labelFormatter={(time) => new Date(time).toLocaleString()}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="hsl(var(--primary))"
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

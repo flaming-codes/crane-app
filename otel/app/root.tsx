@@ -9,7 +9,6 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "@carbon/styles/css/styles.css";
 import "./app.css";
 import { Shell } from "./components/Shell";
 

@@ -5,3 +5,8 @@
 # React Router
 /.react-router/
 /build/
+
+
+telemetry.db
+telemetry.db-shm
+telemetry.db-wal

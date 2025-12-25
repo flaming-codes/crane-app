@@ -1,22 +1,25 @@
 import { Link, useLoaderData, Form } from "react-router";
 import { db } from "../db/client.server";
 import {
-  DataTable,
   Table,
-  TableHead,
-  TableRow,
-  TableHeader,
   TableBody,
   TableCell,
-  TableContainer,
-  Button,
-  TextInput,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import { Input } from "~/components/ui/input";
+import {
   Select,
+  SelectContent,
   SelectItem,
-  Grid,
-  Column,
-  Tag,
-} from "@carbon/react";
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Badge } from "~/components/ui/badge";
+import { Search } from "lucide-react";
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
@@ -67,117 +70,107 @@ export async function loader({ request }: { request: Request }) {
 export default function Traces() {
   const { traces, filters } = useLoaderData<typeof loader>();
 
-  const headers = [
-    { key: "traceId", header: "Trace ID" },
-    { key: "timestamp", header: "Time" },
-    { key: "service", header: "Service" },
-    { key: "rootSpan", header: "Root Span" },
-    { key: "duration", header: "Duration (ms)" },
-    { key: "spanCount", header: "Spans" },
-    { key: "hasError", header: "Errors" },
-  ];
-
-  const rows = traces.map((trace: any) => ({
-    id: trace.trace_id,
-    traceId: trace.trace_id,
-    timestamp: new Date(
-      Number(BigInt(trace.start_time_ns) / 1000000n)
-    ).toLocaleString(),
-    service: trace.service_name,
-    rootSpan: trace.root_span_name,
-    duration: trace.duration_ms.toFixed(2),
-    spanCount: trace.span_count,
-    hasError: trace.has_error,
-  }));
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Traces</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Traces</h1>
+      </div>
 
-      <Form className="mb-6">
-        <Grid className="pl-0">
-          <Column lg={4} md={4} sm={4}>
-            <TextInput
-              id="service"
-              labelText="Service"
-              name="service"
-              defaultValue={filters.service || ""}
-            />
-          </Column>
-          <Column lg={4} md={4} sm={4}>
-            <Select
-              id="hasError"
-              labelText="Has Error"
-              name="hasError"
-              defaultValue={filters.hasError || ""}
-            >
-              <SelectItem value="" text="All" />
-              <SelectItem value="true" text="Yes" />
-              <SelectItem value="false" text="No" />
-            </Select>
-          </Column>
-          <Column lg={4} md={4} sm={4} className="flex items-end">
-            <Button type="submit">Filter</Button>
-          </Column>
-        </Grid>
-      </Form>
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form
+            method="get"
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+          >
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Service</label>
+              <Input
+                name="service"
+                defaultValue={filters.service || ""}
+                placeholder="Filter by service..."
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Has Error</label>
+              <Select name="hasError" defaultValue={filters.hasError || ""}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-end">
+              <Button type="submit" className="w-full">
+                <Search className="mr-2 h-4 w-4" />
+                Search
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
 
-      <DataTable rows={rows} headers={headers}>
-        {({ rows, headers, getHeaderProps, getRowProps }) => (
-          <TableContainer title="Traces">
-            <Table>
-              <TableHead>
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Trace ID</TableHead>
+                <TableHead>Time</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead>Root Span</TableHead>
+                <TableHead>Duration (ms)</TableHead>
+                <TableHead>Spans</TableHead>
+                <TableHead>Errors</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {traces.length === 0 ? (
                 <TableRow>
-                  {headers.map((header) => (
-                    <TableHeader {...getHeaderProps({ header })}>
-                      {header.header}
-                    </TableHeader>
-                  ))}
+                  <TableCell colSpan={7} className="text-center h-24">
+                    No traces found.
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow {...getRowProps({ row })}>
-                    {row.cells.map((cell) => {
-                      if (cell.info.header === "traceId") {
-                        return (
-                          <TableCell key={cell.id}>
-                            <Link
-                              to={`/traces/${cell.value}`}
-                              className="text-blue-600 hover:underline"
-                            >
-                              {cell.value.substring(0, 8)}...
-                            </Link>
-                          </TableCell>
-                        );
-                      }
-                      if (cell.info.header === "hasError") {
-                        return (
-                          <TableCell key={cell.id}>
-                            {cell.value ? (
-                              <Tag type="red">Yes</Tag>
-                            ) : (
-                              <Tag type="gray">No</Tag>
-                            )}
-                          </TableCell>
-                        );
-                      }
-                      if (cell.info.header === "duration") {
-                        return (
-                          <TableCell key={cell.id} className="text-right">
-                            {cell.value}
-                          </TableCell>
-                        );
-                      }
-                      return <TableCell key={cell.id}>{cell.value}</TableCell>;
-                    })}
+              ) : (
+                traces.map((trace: any) => (
+                  <TableRow key={trace.trace_id}>
+                    <TableCell>
+                      <Link
+                        to={`/traces/${trace.trace_id}`}
+                        className="font-mono text-xs text-primary hover:underline"
+                      >
+                        {trace.trace_id.substring(0, 8)}...
+                      </Link>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap text-xs">
+                      {new Date(
+                        Number(BigInt(trace.start_time_ns) / 1000000n)
+                      ).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{trace.service_name}</TableCell>
+                    <TableCell>{trace.root_span_name}</TableCell>
+                    <TableCell>{trace.duration_ms.toFixed(2)}</TableCell>
+                    <TableCell>{trace.span_count}</TableCell>
+                    <TableCell>
+                      {trace.has_error ? (
+                        <Badge variant="destructive">Error</Badge>
+                      ) : (
+                        <Badge variant="outline">OK</Badge>
+                      )}
+                    </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </DataTable>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }
