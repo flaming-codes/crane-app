@@ -155,6 +155,14 @@ export class SearchService {
       })
       .map(({ hit }) => hit);
 
+    slog.info("Universal search performed", {
+      query: normalizedQuery,
+      packageResults:
+        packages.status === "fulfilled" ? packages.value.combined.length : 0,
+      authorResults: authors.status === "fulfilled" ? authors.value.length : 0,
+      totalResults: combinedWithType.length,
+    });
+
     return {
       searchType: "universal" as const,
       query: normalizedQuery,

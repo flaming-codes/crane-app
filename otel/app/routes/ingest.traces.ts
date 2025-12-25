@@ -1,4 +1,5 @@
 import { type ActionFunctionArgs } from "react-router";
+import { gunzipSync, inflateSync } from "node:zlib";
 import { db } from "../db/client.server";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -7,7 +8,63 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    const data = await request.json();
+    const contentType = request.headers.get("content-type") || "";
+    const contentEncoding = request.headers.get("content-encoding") || "";
+
+    // Read raw body so we can inspect/debug malformed payloads
+    const bodyBytes = new Uint8Array(await request.arrayBuffer());
+    let decodedBytes: Uint8Array | Buffer = bodyBytes;
+    let data: any;
+
+    // Handle gzip/deflate payloads
+    try {
+      if (contentEncoding.includes("gzip")) {
+        decodedBytes = gunzipSync(Buffer.from(bodyBytes));
+      } else if (contentEncoding.includes("deflate")) {
+        decodedBytes = inflateSync(Buffer.from(bodyBytes));
+      }
+    } catch (decompressError) {
+      console.error("Trace payload decompress failed", {
+        contentType,
+        contentEncoding,
+        error: decompressError,
+        preview: Buffer.from(bodyBytes).subarray(0, 256).toString("hex"),
+      });
+
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          message: "invalid compressed trace payload",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    try {
+      const bodyText = new TextDecoder().decode(decodedBytes);
+      data = JSON.parse(bodyText);
+    } catch (parseError) {
+      console.error("Trace payload parse failed", {
+        contentType,
+        contentEncoding,
+        preview: new TextDecoder().decode(decodedBytes.slice(0, 256)),
+        error: parseError,
+      });
+
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          message: "invalid JSON trace payload",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     // Prepare statements
     const insertSpan = db.prepare(`
@@ -43,7 +100,7 @@ export async function action({ request }: ActionFunctionArgs) {
       for (const rs of resourceSpans) {
         const resource = rs.resource || {};
         const serviceNameAttr = resource.attributes?.find(
-          (a: any) => a.key === "service.name",
+          (a: any) => a.key === "service.name"
         );
         const serviceName =
           serviceNameAttr?.value?.stringValue || "unknown_service";
@@ -51,9 +108,31 @@ export async function action({ request }: ActionFunctionArgs) {
 
         for (const ss of rs.scopeSpans || []) {
           for (const span of ss.spans || []) {
-            const startTime = BigInt(span.startTimeUnixNano);
-            const endTime = BigInt(span.endTimeUnixNano);
-            const duration = endTime - startTime;
+            // Guard against missing/invalid times to prevent ingestion failures
+            if (!span.traceId || !span.spanId) continue;
+
+            const startTimeRaw = span.startTimeUnixNano;
+            const endTimeRaw = span.endTimeUnixNano ?? startTimeRaw;
+
+            let startTime = 0n;
+            let endTime = 0n;
+
+            try {
+              startTime = startTimeRaw != null ? BigInt(startTimeRaw) : 0n;
+              endTime = endTimeRaw != null ? BigInt(endTimeRaw) : startTime;
+            } catch (e) {
+              // Skip spans with bad timestamps
+              console.error("Invalid span timestamps", {
+                spanId: span.spanId,
+                traceId: span.traceId,
+                startTimeRaw,
+                endTimeRaw,
+                error: e,
+              });
+              continue;
+            }
+
+            const duration = endTime > startTime ? endTime - startTime : 0n;
 
             // OTLP JSON status code: 0=Unset, 1=Ok, 2=Error
             // Sometimes it comes as "STATUS_CODE_ERROR" string
@@ -65,34 +144,45 @@ export async function action({ request }: ActionFunctionArgs) {
               hasError = 1;
             }
 
-            insertSpan.run({
-              trace_id: span.traceId,
-              span_id: span.spanId,
-              parent_span_id: span.parentSpanId || null,
-              service_name: serviceName,
-              span_name: span.name,
-              span_kind: span.kind,
-              start_time_ns: startTime,
-              end_time_ns: endTime,
-              duration_ns: duration,
-              status_code: span.status?.code,
-              status_message: span.status?.message,
-              attributes_json: JSON.stringify(span.attributes || []),
-              events_json: JSON.stringify(span.events || []),
-              links_json: JSON.stringify(span.links || []),
-              resource_json: resourceJson,
-            });
+            try {
+              insertSpan.run({
+                trace_id: span.traceId,
+                span_id: span.spanId,
+                parent_span_id: span.parentSpanId || null,
+                service_name: serviceName,
+                span_name: span.name,
+                span_kind: span.kind,
+                start_time_ns: startTime,
+                end_time_ns: endTime,
+                duration_ns: duration,
+                status_code: span.status?.code,
+                status_message: span.status?.message,
+                attributes_json: JSON.stringify(span.attributes || []),
+                events_json: JSON.stringify(span.events || []),
+                links_json: JSON.stringify(span.links || []),
+                resource_json: resourceJson,
+              });
 
-            upsertTrace.run({
-              trace_id: span.traceId,
-              start_time_ns: startTime,
-              end_time_ns: endTime,
-              duration_ns: duration,
-              root_span_name: !span.parentSpanId ? span.name : null,
-              service_name: !span.parentSpanId ? serviceName : null,
-              error_count: hasError,
-              has_error: hasError,
-            });
+              upsertTrace.run({
+                trace_id: span.traceId,
+                start_time_ns: startTime,
+                end_time_ns: endTime,
+                duration_ns: duration,
+                root_span_name: !span.parentSpanId ? span.name : null,
+                service_name: !span.parentSpanId ? serviceName : null,
+                error_count: hasError,
+                has_error: hasError,
+              });
+            } catch (e) {
+              console.error("Span ingest failed", {
+                error: e,
+                traceId: span.traceId,
+                spanId: span.spanId,
+                serviceName,
+                spanName: span.name,
+              });
+              continue;
+            }
           }
         }
       }
@@ -112,7 +202,7 @@ export async function action({ request }: ActionFunctionArgs) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 }
