@@ -1,4 +1,5 @@
 import { type ActionFunctionArgs } from "react-router";
+import { gunzipSync, inflateSync } from "node:zlib";
 import { db } from "../db/client.server";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -7,7 +8,61 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    const data = await request.json();
+    const contentType = request.headers.get("content-type") || "";
+    const contentEncoding = request.headers.get("content-encoding") || "";
+
+    const bodyBytes = new Uint8Array(await request.arrayBuffer());
+    let decodedBytes: Uint8Array | Buffer = bodyBytes;
+
+    try {
+      if (contentEncoding.includes("gzip")) {
+        decodedBytes = gunzipSync(Buffer.from(bodyBytes));
+      } else if (contentEncoding.includes("deflate")) {
+        decodedBytes = inflateSync(Buffer.from(bodyBytes));
+      }
+    } catch (decompressError) {
+      console.error("Log payload decompress failed", {
+        contentType,
+        contentEncoding,
+        error: decompressError,
+        preview: Buffer.from(bodyBytes).subarray(0, 256).toString("hex"),
+      });
+
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          message: "invalid compressed log payload",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    let data: any;
+    try {
+      const bodyText = new TextDecoder().decode(decodedBytes);
+      data = JSON.parse(bodyText);
+    } catch (parseError) {
+      console.error("Log payload parse failed", {
+        contentType,
+        contentEncoding,
+        preview: new TextDecoder().decode(decodedBytes.slice(0, 256)),
+        error: parseError,
+      });
+
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          message: "invalid JSON log payload",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const insertLog = db.prepare(`
       INSERT INTO logs (
@@ -23,7 +78,7 @@ export async function action({ request }: ActionFunctionArgs) {
       for (const rl of resourceLogs) {
         const resource = rl.resource || {};
         const serviceNameAttr = resource.attributes?.find(
-          (a: any) => a.key === "service.name",
+          (a: any) => a.key === "service.name"
         );
         const serviceName =
           serviceNameAttr?.value?.stringValue || "unknown_service";
@@ -68,7 +123,7 @@ export async function action({ request }: ActionFunctionArgs) {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 }
