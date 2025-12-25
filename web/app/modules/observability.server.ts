@@ -20,7 +20,7 @@ const resource = new Resource({
 });
 
 const otlpExporter = new OTLPLogExporter({
-  url: process.env.OTEL_TRACE_URL,
+  url: ENV.OTEL_LOG_URL || ENV.OTEL_TRACE_URL,
 });
 
 const tracerProvider = new NodeTracerProvider({ resource });

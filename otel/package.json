@@ -7,7 +7,8 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "otel.start": "otelcol --config otel-collector-config.yaml"
   },
   "dependencies": {
     "@carbon/icons-react": "^11.71.0",

@@ -15,10 +15,10 @@ processors:
 
 exporters:
   otlphttp/local:
-    endpoint: http://localhost:5173
-    traces_endpoint: http://localhost:5173/ingest/traces
-    logs_endpoint: http://localhost:5173/ingest/logs
-    metrics_endpoint: http://localhost:5173/ingest/metrics
+    endpoint: http://localhost:5174
+    traces_endpoint: http://localhost:5174/ingest/traces
+    logs_endpoint: http://localhost:5174/ingest/logs
+    metrics_endpoint: http://localhost:5174/ingest/metrics
     tls:
       insecure: true
     encoding: json

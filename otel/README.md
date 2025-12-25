@@ -28,14 +28,14 @@ A personal OpenTelemetry ingestion and visualization stack built with React Rout
    npm run dev
    ```
 
-   The app will run at `http://localhost:5173`.
+   The app will run at `http://localhost:5173` (or `http://localhost:5174` if 5173 is occupied).
 
 3. **Start the Collector**
    Run the OpenTelemetry Collector with the provided config:
    ```bash
    otelcol --config otel-collector-config.yaml
    ```
-   (Ensure you have the `otelcol` binary in your path, or download it from [OpenTelemetry Releases](https://github.com/open-telemetry/opentelemetry-collector-releases/releases))
+   (Ensure you have the `otelcol` binary in your path, or download it from [OpenTelemetry Releases](https://github.com/open-telemetry/opentelemetry-collector-releases/releases). Note: The provided config assumes the app is running on port 5174.)
 
 ## Instrumentation
 
@@ -132,7 +132,3 @@ Make sure to deploy the output of `npm run build`
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
