@@ -101,6 +101,7 @@ export default function App() {
         />
         <meta name="apple-mobile-web-app-title" content="CRAN/E" />
         <link rel="manifest" href="/manifest.webmanifest" />
+
         <Meta />
         <Links />
       </head>
@@ -127,6 +128,12 @@ export default function App() {
                 {(window.plausible.q = window.plausible.q || []).push(arguments)}
               `}
             </script>
+            <script
+              defer
+              nonce={isServer ? nonce : ""}
+              src="https://cloud.umami.is/script.js"
+              data-website-id="a339fbc4-6d7e-41fa-a018-6d82d5172090"
+            />
           </>
         ) : null}
 
