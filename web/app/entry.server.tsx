@@ -48,7 +48,7 @@ export default function handleRequest(
   createSecureHeaders({
     "Content-Security-Policy": {
       "default-src": ["'self'"],
-      "script-src": ["'self'", `'nonce-${nonce}'`],
+      "script-src": ["'self'", `'nonce-${nonce}'`, "https://cloud.umami.is"],
       "connect-src": ["'self'", "https://plausible.flaming.codes"],
       "style-src": ["'self'", "'unsafe-inline'"],
       "img-src": ["'self'", "*.digitaloceanspaces.com"],
