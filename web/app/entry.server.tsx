@@ -54,6 +54,12 @@ export default function handleRequest(
         "https://cloud.umami.is",
         "https://plausible.flaming.codes",
       ],
+      "script-src-elem": [
+        "'self'",
+        `'nonce-${nonce}'`,
+        "https://plausible.flaming.codes",
+        "https://cloud.umami.is",
+      ],
       "connect-src": [
         "'self'",
         "https://plausible.flaming.codes",
