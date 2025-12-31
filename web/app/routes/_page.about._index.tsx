@@ -20,12 +20,14 @@ import { LicenseTable } from "../modules/licenses";
 import { useState } from "react";
 import { AboutCreatorCard } from "../modules/about-creator-card";
 import { AboutStoryBox } from "../modules/about-story-box";
+import { ArcjetLogo } from "../modules/arcjet-logo";
 
 const anchors = [
   "Creators",
   "Mission",
   "MCP",
   "Analytics",
+  "Security",
   "Source Code",
   "Licenses",
 ];
@@ -261,6 +263,52 @@ export default function PrivacyPage() {
               </InfoPill>
             </Link>
             <PlausibleChoicePillButton />
+          </div>
+        </PageContentSection>
+
+        <Separator />
+
+        <PageContentSection headline="Security" fragment="security">
+          <div className="flex flex-col gap-2">
+            <a
+              href="https://arcjet.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-1 w-32 shrink-0"
+              aria-label="Visit Arcjet.com"
+            >
+              <ArcjetLogo className="w-full" />
+              <span className="sr-only">Arcjet logo</span>
+            </a>
+            <div className="space-y-6">
+              <p>
+                We use{" "}
+                <a
+                  href="https://arcjet.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Arcjet
+                </a>{" "}
+                to protect our application from bots and malicious traffic.
+                Arcjet provides advanced security features that help keep CRAN/E
+                safe and performant for everyone.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <ExternalLink href="https://arcjet.com">
+                  <InfoPill
+                    label={<ArcjetLogo className="h-5 w-5" />}
+                    variant="slate"
+                  >
+                    Protected by Arcjet
+                    <RiExternalLinkLine
+                      size={16}
+                      className="text-gray-dim ml-2"
+                    />
+                  </InfoPill>
+                </ExternalLink>
+              </div>
+            </div>
           </div>
         </PageContentSection>
 
