@@ -3,6 +3,7 @@ import { z } from "zod";
 export const envSchema = z.object({
   NODE_ENV: z.string().optional(),
   VITE_RELEASE_CHANNEL: z.string().optional(),
+  ARCJET_KEY: z.string().describe("Arcjet Site Key"),
   VITE_PLAUSIBLE_SITE_ID: z.string().describe("Plausible Analytics Site ID"),
   VITE_PLAUSIBLE_API_KEY: z.string().describe("Plausible Analytics API Key"),
   POSTHOG_API_KEY: z
