@@ -278,6 +278,7 @@ export default function PrivacyPage() {
               aria-label="Visit Arcjet.com"
             >
               <ArcjetLogo className="w-full" />
+              <span className="sr-only">Arcjet logo</span>
             </a>
             <div className="space-y-6">
               <p>
