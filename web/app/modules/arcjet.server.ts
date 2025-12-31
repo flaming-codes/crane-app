@@ -22,13 +22,26 @@ const arcjetClient = arcjet({
 // Consume a single token from the bucket for each protected request.
 const ARCJET_REQUEST_PROPERTIES = { requested: 1 } as const;
 
+function isArcjetEnabled() {
+  const channel = ENV.VITE_RELEASE_CHANNEL;
+  return channel === "staging" || channel === "production";
+}
+
 export async function protectWithArcjet(
   details: ArcjetReactRouterRequest,
-): Promise<ArcjetDecision> {
+): Promise<ArcjetDecision | null> {
+  if (!isArcjetEnabled()) {
+    return null;
+  }
+
   return arcjetClient.protect(details, ARCJET_REQUEST_PROPERTIES);
 }
 
-export function arcjetDecisionToResponse(decision: ArcjetDecision) {
+export function arcjetDecisionToResponse(decision: ArcjetDecision | null) {
+  if (!decision) {
+    return null;
+  }
+
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
       return new Response("Too Many Requests", { status: 429 });
