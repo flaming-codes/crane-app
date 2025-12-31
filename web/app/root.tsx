@@ -16,6 +16,10 @@ import stylesheet from "./tailwind.css?url";
 import { ENV } from "./data/env";
 import { BASE_URL } from "./modules/app";
 import { createNonce } from "@mcansh/http-helmet";
+import {
+  arcjetDecisionToResponse,
+  protectWithArcjet,
+} from "./modules/arcjet.server";
 
 const isServer = typeof window === "undefined";
 
@@ -47,7 +51,14 @@ type LoaderData = {
   nonce: string;
 };
 
-export const loader: LoaderFunction = async (): Promise<LoaderData> => {
+export const loader: LoaderFunction = async ({ request, context }) => {
+  const decision = await protectWithArcjet({ request, context });
+  const deniedResponse = arcjetDecisionToResponse(decision);
+
+  if (deniedResponse) {
+    return deniedResponse;
+  }
+
   const nonce = createNonce();
   return {
     isProduction: ENV.NODE_ENV === "production",

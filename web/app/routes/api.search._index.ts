@@ -1,7 +1,18 @@
 import { ActionFunction } from "react-router";
+import {
+  arcjetDecisionToResponse,
+  protectWithArcjet,
+} from "../modules/arcjet.server";
 import { SearchService } from "../data/search.service";
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, context }) => {
+  const decision = await protectWithArcjet({ request, context });
+  const deniedResponse = arcjetDecisionToResponse(decision);
+
+  if (deniedResponse) {
+    return deniedResponse;
+  }
+
   const formData = await request.formData();
   const intent = formData.get("intent");
 
