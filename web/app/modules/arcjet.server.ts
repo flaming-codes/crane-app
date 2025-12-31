@@ -19,12 +19,13 @@ const arcjetClient = arcjet({
   ],
 });
 
-const ARCJET_PROPERTIES = { requested: 1 } as const;
+// Consume a single token from the bucket for each protected request.
+const ARCJET_REQUEST_PROPERTIES = { requested: 1 } as const;
 
 export async function protectWithArcjet(
   details: ArcjetReactRouterRequest,
 ): Promise<ArcjetDecision> {
-  return arcjetClient.protect(details, ARCJET_PROPERTIES);
+  return arcjetClient.protect(details, ARCJET_REQUEST_PROPERTIES);
 }
 
 export function arcjetDecisionToResponse(decision: ArcjetDecision) {
@@ -37,7 +38,7 @@ export function arcjetDecisionToResponse(decision: ArcjetDecision) {
   }
 
   if (decision.isChallenged()) {
-    return new Response("Forbidden", { status: 403 });
+    return new Response("Arcjet challenge required", { status: 401 });
   }
 
   return null;
