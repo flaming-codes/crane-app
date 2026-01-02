@@ -1,6 +1,7 @@
 import arcjet, {
   type ArcjetDecision,
   type ArcjetReactRouterRequest,
+  filter,
   shield,
   tokenBucket,
 } from "@arcjet/react-router";
@@ -10,6 +11,10 @@ const arcjetClient = ENV.ARCJET_KEY
   ? arcjet({
       key: ENV.ARCJET_KEY,
       rules: [
+        filter({
+          mode: "LIVE",
+          deny: ['ip.src.country eq "CN"', 'ip.src.country eq "SG"'],
+        }),
         shield({ mode: "LIVE" }),
         tokenBucket({
           mode: "LIVE",
