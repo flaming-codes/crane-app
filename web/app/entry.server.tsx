@@ -37,7 +37,9 @@ export default function handleRequest(
     request.headers.get("cf-ipcountry") ||
     request.headers.get("x-vercel-ip-country") ||
     request.headers.get("x-geo-country")
-  )?.toUpperCase();
+  )
+    ?.trim()
+    .toUpperCase();
 
   if (country && BLOCKED_COUNTRIES.includes(country)) {
     slog.warn("Blocked request by country", { country, url: request.url });
