@@ -1,15 +1,24 @@
 import arcjet, {
   type ArcjetDecision,
   type ArcjetReactRouterRequest,
+  filter,
   shield,
   tokenBucket,
 } from "@arcjet/react-router";
 import { ENV } from "../data/env";
 
+export const BLOCKED_COUNTRIES: readonly string[] = ["CN", "SG"];
+
 const arcjetClient = ENV.ARCJET_KEY
   ? arcjet({
       key: ENV.ARCJET_KEY,
       rules: [
+        filter({
+          mode: "LIVE",
+          deny: BLOCKED_COUNTRIES.map(
+            (code) => `ip.src.country eq "${code}"`,
+          ),
+        }),
         shield({ mode: "LIVE" }),
         tokenBucket({
           mode: "LIVE",

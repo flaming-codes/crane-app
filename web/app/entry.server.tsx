@@ -14,6 +14,7 @@ import { server } from "./mocks/node.server";
 import { slog } from "./modules/observability.server";
 import { createSecureHeaders } from "@mcansh/http-helmet";
 import { initOTEL } from "./modules/instrumentation.server";
+import { BLOCKED_COUNTRIES } from "./modules/arcjet.server";
 
 const ABORT_DELAY = 5_000;
 
@@ -32,6 +33,19 @@ export default function handleRequest(
   responseHeaders: Headers,
   reactRouterContext: EntryContext,
 ) {
+  const country = (
+    request.headers.get("cf-ipcountry") ||
+    request.headers.get("x-vercel-ip-country") ||
+    request.headers.get("x-geo-country")
+  )
+    ?.trim()
+    .toUpperCase();
+
+  if (country && BLOCKED_COUNTRIES.includes(country)) {
+    slog.warn("Blocked request by country", { country, url: request.url });
+    return new Response("Access not available in your region", { status: 403 });
+  }
+
   responseHeaders.set("X-Frame-Options", "DENY");
   responseHeaders.set("X-Content-Type-Options", "nosniff");
   responseHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
