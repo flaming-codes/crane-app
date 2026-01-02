@@ -32,6 +32,15 @@ export default function handleRequest(
   responseHeaders: Headers,
   reactRouterContext: EntryContext,
 ) {
+  const country =
+    request.headers.get("cf-ipcountry") ||
+    request.headers.get("x-vercel-ip-country") ||
+    request.headers.get("x-geo-country");
+
+  if (country === "CN" || country === "SG") {
+    return new Response("Forbidden", { status: 403 });
+  }
+
   responseHeaders.set("X-Frame-Options", "DENY");
   responseHeaders.set("X-Content-Type-Options", "nosniff");
   responseHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
