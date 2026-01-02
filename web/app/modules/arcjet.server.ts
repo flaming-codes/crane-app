@@ -6,11 +6,9 @@ import arcjet, {
 } from "@arcjet/react-router";
 import { ENV } from "../data/env";
 
-const arcjetKey = ENV.ARCJET_KEY;
-
-const arcjetClient = arcjetKey
+const arcjetClient = ENV.ARCJET_KEY
   ? arcjet({
-      key: arcjetKey,
+      key: ENV.ARCJET_KEY,
       rules: [
         shield({ mode: "LIVE" }),
         tokenBucket({
@@ -28,15 +26,13 @@ const ARCJET_REQUEST_PROPERTIES = { requested: 1 } as const;
 
 function isArcjetEnabled() {
   const channel = ENV.VITE_RELEASE_CHANNEL;
-  return (
-    Boolean(arcjetKey) && (channel === "staging" || channel === "production")
-  );
+  return channel === "staging" || channel === "production";
 }
 
 export async function protectWithArcjet(
   details: ArcjetReactRouterRequest,
 ): Promise<ArcjetDecision | null> {
-  if (!isArcjetEnabled() || !arcjetClient) {
+  if (!arcjetClient || !isArcjetEnabled()) {
     return null;
   }
 
