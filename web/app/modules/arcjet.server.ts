@@ -6,18 +6,20 @@ import arcjet, {
 } from "@arcjet/react-router";
 import { ENV } from "../data/env";
 
-const arcjetClient = arcjet({
-  key: ENV.ARCJET_KEY,
-  rules: [
-    shield({ mode: "LIVE" }),
-    tokenBucket({
-      mode: "LIVE",
-      interval: "10s",
-      refillRate: 5,
-      capacity: 20,
-    }),
-  ],
-});
+const arcjetClient = ENV.ARCJET_KEY
+  ? arcjet({
+      key: ENV.ARCJET_KEY,
+      rules: [
+        shield({ mode: "LIVE" }),
+        tokenBucket({
+          mode: "LIVE",
+          interval: "10s",
+          refillRate: 5,
+          capacity: 20,
+        }),
+      ],
+    })
+  : null;
 
 // Consume a single token from the bucket for each protected request.
 const ARCJET_REQUEST_PROPERTIES = { requested: 1 } as const;
@@ -30,7 +32,7 @@ function isArcjetEnabled() {
 export async function protectWithArcjet(
   details: ArcjetReactRouterRequest,
 ): Promise<ArcjetDecision | null> {
-  if (!isArcjetEnabled()) {
+  if (!arcjetClient || !isArcjetEnabled()) {
     return null;
   }
 
