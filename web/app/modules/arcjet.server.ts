@@ -6,31 +6,37 @@ import arcjet, {
 } from "@arcjet/react-router";
 import { ENV } from "../data/env";
 
-const arcjetClient = arcjet({
-  key: ENV.ARCJET_KEY,
-  rules: [
-    shield({ mode: "LIVE" }),
-    tokenBucket({
-      mode: "LIVE",
-      interval: "10s",
-      refillRate: 5,
-      capacity: 20,
-    }),
-  ],
-});
+const arcjetKey = ENV.ARCJET_KEY;
+
+const arcjetClient = arcjetKey
+  ? arcjet({
+      key: arcjetKey,
+      rules: [
+        shield({ mode: "LIVE" }),
+        tokenBucket({
+          mode: "LIVE",
+          interval: "10s",
+          refillRate: 5,
+          capacity: 20,
+        }),
+      ],
+    })
+  : null;
 
 // Consume a single token from the bucket for each protected request.
 const ARCJET_REQUEST_PROPERTIES = { requested: 1 } as const;
 
 function isArcjetEnabled() {
   const channel = ENV.VITE_RELEASE_CHANNEL;
-  return channel === "staging" || channel === "production";
+  return (
+    Boolean(arcjetKey) && (channel === "staging" || channel === "production")
+  );
 }
 
 export async function protectWithArcjet(
   details: ArcjetReactRouterRequest,
 ): Promise<ArcjetDecision | null> {
-  if (!isArcjetEnabled()) {
+  if (!isArcjetEnabled() || !arcjetClient) {
     return null;
   }
 
