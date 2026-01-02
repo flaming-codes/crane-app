@@ -7,7 +7,7 @@ import arcjet, {
 } from "@arcjet/react-router";
 import { ENV } from "../data/env";
 
-export const BLOCKED_COUNTRIES = ["CN", "SG"] as const;
+export const BLOCKED_COUNTRIES: readonly string[] = ["CN", "SG"] as const;
 
 const arcjetClient = ENV.ARCJET_KEY
   ? arcjet({

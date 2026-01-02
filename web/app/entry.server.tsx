@@ -39,7 +39,7 @@ export default function handleRequest(
     request.headers.get("x-geo-country")
   )?.toUpperCase();
 
-  if (country && BLOCKED_COUNTRIES.includes(country as (typeof BLOCKED_COUNTRIES)[number])) {
+  if (country && BLOCKED_COUNTRIES.includes(country)) {
     slog.warn("Blocked request by country", { country, url: request.url });
     return new Response("Access not available in your region", { status: 403 });
   }
