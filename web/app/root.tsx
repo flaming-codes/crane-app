@@ -87,9 +87,9 @@ export default function App() {
     !!data?.googleAdsSlotRight;
   const adsConfig = hasAdsConfig
     ? {
-        client: data.googleAdsClient ?? "",
-        leftSlot: data.googleAdsSlotLeft ?? "",
-        rightSlot: data.googleAdsSlotRight ?? "",
+        client: data!.googleAdsClient!,
+        leftSlot: data!.googleAdsSlotLeft!,
+        rightSlot: data!.googleAdsSlotRight!,
       }
     : null;
 

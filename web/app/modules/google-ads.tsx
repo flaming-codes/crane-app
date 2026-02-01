@@ -91,13 +91,13 @@ export function GoogleAdsInline({ config }: AdsProps) {
           placement="inline"
           client={config.client}
           slot={config.leftSlot}
-          label="Inline page advertisement"
+          label="Inline page advertisement (left slot)"
         />
         <GoogleAdSlot
           placement="inline"
           client={config.client}
           slot={config.rightSlot}
-          label="Inline page advertisement"
+          label="Inline page advertisement (right slot)"
         />
       </div>
     </div>
