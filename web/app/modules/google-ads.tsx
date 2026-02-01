@@ -44,15 +44,16 @@ export function GoogleAdSlot(props: SlotProps) {
   }, [client, slot]);
 
   return (
-    <ins
-      className={clsx(twSlot({ placement }), className)}
-      style={{ display: "block" }}
-      data-ad-client={client}
-      data-ad-slot={slot}
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-      aria-label={label}
-    />
+    <div role="region" aria-label={label}>
+      <ins
+        className={clsx(twSlot({ placement }), className)}
+        style={{ display: "block" }}
+        data-ad-client={client}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </div>
   );
 }
 
