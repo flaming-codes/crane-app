@@ -9,5 +9,10 @@ declare interface Window {
 
   ENV: {
     isPlausibleEnabled: boolean;
+    googleAdsClient?: string;
+    googleAdsSlotLeft?: string;
+    googleAdsSlotRight?: string;
   };
+
+  adsbygoogle?: Array<Record<string, unknown>>;
 }

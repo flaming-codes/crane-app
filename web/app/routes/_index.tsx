@@ -13,6 +13,7 @@ import { GradientBackground } from "../modules/gradient-background";
 
 export const handle = {
   hasFooter: false,
+  hasAds: false,
 };
 
 export const loader = async () => {

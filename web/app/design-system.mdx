@@ -44,3 +44,13 @@ We use the **Content Grid** system to manage responsive widths.
 | `content`      | 900px  | Standard readable text width      |
 | `breakout`     | 1200px | Image or wide table breakout      |
 | `full-width`   | 100%   | Edge-to-edge content              |
+
+---
+
+## Ads
+
+Ads render outside the main content column using reusable components.
+
+- `GoogleAdsRail` pins left/right ads when the layout has enough space (min 1600px).
+- `GoogleAdsInline` stacks two ads below content on smaller screens.
+- Set `handle.hasAds = false` on routes that should not show ads (landing page).

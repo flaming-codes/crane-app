@@ -14,6 +14,18 @@ export const envSchema = z.object({
     .string()
     .default("https://eu.i.posthog.com")
     .describe("PostHog API host"),
+  VITE_GOOGLE_ADSENSE_CLIENT_ID: z
+    .string()
+    .optional()
+    .describe("Google AdSense client ID (ca-pub-*)"),
+  VITE_GOOGLE_ADSENSE_SLOT_LEFT: z
+    .string()
+    .optional()
+    .describe("Google AdSense left slot id"),
+  VITE_GOOGLE_ADSENSE_SLOT_RIGHT: z
+    .string()
+    .optional()
+    .describe("Google AdSense right slot id"),
   SUPABASE_URL: z.string().describe("Supabase Gateway-URL"),
   SUPABASE_ANON_KEY: z
     .string()

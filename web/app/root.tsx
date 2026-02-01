@@ -20,6 +20,7 @@ import {
   arcjetDecisionToResponse,
   protectWithArcjet,
 } from "./modules/arcjet.server";
+import { GoogleAdsInline, GoogleAdsRail } from "./modules/google-ads";
 
 const isServer = typeof window === "undefined";
 
@@ -49,6 +50,9 @@ type LoaderData = {
   domain: string;
   version: string;
   nonce: string;
+  googleAdsClient?: string;
+  googleAdsSlotLeft?: string;
+  googleAdsSlotRight?: string;
 };
 
 export const loader: LoaderFunction = async ({ request, context }) => {
@@ -65,6 +69,9 @@ export const loader: LoaderFunction = async ({ request, context }) => {
     domain: ENV.VITE_PLAUSIBLE_SITE_ID,
     version: ENV.npm_package_version,
     nonce,
+    googleAdsClient: ENV.VITE_GOOGLE_ADSENSE_CLIENT_ID,
+    googleAdsSlotLeft: ENV.VITE_GOOGLE_ADSENSE_SLOT_LEFT,
+    googleAdsSlotRight: ENV.VITE_GOOGLE_ADSENSE_SLOT_RIGHT,
   };
 };
 
@@ -74,11 +81,26 @@ export default function App() {
   const nonce = data?.nonce;
 
   const isPlausibleEnabled = data?.isProduction && data?.domain;
+  const hasAdsConfig =
+    !!data?.googleAdsClient &&
+    !!data?.googleAdsSlotLeft &&
+    !!data?.googleAdsSlotRight;
+  const adsConfig = hasAdsConfig
+    ? {
+        client: data.googleAdsClient ?? "",
+        leftSlot: data.googleAdsSlotLeft ?? "",
+        rightSlot: data.googleAdsSlotRight ?? "",
+      }
+    : null;
 
   const matches = useMatches().slice(1);
   const hasFooter = matches.some((match) => {
     const handle = match.handle as { hasFooter?: boolean } | undefined;
     return handle?.hasFooter;
+  });
+  const hasAds = matches.every((match) => {
+    const handle = match.handle as { hasAds?: boolean } | undefined;
+    return handle?.hasAds !== false;
   });
 
   return (
@@ -122,9 +144,20 @@ export default function App() {
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify({
               isPlausibleEnabled,
+              googleAdsClient: data?.googleAdsClient,
+              googleAdsSlotLeft: data?.googleAdsSlotLeft,
+              googleAdsSlotRight: data?.googleAdsSlotRight,
             })}`,
           }}
         />
+        {hasAds && adsConfig ? (
+          <script
+            async
+            nonce={isServer ? nonce : ""}
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsConfig.client}`}
+          />
+        ) : null}
         {isPlausibleEnabled ? (
           <>
             <script
@@ -151,6 +184,12 @@ export default function App() {
         <main className="content-grid min-h-full">
           <Outlet />
         </main>
+        {hasAds && adsConfig ? (
+          <>
+            <GoogleAdsRail config={adsConfig} />
+            <GoogleAdsInline config={adsConfig} />
+          </>
+        ) : null}
         {hasFooter ? (
           <Footer
             variant="page"
