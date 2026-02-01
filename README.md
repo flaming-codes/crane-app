@@ -48,6 +48,16 @@ Therefore we decided to develop a new user interface with search capabilities, t
 
 This repo uses the `web`-directory for the PWA codebase. The `web`-directory is a Remix-project and contains all necessary code to run the frontend of CRAN/E.
 
+## Google Ads
+
+CRAN/E supports Google Ads (AdSense) on all pages except the landing page.
+
+**Enable ads**
+- Add `VITE_GOOGLE_ADSENSE_CLIENT_ID` (ca-pub-*) to `.env`.
+- Add `VITE_GOOGLE_ADSENSE_SLOT_LEFT` and `VITE_GOOGLE_ADSENSE_SLOT_RIGHT` for each ad unit.
+- Confirm `ads.txt` is present in `/web/public` for your AdSense account.
+- Verify ads appear inline on small screens and as fixed rails on large screens.
+
 <br />
 <br />
 
